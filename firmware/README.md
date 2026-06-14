@@ -1,15 +1,16 @@
-# STRILAS — firmware/CV-skelett (körbart utan hårdvara)
+# STRILAS — firmware/CV-skelett (komplett, körbart utan hårdvara)
 
-Hårdvaru-abstraherad logik för hela kedjan + en sim-harness som matar syntetisk data,
-så **allt kan testas i kod innan en enda lödpunkt**. Samma logik portar till ESP-IDF
-(vapen/mål) — bara I/O-lagret byts (sim-harness → riktiga sensorer).
+Hårdvaru-abstraherad referensimplementation av **hela** STRILAS-kedjan + sim-harness,
+så allt kan köras och testas i kod innan en enda lödpunkt. Samma logik portar till ESP-IDF
+(vapen/mål); bara I/O-lagret (`world_sim`) byts mot riktiga sensorer.
 
 ## Kör
 
 ```bash
 cd <repo-rot>
-python3 -m firmware.run_demo      # end-to-end-demo @150 m
-python3 -m firmware.test_chain    # automatiska tester (PASS/FAIL)
+python3 -m firmware.run_demo      # end-to-end-demo @150 m (perception → FC → server → verdikt)
+python3 -m firmware.test_chain    # 15 automatiska tester (alla PASS)
+python3 -m firmware.benchmark     # server-prestanda (~57k adj/s)
 ```
 
 ## Moduler
@@ -17,32 +18,48 @@ python3 -m firmware.test_chain    # automatiska tester (PASS/FAIL)
 | Fil | Roll | HW-motsvarighet |
 |---|---|---|
 | `config.py` | delade HW-värden (kamera, konstellation, zoner, profil) | — |
-| `protocol.py` | `FireEvent` / `IRHit` / `Verdict` (JSON-serialiserbara) | WiFi-meddelanden |
-| `cv_pose.py` | **blob-detektion + pose** (az/el/range) | ESP-P4 kamera/ISP (+ ev. ESP-DL) |
-| `ballistics.py` | 3-DOF-bana → flygtid/drop/anslagsfart | server |
-| `adjudicator.py` | **server**: geometri × IR-grind → verdikt | laptop/server (Python skarpt också) |
-| `weapon_node.py` | vapen-logik: detektioner → FireEvent | ESP32-P4 firmware |
-| `target_node.py` | mål-logik: TSOP → IRHit | ESP32-C5 firmware |
-| `world_sim.py` | **sim-harness**: fejk-kamera, IR-länk, trigger | *ersätts av hårdvaran* |
+| `protocol.py` | `FireEvent`/`IRHit`/`PlayerState`/`Verdict` (+ nonce/hmac) | WiFi/MQTT-meddelanden |
+| `cv_pose.py` | **blob-detektion + pose** (az/el/range) | ESP-P4 kamera/ISP |
+| `fire_control.py` | **sikteslösning**: lead (rörligt mål) + holdover (drop) | vapen-firmware/HUD |
+| `ballistics.py` | bana → flygtid/drop/anslagsfart (**cachad tabell, O(1)**) | server |
+| `imu`-modell | *(IMU-residual i `world_sim`)* | ICM-45686 |
+| `anticheat.py` | rullande IR-kod + nonce + HMAC + replay-skydd | säkert element + server |
+| `transport.py` | meddelandebuss (pub/sub) | WiFi6/MQTT |
+| `engine.py` | **server**: pairing FireEvent↔IRHit, lag-komp, tick-loop | laptop/server |
+| `adjudicator.py` | **dom**: ballistik + lead + geometri × IR-grind + anti-fusk | server |
+| `weapon_node.py` | vapen-logik: perception + engage → signerad FireEvent | ESP32-P4 |
+| `target_node.py` | mål-logik: TSOP → IRHit + PlayerState | ESP32-C5 |
+| `world_sim.py` | **sim-harness**: fejk-kamera, IR-länk, scenario | *ersätts av hårdvaran* |
+
+## Vad som är verifierat i kod (@150 m, allt PASS)
+
+- **Perception:** `render_frame`→`detect_blobs` hittar alla 5 konstellations-LED → pose, range ~150 m.
+- **Fire-control:** stationärt + rörligt → HIT rätt zon (bröst/huvud); lead + holdover räknas.
+- **Realism:** naivt skott utan holdover landar **lågt** (drop 16 cm @150 m); utan lead **missar** rörligt mål.
+- **IR-grind:** cover (ingen IR-LOS) → `NEAR_MISS_NO_LOS` (geometrin dömer, IR grindar hits).
+- **Anti-fusk:** manipulerad HMAC + omspelad sekvens → `REJECTED_REPLAY`.
+- **Server-motor:** pairing FireEvent↔IRHit, tick-timeout, lag-komp via PlayerState.
+- **Prestanda:** **~57 000 adjudikationer/s** (17 µs/skott) → ×120 marginal mot full-auto 32 spelare.
+
+## Nyckelresultat: fire-control
+
+| Mål | Naivt (människa) | Fire-control |
+|---|---|---|
+| Stationärt | ~10 % | **~100 %** |
+| 4 m/s | ~7 % | **~100 %** |
+
+Människans sikt-σ är begränsningen — **inte systemet** (kamerans σ ≈ 0,0004°). Kameran mäter
+felet exakt och räknar lead/holdover → träff-% mot 100 %.
 
 ## Hårdvaru-abstraktionen (nyckeln)
 
-`WeaponNode.process_detections(detections)` tar **detektor-utdata** — i sim från
-`world_sim`, på HW från P4-kameran. Allt ovanför (pose → FireEvent → adjudikation) är
-**identiskt** sim↔HW. `world_sim` är det enda som kastas när hårdvaran kommer.
+`WeaponNode.process_detections()` tar **detektor-utdata** (sim nu / P4-kamera sen). Allt ovanför
+(pose → fire-control → FireEvent → server-adjudikation) är **identiskt** sim↔HW. `world_sim` är
+det enda som kastas när hårdvaran kommer.
 
-## Vad demon bevisar (allt verifierat i kod @150 m)
+## Nästa steg mot skarp drift
 
-- **Bild→pose:** `render_frame` → `detect_blobs` hittar alla 5 konstellations-LED → pose.
-- **Adjudikation:** centrerat → HIT Bröst · sikte huvud → HIT Huvud · 0,6 m bom → MISS ·
-  cover (ingen IR-LOS) → NEAR_MISS_NO_LOS (geometrin är domare, **IR grindar hits**).
-- **PnP-range:** ~149 m (sant 150) ur konstellationens baslinje.
-- **Monte Carlo:** träff-% begränsas av **mänsklig sikt-σ**, inte av systemet — vilket
-  motiverar fire-control-läget (kameran mäter felet exakt → guida/korrigera mot centrum).
-
-## Nästa steg
-
-1. **Fire-control-läge:** låt kameran-felet driva en HUD/auto-korrigering (σ→0).
-2. **Port till ESP-IDF:** `cv_pose`/`weapon_node` → C, behåll `adjudicator` i Python på servern.
-3. **Riktig CV-uppgradering:** byt centroid+baslinje mot `cv2.solvePnP` (full 6DoF) + blink-ID-matchning.
-4. **Nät/tidssynk:** lägg WiFi-transport + PTP-tidsstämplar på protokoll-lagret.
+1. **Port:** `cv_pose`/`fire_control`/`weapon_node` → C (ESP-IDF); `adjudicator`/`engine` stannar i Python.
+2. **Riktig CV:** byt centroid+baslinje mot `cv2.solvePnP` (full 6DoF) + modulerad blink-ID-matchning.
+3. **Nät/tid:** WiFi6/MQTT på `transport` + PTP-tidsstämplar på protokoll-lagret.
+4. **Bänk:** koppla mot riktiga kort + mät (Class 1, dagsljus-SNR, räckvidd).
