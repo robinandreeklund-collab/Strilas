@@ -57,10 +57,9 @@ högtalare ingår i kitet och stannar i scope (pose-väg + ljud senare).
 | 8 | **860 nm IR-pass/bandpass-filter** för sikteskameran | 1 | ~$8 | ser bara konstellationen → robust dag/natt |
 | 9 | Perfboard + lödd LED-strömväg + Dupont | 1 | ~$6 | **löd LED+driver fast** — breadboard tål inte 1–3 A |
 
-> **Sikteskameran = ams-OSRAM MIRA220MINI (mono, global shutter, NIR)** — vald direkt eftersom
-> vi gör custom PCB (GS krävs för rörligt vapen; se `hardware/weapon-module-design-resolution.md`).
-> Kitets OV5640 kan användas gratis för **tidig CV-bringup** medan Mira220-kortet är på väg.
-> CV-firmwaren (blob → solvePnP → bäring) skriver jag.
+> **Sikteskameran = OV5640 (NoIR) i kitet** för v1 — gratis, mogen P4-drivrutin. Rolling shutter
+> hanteras med fast-pan-grind i firmware (IMU flaggar snabb panorering). GS-uppgradering = ams-OSRAM
+> MIRA220MINI MONO (~$141 eval) *om* grinden blir för begränsande. CV-firmwaren skriver jag.
 
 IMU på I²C; RMT driver gaten på 56 kHz; kameran via FFC till P4 MIPI-CSI.
 

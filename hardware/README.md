@@ -29,7 +29,7 @@ ovanför kameran → **samboresikt** (parallax ~0,01° @150 m; bred kon = bara L
 
 | Ref | Del | Roll |
 |---|---|---|
-| (mitten) | **Sikteskamera: ams-OSRAM MIRA220MINI (mono, global shutter, NIR) + 860 nm bandpass + M12 (FOV 15–30°)** | **PRECISION** — GS fryser bilden under panorering → korrekta blob-centroider; ser konstellationen → solvePnP → bäring |
+| (mitten) | **Sikteskamera: OV5640 NoIR + 860 nm bandpass + M12 (FOV 15–30°)** | **PRECISION** — ser konstellationen → solvePnP → bäring (rolling shutter; fast-pan-grind i firmware) |
 | D1–D2 | **940 nm OSLON Black** ×2 + **Carclo 10195** (~Ø20) kollimator | **skott** — kodad 56 kHz-stråle, 100–150 m |
 | U2–U5 | **TDK ICM-45686 IMU ×1–4 (SPI, bestyckad 1)** | attityd mellan kamerabildrutor + rekyl; layout för 4 = redundans |
 | U6 / Q1 / Rsense | **boost konstantströms-LED-driver** / AO3400 N-FET / sense-resistor | konstantström + **hårt HW-tak = ögonsäkerhet** |
@@ -56,20 +56,18 @@ CC-drivern (U3) ger **hårt HW-strömtak** (sense-resistor; firmware bara lägre
 ögat @1 m/1 A → **inte trivialt Class 1**. **Mät AE per IEC 60825-1** vid låst pulsformat,
 **börja på 1 A**, köp räckvidd med mottagar-filtret. (Design-resolution §3.)
 
-### ✅ Kamera = ams-OSRAM MIRA220MINI (mono GS NIR) — vald
+### ✅ Kamera = OV5640 för v1 (Mira220 GS = uppgradering)
 
-Eftersom vi gör custom PCB byter vi direkt till **rätt** kamera istället för att rita runt
-OV5640 och göra om. **Global shutter** är tekniskt korrekt för ett rörligt vapen: rolling
-shutter (OV5640) smetar/skevar under panorering → korrumperar blob-centroiderna → bäringsfel
-*medan du rör dig*. GS fryser hela bilden. **NIR-förstärkt** → ser 860 nm-konstellationen bättre.
+OV5640 sitter **gratis i kitet**, har **mogen P4-drivrutin** och fungerar idag. Rolling shutter
+är en hanterbar degradering: kort exponering + modulerade konstellations-LED + en **firmware-grind
+som ignorerar kamera-bäringen vid snabb panorering** (IMU flaggar hög vinkelhastighet — du skjuter
+ändå när du är stabil).
 
-- Köpbar: **MIRA220MINI Sensor Board Mono** (ams-OSRAM, DigiKey). MIPI-CSI + I²C, P4-exempel finns.
-- **Footprint/mått från ams-OSRAM:s öppna PCB-filer** (`github.com/ams-OSRAM/ams-Mira-Image-Sensors`)
-  → exakt, ingen gissning (löser "mät-din-modul" bättre än OV5640).
-- **Inte** OV5640 (gör om), IMX296 (ingen P4-drv) eller Arducam Pivariety (= Pi/libcamera).
+**GS-uppgradering om grinden blir för begränsande:** **ams-OSRAM MIRA220MINI MONO** (global shutter,
+NIR) — köpbar (DigiKey **~$141**), men **eval-/sensorkort**, inte ett färdigt kit → P4-integration
+gör du själv (ams-OSRAM-exempel finns); footprint ur deras öppna PCB-filer.
 
-**Avvägning (ärlig):** P4-drivrutinen är *exempel-grade* (mer integrationsjobb än mogna OV5640),
-högre kostnad + ledtid. Mono är **bättre** för oss (bara IR-blobbar, ingen Bayer → mer känslighet).
+**Inte** IMX296 (ingen P4-drv) eller Arducam Pivariety (= Pi/libcamera).
 
 ---
 

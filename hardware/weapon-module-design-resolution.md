@@ -96,14 +96,16 @@ FET (AO3400, låg Rds) klarar pulsat. Verifiera junction-temp vid värsta full-a
 genom urtaget) men dess **FFC går direkt till P4:ans CSI-kontakt**. Detta kort bär bara:
 emitter-driver (effekt), IMU (I²C), kontakt. → ingen höghastighets-differential-routing här.
 
-**Vald kamera: ams-OSRAM MIRA220MINI (mono, global shutter, NIR).** Eftersom vi gör custom PCB
-byts OV5640 ut direkt — **global shutter** är korrekt för ett rörligt vapen (rolling shutter
-smetar/skevar under panorering → korrumperar blob-centroiderna → bäringsfel i rörelse). NIR →
-ser 860 nm bättre. Optiskt format ~1/3" (aktiv ~4,46×3,91 mm) → M12-brännvidd för FOV 15–30°.
+**Vald kamera: OV5640 för v1** (gratis i kitet, mogen P4-drivrutin). Rolling shutter hanteras med
+kort exponering + modulerade konstellations-LED + en **firmware-grind** som ignorerar kamera-bäringen
+vid snabb panorering (IMU flaggar hög vinkelhastighet; skott tas när stabil).
 
-**Exakt footprint** från ams-OSRAM:s **öppna PCB-filer** (`github.com/ams-OSRAM/ams-Mira-Image-Sensors`)
-→ urtag + standoff-hål direkt ur källan, ingen mätning. **Avvägning:** P4-drivrutin är exempel-grade
-(mer integrationsjobb), högre kostnad/ledtid än gratis-OV5640.
+**GS-uppgradering** *om* grinden blir för begränsande: **ams-OSRAM MIRA220MINI MONO** (global shutter,
+NIR) — köpbar (DigiKey ~$141) men eval-/sensorkort (DIY P4-integration; ams-OSRAM-exempel + öppna PCB-filer).
+**Inte** IMX296 / Arducam Pivariety (= Pi). Mät din modul → `CAM_W/CAM_H`.
+
+**Avstånd:** kommer ur **PnP** (konstellationens kända bas + vinkelutbredning); i v1 mäts målets
+position med måttband. **Ingen LiDAR behövs** (superseder av PnP; kan återkomma endast för markörlöst avstånd).
 
 ---
 

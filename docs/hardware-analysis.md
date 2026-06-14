@@ -306,7 +306,7 @@ Uppdaterad för **nivå 3** (geometrisk ballistik-adjudikation): UWB/GNSS/kropps
 | UWB | **Qorvo DWM3001CDK / QM33110W** (tagg, TWR/TDoA) | ~$32 | AoA-ankare separat (infra) |
 | IR-emitter (**samboresiktad ring**) | **ams-OSRAM SFH 4715AS (860 nm)** **×4 i kvadrat runt sikteskameran**, lensad, 3 A puls | ~$3/st | samaxlig med kameran → "det kameran siktar på = dit IR går"; dubblar som **aktiv fiducial-konstellation** (känd kvadrat → 6DoF-PnP för observerande kameror, funkar i mörker); större apparent källa → **lättare Class 1** |
 | **Sikteskamera + edge-AI** (fuserad pose-väg, uppgradering, se ⓥ) | **P4 MIPI-CSI: OV5640** (rolling, v1) / **ams-OSRAM Mira220** (global shutter, NIR — P4-stödd) + ArUco-läsning, **centrerad i emitter-ringen** | $25–200 | bäring + zon + ID optiskt (HITS/TrackingPoint-vägen). **OBS: IMX296 = Pi-only, ingen P4-drivrutin** |
-| Avståndsmätare (valfri) | **Benewake TF02-Pro LiDAR** | ~$45 | metrisk räckvidd lokalt (kamera ger bäring, ej räckvidd) |
+| Avstånd | **ur PnP** (konstellationens kända bas + vinkelutbredning); v1: inmätt med måttband | $0 | **LiDAR struken** — superseder av PnP; kan återkomma endast för markörlöst avstånd |
 | NFC | **NTAG424 DNA** + **ST25R3916** | ~$1 + $20 | anti-klon/fusk |
 | Rekyl | **BLDC + vev + ODrive S1** FOC | ~$149 | per-profil-kraft |
 | Rekylväxling | **TI TPS25985** (80 A stapelbar eFuse) + SS54 + cap-bank | ~$5 | nyare/kraftigare än TPS25983 |
