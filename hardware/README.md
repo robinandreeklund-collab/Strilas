@@ -1,50 +1,71 @@
 # STRILAS — Hårdvaruritningar
 
-## Detektor-ring: 8× TSOP4856 + central P4-kamera
+Två fysiskt skilda noder, två kort:
+
+| Kort | Nod | Funktion |
+|---|---|---|
+| **Vapnets optikmodul** | vapen | IR-**sändare** (860 nm) + kamera + driver |
+| Detektor-ring | mål/väst | IR-**mottagare** (TSOP4856) + kamera |
+
+---
+
+## 1. Vapnets optikmodul — 4× SFH 4715AS (860 nm) + kamera + driver
+
+![Vapnets optikmodul](weapon-emitter-camera-860nm.png)
+
+Allt vapnet behöver för att **skjuta kodad IR + se målet**, på ett kort. Genereras av
+[`weapon_emitter_layout.py`](weapon_emitter_layout.py).
+
+**Kärnan — samboresiktad ring:** 4 emittrar i kvadrat **runt kameran** → siktaxel =
+IR-axel (det kameran pekar på = dit IR går), och de 4 utgör samtidigt en **aktiv
+fiducial-konstellation** som andra kameror kan pose:a på (även i mörker).
+
+### Vad som sitter på kortet
+
+| Ref | Del | Roll |
+|---|---|---|
+| D1–D4 | **ams-OSRAM SFH 4715AS** (860 nm) ×4 | skott-emitter, i kvadrat runt kameran |
+| — | **kollimator-lins ~±5°** ×4 (Carclo/LEDiL) | koncentrerar strålen → 100–150 m |
+| (mitten) | **P4-kamera (OV5640, MIPI-CSI)** | sikte / pose / fiducial-läsning |
+| Q1 | **AO3400 N-FET** | switchar emitter-strängen på 56 kHz |
+| R1 | **Rsense ~1–3 Ω 2 W** | **sätter & HW-begränsar pulsströmmen = ögonsäkerhet** |
+| C1 | **220 µF reservoar** | levererar pulsströmmen |
+| Rg / D5 | 220 Ω gate / SS54 flyback | ren switchning + induktiv retur |
+| J1 | **1×5: IR_MOD, VEMIT, 3V3, GND, EN** | mot ESP32-P4 |
+
+### Mått & el
+
+- Kort **Ø60 mm**, emitter-kvadrat **30 mm**, central lins-öppning **Ø14**, kamera-hålbild **16 mm**, 4× M2.5.
+- **4 LED i serie** → samma ström genom alla; mata **VEMIT** från 2S-batteri / boost (~12 V för strängen).
+- **IR_MOD** = 56 kHz från P4:ans RMT på gaten.
+
+### ⚠️ Ögonsäkerhet (1–3 A kollimerat)
+
+Inte trivialt Class 1 längre. **R1 är hårdvaru-strömgränsen** (inte firmware). Räkna/mät
+accessible emission per IEC 60825-1, **sikta 1 A först** och köp räckvidd med mottagar-filtret
+hellre än med mer ström.
+
+### ⚠️ Verifiera kameran
+
+Ø14-öppning + 16 mm-hålbild + FFC-läge är **riktmått** — mät din faktiska P4-kamera (OV5640)
+och uppdatera `CAM_LENS / CAM_SQ / CAM_HOLE` i skriptet (parametriskt, en rad var).
+
+---
+
+## 2. Detektor-ring (MÅLSIDAN) — 8× TSOP4856 + kamera
 
 ![Detektor-ring](detector-ring-8x-tsop4856.png)
 
-En rund detektormodul (mål-/sensornod) som du skjuter mot: **8 IR-mottagare i ring
-runt en central kamera** som delar blickriktning. Genereras av
-[`detector_ring_layout.py`](detector_ring_layout.py) (mått-/placeringsritning, topvy —
-inte fab-färdiga Gerbers).
+**Målets/västens** mottagarmodul (du skjuter MOT den) — 8 IR-mottagare i ring runt en
+kamera. Genereras av [`detector_ring_layout.py`](detector_ring_layout.py). Separat nod
+från vapnet; specen för mått/avkoppling/360°-täckning står i skriptets noter.
 
-### Mått
+> Den här hör hemma på målet/västen, inte på vapnet — vapnet **sänder** (kort 1),
+> målet **tar emot** (kort 2).
 
-| Mått | Värde |
-|---|---|
-| Kort-diameter | Ø76 mm |
-| TSOP bult-cirkel | Ø54 mm (8 st, 45° isär) |
-| Central lins-öppning | Ø16 mm |
-| Kamera-hålbild | 20 mm fyrkant (4× M2) |
-| Monteringshål | 4× M2.5 (Ø~2.8) på Ø68 |
-| Kontakt | 2×5, 2.54 mm (8× OUT + 3V3 + GND) |
+---
 
-### Elektriskt (per Vishay app-note)
+## Nästa steg mot riktig PCB
 
-- Varje **TSOP4856**: `VS`→3V3, `GND`→GND, `OUT`→egen P4-GPIO.
-- **100 nF** avkoppling nära varje VS + **100 Ω serie + 0.1–1 µF** RC mot
-  matnings-/störningstransienter.
-- **8 separata OUT** behåller zon/riktningsinfo (vilken sensor som tog strålen).
-  OR:a ihop till en enda linje endast om du nöjer dig med ren ja/nej-träff.
-- ESP32-P4 har gott om GPIO för 8 ingångar + I²C/MIPI till kameran.
-
-### Optik / täckning
-
-- Domerna pekar **framåt** (ut ur kortet), samma riktning som kameran → tät
-  överlappande framåttäckning + redundans + grov träffposition (starkaste sensorn).
-- För **äkta 360°/sidotäckning** måste TSOP-arna **vinklas på facetter** — det är en
-  separat mekanisk design (böjda ben eller ett facetterat hus), inte detta plana kort.
-- **860/940 nm bandpass-glas** över domerna för utomhus-räckvidd (matcha emitterns
-  våglängd).
-
-### ⚠️ Verifiera innan tillverkning
-
-Den centrala öppningen + hålbilden är ett **generiskt riktmått** — **matcha exakt mot
-din P4-kameramodul** (OV5640 i ESP32-P4-WIFI6-kitet). Mät linsdiameter, hålavstånd och
-FFC-kontaktens läge och uppdatera `CAM_SQ`, `CAM_HOLE`, `LENS_R` i skriptet.
-
-### Nästa steg mot riktig PCB
-
-Den här ritningen → KiCad: importera TSOP4856-footprint (Vishay), lägg kameramodulens
-footprint i mitten, dra OUT→header. Säg till så genererar jag KiCad-footprintsen.
+Dessa ritningar → KiCad: SFH 4715AS- + TSOP4856- + kameramodul-footprints, dragning till
+header. Säg till så genererar jag KiCad-footprintsen och ett schema.
