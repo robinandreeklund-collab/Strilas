@@ -51,6 +51,11 @@
   <label class="toggle"><input type="checkbox" id="filter"> 860 nm bandpassfilter på TSOP</label>
 
   <div class="hr"></div>
+  <h2>Pose-stack (fuserad)</h2>
+  <label class="toggle"><input type="checkbox" id="gnss" checked> GNSS-heading-ankare (~0,1° yaw, binder IMU-drift)</label>
+  <label class="toggle"><input type="checkbox" id="cam"> Kamera + AI-pose (samboresiktad emitter-ring)</label>
+
+  <div class="hr"></div>
   <h2>Adjudikation &amp; mål</h2>
   <label class="toggle"><input type="checkbox" id="fas2" checked> Fas 2: server-adjudikation (flygtid + zon)</label>
   <label>Skytt-skicklighet (siktfel σ) <span class="val" id="v-sigma">0.5°</span></label>
@@ -78,6 +83,9 @@
   <div class="row"><span>MCU</span><span class="v">ESP32-P4 + C6</span></div>
   <div class="row"><span>IMU pitch</span><span class="v" id="t-imu">0.0°</span></div>
   <div class="row"><span>Rekyl-klättring</span><span class="v" id="t-climb">0.0°</span></div>
+  <div class="row"><span>Pose-källa</span><span class="v" id="t-pose">IMU+IR</span></div>
+  <div class="row"><span>Sikte σ_eff</span><span class="v" id="t-sigma">–</span></div>
+  <div class="row"><span>Kamera-lås</span><span class="v" id="t-camlock">av</span></div>
   <div class="row"><span>Emitter Ie</span><span class="v" id="t-ie">– W/sr</span></div>
   <div class="row"><span>MilesTag-paket</span></div>
   <div id="packet">––</div>

@@ -73,6 +73,29 @@ for (const c of CAPS) {
 }
 target.add(makeLabel('MÅL', 0xff5c5c).translateY(2.05));
 
+// ---------- emitter-ring + sikteskamera-modul (vid mynningen, samaxlig) ----------
+const optic = new THREE.Group(); optic.position.copy(MUZZLE); scene.add(optic);
+const camBox = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.05, 0.05),
+  new THREE.MeshStandardMaterial({ color: 0x00bcd4, emissive: 0x004a55, emissiveIntensity: 1 }));
+camBox.position.x = 0.02; optic.add(camBox);                       // kamera i mitten
+const emitMeshes = [];
+for (const [ey, ez] of [[0.055, 0.055], [0.055, -0.055], [-0.055, 0.055], [-0.055, -0.055]]) {
+  const e = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8),
+    new THREE.MeshStandardMaterial({ color: 0x39d98a, emissive: 0x0c3a24, emissiveIntensity: 1 }));
+  e.position.set(0.04, ey, ez); optic.add(e); emitMeshes.push(e);  // 4 IR-emittrar i kvadrat
+}
+
+// ---------- fiducial-konstellation på målets bröst (sett av sikteskameran) ----------
+const fidGroup = new THREE.Group(); scene.add(fidGroup);
+const fidNodes = [];
+for (const [fx, fy] of [[-0.1, 0.11], [0.1, 0.11], [-0.1, -0.11], [0.1, -0.11]]) {
+  const f = new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 8), new THREE.MeshBasicMaterial({ color: 0x2a3441 }));
+  f.position.set(fx, fy, 0); fidGroup.add(f); fidNodes.push(f);
+}
+const lockMat = new THREE.LineBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0 });
+const lockLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]), lockMat);
+scene.add(lockLine);
+
 // ---------------- effekter ----------------
 const trajMat = new THREE.LineBasicMaterial({ color: 0xffd35c, transparent: true });
 const trajLine = new THREE.Line(new THREE.BufferGeometry(), trajMat); scene.add(trajLine); let trajTtl = 0;
@@ -88,7 +111,8 @@ rangeRing.rotation.x = -Math.PI / 2; rangeRing.position.y = 0.03; scene.add(rang
 
 // ---------------- state ----------------
 const S = { fsm: 'READY', ammo: 30, health: 100, hits: [], dead: false,
-  climb: 0, imu: 0, fireAcc: 0, tT: 0, sinceShot: 999, drift: 0 };
+  climb: 0, imu: 0, fireAcc: 0, tT: 0, sinceShot: 999, drift: 0,
+  camLocked: false, sigmaEff: 0.5 };
 let profile = HW.PROFILES['M4 / 5.56'];
 
 // ---------------- UI ----------------
@@ -99,6 +123,7 @@ const C = {};
 function readUI() {
   C.cur = +$('cur').value; C.beam = +$('beam').value; C.nled = +$('nled').value;
   C.filter = $('filter').checked; C.env = HW.ENVIRONMENTS[selE.value];
+  C.gnss = $('gnss').checked; C.cam = $('cam').checked;
   C.fas2 = $('fas2').checked; C.sigma = +$('sigma').value; C.tspd = +$('tspd').value;
   C.wind = +$('wind').value; C.autofire = $('autofire').checked;
   $('v-cur').textContent = C.cur.toFixed(1) + ' A'; $('v-beam').textContent = C.beam.toFixed(1) + '°';
@@ -106,7 +131,7 @@ function readUI() {
   $('v-tspd').textContent = C.tspd.toFixed(1) + ' m/s'; $('v-wind').textContent = C.wind.toFixed(1) + ' m/s';
 }
 ['cur', 'beam', 'nled', 'sigma', 'tspd', 'wind'].forEach(id => $(id).addEventListener('input', readUI));
-['filter', 'fas2', 'autofire'].forEach(id => $(id).addEventListener('change', readUI));
+['filter', 'fas2', 'autofire', 'gnss', 'cam'].forEach(id => $(id).addEventListener('change', readUI));
 selE.addEventListener('change', readUI);
 selP.addEventListener('change', () => { profile = HW.PROFILES[selP.value]; $('beam').value = profile.beamHalf; S.ammo = profile.mag; S.fsm = 'READY'; readUI(); });
 readUI();
@@ -142,14 +167,17 @@ function fire() {
   const Rt = Math.hypot(tp0.x - MUZZLE.x, tp0.z - MUZZLE.z);
   const irMax = HW.maxRange(C.cur, C.beam, C.env, C.nled, C.filter);
 
-  // --- ① sikte (IMU + ev. IR-ankare) ---
+  // --- ① sikte (fuserad pose: IMU + GNSS-yaw + IR-ankare + ev. kamera/AI) ---
   let dir, muzzle = MUZZLE.clone();
   if (fpsActive) { dir = new THREE.Vector3(); camera.getWorldDirection(dir); muzzle = camera.position.clone(); }
   else {
-    const lead = C.fas2 ? targetVelZ(S.tT) * HW.tof(Rt, profile.v0) : 0;
+    // kameran mäter målets fart optiskt → exakt lead; annars kräver Fas 2 för lead
+    const lead = (C.fas2 || S.camLocked) ? targetVelZ(S.tT) * HW.tof(Rt, profile.v0) : 0;
     const aim = new THREE.Vector3(tp0.x, 1.42, tp0.z + lead);
-    aim.z += Rt * Math.tan((gaussian() * C.sigma + S.drift) * Math.PI / 180);  // siktfel + heading-drift
-    aim.y += Rt * Math.tan((gaussian() * C.sigma + S.climb) * Math.PI / 180);  // + rekyl-klättring
+    const headErr = C.gnss ? HW.GNSS_YAW_RESID * gaussian() : S.drift;        // GNSS binder yaw, annars vandrar IMU-driften
+    const sig = S.sigmaEff;                                                    // σ_eff: kamera/AI-lås krymper siktfelet
+    aim.z += Rt * Math.tan((gaussian() * sig + headErr) * Math.PI / 180);      // siktfel + heading
+    aim.y += Rt * Math.tan((gaussian() * sig + S.climb) * Math.PI / 180);      // + rekyl-klättring
     dir = aim.clone().sub(muzzle).normalize();
   }
 
@@ -225,7 +253,8 @@ function applyHit(zone, dmg, geo) {
 // ---------------- HUD ----------------
 function updateAdjud(a) {
   const set = (id, txt, cls) => { const e = $(id); e.textContent = txt; e.className = 'v ' + (cls || ''); };
-  set('a-aim', a.irOverlap ? 'inom strålkon' : 'utanför', a.irOverlap ? 'ok' : 'no');
+  const poseTxt = (C.cam && S.camLocked) ? 'kamera-lås' : (C.gnss ? 'IMU+GNSS' : 'IMU');
+  set('a-aim', (a.irOverlap ? 'inom strålkon' : 'utanför') + ' · ' + poseTxt + ' σ' + S.sigmaEff.toFixed(2) + '°', a.irOverlap ? 'ok' : 'no');
   set('a-traj', 'integrerad (3-DOF)', '');
   set('a-tof', (HW.tof(a.geo.arrived ? a.geo.range : a.Rt, profile.v0) * 1000).toFixed(0) + ' ms / ' + (HW.drop(a.geo.arrived ? a.geo.range : a.Rt, profile.v0) * 100).toFixed(1) + ' cm', '');
   set('a-vimp', a.geo.arrived ? a.geo.v.toFixed(0) + ' m/s' : '–', '');
@@ -256,6 +285,24 @@ function animate() {
   const tp = targetPos(S.tT); target.position.set(tp.x, 0, tp.z); target.lookAt(0, 1, 0);
   for (const c of CAPS) capMesh[c.name].material.color.setHex(S.dead ? 0x6e7681 : c.color);
 
+  // --- fuserad pose: live kamera-lås + effektiv siktprecision (σ_eff) ---
+  const Rlive = Math.hypot(tp.x - MUZZLE.x, tp.z - MUZZLE.z);
+  const camS = C.cam ? HW.cameraPose(Rlive, 0, true) : null;       // optisk bäring (grader) eller null
+  S.camLocked = camS != null;
+  S.sigmaEff = camS != null ? Math.hypot(C.sigma * 0.12, camS) : C.sigma;  // AI fire-control förfinar siktet
+
+  // emitter-ring + fiducial-konstellation + lås-linje
+  for (const e of emitMeshes) e.material.emissiveIntensity = irTtl > 0 ? 2.4 : 1;   // blixtrar vid skott
+  camBox.material.emissiveIntensity = C.cam ? 1.6 : 0.4;
+  fidGroup.visible = C.cam;
+  fidGroup.position.set(tp.x, 1.40, tp.z); fidGroup.lookAt(MUZZLE.x, 1.40, MUZZLE.z);
+  const lit = C.cam && S.camLocked && !S.dead;
+  for (const f of fidNodes) f.material.color.setHex(lit ? 0x00e5ff : 0x2a3441);
+  if (lit) {
+    lockLine.geometry.setFromPoints([new THREE.Vector3(MUZZLE.x + 0.05, MUZZLE.y, MUZZLE.z), new THREE.Vector3(tp.x, 1.40, tp.z)]);
+    lockMat.opacity = 0.4;
+  } else lockMat.opacity = 0;
+
   if (C.autofire && !S.dead && S.fsm === 'READY' && S.ammo > 0) {
     S.fireAcc += dt; if (S.fireAcc >= 60 / profile.rofRpm) { S.fireAcc = 0; fire(); }
   }
@@ -277,6 +324,11 @@ function animate() {
   rangeRing.material.color.setHex(Math.hypot(tp.x, tp.z) <= irMax ? 0x39d98a : 0xff5c5c);
 
   $('t-imu').textContent = S.imu.toFixed(0) + '°/s'; $('t-climb').textContent = S.climb.toFixed(1) + '°';
+  $('t-pose').textContent = (C.cam && S.camLocked) ? 'IMU+GNSS+IR+Kamera' : (C.gnss ? 'IMU+GNSS+IR' : 'IMU+IR');
+  $('t-sigma').textContent = S.sigmaEff.toFixed(2) + '°';
+  const cl = $('t-camlock');
+  cl.textContent = C.cam ? (S.camLocked ? 'LÅST' : 'inget lås') : 'av';
+  cl.className = 'v ' + (C.cam ? (S.camLocked ? 'ok' : 'no') : '');
   $('hud-ammo').textContent = S.ammo;
   const st = $('hud-state'); st.textContent = S.fsm; st.className = 'state s-' + S.fsm;
   renderer.render(scene, camera);

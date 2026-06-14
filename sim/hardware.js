@@ -82,6 +82,26 @@ export const PROFILES = {
   'AWM / prickskytt': { v0: 900, beamHalf: 0.4, rofRpm: 40, dmg: 0xf, recoilDeg: 3.0, mag: 5, auto: false },
 };
 
+// ---------- KAMERA / AI-POSE (fuserad väg) + EMITTER-RING ----------
+// Sikteskamera + edge-AI som läser fiducial-konstellationen (de 4 IR-emittrarna
+// sitter i kvadrat runt linsen → samaxlig fire-stråle + aktiv fiducial).
+// Optisk bäring ~2 mrad nära håll; bruset skalar med avstånd (fiducial krymper)
+// och kräver siktlinje + att målet är inom synfältet. Aktiv IR → funkar i mörker.
+export const CAM = {
+  baseMrad: 2.0,     // bäringsprecision på nära håll (HITS/TrackingPoint-klass)
+  maxRange: 120,     // bortom detta är konstellationen för liten för lås
+  fovHalfDeg: 14,    // sikteskamerans halva synfält
+};
+// Returnerar kamerans bäringsprecision i GRADER om lås finns, annars null.
+// bearOffDeg = vinkel mellan vapnets siktaxel och målet (utanför FOV → inget lås).
+export function cameraPose(R, bearOffDeg = 0, hasLOS = true) {
+  if (!hasLOS || R > CAM.maxRange || Math.abs(bearOffDeg) > CAM.fovHalfDeg) return null;
+  const mrad = CAM.baseMrad * (1 + R / 60);     // fiducial-vinkel krymper med R
+  return mrad * 180 / Math.PI / 1000;           // → grader (≈0.17° @30 m, ≈0.34° @120 m)
+}
+// GNSS dubbelantenn-heading: absolut yaw-residual (binder IMU-drift). ~0.1°.
+export const GNSS_YAW_RESID = 0.1;
+
 // ---------- REKYL / IMU ----------
 // per-skott klättring (deg) + en parametrisk pitch-rate-puls för IMU-visning
 export function imuRate(tSec, ampDps = 92, f = 22, tau = 0.018) {

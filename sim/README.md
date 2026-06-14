@@ -30,7 +30,7 @@ python3 -m http.server 8099
 - **Auto-eld** (på som default) visar systemet live direkt.
 - **Skytt-vy (FPS):** klicka knappen → sikta med musen, vänsterklick = eld, `Esc` = tillbaka till orbit.
 - **Orbit:** dra för att rotera, scrolla för zoom.
-- Reglage: vapenprofil, miljö (sol), pulsström, strålvinkel, antal LED, 860 nm-filter, Fas 2 på/av, skytt-skicklighet (siktfel σ), målets fart.
+- Reglage: vapenprofil, miljö (sol), pulsström, strålvinkel, antal LED, 860 nm-filter, **GNSS-heading**, **kamera/AI-pose**, Fas 2 på/av, skytt-skicklighet (siktfel σ), målets fart.
 - FSM-knappar: sätt i magasin · rack · avfyra · ladda om.
 
 ## Saker att testa (bevisa designen själv)
@@ -53,3 +53,14 @@ Simulatorn kör nu den **riktiga nivå-3-pipelinen** (se `docs/level3-ballistic-
 5. **FUSION** — `HIT` = geometri-anlände **OCH** IR-LOS; zon från IR, skada skalad av anslagsfart. Annars NEAR-MISS / FÖRKASTAD / MISS.
 
 Adjudikationspanelen (nere till höger) visar alla fyra steg + fusionsverdikt live. Testa: sätt **sidvind** och se banan kröka i sidled; öka **avstånd/målfart** och se geometrin räkna lead; dra ut målet bortom IR-räckvidden och se att fusionen kräver både geometri och IR.
+
+## Fuserad pose-stack (kamera/AI + GNSS-heading)
+
+Den **beslutade** pose-arkitekturen (se `docs/system-flowchart.md`) är inbyggd som två togglar under "Pose-stack (fuserad)":
+
+- **GNSS-heading-ankare (~0,1° yaw)** — på som default. Binder IMU:ns heading-drift kontinuerligt; av → driften vandrar igen tills nästa IR-träff nollställer den.
+- **Kamera + AI-pose (samboresiktad emitter-ring)** — sikteskameran läser målets **fiducial-konstellation** och AI-fire-control förfinar siktet optiskt. När lås finns krymper **σ_eff** till kamerans bäringsgolv (~0,17° @30 m) och leadet blir exakt (kameran mäter farten).
+
+**Visuellt:** vid mynningen sitter de **4 IR-emittrarna i en kvadrat runt en cyan kamera** (samaxlig fire-stråle). När kameran är på syns målets fiducial-konstellation; vid **lås** tänds den cyan och en lås-linje dras till målet. Telemetrin visar **Pose-källa**, **σ_eff** och **Kamera-lås** live.
+
+**Bevisa värdet:** sätt **σ = 2–3°** (skakig skytt) och håll auto-eld → spridda missar. Slå på **Kamera/AI** → σ_eff kollapsar, serien dras ihop och träffprocenten skjuter i höjden. Det är exakt vinsten med den optiska pose-uppgraderingen (HITS/TrackingPoint-vägen) ovanpå IMU/IR-basen.
