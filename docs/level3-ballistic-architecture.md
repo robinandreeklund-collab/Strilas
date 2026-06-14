@@ -34,7 +34,7 @@ Mål-tolerans (max siktfel för att landa på kroppen): torso ±0,48° @30 m, **
 
 **Verdikt:** ren IMU+UWB-geometri träffar torso på ~30 m (med färsk ankring), **marginellt på 75 m**, **inte på 150 m**. Tilt (pitch/roll) är bra (~0,5–1°, gravitationsförankrad); **yaw/heading är problemet**. Alla fältsatta system som når sub-grad förankrar IMU:n mot en absolut referens (HITS: dator­seende-mot-LIDAR; ULTRA-Vis: vision+mag; TrackingPoint: optisk mållåsning).
 
-→ **STRILAS:s billiga DIY-ankare är IR-strålen.** När målets TSOP avkodar strålen *vet* du att pipan pekade inom strålkonen mot just den spelaren — det **kollapsar heading-osäkerheten till strålens halvvinkel** (några tiondels grad) och ger en LOS-bekräftelse på köpet. IR:n är alltså **arkitektoniskt bärande, inte valfri.**
+→ **STRILAS:s billiga DIY-ankare är IR-strålen.** När målets TSOP avkodar strålen *vet* du att pipan pekade inom strålkonen mot just den spelaren — det **kollapsar heading-osäkerheten till strålens halvvinkel** (tight *bara* med smal stråle/kort håll — se **§3.2**) och ger en LOS-bekräftelse på köpet. IR:n är alltså **arkitektoniskt bärande, inte valfri.**
 
 ---
 
@@ -61,6 +61,28 @@ Vapnets siktriktning (systemets nyckelgräns) byggs i lager — billigt och robu
 | **Sikteskamera + AI + ArUco/AprilTag-fiducials** | optisk bäring (~2 mrad) + zon + ID + LOS ur bild | **uppgradering** (kräver Jetson-klass på/nära vapen + thermal i mörker) |
 
 Motivering: detta är vägen primes (BAE HITS) landar på — IR/inertial/GNSS ger robust bas i alla förhållanden, kameran/AI lyfter pose-precisionen där compute/ljus tillåter. IR behålls oavsett (LOS-sanning + mörker-robusthet). Avstånd: UWB/GNSS nu, ev. LiDAR (Benewake TF02-Pro) som komplement.
+
+### 3.2 Precision ≠ IR-strålbredd — kamera/GNSS-heading KRÄVS på avstånd
+
+Vanligt missförstånd: att en smalare IR-stråle = bättre precision. Fel. **IR-strålbredden är länkbudget/täckning, inte hitbox.** En räckviddsoptimerad LED-stråle är bred — spot-diameter = 2·R·tan(halvvinkel):
+
+| Strålvinkel | Spot @100 m | Spot @150 m |
+|---|---|---|
+| ±7,5° (medium spot) | 26 m | **40 m** |
+| ±5° (narrow spot) | 17 m | 26 m |
+| ±0,5° (i praktiken laser) | 1,7 m | **2,6 m** |
+
+Även ±0,5° ger en 2,6 m spot på 150 m — bredare än en människa. En personstor IR-spot @150 m kräver ~0,1° = laser. **Alltså: ingen LED-stråle kan vara hitboxen på avstånd.**
+
+Precisionen (träff ja/nej + zon) kommer från **siktvektorn (pose) + ballistik + målets hitbox-geometri**, avgjort på servern. IR ger grov LOS + skott-ID + "ett mål belystes"; servern reder ut vem/var. Krav för att upplösa mål @150 m:
+
+| Vill upplösa | Krävd pose-precision | Vad ger det |
+|---|---|---|
+| Torso (0,5 m) | **0,19°** | kamera/AI (0,11°) ✅ · GNSS-heading (0,1°) ✅ |
+| Huvud (0,2 m) | **0,076°** | kamera/AI marginellt ✅ |
+| (skakig IMU/drift 1–3°) | → 2,6–7,9 m miss | ❌ kan inte ens upplösa en person |
+
+→ **På 100–150 m är kamera/AI-bäring + GNSS-heading inte en "uppgradering" — de ÄR precisionsmekanismen.** Enbart IMU+IR ger bara "rikta åt rätt håll". Emittern kollimeras därför **enbart för räckvidd** (länkbudget); strålen får vara bred eftersom geometrin gör precisionen.
 
 ---
 
