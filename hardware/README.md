@@ -29,7 +29,7 @@ ovanför kameran → **samboresikt** (parallax ~0,01° @150 m; bred kon = bara L
 
 | Ref | Del | Roll |
 |---|---|---|
-| (mitten) | **Sikteskamera: OV5640 NoIR + 860 nm bandpass + M12 ~30° FOV** | **PRECISION** — ser konstellationen → solvePnP → bäring |
+| (mitten) | **Sikteskamera: OV5640 NoIR + 860 nm bandpass + M12 (FOV 15–30°)** | **PRECISION** — ser konstellationen → solvePnP → bäring (FOV sätts av dagsljus-SNR-test, ej fast) |
 | D1–D2 | **940 nm OSLON Black** ×2 + **Carclo 10195** (~Ø20) kollimator | **skott** — kodad 56 kHz-stråle, 100–150 m |
 | U2 | **TDK ICM-45686 IMU** (I²C) | attityd mellan kamerabildrutor + rekyl |
 | Q1 / R1 | **AO3400 N-FET** / **Rsense ~1–3 Ω 2 W** | switchar + **sätter & HW-begränsar pulsström = ögonsäkerhet** |

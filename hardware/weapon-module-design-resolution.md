@@ -29,8 +29,8 @@ konstellationen syns på avstånd. 56 kHz-bärvågen är *modulation*, oberoende
 | # | Problem | Beslut |
 |---|---|---|
 | 1.1 | Självbländning | **Löst** via våglängdssplit (§0). Baffel = defense-in-depth, ej bärande. |
-| 1.2 | Telefoto-FOV kontra **målfångst** (smal FOV → svårt att hitta målet) | **Moderat ~30° FOV** (M12 ~6 mm) — *inte* extrem telefoto. Aktiva IR-blobbar detekteras på **få pixlar**, så vi behöver inte stor markör; subpixel-centroid ger bäring **≪0,01°** ändå. 30° FOV → lätt målfångst **och** precision. |
-| 1.3 | Syns konstellationen @150 m i dagsljus? | Konstellations-LED **modulerade** (frame-differencing) + 860 nm-bandpass + tillräcklig **strålstyrka** (~0,5–1 W/sr/LED, ev. lätt kollimerade). Detta är en **mätpunkt** vid bringup. |
+| 1.2 | FOV-val (telefoto kontra bred) | **FOV är en avvägning, inte ett fast tal.** Det tidigare "telefoto krävs" gällde *passiva ArUco* (avkoda mönster → ~20–30 px på markören → smal FOV @150 m). Vi bytte till **aktiv IR-konstellation** (lokalisera ljuspunkter → få px + subpixel räcker) → **bäringsprecisionen är trivial vid vilken FOV som helst** (30° → 0,013°/px, subpixel ~0,001° ≪ kravet 0,19°). **MEN** smalare FOV/längre brännvidd ger bättre **dagsljus-SNR @150 m** (större bländare, mer signal mot sol). → Sätt FOV av §1.3-testet; trolig landning **15–30°** (smalare = mer räckviddsmarginal; bredare = lättare målfångst, ±7,5° @15° är ändå lätt med grovsikte). |
+| 1.3 | Syns konstellationen @150 m i dagsljus? (= det som egentligen sätter FOV) | Konstellations-LED **modulerade** (frame-differencing) + 860 nm-bandpass + tillräcklig **strålstyrka** (~0,5–1 W/sr/LED, ev. lätt kollimerade) + vald **brännvidd**. **Mätpunkt** vid bringup → bestämmer både LED-effekt och FOV. |
 | 1.4 | Carclo-linsmontering | 3 **pins** per lins ner i PCB-hål (Carclo-footprint) + lim; LED i optiskt centrum; montera **efter** reflow. |
 | 1.5 | Baffel | Svart shroud-ring mellan emittrar och linsbarrel (blockerar sidoljus/scatter). |
 | 1.6 | Fokus | M12 fast-fokus satt på **hyperfokal** för engagemangsavstånd (konstellationen är ändå punktkällor → tolerant). |
