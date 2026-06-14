@@ -41,7 +41,9 @@ ax.add_patch(Rectangle((-CAM_W/2, CAM_CY-CAM_H/2), CAM_W, CAM_H, facecolor="#102
 ax.add_patch(Circle((0, CAM_CY), CAM_BARREL+1.4, facecolor="#0c1418", edgecolor=CAMC, lw=1.4, zorder=4))
 ax.add_patch(Circle((0, CAM_CY), CAM_BARREL, facecolor=CUT, edgecolor=SILK, lw=1.3, zorder=5))
 ax.text(0, CAM_CY+1.4, "SIKTESKAMERA", ha="center", va="center", color=CAMC, fontsize=6.4, fontweight="bold", zorder=6)
-ax.text(0, CAM_CY-2.2, "OV5640 NoIR\n860nm IR-pass\nTELEFOTO M12", ha="center", va="center", color=SILK, fontsize=5.6, zorder=6)
+ax.text(0, CAM_CY-2.2, "OV5640 NoIR\n860nm BP\nM12 ~30°", ha="center", va="center", color=SILK, fontsize=5.6, zorder=6)
+# baffel-ring (defense-in-depth mot scatter)
+ax.add_patch(Circle((0, CAM_CY), CAM_BARREL+2.6, facecolor="none", edgecolor="#555", lw=1.0, ls=(0, (3, 3)), zorder=4))
 for sx in (-1, 1):
     for sy in (-1, 1):
         ax.add_patch(Circle((sx*10.5, CAM_CY+sy*9.5), 1.0, facecolor=CUT, edgecolor="#c98a3a", lw=1.0, zorder=6))
@@ -62,7 +64,7 @@ def draw_emitter(ax, x, y, idx):
 
 draw_emitter(ax, -EMIT_X, EMIT_Y, 1)
 draw_emitter(ax,  EMIT_X, EMIT_Y, 2)
-ax.text(0, EMIT_Y, "SFH4715AS\n+Carclo", ha="center", va="center", color="#9bbfe0", fontsize=5.6, zorder=6)
+ax.text(0, EMIT_Y, "940nm\n+Carclo", ha="center", va="center", color="#9bbfe0", fontsize=5.6, zorder=6)
 
 # ---- IMU + driver i sidoremsorna (vid sidan av kameran) ----
 def part(ax, x, y, w, h, ref, val, vy="top"):
@@ -78,7 +80,7 @@ part(ax, -16.5, -7.5, 4.2, 3.0, "Q1", "AO3400")
 part(ax, -16.5, -13.0, 3.2, 2.2, "Rg", "220Ω")
 # höger remsa: C1 + R1 + D5
 part(ax, 16.5, 2.5, 4.6, 4.4, "C1", "220µF")
-part(ax, 16.5, -6.0, 4.0, 2.8, "R1", "Rsense")
+part(ax, 16.5, -6.0, 4.0, 2.8, "U3", "CC-drv")
 part(ax, 16.5, -12.0, 3.4, 2.4, "D5", "SS54")
 
 # ---- kontakt mot P4 (2x4), botten ----
@@ -104,12 +106,13 @@ ax.text(BW/2+2.2, 0, "62 mm", ha="left", va="center", color="#6fb3ff", fontsize=
 ax.set_title("STRILAS — VAPNETS optikmodul v1 (KOMPAKT): kamera + 2× IR-emitter + IMU + driver",
              color="#e6edf3", fontsize=11.5, pad=10)
 notes = (
-    "NOTER — krympt Ø80 → 42×62 mm UTAN prestandaförlust\n"
-    "• PRECISION oförändrad = sikteskameran (telefoto + IR-pass) → solvePnP-bäring sub-0.1° (emitterantal påverkar EJ precision)\n"
-    "• RÄCKVIDD bibehållen = 2× SFH4715AS + Carclo delar lasten → 100–150 m; symmetriska → samboresikt (parallax ~0.01° @150 m)\n"
-    "• 2 (ej 1) emittrar: effekten sprids → lättare Class 1. Tappar bara framtida aktiv-fiducial-beacon (ej v1-krav)\n"
-    "• ⚠️ kameran ser egna 860 nm-emittrar → baffel + avfyra bara vid trigger, ELLER emitter 940 nm / kamerafilter 860 nm\n"
-    "• R1 = HW-strömgräns (mät Class 1). Kamera = P4-stödd (OV5640/Mira220, EJ IMX296). Mät modul → CAM_W/H"
+    "NOTER — resolved spec (se weapon-module-design-resolution.md)\n"
+    "• VÅGLÄNGDSSPLIT: SKOTT D1/D2 = 940 nm; kamera 860 nm bandpass → AVVISAR egna skottet (löser självbländning). Baffel = backup\n"
+    "• PRECISION = sikteskamera (~30° M12, ej telefoto: aktiva IR-blobbar syns på få px) → solvePnP-bäring <0.1°\n"
+    "• RÄCKVIDD = 2× 940 nm + Carclo delar lasten → 100–150 m; symmetriska → samboresikt (parallax ~0.01° @150 m)\n"
+    "• DRIVER = U3 KONSTANTSTRÖM (sense-resistor = hårt HW-tak; firmware bara lägre) + C1 + Q2/TVS reverse-skydd; VEMIT boost 9–12 V\n"
+    "• ⚠️ ÖGONSÄKERHET = mätpunkt: ~2 mW in i öga @1 m,1 A → MÄT AE per IEC 60825-1, börja 1 A. MIPI dras EJ här (kamera-FFC→P4)\n"
+    "• Kamera = P4-stödd: OV5640 (v1, kit) / ams-OSRAM Mira220-board (GS). EJ IMX296, EJ Arducam Pivariety (= Pi). Mät modul → CAM_W/H"
 )
 ax.text(-BW/2-1, -BH/2-2, notes, ha="left", va="top", color="#aeb7c2", fontsize=7.2,
         family="monospace", zorder=9, bbox=dict(boxstyle="round,pad=0.6", fc="#11151b", ec="#30363d"))

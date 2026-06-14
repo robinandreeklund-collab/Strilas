@@ -17,6 +17,9 @@ Två fysiskt skilda noder, två kort:
 Krympt från Ø80 (4 emittrar) till **42×62 mm** *utan prestandaförlust*. Genereras av
 [`weapon_emitter_layout.py`](weapon_emitter_layout.py).
 
+> **Full designupplösning (alla problem → beslut):** se
+> [`weapon-module-design-resolution.md`](weapon-module-design-resolution.md).
+
 **Precisionen** kommer från **sikteskameran** (centrum) som mäter bäringen till målets
 IR-konstellation → sub-0,1° (se `../docs/level3-ballistic-architecture.md` §3.2) — den är
 **oförändrad oavsett emitterantal**. **Skottet** är de 2 kollimerade emittrarna, symmetriskt
@@ -26,8 +29,8 @@ ovanför kameran → **samboresikt** (parallax ~0,01° @150 m; bred kon = bara L
 
 | Ref | Del | Roll |
 |---|---|---|
-| (mitten) | **Sikteskamera: OV5640 NoIR + 860 nm IR-pass + telefoto M12** | **PRECISION** — ser konstellationen → solvePnP → bäring |
-| D1–D2 | **ams-OSRAM SFH 4715AS** (860 nm) ×2 + **Carclo 10195** (~Ø20) kollimator | **skott** — kodad 56 kHz-stråle, 100–150 m |
+| (mitten) | **Sikteskamera: OV5640 NoIR + 860 nm bandpass + M12 ~30° FOV** | **PRECISION** — ser konstellationen → solvePnP → bäring |
+| D1–D2 | **940 nm OSLON Black** ×2 + **Carclo 10195** (~Ø20) kollimator | **skott** — kodad 56 kHz-stråle, 100–150 m |
 | U2 | **TDK ICM-45686 IMU** (I²C) | attityd mellan kamerabildrutor + rekyl |
 | Q1 / R1 | **AO3400 N-FET** / **Rsense ~1–3 Ω 2 W** | switchar + **sätter & HW-begränsar pulsström = ögonsäkerhet** |
 | C1 / Rg / D5 | 220 µF reservoar / 220 Ω gate / SS54 flyback | levererar pulsen + ren switchning |
@@ -40,23 +43,23 @@ ovanför kameran → **samboresikt** (parallax ~0,01° @150 m; bred kon = bara L
 - **Precision = kameran** (emitterantal påverkar inte). **2 (ej 1) emittrar** sprider effekten →
   *lättare* Class 1. Enda som tappas: framtida **aktiv-fiducial-beacon** (4-punkt) — ej v1-krav.
 
-### ⚠️ Kameran får inte blända sig själv
+### ✅ Självbländning — LÖST via våglängdssplit
 
-Sikteskameran (860 nm IR-pass) ser sina **egna** 860 nm-emittrar. Lös med **(a)** baffel
-mellan ring och lins + **(b)** emittrar avfyras **bara vid trigger** (kameran läser
-konstellationen mellan skott), **eller (c)** emitter på **940 nm** + kamerafilter **860 nm**
-= ren våglängdsseparation.
+**SKOTT = 940 nm**, **kamera = 860 nm bandpass** → kameran **avvisar sina egna emittrar**.
+Inget timing-/baffelberoende (baffel kvar som backup). Bonus: 940 nm = TSOP-topp, 860 nm =
+bättre kisel-QE för konstellationen. (Detaljer: design-resolution §0.)
 
-### ⚠️ Ögonsäkerhet (1–3 A kollimerat)
+### ⚠️ Ögonsäkerhet (mätpunkt)
 
-Inte trivialt Class 1. **R1 är hårdvaru-strömgränsen** (inte firmware). Räkna/mät accessible
-emission per IEC 60825-1, **sikta 1 A först**, köp räckvidd med mottagar-filtret hellre än ström.
+CC-drivern (U3) ger **hårt HW-strömtak** (sense-resistor; firmware bara lägre). ~2 mW in i
+ögat @1 m/1 A → **inte trivialt Class 1**. **Mät AE per IEC 60825-1** vid låst pulsformat,
+**börja på 1 A**, köp räckvidd med mottagar-filtret. (Design-resolution §3.)
 
-### ⚠️ Kamera = P4-stödd sensor (inte IMX296)
+### ⚠️ Kamera = P4-stödd sensor
 
-IMX296 (Sony GS) är Pi-native, saknar `esp_cam_sensor`-drivrutin för P4. Använd **OV5640**
-(v1, i kitet) eller **ams-OSRAM Mira220** (global shutter, NIR — P4-exempel finns). Mått är
-**riktmått** (typiskt ~25×24 mm, M12) — **mät din modul** → `CAM_W/CAM_H/CAM_HOLE`.
+**Inte IMX296** (Pi-native, ingen P4-drivrutin) och **inte Arducam Pivariety** (= Pi/libcamera).
+Använd **OV5640** (v1, i kitet) eller — för global shutter — **ams-OSRAM:s egen Mira220-board**
+(det officiella `esp32_p4_MIPI_DSI_CSI_mira220`-exemplet). Mät din modul → `CAM_W/CAM_H`.
 
 ---
 
