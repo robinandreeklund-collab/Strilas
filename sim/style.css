@@ -60,3 +60,9 @@ canvas { display: block; }
 #killbanner { position: absolute; left:50%; top:38%; transform: translateX(-50%);
   font-size: 40px; font-weight: 800; color:#ff5c5c; text-shadow:0 0 20px #000;
   display:none; letter-spacing:.05em; }
+
+/* adjudikationspanel (botten höger) */
+#adjud { right: 16px; bottom: 16px; width: 300px; font-family: monospace; font-size: 12px; }
+#adjud .row { display: flex; justify-content: space-between; margin: 2px 0; color: #8b949e; }
+#adjud .row .v { color: #e6edf3; text-align: right; }
+.ok { color: #39d98a !important; } .no { color: #ff5c5c !important; } .warn { color: #ffb000 !important; }

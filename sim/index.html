@@ -57,6 +57,8 @@
   <input type="range" id="sigma" min="0" max="3" step="0.1" value="0.5">
   <label>Målets fart <span class="val" id="v-tspd">3.0 m/s</span></label>
   <input type="range" id="tspd" min="0" max="6" step="0.2" value="3">
+  <label>Sidvind <span class="val" id="v-wind">0 m/s</span></label>
+  <input type="range" id="wind" min="-8" max="8" step="0.5" value="0">
   <label class="toggle"><input type="checkbox" id="autofire" checked> Auto-eld (demonstration)</label>
 
   <div class="hr"></div>
@@ -79,6 +81,18 @@
   <div class="row"><span>Emitter Ie</span><span class="v" id="t-ie">– W/sr</span></div>
   <div class="row"><span>MilesTag-paket</span></div>
   <div id="packet">––</div>
+</div>
+
+<div id="adjud" class="panel">
+  <h2>Server-adjudikation (nivå 3)</h2>
+  <div class="row"><span>① Sikte (IMU+IR-ankare)</span><span class="v" id="a-aim">–</span></div>
+  <div class="row"><span>② Ballistik-bana</span><span class="v" id="a-traj">–</span></div>
+  <div class="row"><span>&nbsp;&nbsp;flygtid / drop</span><span class="v" id="a-tof">–</span></div>
+  <div class="row"><span>&nbsp;&nbsp;anslagsfart</span><span class="v" id="a-vimp">–</span></div>
+  <div class="row"><span>③ Geometri (kapsel-skär)</span><span class="v" id="a-geo">–</span></div>
+  <div class="row"><span>④ IR LOS + zon</span><span class="v" id="a-ir">–</span></div>
+  <div class="row" style="margin-top:6px;border-top:1px solid #30363d;padding-top:6px">
+    <span><b>FUSION</b></span><span class="v" id="a-final" style="font-size:15px">–</span></div>
 </div>
 
 <div id="help" class="panel">

@@ -41,3 +41,15 @@ python3 -m http.server 8099
 4. Håll auto-eld i gång → se **rekyl-klättringen** vandra serien uppåt (IMU).
 
 Modellerna ligger i `hardware.js` (porterade från Python-simuleringen i `docs/`).
+
+## Nivå 3 — geometrisk ballistik-adjudikation (uppdaterad)
+
+Simulatorn kör nu den **riktiga nivå-3-pipelinen** (se `docs/level3-ballistic-architecture.md`), inte laser-tag:
+
+1. **① Sikte** — auto-aim/FPS-siktvektor med siktfel σ, rekyl-klättring och **IMU heading-drift** (växer över tid, **nollställs av varje IR-träff** → visar varför IR-ankaret behövs).
+2. **② Ballistik-bana** — kulan integreras i 3D (`integrate3D`): gravitation + drag + **sidvind**. Banan ritas som en **böjd gul kurva**; kulan flyger längs den med drop.
+3. **③ Geometri** — **CCD-skärning** av banan mot målets **kapsel-kropp** (huvud/bröst/mage/ben), utvärderad vid varje tidssteg → leadet mot rörligt mål sköts automatiskt.
+4. **④ IR LOS + zon** — strålen mot målplanet: inom strålkon + IR-räckvidd → LOS ✓ + zon.
+5. **FUSION** — `HIT` = geometri-anlände **OCH** IR-LOS; zon från IR, skada skalad av anslagsfart. Annars NEAR-MISS / FÖRKASTAD / MISS.
+
+Adjudikationspanelen (nere till höger) visar alla fyra steg + fusionsverdikt live. Testa: sätt **sidvind** och se banan kröka i sidled; öka **avstånd/målfart** och se geometrin räkna lead; dra ut målet bortom IR-räckvidden och se att fusionen kräver både geometri och IR.

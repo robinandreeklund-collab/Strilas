@@ -87,3 +87,58 @@ export const PROFILES = {
 export function imuRate(tSec, ampDps = 92, f = 22, tau = 0.018) {
   return ampDps * Math.sin(2 * Math.PI * f * tSec) * Math.exp(-tSec / tau);
 }
+
+// ===================== NIVÅ 3: 3D-BALLISTIK & GEOMETRI =====================
+
+// Integrera kulans bana i 3D (Euler, 0.5 ms) — gravitation + drag + vektorvind.
+// Returnerar samplade tillstånd var ~5 ms: [{t,x,y,z,v}], samt slutmarkör.
+export function integrate3D(mx, my, mz, dx, dy, dz, v0, wind = [0, 0, 0], maxRange = 320) {
+  const g = 9.81, kd = 0.001277, dt = 0.0005;
+  let x = mx, y = my, z = mz, vx = dx * v0, vy = dy * v0, vz = dz * v0, t = 0, n = 0;
+  const S = [{ t: 0, x, y, z, v: v0 }];
+  while (t < 2.0 && y > -1.0) {
+    const rvx = vx - wind[0], rvy = vy - wind[1], rvz = vz - wind[2];
+    const sp = Math.hypot(rvx, rvy, rvz);
+    vx += -kd * sp * rvx * dt; vy += (-g - kd * sp * rvy) * dt; vz += -kd * sp * rvz * dt;
+    x += vx * dt; y += vy * dt; z += vz * dt; t += dt; n++;
+    if (n % 10 === 0) S.push({ t, x, y, z, v: Math.hypot(vx, vy, vz) });
+    if (Math.hypot(x - mx, z - mz) > maxRange) break;
+  }
+  return S;
+}
+
+// Kroppskapslar (postur: stående) vid fotposition (tx,0,tz). Vertikala segment.
+export function bodyCapsules(tx, tz) {
+  return [
+    { name: 'Huvud', p0: [tx, 1.62, tz], p1: [tx, 1.78, tz], r: 0.10, mult: 3.0, color: 0xff5c5c },
+    { name: 'Bröst', p0: [tx, 1.25, tz], p1: [tx, 1.55, tz], r: 0.17, mult: 1.0, color: 0xffb000 },
+    { name: 'Mage', p0: [tx, 0.95, tz], p1: [tx, 1.15, tz], r: 0.16, mult: 0.8, color: 0xffd35c },
+    { name: 'Ben', p0: [tx, 0.10, tz], p1: [tx, 0.85, tz], r: 0.14, mult: 0.5, color: 0x4aa3ff },
+  ];
+}
+
+// Kortaste avstånd mellan två segment (p1-q1) och (p2-q2). (Ericson, Real-Time CD)
+export function closestSegSeg(p1, q1, p2, q2) {
+  const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const d1 = sub(q1, p1), d2 = sub(q2, p2), r = sub(p1, p2);
+  const a = dot(d1, d1), e = dot(d2, d2), f = dot(d2, r);
+  let s, tt;
+  const EPS = 1e-9;
+  if (a <= EPS && e <= EPS) { s = 0; tt = 0; }
+  else if (a <= EPS) { s = 0; tt = Math.min(Math.max(f / e, 0), 1); }
+  else {
+    const c = dot(d1, r);
+    if (e <= EPS) { tt = 0; s = Math.min(Math.max(-c / a, 0), 1); }
+    else {
+      const b = dot(d1, d2), den = a * e - b * b;
+      s = den > EPS ? Math.min(Math.max((b * f - c * e) / den, 0), 1) : 0;
+      tt = (b * s + f) / e;
+      if (tt < 0) { tt = 0; s = Math.min(Math.max(-c / a, 0), 1); }
+      else if (tt > 1) { tt = 1; s = Math.min(Math.max((b - c) / a, 0), 1); }
+    }
+  }
+  const c1 = [p1[0] + d1[0] * s, p1[1] + d1[1] * s, p1[2] + d1[2] * s];
+  const c2 = [p2[0] + d2[0] * tt, p2[1] + d2[1] * tt, p2[2] + d2[2] * tt];
+  return { dist: Math.hypot(c1[0] - c2[0], c1[1] - c2[1], c1[2] - c2[2]), point: c1 };
+}
