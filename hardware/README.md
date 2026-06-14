@@ -45,10 +45,18 @@ Inte trivialt Class 1 längre. **R1 är hårdvaru-strömgränsen** (inte firmwar
 accessible emission per IEC 60825-1, **sikta 1 A först** och köp räckvidd med mottagar-filtret
 hellre än med mer ström.
 
-### ⚠️ Verifiera kameran
+### ⚠️ Verifiera kameran (P4-stödd sensor!)
 
-Ø14-öppning + 16 mm-hålbild + FFC-läge är **riktmått** — mät din faktiska P4-kamera (OV5640)
-och uppdatera `CAM_LENS / CAM_SQ / CAM_HOLE` i skriptet (parametriskt, en rad var).
+**Kamera = en P4-stödd MIPI-sensor**, inte IMX296. IMX296 (Sony GS) är Pi-native och saknar
+`esp_cam_sensor`-drivrutin för ESP32-P4 → fungerar **inte** här.
+
+| Sensor | Slutare | För oss |
+|---|---|---|
+| **OV5640** (5 MP) | rolling | **v1** — stödd + sitter i ESP32-P4-WIFI6-kitet |
+| **ams-OSRAM Mira220** (2.2 MP) | **global** | GS-uppgraderingen (officiellt P4-exempel; NIR-förstärkt → ser 860 nm bättre) |
+
+Ø14-öppning + 16 mm-hålbild + FFC-läge är **riktmått** (typiskt ~25×24 mm modul, M12 ~Ø14–16).
+**Mät din faktiska kameramodul** och uppdatera `CAM_LENS / CAM_SQ / CAM_HOLE` i skriptet.
 
 ---
 
