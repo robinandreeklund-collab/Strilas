@@ -9,35 +9,36 @@ Två fysiskt skilda noder, två kort:
 
 ---
 
-## 1. Vapnets optikmodul v1 — precis sikteskamera + IR-emitter + IMU + driver
+## 1. Vapnets optikmodul v1 (KOMPAKT) — sikteskamera + 2× IR-emitter + IMU + driver
 
 ![Vapnets optikmodul](weapon-emitter-camera-860nm.png)
 
 **Allt vapnet behöver** på ett kort: precist sikte, skottstråle, attityd och driver.
-Genereras av [`weapon_emitter_layout.py`](weapon_emitter_layout.py).
+Krympt från Ø80 (4 emittrar) till **42×62 mm** *utan prestandaförlust*. Genereras av
+[`weapon_emitter_layout.py`](weapon_emitter_layout.py).
 
 **Precisionen** kommer från **sikteskameran** (centrum) som mäter bäringen till målets
-IR-konstellation → sub-0,1° (se `../docs/level3-ballistic-architecture.md` §3.2).
-**Skottet** är de 4 kollimerade emittrarna, **samboresiktade** runt kameran → strålen
-följer siktaxeln (bred kon = bara LOS/ID, inte hitbox).
+IR-konstellation → sub-0,1° (se `../docs/level3-ballistic-architecture.md` §3.2) — den är
+**oförändrad oavsett emitterantal**. **Skottet** är de 2 kollimerade emittrarna, symmetriskt
+ovanför kameran → **samboresikt** (parallax ~0,01° @150 m; bred kon = bara LOS/ID).
 
 ### Vad som sitter på kortet
 
 | Ref | Del | Roll |
 |---|---|---|
 | (mitten) | **Sikteskamera: OV5640 NoIR + 860 nm IR-pass + telefoto M12** | **PRECISION** — ser konstellationen → solvePnP → bäring |
-| D1–D4 | **ams-OSRAM SFH 4715AS** (860 nm) ×4 + **Carclo 10195** (~Ø20) kollimator | **skott** — kodad 56 kHz-stråle, 100–150 m |
+| D1–D2 | **ams-OSRAM SFH 4715AS** (860 nm) ×2 + **Carclo 10195** (~Ø20) kollimator | **skott** — kodad 56 kHz-stråle, 100–150 m |
 | U2 | **TDK ICM-45686 IMU** (I²C) | attityd mellan kamerabildrutor + rekyl |
-| Q1 | **AO3400 N-FET** | switchar emitter-strängen på 56 kHz |
-| R1 | **Rsense ~1–3 Ω 2 W** | **sätter & HW-begränsar pulsströmmen = ögonsäkerhet** |
+| Q1 / R1 | **AO3400 N-FET** / **Rsense ~1–3 Ω 2 W** | switchar + **sätter & HW-begränsar pulsström = ögonsäkerhet** |
 | C1 / Rg / D5 | 220 µF reservoar / 220 Ω gate / SS54 flyback | levererar pulsen + ren switchning |
 | J1 | **2×4: IR_MOD·VEMIT·EN·GND / 3V3·SDA·SCL·GND** | mot ESP32-P4 (kamera via FFC) |
 
-### Mått & el
+### Mått & el — och varför prestandan hålls
 
-- Kort **Ø80 mm**, emitter-kvadrat **42 mm** (4× Carclo Ø20-optik runt en 25×24-kamera), 3× M2.5.
-- **4 LED i serie** → mata **VEMIT** från 2S-batteri / boost (~12 V); **IR_MOD** = 56 kHz från RMT; **IMU** på I²C.
-- **Ø80 är stort** p.g.a. fyra Ø20-optiker. Vill du krympa: bestycka **1–2 emittrar** (räcker för skottet) eller role-split.
+- Kort **42 × 62 mm** (rundad rektangel), 3× M2.5. **~48 % mindre yta än Ø80**, halva bredden.
+- **2 LED i serie** delar effektlasten → 100–150 m bibehålls; mata **VEMIT** från 2S/boost (~12 V).
+- **Precision = kameran** (emitterantal påverkar inte). **2 (ej 1) emittrar** sprider effekten →
+  *lättare* Class 1. Enda som tappas: framtida **aktiv-fiducial-beacon** (4-punkt) — ej v1-krav.
 
 ### ⚠️ Kameran får inte blända sig själv
 
