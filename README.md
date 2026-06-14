@@ -48,7 +48,33 @@ trigger ──► IR emitter sends coded pulse ──► target detector registe
 
 The key design choice is **central, positional adjudication**: rather than computing the result on each weapon, the server knows where both parties are and how they are moving, and resolves the engagement with the simulated projectile's flight time. This is fairer for moving targets and is the basis for the analytics layer.
 
-See [`/docs/strilas-systemritning.html`](docs/strilas-systemritning.html) for the full schematic set (physical layout, architecture, wiring, state machine, NFC flow, power budget).
+---
+
+## Project map (design → validated → runnable)
+
+This repo has grown from the spec above into a **physically-validated design with a runnable
+reference implementation**. Where to look:
+
+| Area | What | Where |
+|---|---|---|
+| **Analysis & BOM** | README review + state-of-the-art level-3 BOM + chosen dev boards | [`docs/hardware-analysis.md`](docs/hardware-analysis.md) |
+| **Architecture** | geometric ballistic adjudication + fused pose stack (incl. precision ≠ beam width) | [`docs/level3-ballistic-architecture.md`](docs/level3-ballistic-architecture.md) |
+| **System flow** | how it all connects (component map, shot sequence, pose layers) | [`docs/system-flowchart.md`](docs/system-flowchart.md) |
+| **v1 build** | exact shopping list for a precise 100–150 m shooting test | [`docs/mvp-shooting-test-bom.md`](docs/mvp-shooting-test-bom.md) |
+| **Weapon PCB** | optic module: camera + 2× 940 nm emitters + IMU + buck-CC driver (42×62 mm) | [`hardware/README.md`](hardware/README.md) |
+| **Receiver PCBs** | vest detector patch + helmet halo (TSOP + 860 nm constellation + GNSS) | [`hardware/receiver-boards.md`](hardware/receiver-boards.md) |
+| **Design resolution** | every open problem → decision (wavelength split, eye safety, etc.) | [`hardware/weapon-module-design-resolution.md`](hardware/weapon-module-design-resolution.md) |
+| **Eye safety** | Class 1 current budget (script + report) | [`hardware/eye-safety-budget.md`](hardware/eye-safety-budget.md) |
+| **Physics verification** | end-to-end @150 m (radiometry + Monte Carlo + link budget) | [`hardware/system-verification-report.md`](hardware/system-verification-report.md) |
+| **Firmware/CV** | runnable, hardware-abstracted chain (CV → fire-control → server) — no HW needed | [`firmware/README.md`](firmware/README.md) |
+| **3D simulator** | interactive level-3 pipeline in the browser | [`sim/README.md`](sim/README.md) |
+
+Run it (no hardware): `python3 -m firmware.run_demo` · `python3 -m firmware.test_chain` ·
+`python3 hardware/system_physics_verification.py`
+
+The key design choice — **central, positional adjudication** — is fully realized in
+[`firmware/adjudicator.py`](firmware/adjudicator.py): the server knows where both parties are and
+how they move, and resolves the engagement with the simulated projectile's flight time.
 
 ---
 
