@@ -4,59 +4,58 @@ Två fysiskt skilda noder, två kort:
 
 | Kort | Nod | Funktion |
 |---|---|---|
-| **Vapnets optikmodul** | vapen | IR-**sändare** (860 nm) + kamera + driver |
+| **Vapnets optikmodul** | vapen | precis sikteskamera + IR-**sändare** (860 nm) + IMU + driver |
 | Detektor-ring | mål/väst | IR-**mottagare** (TSOP4856) + kamera |
 
 ---
 
-## 1. Vapnets optikmodul — 4× SFH 4715AS (860 nm) + kamera + driver
+## 1. Vapnets optikmodul v1 — precis sikteskamera + IR-emitter + IMU + driver
 
 ![Vapnets optikmodul](weapon-emitter-camera-860nm.png)
 
-Allt vapnet behöver för att **skjuta kodad IR + se målet**, på ett kort. Genereras av
-[`weapon_emitter_layout.py`](weapon_emitter_layout.py).
+**Allt vapnet behöver** på ett kort: precist sikte, skottstråle, attityd och driver.
+Genereras av [`weapon_emitter_layout.py`](weapon_emitter_layout.py).
 
-**Kärnan — samboresiktad ring:** 4 emittrar i kvadrat **runt kameran** → siktaxel =
-IR-axel (det kameran pekar på = dit IR går), och de 4 utgör samtidigt en **aktiv
-fiducial-konstellation** som andra kameror kan pose:a på (även i mörker).
+**Precisionen** kommer från **sikteskameran** (centrum) som mäter bäringen till målets
+IR-konstellation → sub-0,1° (se `../docs/level3-ballistic-architecture.md` §3.2).
+**Skottet** är de 4 kollimerade emittrarna, **samboresiktade** runt kameran → strålen
+följer siktaxeln (bred kon = bara LOS/ID, inte hitbox).
 
 ### Vad som sitter på kortet
 
 | Ref | Del | Roll |
 |---|---|---|
-| D1–D4 | **ams-OSRAM SFH 4715AS** (860 nm) ×4 | skott-emitter, i kvadrat runt kameran |
-| — | **kollimator-lins ~±5°** ×4 (Carclo/LEDiL) | koncentrerar strålen → 100–150 m |
-| (mitten) | **P4-kamera (OV5640, MIPI-CSI)** | sikte / pose / fiducial-läsning |
+| (mitten) | **Sikteskamera: OV5640 NoIR + 860 nm IR-pass + telefoto M12** | **PRECISION** — ser konstellationen → solvePnP → bäring |
+| D1–D4 | **ams-OSRAM SFH 4715AS** (860 nm) ×4 + **Carclo 10195** (~Ø20) kollimator | **skott** — kodad 56 kHz-stråle, 100–150 m |
+| U2 | **TDK ICM-45686 IMU** (I²C) | attityd mellan kamerabildrutor + rekyl |
 | Q1 | **AO3400 N-FET** | switchar emitter-strängen på 56 kHz |
 | R1 | **Rsense ~1–3 Ω 2 W** | **sätter & HW-begränsar pulsströmmen = ögonsäkerhet** |
-| C1 | **220 µF reservoar** | levererar pulsströmmen |
-| Rg / D5 | 220 Ω gate / SS54 flyback | ren switchning + induktiv retur |
-| J1 | **1×5: IR_MOD, VEMIT, 3V3, GND, EN** | mot ESP32-P4 |
+| C1 / Rg / D5 | 220 µF reservoar / 220 Ω gate / SS54 flyback | levererar pulsen + ren switchning |
+| J1 | **2×4: IR_MOD·VEMIT·EN·GND / 3V3·SDA·SCL·GND** | mot ESP32-P4 (kamera via FFC) |
 
 ### Mått & el
 
-- Kort **Ø68 mm**, emitter-kvadrat **36 mm**, central **kameramodul ~25×24 mm** (M12-lins Ø16, hålbild 21×12,5), 3× M2.5.
-- **4 LED i serie** → samma ström genom alla; mata **VEMIT** från 2S-batteri / boost (~12 V för strängen).
-- **IR_MOD** = 56 kHz från P4:ans RMT på gaten.
+- Kort **Ø80 mm**, emitter-kvadrat **42 mm** (4× Carclo Ø20-optik runt en 25×24-kamera), 3× M2.5.
+- **4 LED i serie** → mata **VEMIT** från 2S-batteri / boost (~12 V); **IR_MOD** = 56 kHz från RMT; **IMU** på I²C.
+- **Ø80 är stort** p.g.a. fyra Ø20-optiker. Vill du krympa: bestycka **1–2 emittrar** (räcker för skottet) eller role-split.
+
+### ⚠️ Kameran får inte blända sig själv
+
+Sikteskameran (860 nm IR-pass) ser sina **egna** 860 nm-emittrar. Lös med **(a)** baffel
+mellan ring och lins + **(b)** emittrar avfyras **bara vid trigger** (kameran läser
+konstellationen mellan skott), **eller (c)** emitter på **940 nm** + kamerafilter **860 nm**
+= ren våglängdsseparation.
 
 ### ⚠️ Ögonsäkerhet (1–3 A kollimerat)
 
-Inte trivialt Class 1 längre. **R1 är hårdvaru-strömgränsen** (inte firmware). Räkna/mät
-accessible emission per IEC 60825-1, **sikta 1 A först** och köp räckvidd med mottagar-filtret
-hellre än med mer ström.
+Inte trivialt Class 1. **R1 är hårdvaru-strömgränsen** (inte firmware). Räkna/mät accessible
+emission per IEC 60825-1, **sikta 1 A först**, köp räckvidd med mottagar-filtret hellre än ström.
 
-### ⚠️ Verifiera kameran (P4-stödd sensor!)
+### ⚠️ Kamera = P4-stödd sensor (inte IMX296)
 
-**Kamera = en P4-stödd MIPI-sensor**, inte IMX296. IMX296 (Sony GS) är Pi-native och saknar
-`esp_cam_sensor`-drivrutin för ESP32-P4 → fungerar **inte** här.
-
-| Sensor | Slutare | För oss |
-|---|---|---|
-| **OV5640** (5 MP) | rolling | **v1** — stödd + sitter i ESP32-P4-WIFI6-kitet |
-| **ams-OSRAM Mira220** (2.2 MP) | **global** | GS-uppgraderingen (officiellt P4-exempel; NIR-förstärkt → ser 860 nm bättre) |
-
-Ø14-öppning + 16 mm-hålbild + FFC-läge är **riktmått** (typiskt ~25×24 mm modul, M12 ~Ø14–16).
-**Mät din faktiska kameramodul** och uppdatera `CAM_LENS / CAM_SQ / CAM_HOLE` i skriptet.
+IMX296 (Sony GS) är Pi-native, saknar `esp_cam_sensor`-drivrutin för P4. Använd **OV5640**
+(v1, i kitet) eller **ams-OSRAM Mira220** (global shutter, NIR — P4-exempel finns). Mått är
+**riktmått** (typiskt ~25×24 mm, M12) — **mät din modul** → `CAM_W/CAM_H/CAM_HOLE`.
 
 ---
 
