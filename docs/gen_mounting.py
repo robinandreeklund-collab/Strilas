@@ -128,7 +128,7 @@ d.text((LX, LY-22), "Teckenförklaring — monteringsplats", font=F_LEGB, fill=(
 legend = [
     (1,  "IR-emitter (SFH 4715AS + lins)", "mynning, borrlinjerad ~±15°"),
     (2,  "IMU (ICM-45686)", "receiver/rail, styvt mot loppet"),
-    (3,  "Huvudelektronik (ESP32-S3 + PCB)", "PEQ-box på handskyddsrail"),
+    (3,  "Huvudelektronik (ESP32-P4 PICO)", "PEQ-box; kamera/HUD/WiFi6 ombord"),
     (4,  "HUD micro-OLED", "topprail bak (optikplats)"),
     (5,  "Rack-sensor (chamber)", "laddhandtag"),
     (6,  "Avtryckar-sensor", "avtryckare"),

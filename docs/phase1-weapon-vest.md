@@ -22,6 +22,10 @@ I Fas 1 avgörs träff **lokalt och direkt**, precis som riktig MILES och all ko
 | Poäng/hälsa | Lokalt i väst, peer-delning via ESP-NOW | + central telemetri-DB, live-karta, AAR |
 | Position | — | UWB + GNSS + IMU-fusion |
 
+### Plattformsbeslut: bygg på Fas 2-plattformen direkt
+
+Vi bygger Fas 1 **direkt på ESP32-P4 PICO** (P4 + C6 ombord) istället för ESP32-S3 — för att slippa en firmware-port (Xtensa→RISC-V) senare. P4:s Fas 2-gränssnitt (**MIPI-CSI-kamera + HW H.264 1080p30, MIPI-DSI för AR-HUD, ljud in/ut, WiFi 6**) finns redan på kortet och ligger **vilande** i Fas 1 — de aktiveras i Fas 2 utan hårdvarubyte. Dual-core låter oss pinna IR/rekyl/trigger-timing på en kärna och låta C6 sköta radion. **Avvägning:** P4-ekosystemet (ESP-IDF) är nyare och drar mer ström än S3 — men Fas 1-perifererna (RMT, MCPWM/LEDC, SPI, I²C, GPIO, TWAI/CAN) är väl stödda; de avancerade bitarna (MIPI/H.264) rör bara Fas 2. Västen kör **ESP32-C6** (RMT-avkodning + Thread-mesh-väg).
+
 ---
 
 ## 1. Systemöversikt — spelarsats (Fas 1)
@@ -30,7 +34,7 @@ I Fas 1 avgörs träff **lokalt och direkt**, precis som riktig MILES och all ko
                        PLAYER KIT  (självständig, ingen infrastruktur)
 ┌──────────────────────────────────────────────────────────────────────────┐
 │                                                                            │
-│   VAPENENHET (ESP32-S3)                          VÄST + HJÄLM (ESP32-C3)   │
+│   VAPENENHET (ESP32-P4 PICO)                     VÄST + HJÄLM (ESP32-C6)   │
 │   ┌───────────────────────────┐   ESP-NOW        ┌──────────────────────┐  │
 │   │ Fire-control FSM           │◄═══════════════►│ Hit/health FSM        │  │
 │   │ IR-TX (RMT, 56 kHz kodad)  │   (på kroppen)   │ IR-RX zon-avkodning   │  │
@@ -65,7 +69,7 @@ I Fas 1 avgörs träff **lokalt och direkt**, precis som riktig MILES och all ko
 
 | Block | Del (Fas 1) | Motivering / not | Fas 2-väg |
 |---|---|---|---|
-| MCU | **ESP32-S3** (N16R8) | RMT genererar 56 kHz IR-bärvåg med exakt µs-timing; gott om GPIO/timers; mogen ESP-IDF/Arduino. Ensam-MCU-kontentionen biter inte förrän man har 32 noder + video. | → ESP32-P4 + C6 |
+| MCU | **ESP32-P4 PICO** (P4 + C6 ombord) | Dual-core RISC-V @400 MHz: pinna IR/rekyl/trigger på en kärna, C6 sköter radio (WiFi6/BLE/802.15.4/ESP-NOW). RMT för IR-bärvåg. **Fas 2-gränssnitt (MIPI-CSI-kamera + H.264, MIPI-DSI, ljud) finns ombord — vilande.** Byggs på målplattformen direkt → ingen port senare. | samma kort: aktivera kamera/HUD/WiFi6 |
 | IR-emitter | **ams-OSRAM SFH 4715AS** (860 nm) ×1–2 + lins/snoot ~±15° | Trivialt Class 1 (inkoherent), ~30–60 m med lins. **HW-strömgräns via resistor = ögonsäkerhetstak.** | + diffuserad 905 nm-laservariant (verifierad AE) |
 | IR-driver | **AO3400** logic-level MOSFET + serie-strömresistor + gate-R 100 Ω | De-facto-standard i DIY-lasertag; robust. R_limit sätter peak-ström (=säkerhetstak). Bärvåg gateas från RMT-pin. | iC-HG om laser |
 | IMU | **TDK ICM-45686** (SPI), 6DOF, gyro ≥1–2 kHz | Fångar sub-100 ms mynningsklättring; magnetometer-fri (vapen = stål). | (oförändrad) |
@@ -76,7 +80,7 @@ I Fas 1 avgörs träff **lokalt och direkt**, precis som riktig MILES och all ko
 | Mag-release | mikrobrytare/hall → GPIO | släpp skena FÖRST, sen kall extraktion. | — |
 | Rekylaktuator | **reciprok. massa** (solenoid Fas 1-prototyp → BLDC+vev+ODrive S1 final) | PWM-skalad felt-recoil per profil. | BLDC/FOC per-profil-kraftkurva |
 | Rekyl-load-switch | **TI TPS25983** 20 A eFuse (soft-start) + SS54 flyback + cap-bank 2×2200 µF | Inrush/OC/SC/termiskt skydd i ett chip. På endast mellan rack och mag-release. | — |
-| Ljud (valfritt) | I²S-amp (MAX98357A) + liten högtalare | skott/tom/träff-ljud → realism (README roadmap). | + bolt-lock/muzzle-report |
+| Ljud | **native på P4 PICO** (I²S in+ut) — annars MAX98357A + högtalare | skott/tom/träff-ljud → realism (README roadmap). | + mikrofon-capture för AAR + bolt-lock/muzzle-report |
 | Logikbatteri | 2S Li-ion (t.ex. 2×18650) + buck 3V3/5V | ~0.95 A snitt; håller noden vid liv utan magasin. | — |
 | Radio | ESP-NOW (inbyggt) | vapen↔väst + peer-poäng. | + WiFi/server-uplink |
 
@@ -86,7 +90,7 @@ I Fas 1 avgörs träff **lokalt och direkt**, precis som riktig MILES och all ko
 
 | Block | Del | Not |
 |---|---|---|
-| MCU | **ESP32-C3** (eller S3-mini) | ESP-NOW/BLE; billig; räcker för zon-avkodning + feedback. |
+| MCU | **ESP32-C6** | RMT avkodar IR-bärvåg i HW; WiFi6/BLE/**802.15.4 (Thread)** för ESP-NOW nu + resilient mesh i Fas 2; billig (~$3). |
 | Detektorer | **Vishay TSOP misc. 56 kHz** (matcha emitter!), zonindelade | Avkodar bärvåg i kapsel, solljus-/AGC-immunitet "gratis". |
 | — hjälm "halo" | 6–8 st, utåtvinklade | full 360°-täckning av huvudet (MILES-mönster). |
 | — torso | 8–16 st i kluster: **bröst / rygg / vä / hö** | varje zon = egen MCU-ingång → identifierar träffzon. |
@@ -190,9 +194,9 @@ VÄST                         1S Li-ion ─► buck 3V3/5V ─► MCU, TSOP-arra
 
 ## 8. Representativ pinkarta
 
-> Pinnar är representativa (undvik strapping-pinnar GPIO0/3/45/46 för in/utgångar; verifiera mot din board-revision).
+> Pinnar är representativa. P4:s GPIO-matris kan routa RMT/LEDC/SPI/I²C/TWAI till de flesta pinnar — **verifiera mot ESP32-P4 PICO:s exponerade headers** och undvik strapping-/USB-pinnar. (Numren nedan är platshållare att mappa om till P4/C6.)
 
-**Vapen — ESP32-S3**
+**Vapen — ESP32-P4 PICO** (P4 + C6)
 | Funktion | Pin | Not |
 |---|---|---|
 | IR-TX (RMT → MOSFET-gate) | GPIO17 | 56 kHz bärvåg, gateas av RMT |
@@ -208,7 +212,7 @@ VÄST                         1S Li-ion ─► buck 3V3/5V ─► MCU, TSOP-arra
 | I²S ljud (BCLK/LRCLK/DOUT) | GPIO40/41/42 | MAX98357A (valfritt) |
 | Batteri-ADC | GPIO16 | spänningsdelare |
 
-**Väst — ESP32-C3**
+**Väst — ESP32-C6**
 | Funktion | Pin | Not |
 |---|---|---|
 | Zon HEAD (TSOP-array OR) | GPIO2 | interrupt + avkod |
@@ -221,7 +225,7 @@ VÄST                         1S Li-ion ─► buck 3V3/5V ─► MCU, TSOP-arra
 | I²S ljud | GPIO18/19/10 | valfritt |
 | Batteri-ADC | GPIO0 | |
 
-> Räcker inte pinnarna för separata zoner: använd **MCP23017 I²C I/O-expander** eller ESP32-S3:s RMT-RX-kanaler.
+> Räcker inte pinnarna för separata zoner: använd **MCP23017 I²C I/O-expander** eller P4/C6:s RMT-RX-kanaler.
 
 ---
 
@@ -231,7 +235,7 @@ VÄST                         1S Li-ion ─► buck 3V3/5V ─► MCU, TSOP-arra
 firmware/
 ├─ shared/
 │  └─ milestag2/        # gemensam codec: encode/decode header+1200/600µs PWM, CRC+nonce
-├─ weapon-node/         # ESP32-S3 (PlatformIO / ESP-IDF)
+├─ weapon-node/         # ESP32-P4 PICO (P4 + C6, ESP-IDF)
 │  ├─ fsm_makeready     # NO_MAG→MAG_IN→READY→EMPTY→KIA (Del 6)
 │  ├─ ir_tx             # RMT 56 kHz, paketbygge ur weapon-profil
 │  ├─ recoil            # LEDC PWM, soft-start via eFuse EN, RoF-cap
@@ -239,8 +243,8 @@ firmware/
 │  ├─ nfc               # PN532: läs vid insert, skriv vid extraktion
 │  ├─ hud               # OLED: ammo/hits/state/batteri
 │  ├─ link_espnow       # ↔ väst (+ peer-broadcast)
-│  └─ audio             # valfritt I²S
-└─ vest-node/           # ESP32-C3
+│  └─ audio             # I²S in/ut (native P4 PICO)
+└─ vest-node/           # ESP32-C6
    ├─ ir_rx             # per-zon avkodning (interrupt/RMT-RX)
    ├─ fsm_health        # hälsa, zon-multiplikator, KIA-lockout, respawn
    ├─ feedback          # WS2812 + haptik + ljud
@@ -284,9 +288,9 @@ Designa in dessa redan nu — kostar nästan inget i Fas 1:
 1. **Tidsstämpla allt** med lokal monotonisk klocka → Fas 2 disciplinerar den med **PTP** + HW-tidsstämplad IR-ankomst.
 2. **IR-paketet bär redan** shooterID + team + weapon-profil/damage → servern kan **re-adjudikera** samma skott positionellt utan nytt protokoll. Lägg in **CRC + rullande nonce** nu (anti-replay) — det behövs ändå i Fas 2.
 3. **ESP-NOW-frames struktureras** så de kan vidarebefordras till en **gateway** (Fas 2 WiFi/server-uplink) utan formatändring.
-4. **Reservera GPIO + en intern kontakt** för **UWB-modul (DW3000/Makerfabs)** + **kamera** på vapnet.
+4. **Kamera (MIPI-CSI), AR-HUD (MIPI-DSI), WiFi 6 och ljud finns redan på P4 PICO** — lämna kontakterna obestyckade i Fas 1. Reservera GPIO + en intern kontakt för **UWB-modul (DW3000/Makerfabs)**.
 5. **Logga IMU-mynningsklättring** redan i Fas 1 → blir indata till Fas 2:s trajektorie-adjudikation och AAR.
-6. **Håll MCU-migrationsvägen öppen:** ESP-IDF-koden portar rakt till **ESP32-P4 + C6** när radiolasten växer.
+6. **Ingen MCU-migration behövs** — vi bygger redan på ESP32-P4 PICO. Strukturera koden så P4:s andra kärna + C6-radion kan ta WiFi6/server-uplink och kamera-pipeline i Fas 2 utan refaktorering.
 
 ---
 
@@ -294,7 +298,7 @@ Designa in dessa redan nu — kostar nästan inget i Fas 1:
 
 | Enhet | Del | ~Pris |
 |---|---|---|
-| **Vapen** | ESP32-S3 (N16R8) devkit/modul | $8–15 |
+| **Vapen** | ESP32-P4 PICO (P4 + C6; kamera/DSI/ljud ombord, vilande) | ~$24 |
 | | ICM-45686 IMU-breakout | $10–25 |
 | | SFH 4715AS ×2 + lins + AO3400 + R | ~$8 |
 | | PN532 NFC-läsare + magwell-switch | $10–15 |
@@ -302,20 +306,20 @@ Designa in dessa redan nu — kostar nästan inget i Fas 1:
 | | TPS25983 eFuse + cap-bank + SS54 | ~$8 |
 | | Rekylaktuator (solenoid proto → BLDC+ODrive S1 final) | $20 → $150 |
 | | Mikrobrytare ×3 (trigger/rack/mag-rel) | ~$3 |
-| | MAX98357A + högtalare (valfritt) | ~$5 |
+| | Ljud native på P4 PICO (ev. extern högtalare) | ~$2 |
 | | 2S Li-ion + buck | ~$15 |
-| **Väst+hjälm** | ESP32-C3 | $4–6 |
+| **Väst+hjälm** | ESP32-C6 | ~$3–6 |
 | | TSOP 56 kHz ×~16–24 (torso+hjälm) | ~$20–25 |
 | | WS2812-remsa + haptisk motor + ljud | ~$12 |
 | | 1S Li-ion + buck | ~$8 |
 | **Magasin** (×flera) | NTAG215 + hög-C LiPo + kontakter >25A | ~$12/st |
-| **Summa kärnsats** (1 vapen + väst, exkl. final-rekyl & extra mag) | | **~$160–220** |
+| **Summa kärnsats** (1 vapen + väst, exkl. final-rekyl & extra mag) | | **~$175–235** |
 
 ---
 
 ## 13. Föreslagen byggordning (delfaser inom Fas 1)
 
-1. **Engagemang-kärna:** ESP32-S3 + IR-TX + en TSOP → bekräfta att ett kodat skott avkodas. *(milestone: "det skjuter och registrerar")*
+1. **Engagemang-kärna:** ESP32-P4 PICO + IR-TX (RMT) + en TSOP → bekräfta att ett kodat skott avkodas. *(milestone: "det skjuter och registrerar")*
 2. **Väst:** zon-array + feedback + ESP-NOW-länk → träff lyser/låter, HUD säger "KILL".
 3. **Ammo-logik:** PN532 + make-ready-FSM + HUD → insert/rack/fire/empty/reload.
 4. **Rekyl:** solenoid-prototyp + eFuse + cold-mate → felt-recoil, kall kontakt verifierad.

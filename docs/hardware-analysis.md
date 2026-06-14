@@ -316,6 +316,21 @@ Eftersom adjudikationen är central och spelet kompetitivt är detta ett eget sp
 
 ---
 
+## Del 10 — Valda dev boards (projektbeslut)
+
+Efter hårdvaruutvärdering är följande kort valda. **Strategibeslut:** bygg Fas 1 direkt på Fas 2-plattformen (ESP32-P4) för vapnet — slipp en firmware-port (Xtensa→RISC-V) och få kamera/HUD/WiFi6-gränssnitten "vilande" på kortet från dag ett. Detaljerad Fas 1-design: se [`phase1-weapon-vest.md`](phase1-weapon-vest.md).
+
+| Kort | Roll | Motivering | Not |
+|---|---|---|---|
+| **ESP32-P4 PICO** (P4 + C6 ombord) | **Vapenhjärna (Fas 1 + 2)** | Dual-core RISC-V @400 MHz; pinna IR/rekyl/timing på en kärna, C6 sköter radio. **MIPI-CSI-kamera + HW H.264 1080p30, MIPI-DSI (AR-HUD), ljud in/ut, WiFi 6 finns ombord** — vilande i Fas 1, aktiveras i Fas 2 utan kortbyte. | Kompakt/inbyggbar (pin-headers); ~$24 |
+| **ESP32-C6** | **Väst/hjälm-MCU** + Thread-mesh | RMT avkodar IR-bärvåg i HW; WiFi6/BLE/802.15.4 (Thread) för ESP-NOW nu + resilient hit-mesh i Fas 2. | ~$3 |
+| **ESP32-P4-NANO** | **Bas-dock / gateway (Fas 2)** | Samma P4+C6 men full SBC: **RJ45/PoE/USB-host** → idealt som server-edge/gateway, ej som inbyggd vapenhjärna. | Ethernet/PoE |
+| **WitMotion IWT603** | **IMU-prototyp** | 1000 Hz + temp-komp + plug-and-play (CAN/RS485) — bra för att snabbt bevisa recoil-to-aim på bänk. | → **ICM-45686** (SPI, host-side-fusion) i slutvapnet |
+
+**Avvägningar som accepterats:** P4-ekosystemet (ESP-IDF) är nyare och drar mer ström än ESP32-S3, men Fas 1-perifererna (RMT, MCPWM/LEDC, SPI, I²C, GPIO, TWAI/CAN) är väl stödda; risken ligger i de avancerade MIPI/H.264-bitarna som ändå hör till Fas 2. Vinsten — noll portningsarbete och hårdvaruklara Fas 2-hooks — bedöms överväga.
+
+---
+
 ## Källor (urval)
 
 **Compute/nätverk:** [ESP32-P4 vs S3 (Elecrow)](https://www.elecrow.com/blog/who-is-the-true-performance-king-esp32-p4-vs-esp32-s3.html) · [ESP32-P4-WIFI6 (Waveshare)](https://www.waveshare.com/wiki/ESP32-P4-WIFI6) · [ESP32-C5 dual-band $15 (CNX)](https://www.cnx-software.com/2025/04/30/esp32-c5-mass-production-esp32-c5-devkitc-1-board/) · [RP2350 PIO (Geerling)](https://www.jeffgeerling.com/blog/2024/raspberry-pi-pico-2-rp2350-adds-more-pio-risc-v-cores/) · [Teensy 4.1 (PJRC)](https://www.pjrc.com/store/teensy41.html) · [nRF54L15 (CNX)](https://www.cnx-software.com/2025/09/03/nrf54l15-connect-kit-a-compact-bluetooth-6-0-le-802-15-4-and-nfc-development-board/) · [ESP-NOW (Espressif)](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/network/esp_now.html) · [ESP1588 PTP](https://github.com/leifclaesson/ESP1588)
