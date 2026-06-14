@@ -8,17 +8,21 @@
 
 ## Vad v1 faktiskt visar (skiljer det från laser tag)
 
-1. **Pose-medvetet:** vapnets IMU ger siktvektorn → servern integrerar en (enkel men
-   riktig) ballistik-bana längs den, inte bara "stråle in i sensor".
+1. **PRECIST sikte (kärnan):** sikteskameran mäter bäringen till målets **aktiva
+   IR-konstellation** via solvePnP → **sub-0,1°** relativ bäring. IMU:n fyller mellan
+   bildrutorna (hög-rate) + rekyl. *Det här* är precisionen — inte strålbredden.
 2. **Server-avgjort:** vapen + mål skickar *bevis* (FireEvent / IRHit) över WiFi; en
    liten **adjudikator avgör** — exakt nivå-3-loopen i miniatyr.
-3. **IR = ankare, inte domare:** strålen bevisar siktlinje + zon och grindar geometrin.
-4. **Riktig räckvidd (100–150 m utomhus):** v1 kör en **kollimerad högström-emitter**
-   från start — inget 15 m-bänkbygge som inte bevisar något.
+3. **IR-skottstråle = LOS + skott-ID, inte hitbox:** bred kon (länkbudget), geometrin
+   gör precisionen (se `level3-ballistic-architecture.md` §3.2).
+4. **Riktig räckvidd + precision (100–150 m):** kollimerad emitter (räckvidd) +
+   **telefoto-sikteskamera + aktiv IR-konstellation** (precis bäring på avstånd) — ingen
+   leksak som bara pekar åt rätt håll.
 
-**Server = din laptop/PC** för v1 (ingen Jetson behövs än). **Målets position** mäts in
-med måttband och konfigureras tills UWB/GNSS-lagret kommer — det är den enda genvägen,
-och den ändrar inte loopens logik.
+**Server = din laptop/PC** för v1 (ingen Jetson behövs än). **Precisionen är RELATIV**
+(kameran mäter vapen→mål direkt) → därför behövs **varken GNSS-heading eller UWB i v1**;
+de kommer när spelare rör sig över fält och mål inte alltid är i sikte. Målets grova
+position mäts in med måttband.
 
 ## Kort — köp 2× samma kit (minimal variation)
 
@@ -32,30 +36,59 @@ högtalare ingår i kitet och stannar i scope (pose-väg + ljud senare).
 > *Har du redan ETH-kitet (PoE) kan det bli målet istället — men 2× samma WIFI6-kit
 > är enklast.*
 
-## Vapnet — kollimerad högström-emitter (100–150 m)
+## Vapnet — emitter (100–150 m) + precis sikteskamera
+
+**A. Skottstråle (räckvidd + LOS):**
 
 | # | Del | Antal | ~Pris | Not |
 |---|---|---|---|---|
-| 1 | **TDK ICM-45686 breakout** (SlimeVR Mumo eller generisk) | 1 | ~$12 | **KÄRNA** — ger siktvektorn till ballistiken; utan den = laser tag |
-| 2 | **IR-LED ams-OSRAM SFH 4715AS** (860 nm) eller 940 nm OSLON-syskon | 2 | ~$2 | high-power, tål **1–3 A pulsat**; 940 nm matchar TSOP-toppen |
-| 3 | **TIR-kollimator / asfärisk lins ~±5°** (Carclo/LEDiL för OSLON Black) | 1 | ~$3 | **räckviddsspaken** — koncentrerar strålen → 100–150 m |
-| 4 | **Logic-level N-MOSFET** AO3400 | 2 | ~$1 | tål 1–3 A korta pulser; gate från RMT (56 kHz) |
-| 5 | **Strömsättningsresistor** ~1–3 Ω (effekt) + **reservoarkondensator** 100–470 µF låg-ESR + 220 Ω gate + ¼W-sortiment | 1 sats | ~$6 | resistorn sätter (och hårdvarubegränsar) pulsströmmen; cap:en levererar pulsen |
-| 6 | **Mikrobrytare** (snap-action med arm) | 1 | ~$1 | trigger |
-| 7 | Perfboard + lödd LED-strömväg + Dupont för signaler | 1 | ~$6 | **löd LED+driver fast** — breadboard tål inte 1–3 A rent |
+| 1 | **IR-LED ams-OSRAM SFH 4715AS** (860 nm) | 2 | ~$2 | high-power, tål **1–3 A pulsat** |
+| 2 | **TIR-kollimator** (Carclo 10195 ~20 mm, för SFH 4715AS) | 1–4 | ~$3/st | **räckvidd** (bred kon ok — inte precision) |
+| 3 | **Logic-level N-MOSFET** AO3400 | 2 | ~$1 | gate från RMT (56 kHz) |
+| 4 | **Rsense ~1–3 Ω 2W** + **reservoarcap** 100–470 µF + 220 Ω gate + ¼W-sortiment | 1 sats | ~$6 | resistorn = HW-strömgräns (ögonsäkerhet); cap levererar pulsen |
+| 5 | **Mikrobrytare** (trigger) | 1 | ~$1 | |
 
-I²C-IMU:n kopplas till P4-kortets I²C-pinnar; firmwaren gör host-side-fusion
-(attityd) och låser siktvektorn vid avtryck. LED:n sitter i lins-fokus (kollimering);
-RMT driver gaten på 56 kHz, resistorn + reservoarcap formar pulsströmmen.
+**B. Precis bäring (det som gör det till mer än en leksak):**
+
+| # | Del | Antal | ~Pris | Not |
+|---|---|---|---|---|
+| 6 | **TDK ICM-45686 breakout** | 1 | ~$12 | hög-rate attityd + rekyl, fyller mellan kamerabildrutor |
+| 7 | **Telefoto M12-lins** (~10–15° FOV) till sikteskameran | 1 | ~$15 | **vinkelupplösning + räckvidd** — annars för liten konstellation @150 m |
+| 8 | **860 nm IR-pass/bandpass-filter** för sikteskameran | 1 | ~$8 | ser bara konstellationen → robust dag/natt |
+| 9 | Perfboard + lödd LED-strömväg + Dupont | 1 | ~$6 | **löd LED+driver fast** — breadboard tål inte 1–3 A |
+
+> **Sikteskameran = OV5640 i kitet, men som NoIR** (ta bort IR-cut-filtret, eller köp
+> NoIR-variant) så den ser 860 nm. CV-firmwaren (blob → solvePnP → bäring) skriver jag.
+
+IMU på I²C; RMT driver gaten på 56 kHz; kameran via FFC till P4 MIPI-CSI.
 
 ## Målet — komponenter att koppla till kit #2
 
+Målet gör nu **två** saker: **syns** (IR-konstellation som vapnets kamera pose:ar på) +
+**registrerar skott** (TSOP avkodar strålen).
+
 | # | Del | Antal | ~Pris | Not |
 |---|---|---|---|---|
-| 1 | **Vishay TSOP4856** (56 kHz) | 4 | ~$4 | IR-mottagare, 4 st = täckning/zoner |
-| 2 | **860/940 nm bandpass-glasfilter** (matcha emitterns våglängd) | 4 | ~$8 | **krävs för utomhus-räckvidd** — sänker tröskeln i solljus |
-| 3 | Status-LED + kablar | 1 | ~$2 | **högtalaren finns i kitet** = träffljud |
-| 4 | Fysiskt mål: kartong/foamboard | 1 | – | montera TSOP-arna på |
+| 1 | **IR-LED 860 nm (vidvinkel)** för **konstellationen** | 4 | ~$3 | i **känd geometri** (PnP-mål) — mät basen exakt, t.ex. ~0,5 m |
+| 2 | Liten MOSFET/transistor-driver för konstellationen | 1 | ~$1 | P4 modulerar (blink-ID + skiljer från bakgrund/sol) |
+| 3 | **Vishay TSOP4856** (56 kHz) | 4 | ~$4 | tar emot skottstrålen (zon/täckning) |
+| 4 | **860 nm bandpass-glasfilter** | 4 | ~$8 | TSOP utomhus-räckvidd i solljus |
+| 5 | Status-LED + kablar | 1 | ~$2 | **högtalaren finns i kitet** = träffljud |
+| 6 | Fysiskt mål: kartong/foamboard | 1 | – | montera TSOP + konstellation; LED:erna bör ~rama in hitbox-arean |
+
+## Precisionsmekanism (varför detta inte är en leksak)
+
+1. Målets **IR-konstellation** (4 LED i känd geometri) lyser; vapnets **NoIR + IR-pass-
+   kamera** ser dem som ljuspunkter (funkar dag/natt, på avstånd).
+2. **solvePnP** på de 4 punkterna → målets **3D-pose relativt vapnet** (riktning + avstånd).
+3. **Boresight = kamerans optiska axel** (kalibrerad). Servern skjuter ballistik-banan
+   längs boresight och kollar om den (med drop) skär målets **hitbox-kapslar**, definierade
+   *relativt konstellationen*. Allt i relativ ram → **ingen GNSS/UWB behövs**.
+4. **IMU** predikterar mellan kamerabildrutor (16–33 ms) + ger rekyl/tilt.
+
+Vinkelprecision: telefoto-kamera ger sub-pixel-bäring ≪ 0,1° → upplöser torso (0,19° @150 m)
+och nästan huvud (0,076°). **Bringup-tips:** börja CV:n med en stor tryckt **ArUco** på kort
+håll (enklast), byt till aktiv IR-konstellation för full räckvidd/mörker.
 
 ## ⚠️ Den enda regeln som måste stämma
 
@@ -80,13 +113,14 @@ sätta en hårdvaru-strömgräns** (strömsättningsresistorn = vakten, inte fir
 Lödkolv + tenn (**LED-strömvägen ska lödas**, inte breadboardas — 1–3 A), multimeter.
 Helst en optisk effektmätare för AE-verifiering.
 
-**Total ~$115** — varav $64 är de två korten du ändå vill ha för projektet.
+**Total ~$145** — varav $64 är de två korten du ändå vill ha för projektet.
 
 ---
 
 *När korten + komponenterna är hemma skriver jag firmware + adjudikator:*
-- *Vapen (P4): IMU-attityd → lås siktvektor vid trigger → sänd FireEvent (riktning,
-  tid, IR-kod) över WiFi + skjut kodad 56 kHz-stråle.*
-- *Mål (P4): TSOP → IRHit (zon, IR-kod, tid) över WiFi + ljud i högtalaren.*
-- *Adjudikator (laptop): ballistik-bana längs siktvektorn → geometri mot målets
-  inmätta hitboxes → grinda mot IR-LOS/zon → träff/miss/zon. Nivå-3-loopen i smått.*
+- *Vapen (P4): **kamera → IR-blob-detektion → solvePnP mot konstellationen → relativ
+  bäring (sub-0,1°)**; IMU fyller mellan bildrutor; vid trigger → FireEvent (bäring +
+  pose + tid + IR-kod) över WiFi + skjut kodad 56 kHz-stråle. Kamerakalibrering en gång.*
+- *Mål (P4): driv IR-konstellationen (blink-ID) + TSOP → IRHit (zon, IR-kod, tid) → ljud.*
+- *Adjudikator (laptop): ballistik-bana längs kamerabäringen → geometri mot målets
+  hitbox-kapslar → grinda mot IR-LOS → träff/miss/zon. Nivå-3-loopen i smått.*
