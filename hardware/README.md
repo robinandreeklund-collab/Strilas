@@ -35,7 +35,7 @@ fiducial-konstellation** som andra kameror kan pose:a på (även i mörker).
 
 ### Mått & el
 
-- Kort **Ø60 mm**, emitter-kvadrat **30 mm**, central lins-öppning **Ø14**, kamera-hålbild **16 mm**, 4× M2.5.
+- Kort **Ø68 mm**, emitter-kvadrat **36 mm**, central **kameramodul ~25×24 mm** (M12-lins Ø16, hålbild 21×12,5), 3× M2.5.
 - **4 LED i serie** → samma ström genom alla; mata **VEMIT** från 2S-batteri / boost (~12 V för strängen).
 - **IR_MOD** = 56 kHz från P4:ans RMT på gaten.
 
