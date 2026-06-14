@@ -35,15 +35,15 @@ ovanför kameran → **samboresikt** (parallax ~0,01° @150 m; bred kon = bara L
 | (mitten) | **Sikteskamera: OV5640 NoIR + 860 nm bandpass + M12 (FOV 15–30°)** | **PRECISION** — ser konstellationen → solvePnP → bäring (rolling shutter; fast-pan-grind i firmware) |
 | D1–D2 | **940 nm OSLON Black** ×2 + **Carclo 10195** (~Ø20) kollimator | **skott** — kodad 56 kHz-stråle, 100–150 m |
 | U2–U5 | **TDK ICM-45686 IMU ×1–4 (SPI, bestyckad 1)** | attityd mellan kamerabildrutor + rekyl; layout för 4 = redundans |
-| U6 / Q1 / Rsense | **boost konstantströms-LED-driver** / AO3400 N-FET / sense-resistor | konstantström + **hårt HW-tak = ögonsäkerhet** |
-| C1 / Rg / D5 | 220 µF reservoar / 220 Ω gate / SS54 flyback | levererar pulsen + ren switchning |
+| U6 / L1 / Rsense | **buck konstantströms-LED-driver** (från 2S) / induktor / sense-resistor | konstantström + **hårt HW-tak = ögonsäkerhet** |
+| C1 / Cin / D5 / Q1 | Cout 220 µF / in-cap / freewheel-diod / AO3400 **56 kHz-gate** | switch-passiva + bärvågs-gate |
 | Q2 / TVS / F1 | reverse-FET / clamp / PTC | inskydd på VBAT |
 | J1 | **2×7 SPI:** VBAT·EN·IR_MOD·SCK·MOSI·MISO·INT / GND·3V3·GND·CS1–CS4 | mot ESP32-P4 (kamera via FFC) |
 
 ### Mått & el — och varför prestandan hålls
 
 - Kort **42 × 62 mm** (rundad rektangel), 3× M2.5. **~48 % mindre yta än Ø80**, halva bredden.
-- **2 LED i serie** delar effektlasten → 100–150 m bibehålls; **VBAT in**, U6 boostar till ~12 V; **IR_MOD** = 56 kHz från RMT.
+- **2 LED i serie** delar effektlasten → 100–150 m bibehålls; **VBAT 2S in**, U6 **buck-CC** steg ner (boost ej nödvändig); **IR_MOD** = 56 kHz på Q1-gaten.
 - **IMU-array på SPI** (egen CS/chip; ICM-45686 har bara 2 I²C-adresser). Bestycka **1**; layout stödjer **4**.
 - **Precision = kameran** (emitter- & IMU-antal påverkar inte rubrik-precisionen — kameran 90 fps GS är primär referens).
 

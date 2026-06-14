@@ -41,10 +41,11 @@ konstellationen syns på avstånd. 56 kHz-bärvågen är *modulation*, oberoende
 
 | # | Problem | Beslut |
 |---|---|---|
-| 2.1 | "Rsense som strömgräns" är inte konstant ström | **Konstantströms-driver** (CC): FET + sense-resistor + reglering. Sense-resistorn sätter ett **hårt HW-tak**; firmware kan bara gå *lägre*. Det är "ögonsäkerhet i hårdvara" på riktigt. |
-| 2.2 | Spänningsbudget för 2 LED i serie | 2× Vf(940 nm) ≈ 3–4 V + CC-headroom + sense → **VEMIT = boost till 9–12 V** (ren marginal vid 1–3 A). 2S (6,4–8,4 V) duger bara ≤~1,5 A. |
-| 2.3 | Reservoarkondensator | 56 kHz-burst: cap levererar pulsen, batteriet snittet. **220–470 µF låg-ESR** + MLCC nära LED. |
-| 2.4 | Inskydd | **Reverse-polarity P-FET (Q2)** + **TVS** + **PTC/säkring** på VEMIT-ingången. |
+| 2.1 | "Rsense som strömgräns" är inte konstant ström | **Konstantströms-driver** (U6): sense-resistor sätter **hårt HW-tak**; firmware bara *lägre*. "Ögonsäkerhet i hårdvara". |
+| 2.2 | Topologi (RÄTTAD: boost var överspecat) | **BUCK CC** — VBAT 2S (6,4–8,4 V) **>** LED-sträng 2× Vf(940 nm) ~3–5,5 V → steg **ner**. Boost behövs ej. |
+| 2.3 | **Switch-passiva (saknades i sketch)** | Buck kräver **L1 (induktor)** + **Cin** + **D5 (freewheel)** + Rsense + **Cout/C1** (220–470 µF låg-ESR + MLCC nära LED). |
+| 2.4 | 56 kHz-modulering | **Q1 (AO3400) i serie** gatar bärvågen ovanpå buckens nivå (buck-PWM är för långsam för rent 56 kHz). |
+| 2.5 | Inskydd | **Reverse P-FET (Q2)** + **TVS** + **PTC (F1)** på VBAT — PTC:s **håll-ström > pulsens medel** (annars nuisance-trip). |
 
 ---
 
@@ -129,10 +130,33 @@ position med måttband. **Ingen LiDAR behövs** (superseder av PnP; kan återkom
 
 ## 9. PCB-layoutregler
 
-- **4-lager** (signal / GND / VEMIT-pour / signal): solid GND-plan, separat effekt-pour för
+- **4-lager** (signal / GND / VBAT-pour / signal): solid GND-plan, separat effekt-pour för
   pulsströmmen, stjärnjordning vid sense-resistorn.
-- Pulsström-loopen (cap → LED → FET → sense) **kort & bred**; MLCC nära LED.
+- Pulsström-loopen (Cin → buck → L1 → LED → FET → sense) **kort & bred**; MLCC nära LED.
 - Termiska vias under LED-pad till baksidans pour.
+
+---
+
+## 9.5 Designgranskning — fynd & optimering
+
+**Funktionellt (åtgärdat):**
+- ✅ **Buck-switchens passiva tillagda** (L1 + Cin + D5 freewheel + Cout) — saknades; boost→buck rättat (§2).
+- **Per-IC-avkoppling explicit:** 100 nF/IMU, U6 in/ut-caps, 3V3-buss-MLCC. (Schema-detalj, måste ritas.)
+
+**Elektrisk optimering:**
+- **EMI:** buck-switchern (U6) är störkälla mot kamera-MIPI/IMU. Placera bort från kamera, skärma,
+  och kör helst drivern **bara under skott** (pulsad ändå). Switchfrekvens bort från känsliga band.
+- **Pulsström på J1:** VBAT/GND vid 1–3 A puls → **dubbla pinnar / separat effektkontakt**; stjärnjord vid Rsense.
+
+**Mekaniskt / miljö (rekylerande vapen, utomhus):**
+- **Låsande + dragavlastade kontakter** (FFC + J1) mot rekylvibration.
+- **Kamerafokus-lås** (gänglås/lim på M12) + lins-/filter-retention.
+- **Conformal coating** (fukt/damm); stel IMU-montering (redan §5).
+
+**Bekräftat (ingen åtgärd):**
+- Kamerans matning + SCCB (I²C-styrning) kommer från **P4:ans CSI-kontakt** → inga kamerarails på detta kort.
+- Trigger → direkt P4-GPIO (greppet), ej via modulen.
+- ⚠️ **Verifiera Carclo 10195 optik mot 940 nm-LED-varianten** (samma paket, men kolla strålvinkel).
 
 ---
 

@@ -85,15 +85,16 @@ for i, yy in enumerate([8, 2, -4, -10]):
 ax.text(imu_x, 12.0, "IMU ×1–4\nICM-45686 SPI", ha="center", va="bottom", color="#aeb7c2", fontsize=5.0, zorder=6)
 ax.text(imu_x, -13.0, "bestyckad: U2", ha="center", va="top", color="#9bbfe0", fontsize=4.8, zorder=6)
 
-# höger remsa: driver
-part(ax, 16.5, 8.0, 4.6, 4.4, "C1", "220µF")
-part(ax, 16.5, 0.0, 4.2, 2.8, "U6", "CC-drv")
-part(ax, 16.5, -6.5, 3.6, 2.4, "Q1", "AO3400")
-part(ax, 16.5, -12.0, 3.2, 2.2, "D5", "SS54")
+# höger remsa: driver (buck CC)
+part(ax, 16.5, 8.5, 4.4, 3.6, "C1", "Cout")
+part(ax, 16.5, 3.0, 4.2, 2.8, "U6", "buck CC")
+part(ax, 16.5, -2.0, 4.2, 2.8, "L1", "induktor")
+part(ax, 16.5, -7.5, 3.6, 2.4, "Q1", "56k gate")
+part(ax, 16.5, -12.5, 3.2, 2.2, "D5", "freewheel")
 
-# botten: reverse-skydd + gate-resistor
+# botten: reverse-skydd + in-cap
 part(ax, -12.5, -20.5, 4.2, 2.6, "Q2", "rev-FET")
-part(ax,  -4.5, -20.5, 3.0, 2.2, "Rg", "220Ω")
+part(ax,  -4.5, -20.5, 3.4, 2.4, "Cin", "in-cap")
 part(ax,   3.5, -20.5, 3.4, 2.4, "TVS", "clamp")
 part(ax,  12.0, -20.5, 3.2, 2.2, "F1", "PTC")
 
@@ -125,7 +126,7 @@ notes = (
     "• VÅGLÄNGDSSPLIT: SKOTT D1/D2 = 940 nm; kamera 860 nm bandpass → AVVISAR egna skottet (löser självbländning). Baffel = backup\n"
     "• PRECISION = sikteskamera + aktiva IR-blobbar → solvePnP-bäring <0.1° vid VILKEN FOV; FOV (15–30°) sätts av dagsljus-SNR @150 m\n"
     "• RÄCKVIDD = 2× 940 nm + Carclo delar lasten → 100–150 m; symmetriska → samboresikt (parallax ~0.01° @150 m)\n"
-    "• DRIVER = U6 KONSTANTSTRÖM (boostar VBAT→~12 V + sense-resistor = hårt HW-tak; firmware bara lägre) + C1 + Q2/TVS/F1 reverse-skydd\n"
+    "• DRIVER = U6 BUCK konstantström (från 2S; sense = hårt HW-tak) + L1 + Cin/Cout + Q1 56 kHz-gate + D5 freewheel + Q2/TVS/F1 inskydd\n"
     "• IMU = 1–4× ICM-45686 på SPI (bestyckad U2; layout för 4 = redundans/gap-prediktion). Kameran 90 fps GS = primär ref → 1 räcker\n"
     "• ⚠️ ÖGONSÄKERHET = mätpunkt: ~2 mW in i öga @1 m,1 A → MÄT AE per IEC 60825-1, börja 1 A. MIPI dras EJ här (kamera-FFC→P4)\n"
     "• Kamera = OV5640 (v1, i kitet, NoIR, rolling — fast-pan-grind i firmware via IMU). GS-uppgr: Mira220 MINI ($141 eval). EJ IMX296/Pivariety. Mät modul → CAM_W/H"
