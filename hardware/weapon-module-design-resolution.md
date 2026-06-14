@@ -65,6 +65,10 @@ genom 7 mm-pupill (3,85·10⁻⁵ m²) ≈ **2,1 mW in i ögat** (pulsat, låg d
 3. **MÄT AE vid aperturen** (optisk effektmätare) och få Class 1-utlåtande **innan** modulen pekas mot människor.
 
 > Detta är en **mätpunkt**, inte en genväg: ögonsäkerhet får aldrig härledas ur minnet.
+>
+> **Kalkyl gjord:** se [`eye-safety-budget.md`](eye-safety-budget.md) + [`eye_safety_budget.py`](eye_safety_budget.py).
+> Konservativ punktkälla → max **~0,1 A full-auto / ~0,67 A semi**; men utsträckt-källa-relaxation
+> (C6 upp till ~67×) gör **1–3 A Class 1 *om* skenbar källa ≥ α_max** — **måste mätas**.
 
 ---
 
