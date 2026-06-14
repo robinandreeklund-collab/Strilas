@@ -49,6 +49,19 @@ Mål-tolerans (max siktfel för att landa på kroppen): torso ±0,48° @30 m, **
 
 **Kärnan:** geometrin avgör *anländer kulan till kroppsvolymen, från vilket håll, hur hårt*; **IR-zonen avgör *var på kroppen*** (huvud/bröst/…). Ingen av dem ensam räcker.
 
+### 3.1 Pose-stack (BESLUTAD: fuserad)
+
+Vapnets siktriktning (systemets nyckelgräns) byggs i lager — billigt och robust nu, optisk precision som uppgradering:
+
+| Lager | Roll | Status |
+|---|---|---|
+| **IR-stråle** | LOS-grind + heading-ankare (kollapsar yaw till strålkonen) + zon + ID | **nu** (robust i allt ljus) |
+| **ICM-45686 (array 2–4)** | hög-rate tilt + kort-tids-attityd, √N-brusreduktion | **nu** |
+| **GNSS dubbelantenn-heading (ZED-X20D, ~0,1°)** | absolut yaw-referens som binder IMU-driften | **nu** (utomhus) |
+| **Sikteskamera + AI + ArUco/AprilTag-fiducials** | optisk bäring (~2 mrad) + zon + ID + LOS ur bild | **uppgradering** (kräver Jetson-klass på/nära vapen + thermal i mörker) |
+
+Motivering: detta är vägen primes (BAE HITS) landar på — IR/inertial/GNSS ger robust bas i alla förhållanden, kameran/AI lyfter pose-precisionen där compute/ljus tillåter. IR behålls oavsett (LOS-sanning + mörker-robusthet). Avstånd: UWB/GNSS nu, ev. LiDAR (Benewake TF02-Pro) som komplement.
+
 ---
 
 ## 4. Exteriörballistik-motor
