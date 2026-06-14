@@ -292,42 +292,76 @@ Eftersom adjudikationen är central och spelet kompetitivt är detta ett eget sp
 | **5** | AR-HUD: micro-OLED-waveguide → microLED 2026+ | Roadmap-funktion, reticle/ammo i optiken | Hög |
 | **5** | Edge-AI: **Jetson Orin Nano Super** för auto-tagg/mål-ID | AAR-automation | Medel |
 
-### 9.2 Referens-BOM "next level" (per spelare där relevant)
+### 9.2 State-of-the-art Nivå-3-BOM (2025–2026)
 
-| Subsystem | Nuvarande | **Rekommenderat** | ~Pris |
+Uppdaterad för **nivå 3** (geometrisk ballistik-adjudikation): UWB/GNSS/kropps-IMU/server/tidssynk är nu **kärna**, inte bonus. Senaste 2025–2026-delar.
+
+**Vapennod**
+
+| Subsystem | **State-of-the-art** | ~Pris | Not |
 |---|---|---|---|
-| Vapen-MCU | ESP32 | **ESP32-P4 + C6** (Waveshare ESP32-P4-WIFI6) | $14–26 |
-| IO-coprocessor (valfri) | — | **RP2350 (Pico 2)** för IR/rekyl-PIO | $5 |
-| IMU | BNO085 | **TDK ICM-45686** (6DOF) | ~$5 chip |
-| IR-emitter | 905 nm raw | **ams-OSRAM SFH 4715AS (860 nm)** + diffusor | ~$1 |
-| IR-detektor | array | **Vishay TSOP382/48xx**, zonade (~12–24 st) | ~$1/st |
-| UWB | DW3000 | **Makerfabs MaUWB_ESP32S3** (TDoA) | $46.58 |
-| GNSS (ute) | GNSS | **u-blox ZED-F9P** (+ ZED-F9R skuggigt) | $150–300 |
-| NFC-tagg | NTAG215 | **NTAG424 DNA** | ~$1–2 |
-| NFC-läsare | PN532 | **PN5180 / ST25R3916** | ~$10–20 |
-| Magasinbatteri | ≥25C LiPo | **Molicel P45B/P42A** (21700) + BQ34110-gauge + **BQ76952**-BMS | ~$5–9/cell |
-| Rekylväxling | MOSFET | **TI TPS25983** 20 A eFuse + SS54-flyback + cap-bank | ~$4–8 |
-| Rekylaktuator | reciprok. massa | **BLDC + vev + ODrive S1** FOC (per-profil-kraft) | ~$149 |
-| Kamera | ESP32-CAM | **Pi Zero 2 W + Cam Module 3 NoIR** (GS för primär) | $40–65 |
-| HUD | micro-OLED | **micro-OLED-waveguide-modul** → microLED 2026+ | $185+ |
-| **Infra:** server | host | **Ryzen mini-PC** (32 GB) | $300–600 |
-| **Infra:** AI | — | **Jetson Orin Nano Super** | $249 |
-| **Infra:** nätverk | WiFi mesh | **3–4× WiFi 6E 4×4-APs**, video-VLAN | $400–800 |
+| Hjärna | **ESP32-P4 PICO** (P4 + C6) | ~$24 | dual-core, MIPI-CSI/DSI, H.264, ljud, WiFi6 ombord |
+| Radio-uplink | **ESP32-C5** (dual-band **5 GHz** WiFi 6) där 5 GHz krävs | ~$15 | C6 (2.4 GHz) räcker annars |
+| IMU (pose) | **TDK ICM-45686** (ev. **2–4 i array** → √N-brus) | ~$5/st | array = billig pose-vinst; tactical: ADIS16470 ($300–400) |
+| UWB | **Qorvo DWM3001CDK / QM33110W** (tagg, TWR/TDoA) | ~$32 | AoA-ankare separat (infra) |
+| IR-emitter | **ams-OSRAM SFH 4715AS (860 nm)** ×2, lensad, 3 A puls | ~$3/st | HW-strömgräns = Class 1 |
+| **Sikteskamera + edge-AI** (valfri primär pose-väg, se ⓥ) | **P4 MIPI-CSI** (dag) / **thermal** (mörker) + ArUco-läsning | $25–200 | bäring + zon + ID optiskt (HITS/TrackingPoint-vägen) |
+| Avståndsmätare (valfri) | **Benewake TF02-Pro LiDAR** | ~$45 | metrisk räckvidd lokalt (kamera ger bäring, ej räckvidd) |
+| NFC | **NTAG424 DNA** + **ST25R3916** | ~$1 + $20 | anti-klon/fusk |
+| Rekyl | **BLDC + vev + ODrive S1** FOC | ~$149 | per-profil-kraft |
+| Rekylväxling | **TI TPS25985** (80 A stapelbar eFuse) + SS54 + cap-bank | ~$5 | nyare/kraftigare än TPS25983 |
+| HUD | micro-OLED-waveguide → **microLED-waveguide** 2026 | $185+ | reticle/avstånd i optiken |
+
+**Väst/hjälm-nod**
+
+| Subsystem | **State-of-the-art** | ~Pris |
+|---|---|---|
+| MCU | **ESP32-C5** (5 GHz WiFi6 + BLE + 802.15.4/Thread) | ~$15 |
+| Detektorer | **Vishay TSOP4856** (56 kHz) ×16–24, zonade | ~$1/st |
+| Kropps-IMU (pose) | **TDK ICM-45686** (postur stå/huk/ligg) | ~$5 |
+| UWB-tagg | **DWM3001CDK / QM33110W** | ~$32 |
+| **Fiducial (för kamera-pose)** | ArUco/AprilTag-mönster på väst+hjälm | ~$0 | ger ID + 6DoF-pose till sikteskameran |
+| Feedback | WS2812 + haptik + I²S-ljud | ~$12 |
+
+**Magasin:** **Molicel P50B** (21700, 5000 mAh, ~45–60 A — nyaste/bästa) + **BQ76952**-BMS + **BQ34110**-gauge + NTAG424. ~$10–14/st.
+
+**Infrastruktur**
+
+| Del | **State-of-the-art** | ~Pris |
+|---|---|---|
+| UWB-ankare (AoA) | **Qorvo QM35825** (4-antenn AoA, ±5 cm/±2°, IEEE 802.15.4-2024) ×4–8 | DK ~$599 |
+| GNSS-rover (ute) | **u-blox ZED-X20P** (all-band L1/L2/L5/L6) | ~$281 |
+| GNSS-heading-ankare | **u-blox ZED-X20D** dubbelantenn (**~0,1° yaw**) — *vapen-pose-ankaret* | board-pris |
+| GNSS-bas (anti-jam) | **Septentrio mosaic-X5** (OSNMA/AIM+) | ~$500+ |
+| Server | **Jetson Orin NX 16GB** (100 TOPS, NVDEC/NVENC 16–32 strömmar) | ~$599 |
+| Server (budget) | **Jetson Orin Nano Super** (67 TOPS) | $249 |
+| Nätverk | **WiFi 7-AP** (MLO 5/6 GHz) + ESP32-C5-noder på 5 GHz | $300–600 |
+| Laddningsdocka | **BQ25756** (snabb) / **BQ25798** (MPPT-sol/USB-PD) per bay | — |
+
+> **ⓥ Vapen-pose — systemets nyckelgräns, tre vägar (ökande noggrannhet):**
+> 1. **ICM-45686-array + GNSS-dubbelantenn-heading (ZED-X20D)** — billig, bra; absolut yaw bundet av GNSS.
+> 2. **Tactical IMU ADIS16470** (8°/hr) — dyrt, bäst inertiellt.
+> 3. **Sikteskamera + edge-AI + fiducials (HITS/TrackingPoint-vägen)** — optisk bäring (~2 mrad), zon & ID ur bilden; den vassaste, men kräver compute på/nära vapnet + degraderar i mörker (→ thermal). Se chatt-diskussion.
 
 ---
 
 ## Del 10 — Valda dev boards (projektbeslut)
 
-Efter hårdvaruutvärdering är följande kort valda. **Strategibeslut:** bygg Fas 1 direkt på Fas 2-plattformen (ESP32-P4) för vapnet — slipp en firmware-port (Xtensa→RISC-V) och få kamera/HUD/WiFi6-gränssnitten "vilande" på kortet från dag ett. Detaljerad Fas 1-design: se [`phase1-weapon-vest.md`](phase1-weapon-vest.md).
+**Strategibeslut:** bygg Fas 1 direkt på Fas 2/nivå-3-plattformen — slipp firmware-port och få nivå-3-gränssnitten "vilande" från dag ett.
 
-| Kort | Roll | Motivering | Not |
-|---|---|---|---|
-| **ESP32-P4 PICO** (P4 + C6 ombord) | **Vapenhjärna (Fas 1 + 2)** | Dual-core RISC-V @400 MHz; pinna IR/rekyl/timing på en kärna, C6 sköter radio. **MIPI-CSI-kamera + HW H.264 1080p30, MIPI-DSI (AR-HUD), ljud in/ut, WiFi 6 finns ombord** — vilande i Fas 1, aktiveras i Fas 2 utan kortbyte. | Kompakt/inbyggbar (pin-headers); ~$24 |
-| **ESP32-C6** | **Väst/hjälm-MCU** + Thread-mesh | RMT avkodar IR-bärvåg i HW; WiFi6/BLE/802.15.4 (Thread) för ESP-NOW nu + resilient hit-mesh i Fas 2. | ~$3 |
-| **ESP32-P4-NANO** | **Bas-dock / gateway (Fas 2)** | Samma P4+C6 men full SBC: **RJ45/PoE/USB-host** → idealt som server-edge/gateway, ej som inbyggd vapenhjärna. | Ethernet/PoE |
-| **WitMotion IWT603** | **IMU-prototyp** | 1000 Hz + temp-komp + plug-and-play (CAN/RS485) — bra för att snabbt bevisa recoil-to-aim på bänk. | → **ICM-45686** (SPI, host-side-fusion) i slutvapnet |
+| Kort | Roll | Senaste-teknik-not |
+|---|---|---|
+| **ESP32-P4 PICO** (P4 + C6) | **Vapenhjärna** | MIPI-CSI-kamera + H.264 + DSI + ljud + WiFi6 ombord; ~$24 |
+| **ESP32-C5** | **Väst/hjälm + 5 GHz-uplink** | dual-band WiFi6 (2025) — slår C6 för uplink; behåller Thread |
+| **Qorvo QM35825** (DK) | **UWB-ankare (AoA)** | 4-antenn ±2°/±5 cm, IEEE 802.15.4-2024, integrerad M33 |
+| **Qorvo DWM3001CDK** | **UWB-tagg** | billig FiRa TWR/TDoA-nod (~$32) |
+| **u-blox ZED-X20P + ZED-X20D** | **GNSS-rover + heading-ankare** | all-band; X20D ger ~0,1° pose-yaw |
+| **TDK ICM-45686** | **Pose-IMU** | fortf. klassledande (2025–26); array för √N-vinst |
+| **Jetson Orin NX 16GB** | **Server/adjudikation/AI** | 100 TOPS + NVDEC/NVENC för 16–32 cam-strömmar |
+| **ESP32-P4-NANO** | **Bas-dock / gateway** | RJ45/PoE/USB-host |
+| **WitMotion IWT603** | **IMU-prototyp** → ICM-45686 | snabb bänkvalidering |
 
-**Avvägningar som accepterats:** P4-ekosystemet (ESP-IDF) är nyare och drar mer ström än ESP32-S3, men Fas 1-perifererna (RMT, MCPWM/LEDC, SPI, I²C, GPIO, TWAI/CAN) är väl stödda; risken ligger i de avancerade MIPI/H.264-bitarna som ändå hör till Fas 2. Vinsten — noll portningsarbete och hårdvaruklara Fas 2-hooks — bedöms överväga.
+**Avvägning:** den verkliga risken (och kostnaden) ligger i **vapen-pose- & positionsnoggrannhet** — samma som primes. Därför är GNSS-heading-ankaret (X20D) + IMU-array (eller kamera/AI) den viktigaste state-of-the-art-investeringen, inte en snabbare MCU.
 
 ---
 
@@ -342,6 +376,10 @@ Efter hårdvaruutvärdering är följande kort valda. **Strategibeslut:** bygg F
 **Kamera/AI/server:** [Pi-kameraguide](https://thinkrobotics.com/blogs/learn/raspberry-pi-camera-module-comparison-complete-2025-guide) · [GS-kamera (Geerling)](https://www.jeffgeerling.com/blog/2023/testing-raspberry-pis-new-global-shutter-camera/) · [Jetson Orin Nano $249](https://videocardz.com/newz/nvidia-launches-jetson-orin-nano-developer-kit-at-249-mini-pc-for-developers) · [TSDB-jämförelse](https://www.tigerdata.com/blog/timescaledb-vs-influxdb-for-time-series-data-timescale-influx-sql-nosql-36489299877) · [PTP (Teledyne)](https://www.teledynevisionsolutions.com/learn/learning-center/machine-vision/precision-system-synchronization-with-the-ieee-1588-precision-time-protocol-ptp/)
 
 **Rekyl/kraft/NFC:** [TI smart eFuse](https://www.ti.com/product-category/power-management/high-side-switches-controllers/smart-efuse/overview.html) · [Infineon eFuses](https://infineon.com/products/power/smart-power-switches/efuses) · [Molicel P42A](https://www.18650batterystore.com/products/molicel-p42a) · [Molicel P45B](https://imrbatteries.com/products/molicel-p45b-21700-4500mah-45a-battery) · [NXP NTAG424 DNA](https://www.nxp.com/products/rfid-nfc/nfc-hf/ntag-for-tags-and-labels/ntag-424-dna-424-dna-tagtamper-advanced-security-and-privacy-for-trusted-iot-applications:NTAG424DNA) · [ST25R3916 (Elechouse)](https://www.elechouse.com/product/st25r3916_nfc_reader/) · [Tokyo Marui NGRS (Evike)](https://www.evike.com/products/56862/)
+
+**Senaste teknik (2025–2026):** [Qorvo QM35825 (4-antenn AoA)](https://www.qorvo.com/products/p/QM35825) · [QM35825DK-05 (DigiKey ~$599)](https://www.digikey.com/en/products/detail/qorvo/QM35825DK-05/26742402) · [Qorvo DWM3001CDK](https://www.digikey.com/en/products/detail/qorvo/DWM3001CDK/24367348) · [NXP SR250 (UWB-radar+AoA)](https://www.cnx-software.com/2024/09/20/nxp-trimension-sr250-short-range-uwb-radar-supports-secure-ranging-for-smart-homes-and-industrial-iot/) · [u-blox ZED-X20P](https://www.u-blox.com/en/zed-x20p) · [ZED-X20D heading (Inside GNSS)](https://insidegnss.com/u-blox-introduces-zed-x20d-gnss-heading-module-for-mass-market-high-precision-applications/) · [Quectel LG290P quad-band](https://www.cnx-software.com/2024/07/30/quectel-lg290p-world-first-quad-band-gnss-module-l1-l2-l5-and-e6/) · [Septentrio mosaic-X5](https://www.septentrio.com/en/products/gnss-receivers/gnss-receiver-modules/mosaic-x5) · [ADI ADIS16470 (tactical IMU)](https://www.analog.com/en/products/adis16470.html) · [Jetson Orin NX / AGX Orin](https://www.hackster.io/news/nvidia-launches-275-tops-jetson-agx-orin-developer-s-kit-at-1-999-bbb5ff80e050) · [Jetson Thor T5000](https://nvidianews.nvidia.com/news/nvidia-blackwell-powered-jetson-thor-now-available-accelerating-the-age-of-general-robotics) · [ESP32-C5 (5 GHz WiFi6)](https://www.cnx-software.com/2025/04/30/esp32-c5-mass-production-esp32-c5-devkitc-1-board/) · [WiFi 7 / MLO (Meraki)](https://documentation.meraki.com/Wireless/Design_and_Configure/Architecture_and_Best_Practices/Wi-Fi_7_(802.11be)_Technical_Guide) · [Molicel P50B vs P45B](https://www.aboutenergy.io/post/molicel-p50b-vs-p45b-key-differences-specifications) · [TI TPS25985 (80 A eFuse)](https://www.ti.com/product/TPS25985) · [TI BQ25798 (MPPT-sol)](https://www.ti.com/product/BQ25798)
+
+**Kamera/AI-pose (HITS/TrackingPoint-vägen):** [BAE HITS (ION 2020)](https://www.ion.org/publications/abstract.cfm?articleID=17741) · [TrackingPoint](https://en.wikipedia.org/wiki/TrackingPoint) · [Lockheed SIMRES](https://www.lockheedmartin.com/en-us/products/simres.html) · [ArUco-markörer (OpenCV)](https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html) · [Benewake TF02-Pro LiDAR](https://en.benewake.com/TF02Pro/)
 
 ---
 
