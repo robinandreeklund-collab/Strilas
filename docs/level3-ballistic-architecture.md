@@ -97,6 +97,8 @@ Motivering: detta är vägen primes (BAE HITS) landar på — IR/inertial/GNSS g
 
 ## 6. Systemarkitektur — dataflöde & server-loop
 
+> 📊 **Visuellt:** se [`system-flowchart.md`](system-flowchart.md) för komponentkarta, skottsekvens (trigger→träffad), pose-fusionslager och emitter-ring-detaljen.
+
 **Server-auktoritativ** (som tävlings-FPS-netcode): vapen/väst skickar *signerade bevis*; **servern ensam avgör**.
 
 **FireEvent (vapen→server, vid sear/trigger break):** `shooter_id, seq (anti-replay), t_fire (ns), muzzle_pos + kovarians, aim_vec + aim_quat, weapon_profile_id, raw UWB-ranges, ir_code (rullande), hmac`.

@@ -304,8 +304,8 @@ Uppdaterad för **nivå 3** (geometrisk ballistik-adjudikation): UWB/GNSS/kropps
 | Radio-uplink | **ESP32-C5** (dual-band **5 GHz** WiFi 6) där 5 GHz krävs | ~$15 | C6 (2.4 GHz) räcker annars |
 | IMU (pose) | **TDK ICM-45686** (ev. **2–4 i array** → √N-brus) | ~$5/st | array = billig pose-vinst; tactical: ADIS16470 ($300–400) |
 | UWB | **Qorvo DWM3001CDK / QM33110W** (tagg, TWR/TDoA) | ~$32 | AoA-ankare separat (infra) |
-| IR-emitter | **ams-OSRAM SFH 4715AS (860 nm)** ×2, lensad, 3 A puls | ~$3/st | HW-strömgräns = Class 1 |
-| **Sikteskamera + edge-AI** (valfri primär pose-väg, se ⓥ) | **P4 MIPI-CSI** (dag) / **thermal** (mörker) + ArUco-läsning | $25–200 | bäring + zon + ID optiskt (HITS/TrackingPoint-vägen) |
+| IR-emitter (**samboresiktad ring**) | **ams-OSRAM SFH 4715AS (860 nm)** **×4 i kvadrat runt sikteskameran**, lensad, 3 A puls | ~$3/st | samaxlig med kameran → "det kameran siktar på = dit IR går"; dubblar som **aktiv fiducial-konstellation** (känd kvadrat → 6DoF-PnP för observerande kameror, funkar i mörker); större apparent källa → **lättare Class 1** |
+| **Sikteskamera + edge-AI** (fuserad pose-väg, uppgradering, se ⓥ) | **P4 MIPI-CSI** (dag) / **thermal** (mörker) + ArUco-läsning, **centrerad i emitter-ringen** | $25–200 | bäring + zon + ID optiskt (HITS/TrackingPoint-vägen) |
 | Avståndsmätare (valfri) | **Benewake TF02-Pro LiDAR** | ~$45 | metrisk räckvidd lokalt (kamera ger bäring, ej räckvidd) |
 | NFC | **NTAG424 DNA** + **ST25R3916** | ~$1 + $20 | anti-klon/fusk |
 | Rekyl | **BLDC + vev + ODrive S1** FOC | ~$149 | per-profil-kraft |
@@ -338,10 +338,14 @@ Uppdaterad för **nivå 3** (geometrisk ballistik-adjudikation): UWB/GNSS/kropps
 | Nätverk | **WiFi 7-AP** (MLO 5/6 GHz) + ESP32-C5-noder på 5 GHz | $300–600 |
 | Laddningsdocka | **BQ25756** (snabb) / **BQ25798** (MPPT-sol/USB-PD) per bay | — |
 
-> **ⓥ Vapen-pose — systemets nyckelgräns, tre vägar (ökande noggrannhet):**
-> 1. **ICM-45686-array + GNSS-dubbelantenn-heading (ZED-X20D)** — billig, bra; absolut yaw bundet av GNSS.
-> 2. **Tactical IMU ADIS16470** (8°/hr) — dyrt, bäst inertiellt.
-> 3. **Sikteskamera + edge-AI + fiducials (HITS/TrackingPoint-vägen)** — optisk bäring (~2 mrad), zon & ID ur bilden; den vassaste, men kräver compute på/nära vapnet + degraderar i mörker (→ thermal). Se chatt-diskussion.
+> **ⓥ Vapen-pose — systemets nyckelgräns (BESLUT: fuserad, alla lager samverkar):**
+> 1. **ICM-45686-array** — hög-rate tilt/attityd (√N-brus).
+> 2. **GNSS-dubbelantenn-heading (ZED-X20D, ~0,1°)** — absolut yaw som binder IMU-driften (ute).
+> 3. **IR-stråle** — LOS-grind + heading-ankare + zon + ID, robust i allt ljus (behålls oavsett).
+> 4. **Sikteskamera + edge-AI + fiducials (HITS/TrackingPoint-vägen)** — optisk bäring (~2 mrad), zon & ID ur bilden; vassast, kräver compute på/nära vapnet + degraderar i mörker (→ thermal). **Uppgradering.**
+> *Tactical IMU ADIS16470 (8°/hr, $300–400) = dyrt high-end-alternativ till lager 1.*
+>
+> **Emitter-ring-knepet:** de 4 IR-emittrarna sitter i en kvadrat **runt kameralinsen** → fire-strålen blir *samaxlig* med kamerans optiska axel (siktbäring = IR-bäring), och samma 4 emittrar utgör en **aktiv fiducial-konstellation** som andra kameror kan PnP-pose:a på i mörker. Se [`system-flowchart.md`](system-flowchart.md) §emitter-ring.
 
 ---
 
