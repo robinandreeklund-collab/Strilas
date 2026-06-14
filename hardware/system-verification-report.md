@@ -20,8 +20,8 @@ tröskel 0,35 mW/m² ×30 sol ÷4 bandpass · 5.56 v0 880 m/s.
 | 3 | Bäringsprecision (MC) | ✅ | **σ = 0,0004°** ≪ krav 0,076° (huvud) / 0,191° (torso) |
 | 4 | PnP-range | ✅ | **σ = 0,49 m** (0,33 %) @ 150 m |
 | 5 | IMU inter-frame | ✅ | drift **0,0005°** @ 60 fps → **1 IMU räcker** (array = ren reserv) |
-| 6 | IR-skott → TSOP @ 150 m | ✅* | **narrow Carclo @ 1 A → 166 m** (medium/1 A når bara 111 m) |
-| 7 | Ögonsäkerhet | ⚠️ mätpunkt | pt-källa 22× över; **extended-source täcker** → måste mätas |
+| 6 | IR-skott → TSOP @ 150 m | ✅* | **VALT: medium 10195 @ ~2 A → 153 m** (kompakt 42×62-kort) |
+| 7 | Ögonsäkerhet | ⚠️ mätpunkt | pt-källa 18× över; **extended-source täcker** → måste mätas |
 | 8 | Ballistik | ✅ | flygtid 188 ms, drop **16 cm**, lead (3 m/s) 56 cm — modelleras |
 | 9 | End-to-end träff (MC) | ✅ | **100 % torso**, sidled-RMS **0,1 cm** @ 150 m |
 
@@ -34,18 +34,21 @@ dagsljus (SNR ≫, så stark att man kör *kort* exponering → eliminerar rolli
 Monte Carlo ger 100 % torso-träff med 1 mm sidled-RMS. IMU-driften mellan bildrutor är
 försumbar → bekräftar att **1 IMU räcker** (4-arrayen är ren reserv).
 
-**De två kopplade villkoren** (samma som hela tiden):
-1. **IR-skottets räckvidd @ 150 m** kräver **narrow-lins (Carclo 10048)** — då räcker **~1 A**
-   (166 m). Medium-lins/1 A når bara 111 m. → välj narrow-lins, håll strömmen låg.
-2. **Ögonsäkerhet** vid den strömmen: 22× över *punktkälle*-MPE, men **extended-source-
-   relaxationen (~67×) täcker** — vilket **måste mätas** (skenbar källa/AE per IEC 60825-1).
+**Lins/kort-val: B — medium Carclo 10195 (Ø20), kompakt 42×62-kort, ~2 A för 150 m.**
+Viktig insikt: **ögonexponeringen sätts av räckviddskravet, inte av linsen.** För 150 m krävs
+~Ie 59 W/sr oavsett lins/ström-kombo; medium @ 2 A ger Ie ≈ 61 → **nära minsta möjliga
+exponering**. (Narrow @ 1 A ger Ie 72 = mer marginal men *högre* exponering.) Så B ger kompakt
+kort **och** nära-minimal ögonexponering.
+
+**Enda kvarvarande villkoret:** **ögonsäkerhet** — 18× över *punktkälle*-MPE, men **extended-
+source-relaxationen (~67×) täcker** → **måste mätas** (skenbar källa/AE per IEC 60825-1).
 
 ## Slutsats
 
 Systemet är **fysikaliskt sunt @ 150 m**. Allt som rör *precision* (det som gör det till mer
 än laser tag) verifieras med stor marginal med de exakta komponenterna. Det enda som inte kan
 *avgöras* i simulering är **ögonsäkerheten** — den kräver en bänkmätning (utpekad mätpunkt).
-Rekommenderad driftpunkt: **narrow Carclo + ~1 A + kort kameraexp (30 µs)**.
+Driftpunkt (vald): **medium Carclo 10195 + ~2 A + kort kameraexp (30 µs)**, kompakt 42×62-kort.
 
 > Detta är en simulering med trogna modeller — inte ett substitut för bänkmätning av AE,
 > dagsljus-SNR och räckvidd. Men varje länk är räknad ur fysik/datablad, inte antagen.

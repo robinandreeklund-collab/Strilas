@@ -140,20 +140,21 @@ for half,name in ((7.5,"medium 10195"),(5.0,"narrow 10048")):
     for I in (1.0,2.0,3.0):
         mr = maxrange(I,half)
         print(f"  {name} ±{half}°, {I:.0f}A: Ie={Ie_shot(I,half):5.1f} W/sr → räckvidd {mr:5.0f} m  {PASS(mr>=150)}")
-mr_best = maxrange(2.0,5.0)
-print(f"→ 150 m IR-LOS kräver NARROW-lins + ~1.5–2 A (medium/1A når bara {maxrange(1,7.5):.0f} m)")
+print(f"→ VALT: medium 10195 @ ~2A → {maxrange(2,7.5):.0f} m (kompakt 42×62-kort).")
+print(f"  Ie≈{Ie_shot(2,7.5):.0f} W/sr ≈ minsta Ie för 150 m (~59 W/sr) → ögonexponering oberoende av lins.")
 
 # ============================================================ 6. ÖGONSÄKERHET (vid IR-strömmen)
-print("\n--- 6. ÖGONSÄKERHET vid driftpunkten (narrow-lins @ 1 A → 166 m, lägsta ström) ---")
-I_need = 1.0
-Ie = Ie_shot(I_need,5.0)
+print("\n--- 6. ÖGONSÄKERHET vid driftpunkten (VALT: medium 10195 @ 2A → 153 m, kompakt kort) ---")
+I_need = 2.0
+Ie = Ie_shot(I_need,7.5)
 E100 = Ie/0.1**2
 duty_full = 0.5*0.014*13
 Eavg = E100*duty_full
 MPE_pt = 1.8*3.02*10**0.75*1e-3*1e4/10   # ~30.6 W/m² punktkälla
-print(f"  narrow 1A: Ie={Ie:.0f} W/sr, E@100mm={E100:.0f} W/m², Eavg(full-auto)={Eavg:.0f} W/m²")
+print(f"  medium 2A: Ie={Ie:.0f} W/sr, E@100mm={E100:.0f} W/m², Eavg(full-auto)={Eavg:.0f} W/m²")
 print(f"  punktkälla-MPE {MPE_pt:.0f} W/m² → {Eavg/MPE_pt:.0f}× ÖVER (punktkälla)  |  ×67 extended → {PASS(Eavg<MPE_pt*67)} (om skenbar källa ≥ α_max)")
-print(f"  ⚠️ MÄTPUNKT: 150 m-räckvidd driver upp strömmen → MÅSTE mäta skenbar källa/AE per IEC 60825-1")
+print(f"  OBS: Ie (=ögonexponering) sätts av 150 m-kravet (~59 W/sr), EJ av lins → medium 2A ≈ minimum.")
+print(f"  ⚠️ MÄTPUNKT: MÅSTE mäta skenbar källa/AE per IEC 60825-1")
 
 # ============================================================ 7. BALLISTIK
 print("\n--- 7. BALLISTIK (5.56, v0=880 m/s) @150 m ---")
@@ -203,12 +204,13 @@ print(f"""
  2 Kamera-detektion .... {PASS(det_ok)}  SNR≫ vid kort exp (mättar → använd 30µs)
  3 Bäringsprecision .... {PASS(sig_bear<REQ_HEAD)}  σ={sig_bear:.4f}° ≪ krav {REQ_HEAD:.3f}°
  4 IMU inter-frame ..... {PASS(imu_ok)}  drift försumbar; 1 IMU räcker
- 5 IR-skott @150m ...... ✅ narrow-lins @ 1A → {maxrange(1,5.0):.0f}m (medium/1A → {maxrange(1,7.5):.0f}m)
- 6 Ögonsäkerhet ........ ⚠️ MÄTPUNKT  pt-källa {Eavg/MPE_pt:.0f}× över; extended täcker → mät
+ 5 IR-skott @150m ...... ✅ VALT: medium 10195 @ 2A → {maxrange(2,7.5):.0f}m (kompakt 42×62)
+ 6 Ögonsäkerhet ........ ⚠️ MÄTPUNKT  pt-källa {Eavg/MPE_pt:.0f}× över; extended täcker → mät (Ie sätts av räckvidd, ej lins)
  7 Ballistik ........... ✅  drop {drop*100:.0f}cm + lead modelleras
  8 End-to-end träff .... {PASS(hit/N2>0.98)}  {hit/N2*100:.1f}% torso, aim-RMS {150*np.tan(np.radians(sig_bear))*100:.1f}cm
 
 PRECISIONSKEDJAN (kamera→bäring→ballistik→träff) HÅLLER MED STOR MARGINAL.
-DE TVÅ KOPPLADE VILLKOREN: IR-skottets räckvidd @150m driver upp strömmen,
-vilket driver ögonsäkerheten → båda löses av narrow-lins + uppmätt Class 1.
+VALT: medium 10195 @ ~2A (kompakt 42×62-kort). Ögonexponeringen sätts av
+150m-räckviddskravet (~Ie 59 W/sr), EJ av lins → medium 2A ≈ minimum.
+Enda kvarvarande villkoret: uppmätt Class 1 (skenbar källa/AE) per IEC 60825-1.
 """)

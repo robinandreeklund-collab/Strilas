@@ -55,9 +55,11 @@ bättre kisel-QE för konstellationen. (Detaljer: design-resolution §0.)
 
 ### ⚠️ Ögonsäkerhet (mätpunkt)
 
-CC-drivern (U3) ger **hårt HW-strömtak** (sense-resistor; firmware bara lägre). ~2 mW in i
-ögat @1 m/1 A → **inte trivialt Class 1**. **Mät AE per IEC 60825-1** vid låst pulsformat,
-**börja på 1 A**, köp räckvidd med mottagar-filtret. (Design-resolution §3.)
+Buck-CC-drivern (U6) ger **hårt HW-strömtak** (sense-resistor; firmware bara lägre).
+**150 m kräver ~2 A** med medium-lins (10195) → Eavg ≈ 18× *punktkälle*-MPE @100 mm; **extended-
+source-relaxationen täcker** men **måste mätas** (AE/skenbar källa per IEC 60825-1).
+**Bringup: börja 1 A.** Notera: **ögonexponeringen sätts av 150 m-räckviddskravet (~Ie 59 W/sr),
+ej av linsvalet** — medium @ 2 A ≈ minsta möjliga exponering. (Verifiering + design-resolution §3.)
 
 ### ✅ Kamera = OV5640 för v1 (Mira220 GS = uppgradering)
 
