@@ -41,7 +41,7 @@ ax.add_patch(Rectangle((-CAM_W/2, CAM_CY-CAM_H/2), CAM_W, CAM_H, facecolor="#102
 ax.add_patch(Circle((0, CAM_CY), CAM_BARREL+1.4, facecolor="#0c1418", edgecolor=CAMC, lw=1.4, zorder=4))
 ax.add_patch(Circle((0, CAM_CY), CAM_BARREL, facecolor=CUT, edgecolor=SILK, lw=1.3, zorder=5))
 ax.text(0, CAM_CY+1.4, "SIKTESKAMERA", ha="center", va="center", color=CAMC, fontsize=6.4, fontweight="bold", zorder=6)
-ax.text(0, CAM_CY-2.2, "OV5640 NoIR\n860nm BP\nM12 15–30°", ha="center", va="center", color=SILK, fontsize=5.6, zorder=6)
+ax.text(0, CAM_CY-2.2, "MIRA220 mono\nGS · NIR\n860nm BP", ha="center", va="center", color=SILK, fontsize=5.6, zorder=6)
 # baffel-ring (defense-in-depth mot scatter)
 ax.add_patch(Circle((0, CAM_CY), CAM_BARREL+2.6, facecolor="none", edgecolor="#555", lw=1.0, ls=(0, (3, 3)), zorder=4))
 for sx in (-1, 1):
@@ -112,7 +112,7 @@ notes = (
     "• RÄCKVIDD = 2× 940 nm + Carclo delar lasten → 100–150 m; symmetriska → samboresikt (parallax ~0.01° @150 m)\n"
     "• DRIVER = U3 KONSTANTSTRÖM (sense-resistor = hårt HW-tak; firmware bara lägre) + C1 + Q2/TVS reverse-skydd; VEMIT boost 9–12 V\n"
     "• ⚠️ ÖGONSÄKERHET = mätpunkt: ~2 mW in i öga @1 m,1 A → MÄT AE per IEC 60825-1, börja 1 A. MIPI dras EJ här (kamera-FFC→P4)\n"
-    "• Kamera = P4-stödd: OV5640 (v1, kit) / ams-OSRAM Mira220-board (GS). EJ IMX296, EJ Arducam Pivariety (= Pi). Mät modul → CAM_W/H"
+    "• Kamera = ams-OSRAM MIRA220MINI (mono, GLOBAL SHUTTER, NIR) — rätt för rörligt vapen; footprint från ams-OSRAM öppna PCB-filer. EJ OV5640/IMX296/Pivariety"
 )
 ax.text(-BW/2-1, -BH/2-2, notes, ha="left", va="top", color="#aeb7c2", fontsize=7.2,
         family="monospace", zorder=9, bbox=dict(boxstyle="round,pad=0.6", fc="#11151b", ec="#30363d"))

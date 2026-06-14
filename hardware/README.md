@@ -29,7 +29,7 @@ ovanför kameran → **samboresikt** (parallax ~0,01° @150 m; bred kon = bara L
 
 | Ref | Del | Roll |
 |---|---|---|
-| (mitten) | **Sikteskamera: OV5640 NoIR + 860 nm bandpass + M12 (FOV 15–30°)** | **PRECISION** — ser konstellationen → solvePnP → bäring (FOV sätts av dagsljus-SNR-test, ej fast) |
+| (mitten) | **Sikteskamera: ams-OSRAM MIRA220MINI (mono, global shutter, NIR) + 860 nm bandpass + M12 (FOV 15–30°)** | **PRECISION** — GS fryser bilden under panorering → korrekta blob-centroider; ser konstellationen → solvePnP → bäring |
 | D1–D2 | **940 nm OSLON Black** ×2 + **Carclo 10195** (~Ø20) kollimator | **skott** — kodad 56 kHz-stråle, 100–150 m |
 | U2 | **TDK ICM-45686 IMU** (I²C) | attityd mellan kamerabildrutor + rekyl |
 | Q1 / R1 | **AO3400 N-FET** / **Rsense ~1–3 Ω 2 W** | switchar + **sätter & HW-begränsar pulsström = ögonsäkerhet** |
@@ -55,11 +55,20 @@ CC-drivern (U3) ger **hårt HW-strömtak** (sense-resistor; firmware bara lägre
 ögat @1 m/1 A → **inte trivialt Class 1**. **Mät AE per IEC 60825-1** vid låst pulsformat,
 **börja på 1 A**, köp räckvidd med mottagar-filtret. (Design-resolution §3.)
 
-### ⚠️ Kamera = P4-stödd sensor
+### ✅ Kamera = ams-OSRAM MIRA220MINI (mono GS NIR) — vald
 
-**Inte IMX296** (Pi-native, ingen P4-drivrutin) och **inte Arducam Pivariety** (= Pi/libcamera).
-Använd **OV5640** (v1, i kitet) eller — för global shutter — **ams-OSRAM:s egen Mira220-board**
-(det officiella `esp32_p4_MIPI_DSI_CSI_mira220`-exemplet). Mät din modul → `CAM_W/CAM_H`.
+Eftersom vi gör custom PCB byter vi direkt till **rätt** kamera istället för att rita runt
+OV5640 och göra om. **Global shutter** är tekniskt korrekt för ett rörligt vapen: rolling
+shutter (OV5640) smetar/skevar under panorering → korrumperar blob-centroiderna → bäringsfel
+*medan du rör dig*. GS fryser hela bilden. **NIR-förstärkt** → ser 860 nm-konstellationen bättre.
+
+- Köpbar: **MIRA220MINI Sensor Board Mono** (ams-OSRAM, DigiKey). MIPI-CSI + I²C, P4-exempel finns.
+- **Footprint/mått från ams-OSRAM:s öppna PCB-filer** (`github.com/ams-OSRAM/ams-Mira-Image-Sensors`)
+  → exakt, ingen gissning (löser "mät-din-modul" bättre än OV5640).
+- **Inte** OV5640 (gör om), IMX296 (ingen P4-drv) eller Arducam Pivariety (= Pi/libcamera).
+
+**Avvägning (ärlig):** P4-drivrutinen är *exempel-grade* (mer integrationsjobb än mogna OV5640),
+högre kostnad + ledtid. Mono är **bättre** för oss (bara IR-blobbar, ingen Bayer → mer känslighet).
 
 ---
 

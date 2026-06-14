@@ -90,9 +90,14 @@ FET (AO3400, låg Rds) klarar pulsat. Verifiera junction-temp vid värsta full-a
 genom urtaget) men dess **FFC går direkt till P4:ans CSI-kontakt**. Detta kort bär bara:
 emitter-driver (effekt), IMU (I²C), kontakt. → ingen höghastighets-differential-routing här.
 
-**Exakt footprint:** designa mot en **namngiven modul med publicerad ritning** (mät kitets
-OV5640, eller köp en modul med datablad) → urtag + 4 standoff-hål. Tar bort "mät-din-modul"-
-osäkerheten genom att **låsa en specifik del**.
+**Vald kamera: ams-OSRAM MIRA220MINI (mono, global shutter, NIR).** Eftersom vi gör custom PCB
+byts OV5640 ut direkt — **global shutter** är korrekt för ett rörligt vapen (rolling shutter
+smetar/skevar under panorering → korrumperar blob-centroiderna → bäringsfel i rörelse). NIR →
+ser 860 nm bättre. Optiskt format ~1/3" (aktiv ~4,46×3,91 mm) → M12-brännvidd för FOV 15–30°.
+
+**Exakt footprint** från ams-OSRAM:s **öppna PCB-filer** (`github.com/ams-OSRAM/ams-Mira-Image-Sensors`)
+→ urtag + standoff-hål direkt ur källan, ingen mätning. **Avvägning:** P4-drivrutin är exempel-grade
+(mer integrationsjobb), högre kostnad/ledtid än gratis-OV5640.
 
 ---
 
