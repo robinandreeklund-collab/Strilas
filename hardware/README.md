@@ -2,10 +2,13 @@
 
 Två fysiskt skilda noder, två kort:
 
-| Kort | Nod | Funktion |
-|---|---|---|
-| **Vapnets optikmodul** | vapen | precis sikteskamera + IR-**sändare** (860 nm) + IMU + driver |
-| Detektor-ring | mål/väst | IR-**mottagare** (TSOP4856) + kamera |
+| Kort | Nod | Funktion | Doc |
+|---|---|---|---|
+| **Vapnets optikmodul** | vapen | precis sikteskamera + IR-**sändare** (940 nm) + IMU + driver | nedan |
+| **Väst-detektor-patch** | väst | IR-**mottagare** (TSOP 940 nm) + 860 nm-konstellation | [receiver-boards.md](receiver-boards.md) |
+| **Hjälm-halo** | hjälm | 8× TSOP 360° + 860 nm-konstellation + **GNSS-patch** | [receiver-boards.md](receiver-boards.md) |
+
+*(Föråldrad: `detector-ring-8x-tsop4856` hade kamera i mitten — player har ingen kamera; ersatt av väst-patch + hjälm-halo.)*
 
 ---
 
