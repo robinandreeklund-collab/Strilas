@@ -72,18 +72,12 @@ def part(ax, x, y, w, h, ref, val, vy="top"):
     ax.text(x, y+0.2, ref, ha="center", va="center", color=SILK, fontsize=6.0, fontweight="bold", zorder=6)
     yy = y-h/2-0.5 if vy == "top" else y+h/2+0.5
     ax.text(x, yy, val, ha="center", va=vy, color="#aeb7c2", fontsize=5.2, zorder=6)
-# vänster remsa: 1–4 IMU SPI-array (bestyckad U2)
+# vänster remsa: 1 IMU (SPI) — array borttagen (verifierat 1 räcker)
 imu_x = -16.5
-for i, yy in enumerate([8, 2, -4, -10]):
-    pop = (i == 0)
-    ax.add_patch(Rectangle((imu_x-1.7, yy-1.7), 3.4, 3.4,
-                 facecolor="#1d2530" if pop else "#10151b",
-                 edgecolor=SILK if pop else "#3a4654",
-                 lw=1.0 if pop else 0.7, ls="-" if pop else (0, (2, 2)), zorder=5))
-    ax.text(imu_x, yy, f"U{2+i}", ha="center", va="center",
-            color=SILK if pop else "#5a6675", fontsize=5.2, fontweight="bold", zorder=6)
-ax.text(imu_x, 12.0, "IMU ×1–4\nICM-45686 SPI", ha="center", va="bottom", color="#aeb7c2", fontsize=5.0, zorder=6)
-ax.text(imu_x, -13.0, "bestyckad: U2", ha="center", va="top", color="#9bbfe0", fontsize=4.8, zorder=6)
+ax.add_patch(Rectangle((imu_x-2.5, -2.5), 5, 5, facecolor="#1d2530", edgecolor=SILK, lw=1.0, zorder=5))
+ax.text(imu_x, 0, "U2", ha="center", va="center", color=SILK, fontsize=6.4, fontweight="bold", zorder=6)
+ax.text(imu_x, 6.5, "ICM-45686\nIMU (SPI)", ha="center", va="bottom", color="#aeb7c2", fontsize=5.2, zorder=6)
+ax.text(imu_x, -4.5, "1 st räcker\n(verifierat)", ha="center", va="top", color="#9bbfe0", fontsize=4.8, zorder=6)
 
 # höger remsa: driver (buck CC)
 part(ax, 16.5, 8.5, 4.4, 3.6, "C1", "Cout")
@@ -98,14 +92,14 @@ part(ax,  -4.5, -20.5, 3.4, 2.4, "Cin", "in-cap")
 part(ax,   3.5, -20.5, 3.4, 2.4, "TVS", "clamp")
 part(ax,  12.0, -20.5, 3.2, 2.2, "F1", "PTC")
 
-# ---- kontakt mot P4 (2x7 SPI), botten ----
-hy = -26.8; hx0 = -3*2.54
-ax.add_patch(Rectangle((hx0-1.6, hy-1.3), 2.54*6+3.2, 2.54+2.8, facecolor="#15171c", edgecolor=SILK, lw=1.0, zorder=5))
-for c in range(7):
-    ax.add_patch(Circle((hx0 + c*2.54, hy+2.54), 0.58, facecolor=PAD, edgecolor="#7a5a1e", lw=0.5, zorder=6))
-    ax.add_patch(Circle((hx0 + c*2.54, hy), 0.58, facecolor=PAD, edgecolor="#7a5a1e", lw=0.5, zorder=6))
-ax.text(0, hy-2.1, "J1 2×7  topp: VBAT EN IR_MOD SCK MOSI MISO INT   botten: GND 3V3 GND CS1 CS2 CS3 CS4",
-        ha="center", va="top", color=SILK, fontsize=4.8, zorder=6)
+# ---- kontakt mot P4 (2x5 SPI), botten ----
+hy = -26.8; hx0 = -2*2.54
+ax.add_patch(Rectangle((hx0-1.6, hy-1.3), 2.54*4+3.2, 2.54+2.8, facecolor="#15171c", edgecolor=SILK, lw=1.0, zorder=5))
+for c in range(5):
+    ax.add_patch(Circle((hx0 + c*2.54, hy+2.54), 0.6, facecolor=PAD, edgecolor="#7a5a1e", lw=0.5, zorder=6))
+    ax.add_patch(Circle((hx0 + c*2.54, hy), 0.6, facecolor=PAD, edgecolor="#7a5a1e", lw=0.5, zorder=6))
+ax.text(0, hy-2.1, "J1 2×5  topp: VBAT EN IR_MOD SCK MOSI   botten: GND 3V3 GND MISO CS",
+        ha="center", va="top", color=SILK, fontsize=5.2, zorder=6)
 
 # ---- monteringshal ----
 for x, y in [(0, 27.5), (-17.5, -28.5), (17.5, -28.5)]:
@@ -127,7 +121,7 @@ notes = (
     "• PRECISION = sikteskamera + aktiva IR-blobbar → solvePnP-bäring <0.1° vid VILKEN FOV; FOV (15–30°) sätts av dagsljus-SNR @150 m\n"
     "• RÄCKVIDD = 2× 940 nm + Carclo delar lasten → 100–150 m; symmetriska → samboresikt (parallax ~0.01° @150 m)\n"
     "• DRIVER = U6 BUCK konstantström (från 2S; sense = hårt HW-tak) + L1 + Cin/Cout + Q1 56 kHz-gate + D5 freewheel + Q2/TVS/F1 inskydd\n"
-    "• IMU = 1–4× ICM-45686 på SPI (bestyckad U2; layout för 4 = redundans/gap-prediktion). Kameran 90 fps GS = primär ref → 1 räcker\n"
+    "• IMU = 1× ICM-45686 (SPI) — array BORTTAGEN: verifierat att inter-frame-drift 0,0005° << krav (kameran re-ankrar varje frame)\n"
     "• ⚠️ ÖGONSÄKERHET = mätpunkt: ~2 mW in i öga @1 m,1 A → MÄT AE per IEC 60825-1, börja 1 A. MIPI dras EJ här (kamera-FFC→P4)\n"
     "• Kamera = OV5640 (v1, i kitet, NoIR, rolling — fast-pan-grind i firmware via IMU). GS-uppgr: Mira220 MINI ($141 eval). EJ IMX296/Pivariety. Mät modul → CAM_W/H"
 )

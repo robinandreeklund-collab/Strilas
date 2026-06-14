@@ -34,17 +34,17 @@ ovanför kameran → **samboresikt** (parallax ~0,01° @150 m; bred kon = bara L
 |---|---|---|
 | (mitten) | **Sikteskamera: OV5640 NoIR + 860 nm bandpass + M12 (FOV 15–30°)** | **PRECISION** — ser konstellationen → solvePnP → bäring (rolling shutter; fast-pan-grind i firmware) |
 | D1–D2 | **940 nm OSLON Black** ×2 + **Carclo 10195** (~Ø20) kollimator | **skott** — kodad 56 kHz-stråle, 100–150 m |
-| U2–U5 | **TDK ICM-45686 IMU ×1–4 (SPI, bestyckad 1)** | attityd mellan kamerabildrutor + rekyl; layout för 4 = redundans |
+| U2 | **TDK ICM-45686 IMU (SPI)** | attityd mellan kamerabildrutor + rekyl; **array borttagen — verifierat 1 räcker** (drift 0,0005°) |
 | U6 / L1 / Rsense | **buck konstantströms-LED-driver** (från 2S) / induktor / sense-resistor | konstantström + **hårt HW-tak = ögonsäkerhet** |
 | C1 / Cin / D5 / Q1 | Cout 220 µF / in-cap / freewheel-diod / AO3400 **56 kHz-gate** | switch-passiva + bärvågs-gate |
 | Q2 / TVS / F1 | reverse-FET / clamp / PTC | inskydd på VBAT |
-| J1 | **2×7 SPI:** VBAT·EN·IR_MOD·SCK·MOSI·MISO·INT / GND·3V3·GND·CS1–CS4 | mot ESP32-P4 (kamera via FFC) |
+| J1 | **2×5 SPI:** VBAT·EN·IR_MOD·SCK·MOSI / GND·3V3·GND·MISO·CS | mot ESP32-P4 (kamera via FFC) |
 
 ### Mått & el — och varför prestandan hålls
 
 - Kort **42 × 62 mm** (rundad rektangel), 3× M2.5. **~48 % mindre yta än Ø80**, halva bredden.
 - **2 LED i serie** delar effektlasten → 100–150 m bibehålls; **VBAT 2S in**, U6 **buck-CC** steg ner (boost ej nödvändig); **IR_MOD** = 56 kHz på Q1-gaten.
-- **IMU-array på SPI** (egen CS/chip; ICM-45686 har bara 2 I²C-adresser). Bestycka **1**; layout stödjer **4**.
+- **1 IMU på SPI** (SPI för hög ODR vid rekyl). Array **borttagen** — fysik-verifieringen visade inter-frame-drift 0,0005° ≪ krav.
 - **Precision = kameran** (emitter- & IMU-antal påverkar inte rubrik-precisionen — kameran 90 fps GS är primär referens).
 
 ### ✅ Självbländning — LÖST via våglängdssplit

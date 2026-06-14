@@ -81,13 +81,13 @@ FET (AO3400, låg Rds) klarar pulsat. Verifiera junction-temp vid värsta full-a
 
 ---
 
-## 5. IMU — 1–4 SPI-array (bestyckad 1)
+## 5. IMU — 1× ICM-45686 (SPI) — array BORTTAGEN
 
-- **Layout för 1–4× ICM-45686 på SPI** (egen CS/chip; I²C ger bara 2 adresser). **Bestycka 1.**
-  Kameran (90 fps GS) re-ankrar attityden var ~11 ms → IMU:n fyller bara gapen → **1 räcker**;
-  arrayen är zero-regret-reserv (redundans + renare gap-prediktion) om mätning visar behov.
+- **1 IMU på SPI** (SPI för hög ODR vid rekyl-transienten). **Arrayen borttagen** efter
+  fysik-verifieringen: kameran re-ankrar attityden varje frame → inter-frame-drift **0,0005°**
+  (@60 fps) ≪ krav. 4 chip gav försumbar vinst → onödig yta/komplexitet.
 - **Stel koppling** till optisk axel (samma styva kort) — kritiskt för kamera-IMU-extrinsics.
-- 100 nF avkoppling/chip; SPI-linjer korta. **Extrinsisk kalibrering** (IMU↔kameraram) en gång.
+- 100 nF avkoppling; SPI-linjer korta. **Extrinsisk kalibrering** (IMU↔kameraram) en gång.
 
 ---
 
@@ -112,9 +112,10 @@ position med måttband. **Ingen LiDAR behövs** (superseder av PnP; kan återkom
 
 ## 7. Kontakt & signaler (J1, 2×4) + skydd
 
-**J1 = 2×7:** `VBAT · EN · IR_MOD · SCK · MOSI · MISO · INT / GND · 3V3 · GND · CS1 · CS2 · CS3 · CS4`
-(SPI för IMU-arrayen, 4 CS). Trigger går **direkt till P4-GPIO** (på greppet), ej via modulen.
+**J1 = 2×5:** `VBAT · EN · IR_MOD · SCK · MOSI / GND · 3V3 · GND · MISO · CS`
+(SPI för 1 IMU). Trigger går **direkt till P4-GPIO** (på greppet), ej via modulen.
 **ESD:** serieresistor + TVS/ESD-diod på IR_MOD och SPI-linjerna.
+*(VBAT/GND ev. dubblerade pinnar för pulsström — se §9.5.)*
 
 ---
 
