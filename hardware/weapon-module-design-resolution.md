@@ -76,11 +76,13 @@ FET (AO3400, låg Rds) klarar pulsat. Verifiera junction-temp vid värsta full-a
 
 ---
 
-## 5. IMU
+## 5. IMU — 1–4 SPI-array (bestyckad 1)
 
+- **Layout för 1–4× ICM-45686 på SPI** (egen CS/chip; I²C ger bara 2 adresser). **Bestycka 1.**
+  Kameran (90 fps GS) re-ankrar attityden var ~11 ms → IMU:n fyller bara gapen → **1 räcker**;
+  arrayen är zero-regret-reserv (redundans + renare gap-prediktion) om mätning visar behov.
 - **Stel koppling** till optisk axel (samma styva kort) — kritiskt för kamera-IMU-extrinsics.
-- 100 nF avkoppling; **I²C pull-ups** (4,7 kΩ) på SDA/SCL.
-- **Extrinsisk kalibrering** (IMU-axlar ↔ kameraram) en gång → lagras.
+- 100 nF avkoppling/chip; SPI-linjer korta. **Extrinsisk kalibrering** (IMU↔kameraram) en gång.
 
 ---
 
@@ -103,8 +105,9 @@ ser 860 nm bättre. Optiskt format ~1/3" (aktiv ~4,46×3,91 mm) → M12-brännvi
 
 ## 7. Kontakt & signaler (J1, 2×4) + skydd
 
-`IR_MOD · VEMIT · EN · GND / 3V3 · SDA · SCL · GND`. Trigger går **direkt till P4-GPIO** (på
-greppet), inte via denna modul. **ESD:** serieresistor + TVS/ESD-diod på IR_MOD och I²C.
+**J1 = 2×7:** `VBAT · EN · IR_MOD · SCK · MOSI · MISO · INT / GND · 3V3 · GND · CS1 · CS2 · CS3 · CS4`
+(SPI för IMU-arrayen, 4 CS). Trigger går **direkt till P4-GPIO** (på greppet), ej via modulen.
+**ESD:** serieresistor + TVS/ESD-diod på IR_MOD och SPI-linjerna.
 
 ---
 

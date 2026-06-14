@@ -31,17 +31,18 @@ ovanför kameran → **samboresikt** (parallax ~0,01° @150 m; bred kon = bara L
 |---|---|---|
 | (mitten) | **Sikteskamera: ams-OSRAM MIRA220MINI (mono, global shutter, NIR) + 860 nm bandpass + M12 (FOV 15–30°)** | **PRECISION** — GS fryser bilden under panorering → korrekta blob-centroider; ser konstellationen → solvePnP → bäring |
 | D1–D2 | **940 nm OSLON Black** ×2 + **Carclo 10195** (~Ø20) kollimator | **skott** — kodad 56 kHz-stråle, 100–150 m |
-| U2 | **TDK ICM-45686 IMU** (I²C) | attityd mellan kamerabildrutor + rekyl |
-| Q1 / R1 | **AO3400 N-FET** / **Rsense ~1–3 Ω 2 W** | switchar + **sätter & HW-begränsar pulsström = ögonsäkerhet** |
+| U2–U5 | **TDK ICM-45686 IMU ×1–4 (SPI, bestyckad 1)** | attityd mellan kamerabildrutor + rekyl; layout för 4 = redundans |
+| U6 / Q1 / Rsense | **boost konstantströms-LED-driver** / AO3400 N-FET / sense-resistor | konstantström + **hårt HW-tak = ögonsäkerhet** |
 | C1 / Rg / D5 | 220 µF reservoar / 220 Ω gate / SS54 flyback | levererar pulsen + ren switchning |
-| J1 | **2×4: IR_MOD·VEMIT·EN·GND / 3V3·SDA·SCL·GND** | mot ESP32-P4 (kamera via FFC) |
+| Q2 / TVS / F1 | reverse-FET / clamp / PTC | inskydd på VBAT |
+| J1 | **2×7 SPI:** VBAT·EN·IR_MOD·SCK·MOSI·MISO·INT / GND·3V3·GND·CS1–CS4 | mot ESP32-P4 (kamera via FFC) |
 
 ### Mått & el — och varför prestandan hålls
 
 - Kort **42 × 62 mm** (rundad rektangel), 3× M2.5. **~48 % mindre yta än Ø80**, halva bredden.
-- **2 LED i serie** delar effektlasten → 100–150 m bibehålls; mata **VEMIT** från 2S/boost (~12 V).
-- **Precision = kameran** (emitterantal påverkar inte). **2 (ej 1) emittrar** sprider effekten →
-  *lättare* Class 1. Enda som tappas: framtida **aktiv-fiducial-beacon** (4-punkt) — ej v1-krav.
+- **2 LED i serie** delar effektlasten → 100–150 m bibehålls; **VBAT in**, U6 boostar till ~12 V; **IR_MOD** = 56 kHz från RMT.
+- **IMU-array på SPI** (egen CS/chip; ICM-45686 har bara 2 I²C-adresser). Bestycka **1**; layout stödjer **4**.
+- **Precision = kameran** (emitter- & IMU-antal påverkar inte rubrik-precisionen — kameran 90 fps GS är primär referens).
 
 ### ✅ Självbländning — LÖST via våglängdssplit
 

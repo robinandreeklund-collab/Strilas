@@ -72,27 +72,42 @@ def part(ax, x, y, w, h, ref, val, vy="top"):
     ax.text(x, y+0.2, ref, ha="center", va="center", color=SILK, fontsize=6.0, fontweight="bold", zorder=6)
     yy = y-h/2-0.5 if vy == "top" else y+h/2+0.5
     ax.text(x, yy, val, ha="center", va=vy, color="#aeb7c2", fontsize=5.2, zorder=6)
-# vänster remsa: IMU + Q1 + Rg
-ax.add_patch(Rectangle((-16.5-3, 1.5-2.5), 6, 5, facecolor="#1d2530", edgecolor=SILK, lw=1.0, zorder=5))
-ax.text(-16.5, 3.0, "U2", ha="center", va="center", color=SILK, fontsize=6.0, fontweight="bold", zorder=6)
-ax.text(-16.5, -1.6, "IMU", ha="center", va="top", color="#aeb7c2", fontsize=5.2, zorder=6)
-part(ax, -16.5, -7.5, 4.2, 3.0, "Q1", "AO3400")
-part(ax, -16.5, -13.0, 3.2, 2.2, "Rg", "220Ω")
-# höger remsa: C1 + R1 + D5
-part(ax, 16.5, 2.5, 4.6, 4.4, "C1", "220µF")
-part(ax, 16.5, -6.0, 4.0, 2.8, "U3", "CC-drv")
-part(ax, 16.5, -12.0, 3.4, 2.4, "D5", "SS54")
+# vänster remsa: 1–4 IMU SPI-array (bestyckad U2)
+imu_x = -16.5
+for i, yy in enumerate([8, 2, -4, -10]):
+    pop = (i == 0)
+    ax.add_patch(Rectangle((imu_x-1.7, yy-1.7), 3.4, 3.4,
+                 facecolor="#1d2530" if pop else "#10151b",
+                 edgecolor=SILK if pop else "#3a4654",
+                 lw=1.0 if pop else 0.7, ls="-" if pop else (0, (2, 2)), zorder=5))
+    ax.text(imu_x, yy, f"U{2+i}", ha="center", va="center",
+            color=SILK if pop else "#5a6675", fontsize=5.2, fontweight="bold", zorder=6)
+ax.text(imu_x, 12.0, "IMU ×1–4\nICM-45686 SPI", ha="center", va="bottom", color="#aeb7c2", fontsize=5.0, zorder=6)
+ax.text(imu_x, -13.0, "bestyckad: U2", ha="center", va="top", color="#9bbfe0", fontsize=4.8, zorder=6)
 
-# ---- kontakt mot P4 (2x4), botten ----
-hy = -25.5; hx0 = -1.5*2.54
-ax.add_patch(Rectangle((hx0-2, hy-1.4), 2.54*3+4, 2.54+3.0, facecolor="#15171c", edgecolor=SILK, lw=1.0, zorder=5))
-for c in range(4):
-    ax.add_patch(Circle((hx0 + c*2.54, hy+2.54), 0.65, facecolor=PAD, edgecolor="#7a5a1e", lw=0.5, zorder=6))
-    ax.add_patch(Circle((hx0 + c*2.54, hy), 0.65, facecolor=PAD, edgecolor="#7a5a1e", lw=0.5, zorder=6))
-ax.text(0, hy-2.3, "J1: IR_MOD·VEMIT·EN·GND / 3V3·SDA·SCL·GND", ha="center", va="top", color=SILK, fontsize=5.6, zorder=6)
+# höger remsa: driver
+part(ax, 16.5, 8.0, 4.6, 4.4, "C1", "220µF")
+part(ax, 16.5, 0.0, 4.2, 2.8, "U6", "CC-drv")
+part(ax, 16.5, -6.5, 3.6, 2.4, "Q1", "AO3400")
+part(ax, 16.5, -12.0, 3.2, 2.2, "D5", "SS54")
+
+# botten: reverse-skydd + gate-resistor
+part(ax, -12.5, -20.5, 4.2, 2.6, "Q2", "rev-FET")
+part(ax,  -4.5, -20.5, 3.0, 2.2, "Rg", "220Ω")
+part(ax,   3.5, -20.5, 3.4, 2.4, "TVS", "clamp")
+part(ax,  12.0, -20.5, 3.2, 2.2, "F1", "PTC")
+
+# ---- kontakt mot P4 (2x7 SPI), botten ----
+hy = -26.8; hx0 = -3*2.54
+ax.add_patch(Rectangle((hx0-1.6, hy-1.3), 2.54*6+3.2, 2.54+2.8, facecolor="#15171c", edgecolor=SILK, lw=1.0, zorder=5))
+for c in range(7):
+    ax.add_patch(Circle((hx0 + c*2.54, hy+2.54), 0.58, facecolor=PAD, edgecolor="#7a5a1e", lw=0.5, zorder=6))
+    ax.add_patch(Circle((hx0 + c*2.54, hy), 0.58, facecolor=PAD, edgecolor="#7a5a1e", lw=0.5, zorder=6))
+ax.text(0, hy-2.1, "J1 2×7  topp: VBAT EN IR_MOD SCK MOSI MISO INT   botten: GND 3V3 GND CS1 CS2 CS3 CS4",
+        ha="center", va="top", color=SILK, fontsize=4.8, zorder=6)
 
 # ---- monteringshal ----
-for x, y in [(0, 27.5), (-17.5, -27), (17.5, -27)]:
+for x, y in [(0, 27.5), (-17.5, -28.5), (17.5, -28.5)]:
     ax.add_patch(Circle((x, y), 1.3, facecolor=CUT, edgecolor="#c98a3a", lw=1.0, zorder=4))
 
 # ---- mattlinjer ----
@@ -110,7 +125,8 @@ notes = (
     "• VÅGLÄNGDSSPLIT: SKOTT D1/D2 = 940 nm; kamera 860 nm bandpass → AVVISAR egna skottet (löser självbländning). Baffel = backup\n"
     "• PRECISION = sikteskamera + aktiva IR-blobbar → solvePnP-bäring <0.1° vid VILKEN FOV; FOV (15–30°) sätts av dagsljus-SNR @150 m\n"
     "• RÄCKVIDD = 2× 940 nm + Carclo delar lasten → 100–150 m; symmetriska → samboresikt (parallax ~0.01° @150 m)\n"
-    "• DRIVER = U3 KONSTANTSTRÖM (sense-resistor = hårt HW-tak; firmware bara lägre) + C1 + Q2/TVS reverse-skydd; VEMIT boost 9–12 V\n"
+    "• DRIVER = U6 KONSTANTSTRÖM (boostar VBAT→~12 V + sense-resistor = hårt HW-tak; firmware bara lägre) + C1 + Q2/TVS/F1 reverse-skydd\n"
+    "• IMU = 1–4× ICM-45686 på SPI (bestyckad U2; layout för 4 = redundans/gap-prediktion). Kameran 90 fps GS = primär ref → 1 räcker\n"
     "• ⚠️ ÖGONSÄKERHET = mätpunkt: ~2 mW in i öga @1 m,1 A → MÄT AE per IEC 60825-1, börja 1 A. MIPI dras EJ här (kamera-FFC→P4)\n"
     "• Kamera = ams-OSRAM MIRA220MINI (mono, GLOBAL SHUTTER, NIR) — rätt för rörligt vapen; footprint från ams-OSRAM öppna PCB-filer. EJ OV5640/IMX296/Pivariety"
 )
