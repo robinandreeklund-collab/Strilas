@@ -43,6 +43,8 @@ LED = mk("VSMA1094750", "D", [(1, "A"), (2, "K")],
 IMU = mk("ICM-45686", "U", [(i, i) for i in range(1, 15)],
          "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-45686")
 MH = lambda n: mk(f"MH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", "M2.5")
+# kamera-monteringshål (M2) — matchar Arducam B0332 28×28 mm-mönster
+CMH = lambda n: mk(f"CMH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2_kamera")
 
 # ---------- nät ----------
 VBAT_IN, VBAT_F, VBAT, GND, P3V3 = Net("VBAT_IN"), Net("VBAT_F"), Net("VBAT"), Net("GND"), Net("+3V3")
@@ -53,13 +55,14 @@ STR1, LEDC, IRG = Net("LED_MID"), Net("LED_CATH"), Net("Q1_GATE")
 J1 = P4IF(); J2 = BATT()
 F1 = PTC(); Q2 = PFET(); Rg2 = RES("100k"); Dtvs = TVS()
 Cin = CAP("10uF", "Capacitor_SMD:C_1206_3216Metric")
-Cbulk = CAP("220uF", "Capacitor_SMD:CP_Elec_6.3x7.7")
+Cbulk = CAP("100uF", "Capacitor_SMD:C_1210_3225Metric")   # MLCC reservoar (låg-ESR f. 56 kHz-puls)
 Rset = RES("3R3_2W", "Resistor_SMD:R_2512_6332Metric")
 D1, D2 = LED(), LED()
 Q1 = NFET(); Rg = RES("220R")
 U2 = IMU(); Cd1 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric")
 Cd2 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric"); Cd3 = CAP("1uF")
 H1, H2, H3 = MH(1)(), MH(2)(), MH(3)()
+H4, H5, H6, H7 = CMH(4)(), CMH(5)(), CMH(6)(), CMH(7)()   # kamerafäste (B0332)
 
 # ---------- J2 = batteri-in (2S) ; J1 = P4-carrier-header ----------
 J2["VBAT"] += VBAT_IN; J2["GND"] += GND
@@ -89,7 +92,7 @@ U2[13] += SCK; U2[14] += MOSI; U2[1] += MISO; U2[12] += nCS; U2[4] += INT
 Cd1[1] += P3V3; Cd1[2] += GND; Cd2[1] += P3V3; Cd2[2] += GND; Cd3[1] += P3V3; Cd3[2] += GND
 
 # ---------- mekanik (hål till GND) ----------
-for H in (H1, H2, H3):
+for H in (H1, H2, H3, H4, H5, H6, H7):
     H[1] += GND
 
 generate_netlist(file_="hardware/weapon-module.net")

@@ -104,18 +104,23 @@ helmet_pos.update({"J2": (0, 0, 0), "J1": (0, -44, 0)})
 # Lins-hål Ø16 i mitten (kamera bakom kortet): keepout x[-8,8] y[-12,4].
 # Pulsloop hålls kort: C2(reservoar)→R2(Rset)→D2→D3→Q1→GND uppe.
 # IMU + avkoppling i höger remsa; inmatningsskydd nere till vänster; headers nederst.
+# Kamerafäste (B0332 38×38): 4× M2-hål i 28×28-mönster runt linsaxeln (0,-4).
+#   H4(-14,10) H5(14,10) H6(-14,-18) H7(14,-18). Komponenter flyttade ut till kanterna
+#   så dessa hål + standoffs är fria. Kameran skruvas fast bakom kortet, lins genom Ø16.
 weapon_pos = {
-    # topp: emittrar + pulsreservoar + Rset
+    # topp: emittrar + pulsreservoar + Rset (caps ut i hörnen, fria från H4/H5)
     "D2": (-9, 22, 0),  "D3": (9, 22, 0),          # 940 nm emittrar (skottstråle)
-    "C2": (-15, 14, 0), "R2": (0, 14, 90), "C1": (15, 14, 0),    # 220µF / Rset / 10µF
-    # höger remsa: 56 kHz-driver + IMU + avkoppling
-    "Q1": (15, 8, 0),   "R3": (15, 2, 90),         # N-FET + gate-R
-    "U1": (15, -5, 0),                             # IMU (fri från lins)
-    "C3": (10, -4, 90), "C4": (10, -9, 90), "C5": (15, -11, 0),  # IMU-avkoppling
-    # vänster remsa: inmatningsskydd (PTC -> reverse-FET -> TVS -> pulldown)
-    "F1": (-16, 8, 90), "Q2": (-16, 1, 0), "D1": (-16, -6, 90), "R1": (-16, -12, 90),
-    # nederkant: kontakter + monteringshål
-    "J2": (-15, -27, 90), "J1": (-1, -27, 90), "H3": (18, -26, 0),
+    "C2": (-8, 15, 0), "R2": (0, 15, 90), "C1": (8, 15, 0),    # 100µF MLCC / Rset / 10µF
+    # höger: driver längst ut (x≈19, fritt från H5/H7) + IMU i mittkolumnen (x≈10-14)
+    "Q1": (19, 9, 0),   "R3": (19, 3, 90),         # N-FET + gate-R (far-right)
+    "U1": (14, -3, 0),                             # IMU (mellan H5/H7, fri från lins)
+    "C3": (14, -9, 0), "C4": (10, -8, 0), "C5": (10, 1, 0),  # IMU-avkoppling
+    # vänster remsa: inmatningsskydd (x≈-18, fritt från H4/H6)
+    "F1": (-18, 8, 90), "Q2": (-18, 1, 0), "D1": (-18, -6, 90), "R1": (-18, -12, 90),
+    # kamerafäste (M2, 28×28 om lins (0,-4))
+    "H4": (-14, 10, 0), "H5": (14, 10, 0), "H6": (-14, -18, 0), "H7": (14, -18, 0),
+    # nederkant: kontakter + kort-monteringshål
+    "J2": (-15, -27, 90), "J1": (-1, -27, 90), "H3": (18, -27, 0),
     "H1": (-18, 28, 0), "H2": (18, 28, 0),
 }
 
