@@ -30,8 +30,8 @@ Bär även en **extra IMU** (I²C). Optikmodulen (edge B, under P4) förblir ren
 | 1 | 6 | GPIO29 | MAGWELL (magasin-närvaro) |
 | 2 | 7 | GPIO28 | RECOIL_FAULT (eFuse fault-in) |
 | 3 | 8 | GND | |
-| 4 | 9 | GPIO50 | **IMU2_INT** (extra IMU) |
-| 5 | 10 | GPIO49 | reserv (NC) |
+| 4 | 9 | GPIO50 | **IMU_INT** (IMU U1, 0x69) |
+| 5 | 10 | GPIO49 | **IMU_INT** (IMU U2, 0x68) |
 | 6 | 11 | GPIO5 | RACK |
 | 7 | 12 | GPIO4 | TRIG |
 | 8 | 13 | GND | |
@@ -49,14 +49,18 @@ Bär även en **extra IMU** (I²C). Optikmodulen (edge B, under P4) förblir ren
 | J3–J6 | JST-PH B2B vertikal 2-pin | trigger / rack / mag-release / magwell (interna pull-ups) |
 | J7 | JST-PH B3B vertikal 3-pin | recoil-effektkort (PWM/FAULT/GND) |
 | J8 | JST-PH B4B vertikal 4-pin | NFC PN532 (SDA/SCL/3V3/GND) |
-| U1 | TDK ICM-45686 (LGA-14) | **extra IMU på I²C** (delar NFC-bussen, adr 0x69, INT=GPIO50) |
-| R1/R2 | 4k7 | I²C-pullups |
+| U1 | TDK ICM-45686 (LGA-14) | **extra IMU #1**, I²C 0x69 (AD0 hög), INT=GPIO50 |
+| U2 | TDK ICM-45686 (LGA-14) | **extra IMU #2**, I²C 0x68 (AD0 låg), INT=GPIO49 |
+| R1/R2 | 4k7 | I²C-pullups (delas av NFC + båda IMU) |
 | C1/C2 | 100nF / 1µF | 3V3-rail/NFC-avkoppling |
-| C3/C4 | 100nF | IMU VDD/VDDIO-avkoppling |
+| C3/C4 | 100nF | U1 VDD/VDDIO-avkoppling |
+| C5/C6 | 100nF | U2 VDD/VDDIO-avkoppling |
 | H1–H4 | M2 | i linje med P4-standoffsen → genomgående stack |
 
-> Extra IMU: CS hög → I²C-läge, SDO/AD0 hög → adress 0x69 (skild från PN532). Delar
-> SDA/SCL (GPIO7/8) med NFC; egen INT på GPIO50 (tidigare reservstift).
+> **2 IMU på delad I²C-buss** (max på en buss — ICM-45686 har bara adress 0x68/0x69).
+> Båda: CS hög → I²C-läge; SDO/AD0 sätter adress. Delar SDA/SCL (GPIO7/8) med NFC
+> (PN532 = 0x24/0x48, ingen krock); egna INT på GPIO50 resp GPIO49.
+> Fler än 2 skulle kräva I²C-mux (TCA9548A) eller SPI + bredare socket — ej valt.
 
 ## Bygg / reproduktion
 

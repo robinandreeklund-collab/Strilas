@@ -15,10 +15,11 @@ ax.add_patch(FancyBboxPatch((-HW, -HH), 2*HW, 2*HH, boxstyle="round,pad=0,roundi
              fc="#0b6b3a", ec="#06301a", lw=2, zorder=1))
 
 LABEL = {"J1": "P4 EDGE A socket (1×12)", "J2": "3V3-in", "J3": "TRIG", "J4": "RACK",
-         "J5": "MAG-REL", "J6": "MAGWELL", "J7": "RECOIL", "J8": "NFC", "U1": "IMU2\n(I²C)"}
+         "J5": "MAG-REL", "J6": "MAGWELL", "J7": "RECOIL", "J8": "NFC",
+         "U1": "IMU\n0x69", "U2": "IMU\n0x68"}
 def col(ref):
     if ref == "J1": return "#ffd040"
-    if ref == "U1": return "#ff60ff"
+    if ref in ("U1", "U2"): return "#ff60ff"
     if ref == "J2": return "#ff6060"
     if ref == "J8": return "#40c0ff"
     if ref == "J7": return "#ff9030"
@@ -43,7 +44,7 @@ ax.text(0, -HH+0.8, "gul=P4 edge A socket  magenta=extra IMU  röd=3V3-in  cyan=
         fontsize=6.5, color="#fff", ha="center", zorder=10)
 ax.set_aspect("equal"); ax.set_xlim(-HW-2, HW+2); ax.set_ylim(-HH-3, HH+2); ax.axis("off")
 ax.set_title("STRILAS fire-control-kort (71×21) — stackas ovanpå P4, möter edge A (USB-upp)\n"
-             "trigger · rack · mag-release · magwell · recoil · NFC · extra IMU",
+             "trigger · rack · mag-release · magwell · recoil · NFC · 2× IMU (I²C 0x68/0x69)",
              fontsize=10, weight="bold")
 plt.tight_layout()
 plt.savefig("hardware/firecontrol-placement.png", dpi=160, facecolor="white")

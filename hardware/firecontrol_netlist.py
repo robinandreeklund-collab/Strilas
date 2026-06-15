@@ -54,16 +54,18 @@ MH = lambda n: mk(f"MH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2
 GND, P3V3 = Net("GND"), Net("+3V3")
 TRIG, RACK, MAG_REL, MAGWELL = Net("TRIG"), Net("RACK"), Net("MAG_REL"), Net("MAGWELL")
 REC_PWM, REC_FLT = Net("RECOIL_PWM"), Net("RECOIL_FAULT")
-SDA, SCL, IMU2_INT = Net("NFC_SDA"), Net("NFC_SCL"), Net("IMU2_INT")
+SDA, SCL = Net("NFC_SDA"), Net("NFC_SCL")
+IMU2_INT, IMU3_INT = Net("IMU2_INT"), Net("IMU3_INT")
 
 # ---------- instansiera ----------
 J1 = P4A(); Jpwr = PWR()
 Jtrig = SW2("TRIGGER")(); Jrack = SW2("RACK_SW")()
 Jmag = SW2("MAG_REL_SW")(); Jmagw = SW2("MAGWELL_SW")()
-Jrec = REC(); Jnfc = NFC(); U1 = IMU()
-Rsda = RES("4k7"); Rscl = RES("4k7")            # I²C pull-ups
+Jrec = REC(); Jnfc = NFC(); U1 = IMU(); U2 = IMU()
+Rsda = RES("4k7"); Rscl = RES("4k7")            # I²C pull-ups (delas av NFC + båda IMU)
 Cn1 = CAP("100nF"); Cn2 = CAP("1uF")            # 3V3-rail/NFC-avkoppling
-Ci1 = CAP("100nF"); Ci2 = CAP("100nF")          # IMU VDD/VDDIO-avkoppling
+Ci1 = CAP("100nF"); Ci2 = CAP("100nF")          # IMU U1 VDD/VDDIO
+Ci3 = CAP("100nF"); Ci4 = CAP("100nF")          # IMU U2 VDD/VDDIO
 H1, H2, H3, H4 = MH(1)(), MH(2)(), MH(3)(), MH(4)()
 
 # ---------- J1 = P4 edge A pin 6..17 (verifierad fysisk ordning, USB-upp) ----------
@@ -74,9 +76,9 @@ H1, H2, H3, H4 = MH(1)(), MH(2)(), MH(3)(), MH(4)()
 #   J1.5  pin10 GPIO49  (reserv NC)      J1.11 pin16 GPIO8  NFC_SCL
 #   J1.6  pin11 GPIO5   RACK             J1.12 pin17 GPIO7  NFC_SDA
 J1[1] += MAGWELL; J1[2] += REC_FLT; J1[3] += GND; J1[4] += IMU2_INT
+J1[5] += IMU3_INT                                  # GPIO49 → andra IMU:ns INT
 J1[6] += RACK; J1[7] += TRIG; J1[8] += GND
 J1[9] += MAG_REL; J1[10] += REC_PWM; J1[11] += SCL; J1[12] += SDA
-# J1[5] = GPIO49 → NC (reserv).
 
 # ---------- 3V3-mata + fan-out ----------
 Jpwr["3V3"] += P3V3; Jpwr["GND"] += GND
@@ -87,12 +89,15 @@ Jmagw["SIG"] += MAGWELL; Jmagw["GND"] += GND
 Jrec["PWM"] += REC_PWM; Jrec["FAULT"] += REC_FLT; Jrec["GND"] += GND
 Jnfc["SDA"] += SDA; Jnfc["SCL"] += SCL; Jnfc["3V3"] += P3V3; Jnfc["GND"] += GND
 
-# ---------- extra IMU (I²C, delar NFC-bussen) ----------
-U1[8] += P3V3; U1[5] += P3V3; U1[6] += GND        # VDD / VDDIO / GND
-U1[12] += P3V3                                    # CS hög → I²C-läge
-U1[1] += P3V3                                     # SDO/AD0 hög → adress 0x69 (skild från PN532)
-U1[13] += SCL; U1[14] += SDA; U1[4] += IMU2_INT   # SCL / SDA / INT1
+# ---------- 2× extra IMU (I²C, delar NFC-bussen) ----------
+# U1 = adress 0x69 (AD0 hög), INT=GPIO50 ; U2 = adress 0x68 (AD0 låg), INT=GPIO49.
+# pin: 8=VDD 5=VDDIO 6=GND 12=CS(hög→I²C) 1=SDO/AD0(adress) 13=SCL 14=SDA 4=INT1
+U1[8] += P3V3; U1[5] += P3V3; U1[6] += GND; U1[12] += P3V3
+U1[1] += P3V3; U1[13] += SCL; U1[14] += SDA; U1[4] += IMU2_INT      # AD0 hög → 0x69
+U2[8] += P3V3; U2[5] += P3V3; U2[6] += GND; U2[12] += P3V3
+U2[1] += GND;  U2[13] += SCL; U2[14] += SDA; U2[4] += IMU3_INT      # AD0 låg → 0x68
 Ci1[1] += P3V3; Ci1[2] += GND; Ci2[1] += P3V3; Ci2[2] += GND
+Ci3[1] += P3V3; Ci3[2] += GND; Ci4[1] += P3V3; Ci4[2] += GND
 
 # ---------- I²C pull-ups + 3V3-avkoppling ----------
 Rsda[1] += P3V3; Rsda[2] += SDA
