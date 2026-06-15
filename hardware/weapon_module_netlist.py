@@ -53,14 +53,12 @@ CMH = lambda n: mk(f"CMH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_
 CLEG = lambda n: mk(f"CLEG{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.1mm", "Carclo10734-ben_Ø2.1")
 # P4-standoffs (M2) — fäster ESP32-P4-WIFI6 (71×21) bakom kortet
 PSTD = lambda n: mk(f"PSTD{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2_P4")
-# trigger-in (extern kabel via pipan)
-TRIGC = mk("TRIGGER", "J", [(1, "SIG"), (2, "GND")],
-           "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal", "trigger-in (JST-PH)")
+# OBS: trigger/rack/mag-release/recoil-styrning/NFC ligger på SEPARAT fire-control-kort
+# (P4 edge A) — INTE här. Optikmodulen = ren optik (IR+IMU+kamera+P4-sync, edge B).
 
 # ---------- nät ----------
 VBAT_IN, VBAT_F, VBAT, GND, P3V3 = Net("VBAT_IN"), Net("VBAT_F"), Net("VBAT"), Net("GND"), Net("+3V3")
 IR_MOD, SCK, MOSI, MISO, nCS, INT = (Net(n) for n in ("IR_MOD", "SCK", "MOSI", "MISO", "nCS", "IMU_INT"))
-TRIG = Net("TRIG")
 STR1, LEDC, IRG = Net("LED_MID"), Net("LED_CATH"), Net("Q1_GATE")
 
 # ---------- instansiera ----------
@@ -79,7 +77,6 @@ HP1, HP2, HP3 = MH(17)(), MH(18)(), MH(19)()   # 3 P4-standoff (15mm, synk mot P
 H4, H5, H6, H7 = CMH(4)(), CMH(5)(), CMH(6)(), CMH(7)()   # kamerafäste (B0332)
 CL = [CLEG(i)() for i in range(1, 9)]   # 8 ben: Carclo 10734 4-bens-hållare (ritn. 60575), 4/lins
 HP4 = MH(20)()                      # 4:e P4-standoff (instansieras SIST → ref H20, ingen ref-omflyttning)
-J3 = TRIGC()                                               # trigger-in
 
 # ---------- J2 = batteri-in (2S) ; J1 = P4-carrier-header ----------
 J2["VBAT"] += VBAT_IN; J2["GND"] += GND
@@ -90,7 +87,7 @@ J2["VBAT"] += VBAT_IN; J2["GND"] += GND
 #   J1[3]  EN       chip-enable      -- NC (P4:ns pull-up; driv ej)
 #   J1[4]  3V3      3V3-ut från P4   +3V3  (matar IMU)
 #   J1[5]  GPIO20                    IR_MOD (56 kHz till driver)
-#   J1[6]  GPIO21                    TRIG
+#   J1[6]  GPIO21                    -- LEDIG GPIO (NC; reserv för Fas 2-hook)
 #   J1[7]  GND                       GND
 #   J1[8]  GPIO22                    SCK
 #   J1[9]  GPIO23                    MOSI
@@ -100,10 +97,9 @@ J2["VBAT"] += VBAT_IN; J2["GND"] += GND
 #   J1[13] GPIO27                    nCS
 #   J1[14] GPIO32                    IMU_INT
 J1[1] += VBAT; J1[2] += GND;            J1[4] += P3V3
-J1[5] += IR_MOD; J1[6] += TRIG; J1[7] += GND; J1[8] += SCK; J1[9] += MOSI
+J1[5] += IR_MOD; J1[7] += GND; J1[8] += SCK; J1[9] += MOSI
 J1[11] += MISO; J1[12] += GND; J1[13] += nCS; J1[14] += INT
-# J1[3] (EN) och J1[10] (RUN) lämnas oanslutna (NC) — drivs ej från vårt kort.
-J3["SIG"] += TRIG; J3["GND"] += GND                               # trigger-in (extern kabel)
+# J1[3]=EN, J1[6]=GPIO21, J1[10]=RUN lämnas oanslutna (NC) — drivs ej från vårt kort.
 
 # ---------- kraftinmatning + skydd ----------
 F1[1] += VBAT_IN; F1[2] += VBAT_F                 # PTC-säkring
