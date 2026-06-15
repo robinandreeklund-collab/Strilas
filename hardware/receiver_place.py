@@ -56,10 +56,10 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
             x, y = grid[gi % len(grid)]; rot = 0; gi += 1
         f.SetPosition(V(x, y))
         if rot: f.SetOrientationDegrees(rot)
-        if flip:
-            try: f.SetLayerAndFlip(pcbnew.B_Cu)
-            except Exception: pass
         board.Add(f); fps[ref] = f
+        if flip:
+            try: f.Flip(f.GetPosition(), False)
+            except Exception as e: print(f"  flip {ref} fail: {e}")
     # nät
     for name, nodes in nets.items():
         net = pcbnew.NETINFO_ITEM(board, name); board.Add(net)
@@ -122,7 +122,7 @@ weapon_box = {   # 54×68 mm: 2× Ø20-lins+kamera fram; INGET under linserna; P
     "R2": (-24, 18, 90), "F1": (-24, 10, 90), "Q1": (-24, 3, 0), "D1": (-24, -4, 90),
     "R1": (-24, -11, 90), "C2": (-24, -18, 0),
     # höger kant: RIGID P4-kantkontakt (1×13, längs 68 mm)
-    "J1": (24, 15, 0),
+    "J1": (24, 15, 0),   # placeras fram för routning, flippas till baksidan efteråt
     # kamerafäste (B0332 28×28 om lins (0,-6))
     "H4": (-14, 8, 0), "H5": (14, 8, 0), "H6": (-14, -20, 0), "H7": (14, -20, 0),
     # nederkant: ingångskond + IMU-kluster + batteri/trigger
