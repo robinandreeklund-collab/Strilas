@@ -131,12 +131,10 @@ weapon_box = {   # 54×74 mm: 2× Ø20-lins+kamera fram; P4 (15mm-standoff) bako
     "F1": (24, 9, 90), "Q1": (24, 3, 0), "D1": (24, -3, 90), "R1": (24, -9, 90), "C1": (24, -15, 0),
     # batteri-in höger (kabelåtkomst, ej under P4) — indragen så paddarna ryms innanför kanten
     "J2": (21.5, -22, 90),
-    # J1 = P4-kantkontakt på VÄNSTERKANTEN, mot P4:ans yttre signalrad.
-    # MÅSTE ALIGNA mot P4:ans pinrutnät: P4-pin k ligger på optikkort-y = -31 + k*2.54
-    # (pin1@USB-änden = y-31). x = P4-centrum(-16) - radavstånd(9.28) = -25.28.
-    # J1-footprintens origo = pin1, paddarna går NEDÅT; pin1 @ y=9.64 (=P4-pin k16)
-    # ⇒ J1:s 13 pinnar landar exakt på P4-pin k4..k16 (y 9.64 → -20.84).
-    "J1": (-25.28, 9.64, 0),
+    # J1 = 1x14 P4-kantkontakt på VÄNSTERKANTEN (P4 vänd så signalkanten edge B ligger ytterst).
+    # P4-pin (make_p4_board-index) m @ optikkort-y = -31 + (m-1)*2.54. Edge B (ESP→USB):
+    #   VSYS=P4-pin19 (y=+14.71) ... GPIO32=P4-pin6 (y=-18.31). Origo=J1-pin1 (VSYS), går nedåt.
+    "J1": (-25.28, 14.71, 0),
     # kamerafäste H8-H11 (B0332 28×28 om lins (0,-6)); B4B-ZR-kontakt riktad +x (höger)
     "H8": (-14, 8, 0), "H9": (14, 8, 0), "H10": (-14, -20, 0), "H11": (14, -20, 0),
     # IMU + avkoppling vänster-centrum (under P4, NÄRA J1) → korta SPI-escapes till J1

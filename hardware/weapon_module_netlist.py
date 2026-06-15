@@ -23,9 +23,12 @@ def mk(name, ref, pins, fp, value=""):
     return p
 
 # ---------- parttyper ----------
-# RIGID 1-rads rätvinklig kantkontakt mot P4:ans HÖGRA kantrad (alla våra signaler ligger där)
-P4IF = mk("P4_EDGE", "J", [(i, i) for i in range(1, 14)],
-          "Connector_PinHeader_2.54mm:PinHeader_1x13_P2.54mm_Vertical", "P4-kantkontakt")
+# RIGID 1-rads kantkontakt mot P4:ans SIGNALKANT (edge B). Mappad mot Waveshares
+# OFFICIELLA pinout (datablad/silk): edge B i ordning (ESP-änd → USB-änd):
+#   VBUS·VSYS·GND·EN·3V3·GPIO20·GPIO21·GND·GPIO22·GPIO23·RUN·GPIO26·GND·GPIO27·GPIO32·...
+# Vi använder VSYS..GPIO32 = 14 sammanhängande stift (inkl EN & RUN som lämnas NC).
+P4IF = mk("P4_EDGE", "J", [(i, i) for i in range(1, 15)],
+          "Connector_PinHeader_2.54mm:PinHeader_1x14_P2.54mm_Vertical", "P4-kantkontakt")
 BATT = mk("BATT_IN", "J", [(1, "VBAT"), (2, "GND")],
           "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical", "2S batteri")
 RES_T = mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric")
@@ -80,11 +83,26 @@ J3 = TRIGC()                                               # trigger-in
 
 # ---------- J2 = batteri-in (2S) ; J1 = P4-carrier-header ----------
 J2["VBAT"] += VBAT_IN; J2["GND"] += GND
-# J1 till P4: VSYS(=VBAT) ut till P4, 3V3 in från P4, signaler till P4-GPIO
-# 1x13 möter P4 högerkant: VSYS·GND·3V3·GPIO20·GPIO21·GND·GPIO22·GPIO23·GPIO26·GND·GPIO27·GPIO32·GND
-J1[1] += VBAT; J1[2] += GND; J1[3] += P3V3; J1[4] += IR_MOD; J1[5] += TRIG
-J1[6] += GND; J1[7] += SCK; J1[8] += MOSI; J1[9] += MISO; J1[10] += GND
-J1[11] += nCS; J1[12] += INT; J1[13] += GND
+# J1 = 14 stift mot P4 edge B, pos2..15 (VSYS..GPIO32), i EXAKT fysisk ordning:
+#   stift  P4-pin   funktion        vårt nät
+#   J1[1]  VSYS     systemström-in   VBAT  (2S; P4:ans VSYS-buck MP1658 tål ≤16 V)
+#   J1[2]  GND                       GND
+#   J1[3]  EN       chip-enable      -- NC (P4:ns pull-up; driv ej)
+#   J1[4]  3V3      3V3-ut från P4   +3V3  (matar IMU)
+#   J1[5]  GPIO20                    IR_MOD (56 kHz till driver)
+#   J1[6]  GPIO21                    TRIG
+#   J1[7]  GND                       GND
+#   J1[8]  GPIO22                    SCK
+#   J1[9]  GPIO23                    MOSI
+#   J1[10] RUN      reset            -- NC (P4:ns pull-up; driv ej)
+#   J1[11] GPIO26                    MISO
+#   J1[12] GND                       GND
+#   J1[13] GPIO27                    nCS
+#   J1[14] GPIO32                    IMU_INT
+J1[1] += VBAT; J1[2] += GND;            J1[4] += P3V3
+J1[5] += IR_MOD; J1[6] += TRIG; J1[7] += GND; J1[8] += SCK; J1[9] += MOSI
+J1[11] += MISO; J1[12] += GND; J1[13] += nCS; J1[14] += INT
+# J1[3] (EN) och J1[10] (RUN) lämnas oanslutna (NC) — drivs ej från vårt kort.
 J3["SIG"] += TRIG; J3["GND"] += GND                               # trigger-in (extern kabel)
 
 # ---------- kraftinmatning + skydd ----------
