@@ -5,3 +5,9 @@
 *_sklib.py
 __pycache__/
 *.pyc
+
+# KiCad/freerouting-intermediärer (regenererbara)
+*.dsn
+*.ses
+hardware/gerbers/
+fr-*.log
