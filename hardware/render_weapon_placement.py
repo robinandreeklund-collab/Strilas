@@ -31,7 +31,7 @@ ax.text(23.5, -6, "B4B-ZR\n(USB-kabel)", fontsize=6, ha="left", va="center", col
 ax.add_patch(Circle((0, -6), 8, fc="#0a0a0a", ec="#ddd", lw=1, zorder=6))
 ax.text(0, -6, "Ø16", fontsize=6, ha="center", va="center", color="#eee", zorder=7)
 
-SYNC = {"H5", "H6", "H7"}
+SYNC = {"H5", "H6", "H7", "H20"}
 def col(ref):
     if ref in SYNC: return "#30ff60"     # P4-standoff
     if ref == "H4": return "#40c0ff"     # centrum-kort-hål
