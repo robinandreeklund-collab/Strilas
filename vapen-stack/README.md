@@ -28,6 +28,10 @@ Kraft: **batteri → optik J2 → VBAT → P4 VSYS → P4-regulator → 3V3 → 
 → lyft P4 och FC i Z (~socket+header-höjd). USB-kabelpluggen i J_CAM kräver
 clearance i P4↔optik-gapet.
 
+**Färdig hop-assembly (allt i en fil):** `strilas-assembly.step` — alla tre korten
+i en STEP, co-orienterade, **12 mm plan-till-plan** (optik z0 · P4 z12 · FC z24).
+Standoffs läggs in av användaren. Regenereras med `python3 merge_assembly_step.py`.
+
 **BOM:** `BOM.csv` · `BOM.md` (komplett, alla kort + externa moduler). Regenereras
 med `python3 gen_bom.py`.
 
