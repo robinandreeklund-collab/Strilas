@@ -49,12 +49,16 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
         if f is None:
             print(f"  !! KAN EJ LADDA {fpname} ({ref})"); continue
         f.SetReference(ref)
+        flip = False
         if ref in positions:
-            x, y, rot = positions[ref]
+            p = positions[ref]; x, y, rot = p[0], p[1], p[2]; flip = len(p) > 3 and p[3] == "B"
         else:
             x, y = grid[gi % len(grid)]; rot = 0; gi += 1
         f.SetPosition(V(x, y))
         if rot: f.SetOrientationDegrees(rot)
+        if flip:
+            try: f.SetLayerAndFlip(pcbnew.B_Cu)
+            except Exception: pass
         board.Add(f); fps[ref] = f
     # nät
     for name, nodes in nets.items():
@@ -109,16 +113,16 @@ helmet_pos.update({"J2": (0, 0, 0), "J1": (0, -44, 0)})
 #   så dessa hål + standoffs är fria. Kameran skruvas fast bakom kortet, lins genom Ø16.
 weapon_box = {   # 54×68 mm box (praktiskt minimum): 2× Ø20 + kamera fram, RIGID 1×13 P4-kantkontakt nedtill
     "D2": (-12, 23, 0), "D3": (12, 23, 180),  # D3 flippad: anod upptill → kort LED_MID-länk
-    "H8": (-12, 31.5, 0), "H9": (-19.4, 18.25, 0), "H10": (-4.6, 18.25, 0),
-    "H11": (12, 31.5, 0), "H12": (4.6, 18.25, 0), "H13": (19.4, 18.25, 0),
+    "H8": (-12, 31.5, 0), "H9": (-19.4, 18.25, 0),    # D2: topp + ytter-vänster
+    "H10": (12, 31.5, 0), "H11": (19.4, 18.25, 0),    # D3: topp + ytter-höger
     "R2": (-12, 17, 90),  # Rset under D2-anoden (kort N$2)
     "Q2": (24, 14, 0), "R3": (24, 7, 90), "C1": (24, 0, 0),
     "U1": (24, -9, 0), "C3": (19, -9, 90), "C4": (24, -15, 0), "C5": (24, -21, 0),
     "F1": (-24, 14, 90), "Q1": (-24, 7, 0), "D1": (-24, 0, 90), "R1": (-24, -8, 90),
     "C2": (-24, -15, 0),
     "H4": (-14, 8, 0), "H5": (14, 8, 0), "H6": (-14, -20, 0), "H7": (14, -20, 0),
-    "J1": (-15, -25, 90), "J2": (-22, -30, 90), "J3": (22, -30, 90),
-    "H1": (-24, 31, 0), "H2": (24, 31, 0), "H3": (0, -31, 0),
+    "J1": (-15, -29, 90), "J2": (-23, -23, 90), "J3": (23, -23, 90),  # J1 = P4-kantkontakt (THT)
+    "H1": (-24, 31, 0), "H2": (24, 31, 0), "H3": (-24, -30, 0),
 }
 
 weapon_pos = {

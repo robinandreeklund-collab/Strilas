@@ -20,6 +20,11 @@
 | Fysik @150 m (FOV·SNR·bäring·range·IMU·skott·ballistik·träff) | **alla ✅** (Carclo narrow @2 A → 218 m, 100 % torso) |
 | Firmware-tester | **15/15 ✅** |
 
+## Granskningsfixar (3D-genomgång)
+- **Kollimatorben:** nu 2 symmetriska ben PER lins (D2: H8/H9, D3: H10/H11) — tidigare satt 3 ben fel runt D2 + 1 på D3.
+- **Kamera-standoffs:** H4–H7 (M2, 28×28 om linsen) har nu 3D-standoff-modeller (Würth WA-SMSI 10 mm) → syns i STEP. Kameran (B0332) skruvas bakom på dessa.
+- **P4-kantkontakt (J1, 1×13 THT):** ligger som vertikal header (KiCad:s flip-till-baksida segfaultar i denna headless-build). Det är en genomgående header — montera den som baksides-/vinkelvariant i GUI:t för P4 bakom; routning/pad-läge är identiskt.
+
 ## Kvarvarande fysik-steg (kräver fysisk del — normalt)
 1. Verifiera footprint-padstack mot köpt dels datablad (DFM).
 2. Bänkmät Class 1 / AE per IEC 60825-1 vid driftström (R2/Rset = vakten).
