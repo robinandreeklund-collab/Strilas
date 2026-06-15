@@ -30,7 +30,7 @@ KiCad-format). Kortet är **färdigroutat** (4-lager) med Gerbers — se status 
 | C5 | 1 µF | C_0805 | 3V3-bulk |
 | H1–H3 | M2.5 | MountingHole_2.5mm | kort-montering (till GND) |
 | **H8–H15** | Ø3,2 | MountingHole_3.2mm | **kollimatorfäste — Carclo 60475 4-bens-hållare**, 4 hål/lins, 9,5×16,45 mm-rektangel (R2,4 ben-clearance) |
-| **H4–H7** | **M2** | MountingHole_2.2mm_M2 | **kamerafäste — Arducam B0332 28×28-mönster** runt linsaxeln |
+| **H4–H7** | **M2** | MountingHole_2.2mm_M2 | **kamerafäste — Arducam B0332 28×28-mönster**; **6 mm M2-standoff** (DigiKey 9488532) → kamera bakom, lins genom Ø16 |
 
 Footprints för D2/D3 och U1 ligger i [`strilas.pretty/`](strilas.pretty/) och är ritade mot
 datablad (Vishay DocNo 80365; TDK AN-000483 Fig. 2). **Standard DFM:** verifiera padstacken mot
