@@ -14,7 +14,7 @@ Två fysiskt skilda noder, två kort:
 
 ## 1. Vapnets optikmodul v1 (KOMPAKT) — sikteskamera + 2× IR-emitter + IMU + driver
 
-![Vapnets optikmodul](weapon-emitter-camera-860nm.png)
+![Vapnets optikmodul](weapon-module-render.png)
 
 **Allt vapnet behöver** på ett kort: precist sikte, skottstråle, attityd och driver.
 Krympt från Ø80 (4 emittrar) till **42×62 mm** *utan prestandaförlust*. Genereras av

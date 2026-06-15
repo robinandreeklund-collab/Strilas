@@ -70,8 +70,7 @@ GND     : U1.GND(6) + allt retur + monteringshål   (IMU RESV 2,3,7,9,10,11 = NC
 
 ## Status: FÄRDIGROUTAD — Gerbers klara
 
-Hela kedjan (placering → routning → kopparplan → Gerbers) kördes autonomt i container; se
-[`weapon-module-routed.md`](weapon-module-routed.md) för stegen och egenkontrollen.
+Hela kedjan (placering → routning → kopparplan → Gerbers) kördes autonomt i container; se `build_weapon.sh` för stegen och egenkontrollen.
 **35 komponenter, 166 spår + 22 vior, 0 oroutade, 0 clearance-brott @ 0,2 mm.** Färdiga filer:
 
 - **`weapon-module-gerbers.zip`** → ladda upp direkt till JLCPCB/PCBWay (4-lager, 1,6 mm).
