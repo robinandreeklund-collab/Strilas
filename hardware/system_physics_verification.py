@@ -24,8 +24,8 @@ SENS_W = NX*PX                  # sensorbredd [m] = 3.84 mm (1/4")
 QE_860 = 0.25                   # kvantverkningsgrad @860 nm (mono NIR, inget Bayer-filter)
 FULL_WELL = 8000               # e- mättnad (3 µm px)
 READ_N = 3.0                    # e- läsbrus
-FOV_DEG = 18.2      # 12mm-lins på 3.84mm-sensor: 2·atan(3.84/24) = 18.2° H
-# (1 MP @ 6mm/35.5° upplöser bara ~9 px konstellation @150 m → otillräckligt; 12 mm krävs)
+FOV_DEG = 13.7      # 16mm-lins på 3.84mm-sensor: 2·atan(3.84/32) = 13.7° H
+# (1 MP @ 6mm/35.5° upplöser bara ~9 px @150 m; 16 mm ger ~24 px baslinje + 14 px LED-sep → robust)
 FNUM = 2.0                      # bländartal
 TAU_LENS = 0.9                 # linstransmission
 TAU_BP = 0.7                    # bandpass-transmission

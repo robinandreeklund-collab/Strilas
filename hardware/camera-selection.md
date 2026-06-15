@@ -1,16 +1,21 @@
 # STRILAS — Kameraval (sikteskamera)
 
-> ## 🔒🔒 LÅST (användarbeslut): **USB OV9281 global shutter, NoIR** — **lins 12 mm M12** (för 150 m)
-> Singel-OV9281 (ej stereo). **Global shutter + mono + 3 µm-pixlar, 1 MP 1280×800.** USB UVC → P4:ans USB OTG 2.0 HS.
-> **Lins: 12 mm M12 (rektilinjär, ~18° FOV).** ⚠️ **Fysik-uppdatering:** OV9281 är 1 MP → med 6 mm
-> (35,5° FOV) subtenderar konstellationen bara ~9 px @150 m och LED:erna smälter ihop → **6 mm räcker
-> bara till ~80 m**. För **150 m krävs 12 mm** (~8 px LED-separation + 18 px baslinje → robust PnP).
-> Se [`system-verification-report.md`](system-verification-report.md). *(6 mm "no distortion" kan
-> behållas om man nöjer sig med kortare robust räckvidd.)*
-> **MÅSTE vara no-IR-filter-varianten** — standardmodulens 650 nm-filter blockerar 860 nm.
-> Kameran sitter mekaniskt **bakom** optikkortet, linsen genom Ø16-hålet; ansluts till P4 via **USB-kabel**
-> (ej på kortets header). P4 mounteras som **carrier** (header-mount) — se nedan. **PCB:t är oberoende av
-> brännvidd** (kameran är mekanisk/USB).
+> ## 🔒🔒 LÅST (för 150 m): **Arducam B0332 (USB OV9281 GS) + 16 mm M12-lins + 850 nm IR-pass**
+> | Del | Exakt | ~Pris | Not |
+> |---|---|---|---|
+> | **Modul** | **Arducam B0332** — 1 MP OV9281 **mono global shutter**, **USB-UVC 2.0**, M12-fäste | ~$30 | UVC → P4:ans USB OTG 2.0 HS, ingen drivrutin; sensorn ser NIR (850 nm) i grunden |
+> | **Lins** | **16 mm M12, F/2** (t.ex. Arducam M2016ZH01) → på 1/4″ OV9281 = **13,7° H FOV** | ~$8 | byt mot stock-vidvinkeln; M12-barrel Ø12 mm går genom Ø16-hålet |
+> | **Filter** | **M12 850/860 nm IR-pass/bandpass** | ~$8 | dagsljus-avvisning + ser bara 860 nm-konstellationen |
+>
+> **Varför 16 mm (inte 6 mm):** OV9281 är 1 MP. Vid 6 mm (35,5° FOV) subtenderar konstellationen
+> bara ~9 px @150 m → LED:erna smälter ihop. **16 mm (13,7°) ger ~24 px baslinje + ~14 px LED-
+> separation → robust PnP @150 m med marginal** (verifierat, se [`system-verification-report.md`](system-verification-report.md),
+> brännvidds-svep). Scen @150 m = 36 m bred → gott om plats att hitta mål. *(12 mm = vidare FOV men
+> knappare marginal; 6 mm = bara ~80 m.)*
+> **MÅSTE se 860 nm:** OV9281-sensorn är NIR-känslig utan IR-cut; välj 16 mm-lins **utan IR-cut**
+> + IR-pass-filtret ovan. (Stock-B0332-linsen har redan 850 nm-pass — vid linsbyte tillförs filtret separat.)
+> Kameran sitter mekaniskt **bakom** optikkortet, linsen genom Ø16-hålet; ansluts till P4 via **USB-kabel**.
+> P4 mounteras som **carrier** (header-mount). **PCB:t är oberoende av brännvidd** (kameran är mekanisk/USB).
 >
 > ### P4-carrier pin-map (J1 → P4-GPIO)
 > | Signal | P4-pin | | Signal | P4-pin |

@@ -5,12 +5,13 @@ import numpy as np
 
 # ---- Sikteskamera (LÅST): OV9281 mono GLOBAL SHUTTER NoIR, USB-UVC, M12 NoIR-lins ----
 # 1 MP 1280×800, 3 µm-pixlar, 1/4". Global shutter → ingen pan-smet. NoIR krävs för 860 nm.
-# LINS: 12 mm M12 → 2·atan(3.84/24) = 18,2° H FOV. (Fysik: 1 MP @ 6mm/35,5° upplöser bara
-# ~9 px konstellation @150 m → LED:erna smälter ihop. 12 mm ger ~8 px LED-separation + 16 px
-# baslinje → robust PnP. 6 mm = vidare FOV men robust räckvidd bara ~80 m. Se camera-selection.md.)
+# LINS: 16 mm M12 → 2·atan(3.84/32) = 13,7° H FOV. (Fysik: 1 MP @ 6mm/35,5° upplöser bara
+# ~9 px konstellation @150 m → LED:erna smälter ihop. 16 mm ger ~14 px LED-separation + 24 px
+# baslinje → ROBUST PnP @150 m med marginal. Scen @150 m = 36 m bred (gott om plats att hitta mål).
+# 12 mm (18°) = vidare FOV men knappare marginal; 6 mm = bara ~80 m. Se camera-selection.md.)
 NX, NY = 1280, 800
-FOV_DEG = 18.2
-F_PX = (NX/2)/np.tan(np.radians(FOV_DEG/2))     # brännvidd i pixlar (~4000)
+FOV_DEG = 13.7
+F_PX = (NX/2)/np.tan(np.radians(FOV_DEG/2))     # brännvidd i pixlar (~5330)
 CX, CY = NX/2, NY/2
 DEG_PX = FOV_DEG/NX
 

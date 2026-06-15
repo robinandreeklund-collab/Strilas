@@ -53,15 +53,15 @@ högtalare ingår i kitet och stannar i scope (pose-väg + ljud senare).
 | # | Del | Antal | ~Pris | Not |
 |---|---|---|---|---|
 | 6 | **TDK ICM-45686 breakout** | 1 | ~$12 | hög-rate attityd + rekyl, fyller mellan kamerabildrutor |
-| 7 | *(valfritt)* längre M12-lins till sikteskameran | 0–1 | ~$8 | stock 6 mm/33° räcker (SNR 30); längre = mer räckvidd/SNR @150 m |
-| 8 | **860 nm bandpass-filter** (M12-gänga) för sikteskameran | 1 | ~$8 | isolerar konstellationen från dagsljus → robust SNR |
+| 7 | **16 mm M12-lins** (utan IR-cut) till sikteskameran | 1 | ~$8 | **krävs för 150 m** (13,7° FOV → 24 px konstellation; 6 mm = bara ~80 m) |
+| 8 | **850/860 nm IR-pass/bandpass-filter** (M12-gänga) för sikteskameran | 1 | ~$8 | isolerar konstellationen från dagsljus → robust SNR |
 | 9 | Perfboard + lödd LED-strömväg + Dupont | 1 | ~$6 | **löd LED+driver fast** — breadboard tål inte 1–3 A |
 
-> **Sikteskamera = Arducam 5MP OV5647 NoIR, M12** (Amazon B012S6WJOS, ~$15) — RPi 15-pin, **drop-in**
-> (samma sensor/kontakt/form som kit-kameran, fast utan IR-cut → ser 860 nm). **Köp INTE** kit:ets
-> stock-OV5647 som sikte (IR-cut → ser ej IR). Billigare alt: **SC2336 NIR** (verifiera kontakt). Se
-> [`hardware/camera-selection.md`](../hardware/camera-selection.md). Rolling shutter hanteras med
-> fast-pan-grind; GS-uppgradering (Mira220) skjuts på. CV-firmwaren skriver jag.
+> **Sikteskamera = Arducam B0332** (1 MP **OV9281 mono global shutter**, **USB-UVC**, M12-fäste, ~$30)
+> → P4:ans USB OTG, ingen drivrutin. Sensorn ser NIR (850 nm) i grunden. **Byt stock-vidvinkeln mot
+> 16 mm-lins** (rad 7) + **IR-pass-filter** (rad 8) → 13,7° FOV och ren 860 nm-detektion. **Global
+> shutter** → ingen pan-smet. **Fysik:** 16 mm krävs för robust 150 m (1 MP @ 6 mm upplöser bara ~9 px).
+> Se [`hardware/camera-selection.md`](../hardware/camera-selection.md) + verifieringsrapporten. CV-firmwaren skriver jag.
 
 IMU på I²C; RMT driver gaten på 56 kHz; kameran via FFC till P4 MIPI-CSI.
 

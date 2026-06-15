@@ -100,10 +100,11 @@ genom Ø16-urtaget) och ansluts till P4 via **USB-kabel** — inte via detta kor
 emitter-driver (effekt), IMU (SPI), P4-carrier-header, batteri-in. → ingen kamera- eller
 höghastighets-differential-routing här.
 
-**Vald kamera (LÅST): USB OV9281 mono GLOBAL SHUTTER NoIR** (1 MP 1280×800, 3 µm, 1/4″, USB-UVC →
-P4:ans USB OTG 2.0 HS). **⚠️ Måste vara NoIR** (inget IR-cut), annars syns ingen 860 nm-konstellation.
-**Lins: 12 mm M12 (~18° FOV)** — fysiken kräver det för 150 m (1 MP @ 6mm/35,5° upplöser bara ~9 px
-konstellation → LED:erna smälter ihop; 12 mm ger ~8 px separation + 18 px baslinje → SNR ≈ 87, robust PnP).
+**Vald kamera (LÅST): Arducam B0332 — USB OV9281 mono GLOBAL SHUTTER** (1 MP 1280×800, 3 µm, 1/4″,
+USB-UVC → P4:ans USB OTG 2.0 HS; sensorn ser NIR i grunden). **⚠️ Lins utan IR-cut + 850 nm IR-pass-
+filter**, annars syns ingen 860 nm-konstellation. **Lins: 16 mm M12 (~13,7° FOV)** — fysiken kräver det
+för 150 m (1 MP @ 6mm/35,5° upplöser bara ~9 px konstellation → LED:erna smälter ihop; 16 mm ger ~14 px
+LED-separation + 24 px baslinje → robust PnP med marginal; 12 mm = knappare, 6 mm = bara ~80 m).
 Global shutter (OV9281) → ingen pan-smet i grunden; kort exponering + modulerade LED ger ren blob-
 detektion i dagsljus. (En 6 mm-lins kan behållas om man nöjer sig med robust räckvidd ~80 m.)
 
