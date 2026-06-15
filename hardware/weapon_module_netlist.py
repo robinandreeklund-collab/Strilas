@@ -47,7 +47,7 @@ MH = lambda n: mk(f"MH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", 
 # kamera-monteringshål (M2) — matchar Arducam B0332 28×28 mm-mönster
 CMH = lambda n: mk(f"CMH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2_kamera")
 # kollimator-hållarben (Ø1.6) runt varje emitter (generiskt 20 mm TIR-hållarmönster, 3 ben/lins)
-CLEG = lambda n: mk(f"CLEG{n}", "H", [(1, "1")], "MountingHole:MountingHole_2mm", "lens_ben")
+CLEG = lambda n: mk(f"CLEG{n}", "H", [(1, "1")], "MountingHole:MountingHole_3.2mm_M3", "Carclo-ben_Ø3.2")
 # P4-standoffs (M2) — fäster ESP32-P4-WIFI6 (71×21) bakom kortet
 PSTD = lambda n: mk(f"PSTD{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2_P4")
 # trigger-in (extern kabel via pipan)
@@ -72,7 +72,7 @@ U2 = IMU(); Cd1 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric")
 Cd2 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric"); Cd3 = CAP("1uF")
 H1, H2, H3 = MH(1)(), MH(2)(), MH(3)()
 H4, H5, H6, H7 = CMH(4)(), CMH(5)(), CMH(6)(), CMH(7)()   # kamerafäste (B0332)
-CL = [CLEG(i)() for i in range(1, 7)]                      # 6 kollimatorben (3/lins: topp+ytter+inner)
+CL = [CLEG(i)() for i in range(1, 9)]                      # 8 kollimatorben (Carclo 4-bens-hållare, 4/lins)
 J3 = TRIGC()                                               # trigger-in
 
 # ---------- J2 = batteri-in (2S) ; J1 = P4-carrier-header ----------

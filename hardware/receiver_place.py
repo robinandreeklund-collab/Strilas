@@ -113,9 +113,9 @@ helmet_pos.update({"J2": (0, 0, 0), "J1": (0, -44, 0)})
 #   så dessa hål + standoffs är fria. Kameran skruvas fast bakom kortet, lins genom Ø16.
 weapon_box = {   # 54×68 mm: 2× Ø20-lins+kamera fram; INGET under linserna; P4 längs höger 68 mm-kant
     "D2": (-12, 23, 0), "D3": (12, 23, 180),
-    # 3 ben/lins (Carclo 10003-hållare): topp + ytter + inner
-    "H8": (-12, 31.5, 0), "H9": (-19.4, 18.75, 0), "H10": (-4.6, 18.75, 0),
-    "H11": (12, 31.5, 0), "H12": (4.6, 18.75, 0), "H13": (19.4, 18.75, 0),
+    # Carclo 60475 4-bens-hållare: 4 hål/lins i 9.5×16.45 rektangel (Ø3.2), LED centralt
+    "H8": (-16.75, 31.2, 0), "H9": (-7.25, 31.2, 0), "H10": (-16.75, 14.8, 0), "H11": (-7.25, 14.8, 0),   # D2
+    "H12": (7.25, 31.2, 0), "H13": (16.75, 31.2, 0), "H14": (7.25, 14.8, 0), "H15": (16.75, 14.8, 0),     # D3
     # driver i CENTRUM-gapet mellan linserna (fritt från Ø20): N-FET + gate-R
     "Q2": (0, 19, 90), "R3": (0, 14, 90),
     # vänster kant (fritt från linsernas x=-22): Rset + inmatningsskydd
@@ -155,7 +155,7 @@ BOARDS = {
                             helmet_pos, ("circle", 50), layers=4, center_hole=10, free=(-30, 30, 28, 12)),
     # vapnet: alla delar placeras explicit -> tom fri-zon (säker, ingen krock med lins)
     "weapon": lambda: place("hardware/weapon-module.net", "hardware/weapon-module.kicad_pcb",
-                            weapon_box, ("rect", 27, 34), layers=4, free=(26, 27, 33, 34), cutout=(0, -6, 8)),
+                            weapon_box, ("rect", 27, 35), layers=4, free=(26, 27, 34, 35), cutout=(0, -6, 8)),
 }
 
 if __name__ == "__main__":

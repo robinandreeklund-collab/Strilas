@@ -71,7 +71,7 @@ def draw(ax, side):
 
 fig, (a1, a2) = plt.subplots(1, 2, figsize=(11, 9), facecolor="white")
 draw(a1, "F"); draw(a2, "B")
-fig.suptitle("STRILAS vapen-optikmodul  •  54 × 68 mm (OSLON+Carclo, rigid P4-kantkontakt), 4-lager  •  940 nm-emitter + OV9281-lins (Ø16) + ICM-45686",
+fig.suptitle("STRILAS vapen-optikmodul  •  54 × 70 mm (OSLON 10003 + Carclo 60475 4-bens), 4-lager  •  940 nm-emitter + OV9281-lins (Ø16) + ICM-45686",
              fontsize=11, weight="bold")
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 plt.savefig("hardware/weapon-module-render.png", dpi=170, facecolor="white")
