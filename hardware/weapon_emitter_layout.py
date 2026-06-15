@@ -5,7 +5,7 @@ Precis sikteskamera + IR-skottemitter + IMU + driver pa ETT kort.
 
 Krympt fran 4-emitter-ringen (Ø80) till en kompakt ~42x62 mm modul UTAN att tappa
 prestanda:
-  - PRECISION oforandrad: sikteskameran (OV5640 NoIR + 860 nm IR-pass + TELEFOTO M12)
+  - PRECISION oforandrad: sikteskameran (OV5647 NoIR + 860 nm IR-pass + TELEFOTO M12)
     ser malets IR-konstellation -> solvePnP -> baring sub-0.1 grader.
   - RACKVIDD bibehallen: 2x SFH 4715AS (860 nm) + Carclo-kollimator delar effektlasten
     -> 100-150 m. Symmetriska ovanfor kameran => samboresikt (parallax ~0.01 grader @150 m).
@@ -20,7 +20,7 @@ from matplotlib.patches import Circle, Rectangle, FancyBboxPatch
 BW, BH    = 42.0, 62.0      # kort 42 x 62 mm
 EMIT_X, EMIT_Y = 10.0, 20.0 # 2 emittrar: (+/-10, +20)
 LENS_R    = 10.0            # Carclo 10195 ~Ø20
-CAM_W, CAM_H = 25.0, 24.0   # OV5640-modul (mat din egen!)
+CAM_W, CAM_H = 25.0, 24.0   # OV5647-modul (mat din egen!)
 CAM_CY    = -4.0            # kamera-centrum y
 CAM_BARREL = 9.0
 
@@ -41,7 +41,7 @@ ax.add_patch(Rectangle((-CAM_W/2, CAM_CY-CAM_H/2), CAM_W, CAM_H, facecolor="#102
 ax.add_patch(Circle((0, CAM_CY), CAM_BARREL+1.4, facecolor="#0c1418", edgecolor=CAMC, lw=1.4, zorder=4))
 ax.add_patch(Circle((0, CAM_CY), CAM_BARREL, facecolor=CUT, edgecolor=SILK, lw=1.3, zorder=5))
 ax.text(0, CAM_CY+1.4, "SIKTESKAMERA", ha="center", va="center", color=CAMC, fontsize=6.4, fontweight="bold", zorder=6)
-ax.text(0, CAM_CY-2.2, "OV5640 NoIR\n860nm BP\nM12 15–30°", ha="center", va="center", color=SILK, fontsize=5.6, zorder=6)
+ax.text(0, CAM_CY-2.2, "OV5647 NoIR\n860nm BP\nM12 15–30°", ha="center", va="center", color=SILK, fontsize=5.6, zorder=6)
 # baffel-ring (defense-in-depth mot scatter)
 ax.add_patch(Circle((0, CAM_CY), CAM_BARREL+2.6, facecolor="none", edgecolor="#555", lw=1.0, ls=(0, (3, 3)), zorder=4))
 for sx in (-1, 1):
@@ -123,7 +123,7 @@ notes = (
     "• DRIVER = U6 BUCK konstantström (från 2S; sense = hårt HW-tak) + L1 + Cin/Cout + Q1 56 kHz-gate + D5 freewheel + Q2/TVS/F1 inskydd\n"
     "• IMU = 1× ICM-45686 (SPI) — array BORTTAGEN: verifierat att inter-frame-drift 0,0005° << krav (kameran re-ankrar varje frame)\n"
     "• ⚠️ ÖGONSÄKERHET = mätpunkt: ~2 mW in i öga @1 m,1 A → MÄT AE per IEC 60825-1, börja 1 A. MIPI dras EJ här (kamera-FFC→P4)\n"
-    "• Kamera = OV5640 (v1, i kitet, NoIR, rolling — fast-pan-grind i firmware via IMU). GS-uppgr: Mira220 MINI ($141 eval). EJ IMX296/Pivariety. Mät modul → CAM_W/H"
+    "• Kamera = OV5647 (v1, i kitet, NoIR, rolling — fast-pan-grind i firmware via IMU). GS-uppgr: Mira220 MINI ($141 eval). EJ IMX296/Pivariety. Mät modul → CAM_W/H"
 )
 ax.text(-BW/2-1, -BH/2-2, notes, ha="left", va="top", color="#aeb7c2", fontsize=7.2,
         family="monospace", zorder=9, bbox=dict(boxstyle="round,pad=0.6", fc="#11151b", ec="#30363d"))

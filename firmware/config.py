@@ -3,9 +3,11 @@ Samma värden som hårdvaru-/verifieringsdokumenten. Allt i SI där inget annat 
 """
 import numpy as np
 
-# ---- Sikteskamera (OV5640 + M12, FOV 18°) ----
+# ---- Sikteskamera: OV5647 (kit, 5MP 1/4"), stock M12 6mm/F2.0 → ~33° H FOV ----
+# OBS: kit-kameran har IR-cut-filter → måste vara NoIR (filter borttaget) för 860 nm.
+# Linsen är utbytbar (M12) → längre brännvidd = mer räckvidd/SNR @150 m.
 NX, NY = 2592, 1944
-FOV_DEG = 18.0
+FOV_DEG = 33.4
 F_PX = (NX/2)/np.tan(np.radians(FOV_DEG/2))     # brännvidd i pixlar (~8183)
 CX, CY = NX/2, NY/2
 DEG_PX = FOV_DEG/NX

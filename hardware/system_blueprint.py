@@ -25,7 +25,7 @@ box(2,34,25,22,ec=GRN)
 T(14.5,54,"VAPEN-NOD",GRN,12,"bold","center")
 for i,(s) in enumerate([
     "ESP32-P4 (+C6 WiFi6) — hjärna",
-    "OV5640 NoIR + M12 (FOV 18°) + 860nm BP",
+    "OV5647 NoIR + M12 6mm (~33°) + 860nm BP",
     "  → sikteskamera (PRECISION)",
     "2× SFH47xx 940nm + Carclo 10195 (±7.5°)",
     "  → kodat skott (LOS+ID)",
@@ -73,8 +73,8 @@ arrow(27,32.5,73,32.5,MUT,1.2,"-","<|-|>"); T(50,33.6,"150 m",FG,11,"bold","cent
 # ---------------- BERÄKNINGSKEDJA (botten) ----------------
 T(50,28.5,"BERÄKNINGSKEDJA (verifierad @150 m — Monte Carlo + radiometri + länkbudget)",BLUE,11,"bold","center")
 chain=[
- (2 ,"1· KAMERA-DETEKTION","SNR 58 @ 30µs exp\n(mättar → kort exp,\ningen rolling-smet)",GRN),
- (21,"2· PnP-BÄRING","σ = 0.0004°\n(krav 0.076° huvud)\nrange σ = 0.49 m",GRN),
+ (2 ,"1· KAMERA-DETEKTION","SNR 30 @ 30µs exp\n(mättar → kort exp,\ningen rolling-smet)",GRN),
+ (21,"2· PnP-BÄRING","σ = 0.0008°\n(krav 0.076° huvud)\nrange σ = 0.49 m",GRN),
  (40,"3· IMU + IR-LÄNK","drift 0.0005°/frame\nIR medium 2A→153 m\n(940nm+bandpass)",GRN),
 ]
 for x,h,b,c in chain:

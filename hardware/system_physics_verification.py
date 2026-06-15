@@ -17,14 +17,14 @@ print("STRILAS systemverifiering @ 150 m — exakt hårdvaru-spec")
 print("="*74)
 
 # ---------------------------------------------------------------- KOMPONENTER
-# Kamera: OmniVision OV5640 (NoIR) + M12 + 860 nm bandpass
-PX = 1.4e-6                      # pixelstorlek [m] (OV5640)
+# Kamera: OmniVision OV5647 (NoIR) + M12 + 860 nm bandpass
+PX = 1.4e-6                      # pixelstorlek [m] (OV5647)
 NX, NY = 2592, 1944             # upplösning
 SENS_W = NX*PX                  # sensorbredd [m] = 3.629 mm
 QE_860 = 0.12                   # kvantverkningsgrad @860 nm (NoIR Bayer, konservativt)
 FULL_WELL = 6000               # e- mättnad (1.4 µm px)
 READ_N = 3.0                    # e- läsbrus
-FOV_DEG = 18.0                  # vald FOV (M12 ~11.5 mm)
+FOV_DEG = 33.4      # vald FOV (stock 6mm M12-lins, 60.6° diag → ~33° H)
 FNUM = 2.0                      # bländartal M12
 TAU_LENS = 0.9                 # linstransmission
 TAU_BP = 0.7                    # bandpass-transmission
@@ -32,7 +32,7 @@ BP_FWHM = 12.0                 # bandpass bandbredd [nm]
 f_px = (NX/2)/np.tan(np.radians(FOV_DEG/2))   # brännvidd i pixlar
 DEG_PX = FOV_DEG/NX                            # grader per pixel
 f_mm = (SENS_W/2)/np.tan(np.radians(FOV_DEG/2))*1e3
-print(f"\n[KAMERA] OV5640 {NX}×{NY}, px {PX*1e6:.1f}µm, M12 f≈{f_mm:.1f}mm, FOV {FOV_DEG}°, "
+print(f"\n[KAMERA] OV5647 {NX}×{NY}, px {PX*1e6:.1f}µm, M12 f≈{f_mm:.1f}mm, FOV {FOV_DEG}°, "
       f"{DEG_PX*1000:.2f} m°/px (={DEG_PX:.4f}°/px), f={f_px:.0f}px, F/{FNUM}")
 
 # Konstellation: 860 nm IR-LED på kropp (front-aspekt), världskoord (mål @ x=150, mot skytt)

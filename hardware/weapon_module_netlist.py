@@ -4,7 +4,7 @@ Genererar 'hardware/weapon-module.net' (importeras i KiCad/kinet2pcb för layout
 
 Driver för v1 = enkel, ögonsäker: effektresistor (Rset) sätter HÅRT strömtak,
 N-FET (Q1) gatar 56 kHz. (Buck-CC = effektivitetsuppgradering, se design-resolution §2.)
-Kameran (OV5640) sitter MEKANISKT i mitten; dess FFC går direkt till P4 → ej elektriskt här.
+Kameran (OV5647) sitter MEKANISKT i mitten; dess FFC går direkt till P4 → ej elektriskt här.
 
 OBS: IC-pinnar (IMU) ska verifieras mot datablad innan layout — netlistan = BOM + konnektivitet.
 """

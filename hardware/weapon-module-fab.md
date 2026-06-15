@@ -7,7 +7,7 @@ KiCad-format). Detta är allt en fab behöver **fram till routing**. Sista stege
 
 > **Driver-val (v1):** enkel + ögonsäker — effektresistor **R2 (Rset)** sätter ett **hårt
 > strömtak**, N-FET **Q2** gatar 56 kHz. (Buck-CC = effektivitetsuppgradering, design-resolution §2.)
-> **Kameran (OV5640) är MEKANISK** i mitten; dess FFC går direkt till P4 → ingen elektrik här.
+> **Kameran (OV5647) är MEKANISK** i mitten; dess FFC går direkt till P4 → ingen elektrik här.
 
 ## BOM (19 komponenter, riktiga footprints)
 

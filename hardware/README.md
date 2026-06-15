@@ -32,7 +32,7 @@ ovanför kameran → **samboresikt** (parallax ~0,01° @150 m; bred kon = bara L
 
 | Ref | Del | Roll |
 |---|---|---|
-| (mitten) | **Sikteskamera: OV5640 NoIR + 860 nm bandpass + M12 (FOV 15–30°)** | **PRECISION** — ser konstellationen → solvePnP → bäring (rolling shutter; fast-pan-grind i firmware) |
+| (mitten) | **Sikteskamera: OV5647 NoIR + 860 nm bandpass + M12 (FOV 15–30°)** | **PRECISION** — ser konstellationen → solvePnP → bäring (rolling shutter; fast-pan-grind i firmware) |
 | D1–D2 | **940 nm OSLON Black** ×2 + **Carclo 10195** (~Ø20) kollimator | **skott** — kodad 56 kHz-stråle, 100–150 m |
 | U2 | **TDK ICM-45686 IMU (SPI)** | attityd mellan kamerabildrutor + rekyl; **array borttagen — verifierat 1 räcker** (drift 0,0005°) |
 | U6 / L1 / Rsense | **buck konstantströms-LED-driver** (från 2S) / induktor / sense-resistor | konstantström + **hårt HW-tak = ögonsäkerhet** |
@@ -61,12 +61,17 @@ source-relaxationen täcker** men **måste mätas** (AE/skenbar källa per IEC 6
 **Bringup: börja 1 A.** Notera: **ögonexponeringen sätts av 150 m-räckviddskravet (~Ie 59 W/sr),
 ej av linsvalet** — medium @ 2 A ≈ minsta möjliga exponering. (Verifiering + design-resolution §3.)
 
-### ✅ Kamera = OV5640 för v1 (Mira220 GS = uppgradering)
+### ⚠️ Kamera = OV5647 (kit), men MÅSTE vara NoIR
 
-OV5640 sitter **gratis i kitet**, har **mogen P4-drivrutin** och fungerar idag. Rolling shutter
-är en hanterbar degradering: kort exponering + modulerade konstellations-LED + en **firmware-grind
-som ignorerar kamera-bäringen vid snabb panorering** (IMU flaggar hög vinkelhastighet — du skjuter
-ändå när du är stabil).
+Kit-kameran är **Raspberry Pi Camera Model B = OV5647** (5 MP, 1/4″, M12 6 mm/F2.0/60,6° diag),
+P4-stödd. **MEN spec säger "IR night vision: nonsupport" → den har IR-cut-filter och ser INTE
+860 nm.** Vår precisionsväg kräver att kameran ser målets 860 nm-konstellation, så:
+**du måste använda NoIR-varianten** (ta bort IR-cut-filtret, eller köp RPi NoIR-kameran).
+Utan det ser sikteskameran ingen konstellation.
+
+- **Stock-lins 6 mm/F2 (~33° H):** fungerar (verifierat SNR ≈ 30 @150 m, kort exp) men mindre
+  marginal. **M12-linsen är utbytbar** → längre brännvidd ger mer räckvidd/SNR om du vill.
+- Rolling shutter hanteras med kort exponering + modulerade LED + **fast-pan-grind** i firmware.
 
 **GS-uppgradering om grinden blir för begränsande:** **ams-OSRAM MIRA220MINI MONO** (global shutter,
 NIR) — köpbar (DigiKey **~$141**), men **eval-/sensorkort**, inte ett färdigt kit → P4-integration

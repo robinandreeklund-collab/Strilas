@@ -6,7 +6,7 @@ värden**, inga genvägar. Körs av [`system_physics_verification.py`](system_ph
 
 ## Antaganden (explicita)
 
-OV5640 (px 1,4 µm, 2592×1944, QE@860≈0,12, FW 6000 e⁻, läsbrus 3 e⁻) · M12 FOV 18° (f≈11,5 mm) F/2 ·
+OV5647 (px 1,4 µm, 2592×1944, QE@860≈0,12, FW 6000 e⁻, läsbrus 3 e⁻) · M12 6mm/F2 (~33° H, NoIR-krav) ·
 860 nm bandpass (FWHM 12 nm, τ 0,7) · konstellation 5× 860 nm @ 0,30 W/sr i kroppsgeometri ·
 sol 0,9 W/m²/nm, scen ρ 0,3 · ICM-45686 gyro 3,8 m°/s/√Hz · skott 2× 940 nm OSLON + Carclo · TSOP
 tröskel 0,35 mW/m² ×30 sol ÷4 bandpass · 5.56 v0 880 m/s.
@@ -16,8 +16,8 @@ tröskel 0,35 mW/m² ×30 sol ÷4 bandpass · 5.56 v0 880 m/s.
 | # | Steg | Utfall | Nyckeltal |
 |---|---|---|---|
 | 1 | Framing / FOV | ✅ | konstellation 0,12°×0,26° i FOV; vertikal baslinje **37 px** |
-| 2 | Kamera-detektion (dagsljus) | ✅ | **SNR 58** @ 30 µs exp (mättar vid längre → kort exp = ingen rolling-smet) |
-| 3 | Bäringsprecision (MC) | ✅ | **σ = 0,0004°** ≪ krav 0,076° (huvud) / 0,191° (torso) |
+| 2 | Kamera-detektion (dagsljus) | ✅ | **SNR 30** @ 30 µs exp (mättar vid längre → kort exp = ingen rolling-smet) |
+| 3 | Bäringsprecision (MC) | ✅ | **σ = 0,0008°** ≪ krav 0,076° (huvud) / 0,191° (torso) |
 | 4 | PnP-range | ✅ | **σ = 0,49 m** (0,33 %) @ 150 m |
 | 5 | IMU inter-frame | ✅ | drift **0,0005°** @ 60 fps → **1 IMU räcker** (array = ren reserv) |
 | 6 | IR-skott → TSOP @ 150 m | ✅* | **VALT: medium 10195 @ ~2 A → 153 m** (kompakt 42×62-kort) |
@@ -29,7 +29,7 @@ tröskel 0,35 mW/m² ×30 sol ÷4 bandpass · 5.56 v0 880 m/s.
 
 **Precisionskedjan håller med enorm marginal.** Kameran ser konstellationen vid 150 m i
 dagsljus (SNR ≫, så stark att man kör *kort* exponering → eliminerar rolling-shutter-smet
-— en oväntad synergi som gör OV5640 mer än tillräcklig). Bäringen blir ~0,0004°, ~500× bättre
+— en oväntad synergi som gör OV5647 mer än tillräcklig). Bäringen blir ~0,0008°, ~95× bättre
 än vad som krävs för att upplösa ett huvud. Ballistiken (drop/lead) modelleras exakt, och
 Monte Carlo ger 100 % torso-träff med 1 mm sidled-RMS. IMU-driften mellan bildrutor är
 försumbar → bekräftar att **1 IMU räcker** (4-arrayen är ren reserv).

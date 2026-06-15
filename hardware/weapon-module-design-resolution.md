@@ -97,9 +97,11 @@ FET (AO3400, låg Rds) klarar pulsat. Verifiera junction-temp vid värsta full-a
 genom urtaget) men dess **FFC går direkt till P4:ans CSI-kontakt**. Detta kort bär bara:
 emitter-driver (effekt), IMU (I²C), kontakt. → ingen höghastighets-differential-routing här.
 
-**Vald kamera: OV5640 för v1** (gratis i kitet, mogen P4-drivrutin). Rolling shutter hanteras med
-kort exponering + modulerade konstellations-LED + en **firmware-grind** som ignorerar kamera-bäringen
-vid snabb panorering (IMU flaggar hög vinkelhastighet; skott tas när stabil).
+**Vald kamera: OV5647 för v1** (kit = RPi Camera Model B, 5 MP 1/4″, M12 6 mm/F2.0/60,6° diag,
+P4-stödd). **⚠️ KRITISKT: kit-kameran har IR-cut-filter ("night vision: nonsupport") → ser EJ
+860 nm. Måste vara NoIR** (filter borttaget / RPi NoIR-kamera), annars syns ingen konstellation.
+Stock-lins (6 mm/F2) ger SNR ≈ 30 @150 m (verifierat, kort exp); M12-linsen är utbytbar för mer
+räckvidd. Rolling shutter hanteras med kort exponering + modulerade LED + firmware-fast-pan-grind.
 
 **GS-uppgradering** *om* grinden blir för begränsande: **ams-OSRAM MIRA220MINI MONO** (global shutter,
 NIR) — köpbar (DigiKey ~$141) men eval-/sensorkort (DIY P4-integration; ams-OSRAM-exempel + öppna PCB-filer).
@@ -166,7 +168,7 @@ position med måttband. **Ingen LiDAR behövs** (superseder av PnP; kan återkom
 | Mätpunkt | Hur |
 |---|---|
 | **Class 1-AE** | optisk effektmätare + IEC 60825-1-villkor, vid låst pulsformat |
-| **Exakt kameramodul-mått** | mät kitets OV5640 → lås `CAM_W/H/HOLE` |
+| **Exakt kameramodul-mått** | mät kitets OV5647 → lås `CAM_W/H/HOLE` |
 | **Konstellations-synlighet @150 m dag** | bringup-test, justera LED-effekt/modulering |
 | **Junction-temp vid full-auto** | termisk mätning vid värsta duty |
 | **Räckvidd vs ström** | fälttest, sätt CC-tak till lägsta som klarar 150 m |
