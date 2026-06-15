@@ -31,9 +31,11 @@ def mk(name, ref, pins, fp, value=""):
 # FEMALE socket mot P4 edge A (12 stift, pos 6..17). P4 bär male-stiften.
 P4A = mk("P4_EDGE_A", "J", [(i, i) for i in range(1, 13)],
          "Connector_PinSocket_2.54mm:PinSocket_1x12_P2.54mm_Vertical", "P4-socket (edge A)")
-# STÅENDE JST-PH (kabel upp) — B*B-PH-K Vertical
-PWR = mk("PWR_IN", "J", [(1, "3V3"), (2, "GND")],
-         "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical", "3V3-mata (från edge B)")
+# FEMALE socket mot P4 EDGE B (kraft-tapp): FC:s bortre långsida sitter över edge B,
+# tar 3V3+GND DIREKT därifrån (edge B pin 3=GND, 4=EN(nc), 5=3V3). Ingen kabel/bygel —
+# edge B blir en genomgående stackande stiftlist: optik under, FC ovan.
+PWRB = mk("PWR_EDGEB", "J", [(1, "GND"), (2, "ENnc"), (3, "P3V3")],
+          "Connector_PinSocket_2.54mm:PinSocket_1x03_P2.54mm_Vertical", "edge-B kraft-tapp 3V3+GND")
 SW2 = lambda nm: mk(nm, "J", [(1, "SIG"), (2, "GND")],
                     "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical", nm)
 REC = mk("RECOIL_CTRL", "J", [(1, "PWM"), (2, "FAULT"), (3, "GND")],
@@ -58,7 +60,7 @@ SDA, SCL = Net("NFC_SDA"), Net("NFC_SCL")
 IMU2_INT, IMU3_INT = Net("IMU2_INT"), Net("IMU3_INT")
 
 # ---------- instansiera ----------
-J1 = P4A(); Jpwr = PWR()
+J1 = P4A(); Jpwr = PWRB()
 Jtrig = SW2("TRIGGER")(); Jrack = SW2("RACK_SW")()
 Jmag = SW2("MAG_REL_SW")(); Jmagw = SW2("MAGWELL_SW")()
 Jrec = REC(); Jnfc = NFC(); U1 = IMU(); U2 = IMU()
@@ -80,8 +82,8 @@ J1[5] += IMU3_INT                                  # GPIO49 → andra IMU:ns INT
 J1[6] += RACK; J1[7] += TRIG; J1[8] += GND
 J1[9] += MAG_REL; J1[10] += REC_PWM; J1[11] += SCL; J1[12] += SDA
 
-# ---------- 3V3-mata + fan-out ----------
-Jpwr["3V3"] += P3V3; Jpwr["GND"] += GND
+# ---------- edge-B kraft-tapp (3V3+GND direkt från P4 edge B) + fan-out ----------
+Jpwr["P3V3"] += P3V3; Jpwr["GND"] += GND      # pin2 (ENnc) lämnas NC
 Jtrig["SIG"] += TRIG; Jtrig["GND"] += GND
 Jrack["SIG"] += RACK; Jrack["GND"] += GND
 Jmag["SIG"] += MAG_REL; Jmag["GND"] += GND

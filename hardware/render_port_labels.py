@@ -79,7 +79,7 @@ def strip(x, y, title, conn, pn):
         chip(x+i*3.4, y, 3.2, f"{p}:{n}", col(n), 6.6)
 
 ax.text(15.5, 9.3, "FC fan-out & kraft-portar", fontsize=10, weight="bold")
-strip(15.5, 8.0, "J2  3V3-in (← optik +3V3)", "J2", FC)
+strip(15.5, 8.0, "J2  edge-B kraft-tapp → P4 edge B 3/4/5 (GND/EN/3V3)", "J2", FC)
 strip(15.5, 6.6, "J8  NFC PN532 (I²C)", "J8", FC)
 strip(15.5, 5.2, "J7  recoil-effektkort", "J7", FC)
 strip(15.5, 3.8, "J3 TRIG · J4 RACK · J5 MAG-REL · J6 MAGWELL (+GND)", "J3", FC)

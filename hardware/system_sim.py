@@ -6,7 +6,7 @@ genom kontakterna, och SIMULERAR ström- + signalflöde:
   • optik  ↔ P4 edge B  (1×14, P4-pin 2..15)
   • FC     ↔ P4 edge A  (1×12, P4-pin 6..17)
   • batteri → optik J2 → VBAT → VSYS → P4-regulator → 3V3 → alla förbrukare
-  • FC:s 3V3 matas via separat harness-tråd (edge A saknar kraftskena)
+  • FC:s 3V3 tas DIREKT från edge B via kraft-tapp J2 (edge A saknar kraftskena)
 
 Verifierar: (1) varje mate-stift träffar rätt P4-funktion, (2) nät-typ stämmer
 över kortgränsen, (3) varje IC får ström, (4) varje signal är kopplad källa↔mottagare.
@@ -39,9 +39,11 @@ POWER = {"VBUS","VSYS","3V3","+3V3","VBAT","VBAT_F","VBAT_IN"}
 def matemap():
     m = []
     for k in range(1, 15):
-        m.append(("OPT", "J1", str(k), "B", k + 1))
+        m.append(("OPT", "J1", str(k), "B", k + 1))     # optik J1 → edge B pin 2..15
     for k in range(1, 13):
-        m.append(("FC", "J1", str(k), "A", k + 5))
+        m.append(("FC", "J1", str(k), "A", k + 5))       # FC J1 → edge A pin 6..17
+    for k in range(1, 4):
+        m.append(("FC", "J2", str(k), "B", k + 2))       # FC J2 kraft-tapp → edge B pin 3,4,5 (GND/EN/3V3)
     return m
 
 # ---------------- 3) hjälp: kontakt-pin -> nät för ett kort ----------------
@@ -110,11 +112,10 @@ def show_mate(bd, e, base, n, title):
 show_mate("OPT", "B", 2, 14, "OPTIK J1 (edge B):")
 show_mate("FC",  "A", 6, 12, "FC J1 (edge A):")
 
-# ---------------- 5) globala nät: GND + FC 3V3-harness-tråd ----------------
+# ---------------- 5) globala nät: GND (3V3 via J2-mate ovan) ----------------
 for bd in ("OPT", "FC"):
     union((bd, "GND"), ("P4", "GND"))
-# edge A saknar 3V3 → harness-tråd: optikens +3V3-rail → FC J2 (+3V3)
-union(("FC", "+3V3"), ("OPT", "+3V3"))      # = P4 3V3 (optik J1.4 ↔ edge B5)
+# FC tar 3V3 DIREKT från edge B via kraft-tappen J2 (J2.3 ↔ edge B5 = 3V3) — ingen tråd.
 
 # ---------------- 6) KRAFTFLÖDE-simulering ----------------
 print("\n[2] KRAFTFLÖDE — propagering från batteriet")
@@ -194,7 +195,7 @@ print("\n"+"="*74)
 print(f" SAMMANFATTNING:  typkrockar={harness_fail}  ström-saknas={unpowered}  dinglande signaler={dangling}")
 ok = (harness_fail == 0 and unpowered == 0 and dangling == 0 and V3 in powered)
 print(f"   3V3-rail når alla kort: {'JA' if V3 in powered else 'NEJ'} "
-      f"(FC via harness-tråd optik→J2)")
+      f"(FC via edge-B kraft-tapp J2)")
 print(f"\n   {'✅ SYSTEMET FLÖDAR KORREKT' if ok else '❌ PROBLEM HITTADE — se ovan'}")
 print("="*74)
 
@@ -225,9 +226,7 @@ def diagram():
     arr(74, 39, 86, 39, RED, "3V3 (edge B5)")  # P4 3V3 → optik
     arr(54, 36, 50, 36, RED)
     # 3V3 harness-tråd optik→FC (edge A saknar 3V3)
-    arr(40, 60, 40, 64, RED, ls=(0,(4,3)))
-    arr(40, 64, 109, 64, RED, "3V3 harness-tråd  (optik → FC J2; edge A saknar kraftskena)", ls=(0,(4,3)))
-    arr(109, 64, 109, 60, RED, ls=(0,(4,3)))
+    arr(74, 36, 99, 36, RED, "3V3 via edge B-tapp (FC J2)")
     # bussar (grå/blå)
     arr(62, 40, 54, 40, BLU, "SPI+IR+IMU_INT\n(edge B)")
     arr(86, 50, 94, 50, BLU, "I²C SDA/SCL + INT\n(edge A)")

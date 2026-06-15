@@ -178,8 +178,9 @@ weapon_pos = {
 # 4 monteringshål i linje med P4-standoffsen (-34.06/+19.73, ±9.15) → genomgående stack.
 firecontrol_pos = {
     "J1": (-18.3, 9.28, 90),                                   # socket mot edge A (pin6..17)
-    "J2": (-28, -6, 0), "J3": (-20, -6, 0), "J4": (-13, -6, 0), "J5": (-6, -6, 0),
-    "J6": (1, -6, 0), "J7": (9, -6, 0), "J8": (28, -6, 0),      # stående JST-fan-out (klar av standoffs)
+    "J2": (-25.92, -9.28, 90),                                 # edge-B kraft-tapp (3V3+GND), bortre långsida
+    "J3": (-15, -6, 0), "J4": (-8, -6, 0), "J5": (-1, -6, 0), "J6": (6, -6, 0),  # switchar (botten)
+    "J7": (-27, 6, 0), "J8": (27, -6, 0),                      # J7 recoil (övre vänster), J8 NFC (höger om H4)
     "U1": (8, 0.5, 0), "U2": (21, 0.5, 0),                     # 2× extra IMU (I²C 0x69/0x68)
     "C3": (4, 3.5, 0), "C4": (12, 3.5, 0),                     # U1-avkoppling
     "C5": (17, 3.5, 0), "C6": (25, 3.5, 0),                    # U2-avkoppling
