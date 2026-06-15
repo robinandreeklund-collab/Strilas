@@ -77,7 +77,7 @@ Utan det ser sikteskameran ingen konstellation.
 NIR) — köpbar (DigiKey **~$141**), men **eval-/sensorkort**, inte ett färdigt kit → P4-integration
 gör du själv (ams-OSRAM-exempel finns); footprint ur deras öppna PCB-filer.
 
-**Inte** IMX296 (ingen P4-drv) eller Arducam Pivariety (= Pi/libcamera).
+**Inte** IMX296/Arducam Pivariety (= Pi). Fullt kameraval: [`camera-selection.md`](camera-selection.md).
 
 ---
 

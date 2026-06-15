@@ -57,9 +57,10 @@ högtalare ingår i kitet och stannar i scope (pose-väg + ljud senare).
 | 8 | **860 nm IR-pass/bandpass-filter** för sikteskameran | 1 | ~$8 | ser bara konstellationen → robust dag/natt |
 | 9 | Perfboard + lödd LED-strömväg + Dupont | 1 | ~$6 | **löd LED+driver fast** — breadboard tål inte 1–3 A |
 
-> **Sikteskameran = OV5647 (NoIR) i kitet** för v1 — gratis, mogen P4-drivrutin. Rolling shutter
-> hanteras med fast-pan-grind i firmware (IMU flaggar snabb panorering). GS-uppgradering = ams-OSRAM
-> MIRA220MINI MONO (~$141 eval) *om* grinden blir för begränsande. CV-firmwaren skriver jag.
+> **Sikteskamera = OV5647 NoIR (~$12, drop-in i kit:et, ser 860 nm)** — INTE kit:ets stock-OV5647
+> som har IR-cut och **ej ser IR**. Billigare alt: **SC2336 NIR** (~$5–10, verifiera kontakt). Se
+> [`hardware/camera-selection.md`](../hardware/camera-selection.md). Rolling shutter hanteras med
+> fast-pan-grind; GS-uppgradering (Mira220, ~$141) skjuts på. CV-firmwaren skriver jag.
 
 IMU på I²C; RMT driver gaten på 56 kHz; kameran via FFC till P4 MIPI-CSI.
 
