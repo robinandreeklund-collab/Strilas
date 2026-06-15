@@ -16,7 +16,7 @@
 3. **IR-skottstråle = LOS + skott-ID, inte hitbox:** bred kon (länkbudget), geometrin
    gör precisionen (se `level3-ballistic-architecture.md` §3.2).
 4. **Riktig räckvidd + precision (100–150 m):** kollimerad emitter (räckvidd) +
-   **telefoto-sikteskamera + aktiv IR-konstellation** (precis bäring på avstånd) — ingen
+   sikteskamera (NoIR) + aktiv IR-konstellation (precis bäring på avstånd) — ingen
    leksak som bara pekar åt rätt håll.
 
 **Server = din laptop/PC** för v1 (ingen Jetson behövs än). **Precisionen är RELATIV**
@@ -53,14 +53,15 @@ högtalare ingår i kitet och stannar i scope (pose-väg + ljud senare).
 | # | Del | Antal | ~Pris | Not |
 |---|---|---|---|---|
 | 6 | **TDK ICM-45686 breakout** | 1 | ~$12 | hög-rate attityd + rekyl, fyller mellan kamerabildrutor |
-| 7 | **Telefoto M12-lins** (~10–15° FOV) till sikteskameran | 1 | ~$15 | **vinkelupplösning + räckvidd** — annars för liten konstellation @150 m |
-| 8 | **860 nm IR-pass/bandpass-filter** för sikteskameran | 1 | ~$8 | ser bara konstellationen → robust dag/natt |
+| 7 | *(valfritt)* längre M12-lins till sikteskameran | 0–1 | ~$8 | stock 6 mm/33° räcker (SNR 30); längre = mer räckvidd/SNR @150 m |
+| 8 | **860 nm bandpass-filter** (M12-gänga) för sikteskameran | 1 | ~$8 | isolerar konstellationen från dagsljus → robust SNR |
 | 9 | Perfboard + lödd LED-strömväg + Dupont | 1 | ~$6 | **löd LED+driver fast** — breadboard tål inte 1–3 A |
 
-> **Sikteskamera = Arducam 5MP OV5647 NoIR, M12** (Amazon B012S6WJOS, ~$15) — RPi 15-pin, drop-in,
-> som har IR-cut och **ej ser IR**. Billigare alt: **SC2336 NIR** (~$5–10, verifiera kontakt). Se
+> **Sikteskamera = Arducam 5MP OV5647 NoIR, M12** (Amazon B012S6WJOS, ~$15) — RPi 15-pin, **drop-in**
+> (samma sensor/kontakt/form som kit-kameran, fast utan IR-cut → ser 860 nm). **Köp INTE** kit:ets
+> stock-OV5647 som sikte (IR-cut → ser ej IR). Billigare alt: **SC2336 NIR** (verifiera kontakt). Se
 > [`hardware/camera-selection.md`](../hardware/camera-selection.md). Rolling shutter hanteras med
-> fast-pan-grind; GS-uppgradering (Mira220, ~$141) skjuts på. CV-firmwaren skriver jag.
+> fast-pan-grind; GS-uppgradering (Mira220) skjuts på. CV-firmwaren skriver jag.
 
 IMU på I²C; RMT driver gaten på 56 kHz; kameran via FFC till P4 MIPI-CSI.
 
@@ -88,7 +89,7 @@ Målet gör nu **två** saker: **syns** (IR-konstellation som vapnets kamera pos
    *relativt konstellationen*. Allt i relativ ram → **ingen GNSS/UWB behövs**.
 4. **IMU** predikterar mellan kamerabildrutor (16–33 ms) + ger rekyl/tilt.
 
-Vinkelprecision: telefoto-kamera ger sub-pixel-bäring ≪ 0,1° → upplöser torso (0,19° @150 m)
+Vinkelprecision: kameran ger sub-pixel-bäring ≪ 0,1° → upplöser torso (0,19° @150 m)
 och nästan huvud (0,076°). **Bringup-tips:** börja CV:n med en stor tryckt **ArUco** på kort
 håll (enklast), byt till aktiv IR-konstellation för full räckvidd/mörker.
 
