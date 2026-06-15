@@ -475,6 +475,12 @@
       (net 6 "LED_MID") (tstamp 4c51f6f4-6c68-4c85-a64b-ace7143eb9f8))
     (pad "2" smd roundrect (at 0 0) (size 1.9 3.2) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.1)
       (net 6 "LED_MID") (tstamp 844a2d6d-5330-4810-82d4-63d257cc95bf))
+  
+    (model "${KICAD6_3DMODEL_DIR}/LED_SMD.3dshapes/LED_WS2812B-Mini_PLCC4_3.5x3.5mm.step"
+      (offset (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
   )
 
   (footprint "SOT-23" (layer "F.Cu")
@@ -657,6 +663,12 @@
       (net 12 "SCK") (tstamp 847a0d8a-8951-4e47-90f8-a014a82c1a0a))
     (pad "14" smd roundrect (at -0.5 -1.4) (size 0.28 0.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.25)
       (net 8 "MOSI") (tstamp a944da76-5305-42d2-a584-a1d32573f607))
+  
+    (model "${KICAD6_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/QFN-16-1EP_3x3mm_P0.5mm_EP1.7x1.7mm.step"
+      (offset (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
   )
 
   (footprint "SOT-23" (layer "F.Cu")
@@ -815,6 +827,12 @@
       (net 5 "LED_CATH") (tstamp a92d8592-f3c3-4927-aa06-cffc6da6dbd4))
     (pad "2" smd roundrect (at 0 0) (size 1.9 3.2) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.1)
       (net 5 "LED_CATH") (tstamp 8d6fecf9-5ab0-4853-a7df-ce283cff94e6))
+  
+    (model "${KICAD6_3DMODEL_DIR}/LED_SMD.3dshapes/LED_WS2812B-Mini_PLCC4_3.5x3.5mm.step"
+      (offset (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
   )
 
   (footprint "C_0402_1005Metric" (layer "F.Cu")

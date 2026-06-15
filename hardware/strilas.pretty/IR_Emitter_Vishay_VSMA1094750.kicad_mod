@@ -18,4 +18,9 @@
   (fp_line (start 2.850 -2.850) (end 2.850 2.850) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
   (fp_line (start 2.850 2.850) (end -2.850 2.850) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
   (fp_line (start -2.850 2.850) (end -2.850 -2.850) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+  (model "${KICAD6_3DMODEL_DIR}/LED_SMD.3dshapes/LED_WS2812B-Mini_PLCC4_3.5x3.5mm.step"
+    (offset (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 0))
+  )
 )

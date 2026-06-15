@@ -44,6 +44,17 @@ def rect(layer, hw, hh, w=0.1):
     return s
 
 
+def model(path):
+    return (f'  (model "{path}"\n    (offset (xyz 0 0 0))\n'
+            f'    (scale (xyz 1 1 1))\n    (rotate (xyz 0 0 0))\n  )\n')
+
+
+# storleksnära 3D-stand-ins (KiCad-paket): IMU≈QFN-16 3x3, emitter≈PLCC 3.5x3.5
+M3D = "${KICAD6_3DMODEL_DIR}"
+MDL_IMU = M3D + "/Package_DFN_QFN.3dshapes/QFN-16-1EP_3x3mm_P0.5mm_EP1.7x1.7mm.step"
+MDL_LED = M3D + "/LED_SMD.3dshapes/LED_WS2812B-Mini_PLCC4_3.5x3.5mm.step"
+
+
 def header(name, descr):
     return (f'(footprint "{name}" (version 20221018) (generator strilas)\n'
             f'  (layer "F.Cu")\n  (descr "{descr}")\n'
@@ -81,6 +92,7 @@ def make_imu():
     s += circle(-xside-0.45, 0.75, 0.12, "F.SilkS", 0.15)   # pin-1 markör
     s += line(-BX, -BY, -BX+0.4, -BY, "F.SilkS", 0.12)
     s += rect("F.CrtYd", BX+0.25, BY+0.25, 0.05)
+    s += model(MDL_IMU)
     s += ")\n"
     open(os.path.join(LIB, name+".kicad_mod"), "w").write(s)
     print("wrote", name)
@@ -107,6 +119,7 @@ def make_led():
     s += line(-2.95, 1.6, -2.45, 1.6, "F.SilkS", 0.15)     # katodstreck (vanster)
     s += circle(-2.7, 1.35, 0.12, "F.SilkS", 0.15)         # katodprick
     s += rect("F.CrtYd", 2.85, 2.85, 0.05)
+    s += model(MDL_LED)
     s += ")\n"
     open(os.path.join(LIB, name+".kicad_mod"), "w").write(s)
     print("wrote", name)

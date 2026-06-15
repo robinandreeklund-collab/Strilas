@@ -28,4 +28,9 @@
   (fp_line (start 1.500 -1.750) (end 1.500 1.750) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
   (fp_line (start 1.500 1.750) (end -1.500 1.750) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
   (fp_line (start -1.500 1.750) (end -1.500 -1.750) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+  (model "${KICAD6_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/QFN-16-1EP_3x3mm_P0.5mm_EP1.7x1.7mm.step"
+    (offset (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 0))
+  )
 )
