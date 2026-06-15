@@ -113,9 +113,9 @@ helmet_pos.update({"J2": (0, 0, 0), "J1": (0, -44, 0)})
 #   så dessa hål + standoffs är fria. Kameran skruvas fast bakom kortet, lins genom Ø16.
 weapon_box = {   # 54×68 mm: 2× Ø20-lins+kamera fram; INGET under linserna; P4 längs höger 68 mm-kant
     "D2": (-12, 23, 0), "D3": (12, 23, 180),
-    # Carclo 60475 4-bens-hållare: 4 hål/lins i 9.5×16.45 rektangel (Ø3.2), LED centralt
-    "H8": (-16.75, 31.2, 0), "H9": (-7.25, 31.2, 0), "H10": (-16.75, 14.8, 0), "H11": (-7.25, 14.8, 0),   # D2
-    "H12": (7.25, 31.2, 0), "H13": (16.75, 31.2, 0), "H14": (7.25, 14.8, 0), "H15": (16.75, 14.8, 0),     # D3
+    # Carclo 10734 4-bens-hållare (ritn. 60575): 4 hål/lins Ø2.1 i 9.0×15.60 rektangel, LED centralt
+    "H8": (-16.5, 30.8, 0), "H9": (-7.5, 30.8, 0), "H10": (-16.5, 15.2, 0), "H11": (-7.5, 15.2, 0),   # D2
+    "H12": (7.5, 30.8, 0), "H13": (16.5, 30.8, 0), "H14": (7.5, 15.2, 0), "H15": (16.5, 15.2, 0),     # D3
     # driver i CENTRUM-gapet mellan linserna (fritt från Ø20): N-FET + gate-R
     "Q2": (0, 19, 90), "R3": (0, 14, 90),
     # vänster kant (fritt från linsernas x=-22): Rset + inmatningsskydd
