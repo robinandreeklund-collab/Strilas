@@ -66,18 +66,21 @@ def main():
     # MALE pin-header — bara de stift som FAKTISKT används monteras (kortet köps olött,
     # man löder endast nödvändiga header-stift). Mating-korten (optik/FC) får FEMALE socket.
     #   pin n castellation: x = PIN1_X + (n-1)*PITCH ; raden går +x vid rot90.
-    #   Edge B (y=-9.28): pin 2..15 (VSYS..GPIO32) → optik-J1   → 1×14 @ pin2
-    #   Edge A (y=+9.28): pin 6..17 (GPIO29..GPIO7) → FC-stack  → 1×12 @ pin6
-    place_fp("J_B", "Connector_PinHeader_2.54mm", "PinHeader_1x14_P2.54mm_Vertical",
-             PIN1_X + 1 * PITCH, -ROW_Y, 90)
+    # SANDWICH-STACK: optik UNDER, FC OVANPÅ → stiften pekar åt MOTSATTA håll:
+    #   Edge B (y=-9.28): pin 2..15 (VSYS..GPIO32) → optik UNDER → stift NEDÅT (B_Cu) → 1×14 @ pin2
+    #   Edge A (y=+9.28): pin 6..17 (GPIO29..GPIO7) → FC OVAN    → stift UPPÅT (F_Cu) → 1×12 @ pin6
+    jb = place_fp("J_B", "Connector_PinHeader_2.54mm", "PinHeader_1x14_P2.54mm_Vertical",
+                  PIN1_X + 1 * PITCH, -ROW_Y, 90)
+    jb.Flip(jb.GetPosition(), False)                 # edge B nedåt (mot optiken)
     place_fp("J_A", "Connector_PinHeader_2.54mm", "PinHeader_1x12_P2.54mm_Vertical",
-             PIN1_X + 5 * PITCH, ROW_Y, 90)
+             PIN1_X + 5 * PITCH, ROW_Y, 90)           # edge A uppåt (mot FC) — behåll F_Cu
 
     # USB-C-mottagare i vänster ände (3D-modell → syns i STEP) — visar var USB ligger.
     place_fp("USBC", "Connector_USB", "USB_C_Receptacle_HRO_TYPE-C-31-M-12", -34.0, 0, 90)
-    # Sekundär USB 2.0 (host) → kamera: 4-pin header (V / D- / D+ / G), centralt.
-    place_fp("J_CAM", "Connector_PinHeader_2.54mm", "PinHeader_1x04_P2.54mm_Vertical",
-             -4.0, 0, 90)
+    # Sekundär USB 2.0 (host) → kamera (under): 4-pin header (V/D-/D+/G), stift NEDÅT.
+    jcam = place_fp("J_CAM", "Connector_PinHeader_2.54mm", "PinHeader_1x04_P2.54mm_Vertical",
+                    -4.0, 0, 90)
+    jcam.Flip(jcam.GetPosition(), False)             # kamera-USB nedåt (mot kameran)
 
     # silk-markeringar (USB-C + ESP-modul + pin-1)
     def silk_rect(x0, y0, x1, y1, txt):
