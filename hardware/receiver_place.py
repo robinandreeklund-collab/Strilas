@@ -138,20 +138,18 @@ weapon_box = {   # 54×74 mm: 2× Ø20-lins+kamera fram; P4 (15mm-standoff) bako
     # J1 = 1x14 P4-kantkontakt på VÄNSTERKANTEN (P4 vänd så signalkanten edge B ligger ytterst).
     # P4-pin (make_p4_board-index) m @ optikkort-y = -31 + (m-1)*2.54. Edge B (ESP→USB):
     #   VSYS=P4-pin19 (y=+14.71) ... GPIO32=P4-pin6 (y=-18.31). Origo=J1-pin1 (VSYS), går nedåt.
-    "J1": (-25.28, 14.71, 0),
+    "J1": (-25.28, 5.14, 0),   # FLYTTAD -9.57mm i Y: J1 möter P4 edge B när standoff-hålen linjeras
     # kamerafäste H8-H11 (B0332 28×28 om lins (0,-6)); B4B-ZR-kontakt riktad +x (höger)
     "H8": (-14, 8, 0), "H9": (14, 8, 0), "H10": (-14, -20, 0), "H11": (14, -20, 0),
     # IMU + avkoppling vänster-centrum (under P4, NÄRA J1) → korta SPI-escapes till J1
-    "U1": (-12, -10, 0), "C3": (-18, -10, 90), "C4": (-12, -16, 0), "C5": (-7, -13, 90),
+    "U1": (-19, -3, 0), "C3": (-22, 2, 90), "C4": (-19, -8, 0), "C5": (-15, -1, 90),  # IMU tätt intill J1 → korta SPI-nät
     # kort-monteringshål: alla x>-5.5 (ej under P4) — H1 topp-höger, H2 botten-höger,
     # H3 höger-kant (mellan kraftremsan och H2), H4 centrum-topp (mellan linserna)
     "H1": (24, 34, 0), "H2": (24, -34, 0), "H3": (24, -22, 0),
     "H4": (0, 28, 0),
-    # 4 P4-standoff synkade mot P4:ans ALLA 4 hål. ORIENTERING USB-UPPÅT (verifierad:
-    # overlay J1↔edge B = 0 felmatchningar). Lägena förankrade i J1:s paddar:
-    #   optik_y = -native_x - 13.75 ; optik_x = native_y - 16.
-    "H5": (-25.15, -33.48, 0), "H6": (-6.85, -33.48, 0),    # ESP-änden (ned)
-    "H7": (-6.85, 20.31, 0), "H20": (-25.15, 20.31, 0),     # USB-C-änden (upp)
+    # 4 P4-standoff: synkade mot P4:ans hål, sammanfaller i stacken. RÖRS EJ (korrekta).
+    "H5": (-25.15, -33.48, 0), "H6": (-6.85, -33.48, 0),
+    "H7": (-6.85, 20.31, 0), "H20": (-25.15, 20.31, 0),
 }
 
 weapon_pos = {
