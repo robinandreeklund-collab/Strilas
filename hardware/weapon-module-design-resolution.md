@@ -19,8 +19,10 @@ skott** → **ingen självbländning** (inget beroende av timing/baffel). Dessut
 väg: **940 nm = TSOP-känslighetstopp** (~950 nm), **860 nm = bättre kisel-QE** i kameran →
 konstellationen syns på avstånd. 56 kHz-bärvågen är *modulation*, oberoende av våglängd.
 
-> Konsekvens: skott-LED = **940 nm OSLON Black-syskon** (samma paket som SFH 4715AS → Carclo
-> 10195 passar; **verifiera P/N**). Konstellation = billiga 860 nm-LED på målet.
+> Konsekvens (LÅST): skott-LED = **Vishay VSMA1094750X02 (äkta 940 nm, 945 nm topp)**, 1,5 A DC /
+> 5 A pulsat, AEC-Q102 — datablad + footprint klara. *(Tidigare "OSLON Black 940 nm SFH 4715AS"
+> var fel: OSLON "AS" är 850/860 nm.)* TIR-kollimator för 3,4 mm-källa. Konstellation = billiga
+> 860 nm-LED på målet.
 
 ---
 
@@ -41,17 +43,17 @@ konstellationen syns på avstånd. 56 kHz-bärvågen är *modulation*, oberoende
 
 | # | Problem | Beslut |
 |---|---|---|
-| 2.1 | "Rsense som strömgräns" är inte konstant ström | **Konstantströms-driver** (U6): sense-resistor sätter **hårt HW-tak**; firmware bara *lägre*. "Ögonsäkerhet i hårdvara". |
-| 2.2 | Topologi (RÄTTAD: boost var överspecat) | **BUCK CC** — VBAT 2S (6,4–8,4 V) **>** LED-sträng 2× Vf(940 nm) ~3–5,5 V → steg **ner**. Boost behövs ej. |
-| 2.3 | **Switch-passiva (saknades i sketch)** | Buck kräver **L1 (induktor)** + **Cin** + **D5 (freewheel)** + Rsense + **Cout/C1** (220–470 µF låg-ESR + MLCC nära LED). |
-| 2.4 | 56 kHz-modulering | **Q1 (AO3400) i serie** gatar bärvågen ovanpå buckens nivå (buck-PWM är för långsam för rent 56 kHz). |
+| 2.1 | "Rsense som strömgräns" är inte konstant ström | **Hårt HW-strömtak (Rset = R2, 3R3 2W)** sätter Imax oberoende av firmware → "ögonsäkerhet i hårdvara". Det här är vad som är **byggt på kortet** (enkelt, robust, få komponenter). |
+| 2.2 | Topologi — **BYGGD v1 = Rset-tak + N-FET-gate** | VBAT 2S (6,4–8,4 V) → **R2 (Rset)** → LED-sträng 2× Vf(940 nm) → **Q1 (N-FET)** mot GND. C2 (220 µF) levererar pulsen. *Buck-CC (nedan) är en **effektivitetsuppgradering**, ej i v1-netlistan.* |
+| 2.2b | (Framtida) Buck-CC-uppgradering | VBAT > LED-sträng → steg **ner**; kräver **L1** + **Cin** + freewheel-diod + Rsense. Ger högre verkningsgrad än Rset men fler delar. **Inte** i det routade kortet. |
+| 2.4 | 56 kHz-modulering | **Q1 (AO3400) i serie** gatar bärvågen mot GND (RMT från P4 driver gaten via R3). |
 | 2.5 | Inskydd | **Reverse P-FET (Q2)** + **TVS** + **PTC (F1)** på VBAT — PTC:s **håll-ström > pulsens medel** (annars nuisance-trip). |
 
 ---
 
 ## 3. Ögonsäkerhet — riktig bedömning (inte gissning)
 
-**Radiometrisk output (vår modell, 2× 940 nm, ±5° Carclo, 1 A):** Ie ≈ **~54 W/sr** kombinerat.
+**Radiometrisk output (vår modell, 2× 940 nm Vishay, ±5° TIR, 1 A):** Ie ≈ **~54 W/sr** kombinerat.
 Irradians vid ögat: `E = Ie / d²`. Värsta fall (någon **1 m** från mynningen): E ≈ 54 W/m² →
 genom 7 mm-pupill (3,85·10⁻⁵ m²) ≈ **2,1 mW in i ögat** (pulsat, låg duty).
 
@@ -93,19 +95,17 @@ FET (AO3400, låg Rds) klarar pulsat. Verifiera junction-temp vid värsta full-a
 
 ## 6. Kameragränssnitt (löser MIPI-SI-problemet genom att undvika det)
 
-**MIPI-CSI dras INTE på detta kort.** Kameramodulen sitter mekaniskt i centrum (standoffs
-genom urtaget) men dess **FFC går direkt till P4:ans CSI-kontakt**. Detta kort bär bara:
-emitter-driver (effekt), IMU (I²C), kontakt. → ingen höghastighets-differential-routing här.
+**Ingen kamera-elektrik på detta kort.** Kameramodulen sitter mekaniskt **bakom** kortet (lins
+genom Ø16-urtaget) och ansluts till P4 via **USB-kabel** — inte via detta kort. Kortet bär bara:
+emitter-driver (effekt), IMU (SPI), P4-carrier-header, batteri-in. → ingen kamera- eller
+höghastighets-differential-routing här.
 
-**Vald kamera: OV5647 för v1** (kit = RPi Camera Model B, 5 MP 1/4″, M12 6 mm/F2.0/60,6° diag,
-P4-stödd). **⚠️ KRITISKT: kit-kameran har IR-cut-filter ("night vision: nonsupport") → ser EJ
-860 nm. Måste vara NoIR** (filter borttaget / RPi NoIR-kamera), annars syns ingen konstellation.
-Stock-lins (6 mm/F2) ger SNR ≈ 30 @150 m (verifierat, kort exp); M12-linsen är utbytbar för mer
-räckvidd. Rolling shutter hanteras med kort exponering + modulerade LED + firmware-fast-pan-grind.
-
-**GS-uppgradering** *om* grinden blir för begränsande: **ams-OSRAM MIRA220MINI MONO** (global shutter,
-NIR) — köpbar (DigiKey ~$141) men eval-/sensorkort (DIY P4-integration; ams-OSRAM-exempel + öppna PCB-filer).
-**Inte** IMX296 / Arducam Pivariety (= Pi). Mät din modul → `CAM_W/CAM_H`.
+**Vald kamera (LÅST): USB OV9281 mono GLOBAL SHUTTER NoIR** (1 MP 1280×800, 3 µm, 1/4″, USB-UVC →
+P4:ans USB OTG 2.0 HS). **⚠️ Måste vara NoIR** (inget IR-cut), annars syns ingen 860 nm-konstellation.
+**Lins: 12 mm M12 (~18° FOV)** — fysiken kräver det för 150 m (1 MP @ 6mm/35,5° upplöser bara ~9 px
+konstellation → LED:erna smälter ihop; 12 mm ger ~8 px separation + 18 px baslinje → SNR ≈ 87, robust PnP).
+Global shutter (OV9281) → ingen pan-smet i grunden; kort exponering + modulerade LED ger ren blob-
+detektion i dagsljus. (En 6 mm-lins kan behållas om man nöjer sig med robust räckvidd ~80 m.)
 
 **Avstånd:** kommer ur **PnP** (konstellationens kända bas + vinkelutbredning); i v1 mäts målets
 position med måttband. **Ingen LiDAR behövs** (superseder av PnP; kan återkomma endast för markörlöst avstånd).
@@ -159,7 +159,7 @@ position med måttband. **Ingen LiDAR behövs** (superseder av PnP; kan återkom
 **Bekräftat (ingen åtgärd):**
 - Kamerans matning + SCCB (I²C-styrning) kommer från **P4:ans CSI-kontakt** → inga kamerarails på detta kort.
 - Trigger → direkt P4-GPIO (greppet), ej via modulen.
-- ⚠️ **Verifiera Carclo 10195 optik mot 940 nm-LED-varianten** (samma paket, men kolla strålvinkel).
+- ⚠️ **Välj/verifiera TIR-kollimator** för Vishay VSMA1094750 (3,4 mm-källa) → strålvinkel ≤ ±7,5°.
 
 ---
 
@@ -168,7 +168,7 @@ position med måttband. **Ingen LiDAR behövs** (superseder av PnP; kan återkom
 | Mätpunkt | Hur |
 |---|---|
 | **Class 1-AE** | optisk effektmätare + IEC 60825-1-villkor, vid låst pulsformat |
-| **Exakt kameramodul-mått** | mät kitets OV5647 → lås `CAM_W/H/HOLE` |
+| **Exakt kameramodul-mått** | mät OV9281 USB-modulen → lås `CAM_W/H/HOLE` (lins genom Ø16) |
 | **Konstellations-synlighet @150 m dag** | bringup-test, justera LED-effekt/modulering |
 | **Junction-temp vid full-auto** | termisk mätning vid värsta duty |
 | **Räckvidd vs ström** | fälttest, sätt CC-tak till lägsta som klarar 150 m |

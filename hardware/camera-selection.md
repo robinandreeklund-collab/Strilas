@@ -1,11 +1,16 @@
 # STRILAS — Kameraval (sikteskamera)
 
-> ## 🔒🔒 LÅST (användarbeslut): **USB OV9281 global shutter, 6 mm "no distortion", NoIR**
-> Singel-OV9281 (ej stereo). **Global shutter + mono + 3 µm-pixlar.** USB UVC → P4:ans USB OTG 2.0 HS.
-> **Lins: 6 mm "no distortion"** (smalast FOV ~33° + rektilinjär → ren solvePnP).
+> ## 🔒🔒 LÅST (användarbeslut): **USB OV9281 global shutter, NoIR** — **lins 12 mm M12** (för 150 m)
+> Singel-OV9281 (ej stereo). **Global shutter + mono + 3 µm-pixlar, 1 MP 1280×800.** USB UVC → P4:ans USB OTG 2.0 HS.
+> **Lins: 12 mm M12 (rektilinjär, ~18° FOV).** ⚠️ **Fysik-uppdatering:** OV9281 är 1 MP → med 6 mm
+> (35,5° FOV) subtenderar konstellationen bara ~9 px @150 m och LED:erna smälter ihop → **6 mm räcker
+> bara till ~80 m**. För **150 m krävs 12 mm** (~8 px LED-separation + 18 px baslinje → robust PnP).
+> Se [`system-verification-report.md`](system-verification-report.md). *(6 mm "no distortion" kan
+> behållas om man nöjer sig med kortare robust räckvidd.)*
 > **MÅSTE vara no-IR-filter-varianten** — standardmodulens 650 nm-filter blockerar 860 nm.
 > Kameran sitter mekaniskt **bakom** optikkortet, linsen genom Ø16-hålet; ansluts till P4 via **USB-kabel**
-> (ej på kortets header). P4 mounteras som **carrier** (header-mount) — se nedan.
+> (ej på kortets header). P4 mounteras som **carrier** (header-mount) — se nedan. **PCB:t är oberoende av
+> brännvidd** (kameran är mekanisk/USB).
 >
 > ### P4-carrier pin-map (J1 → P4-GPIO)
 > | Signal | P4-pin | | Signal | P4-pin |

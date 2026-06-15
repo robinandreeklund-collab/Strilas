@@ -1,52 +1,66 @@
-# STRILAS — Vapen-modul: AUTOROUTAD PCB (status)
+# STRILAS — Vapen-modul: FÄRDIGROUTAD PCB (status)
 
 Hela EDA-kedjan kördes **autonomt** i denna container (KiCad 7 + Freerouting), från
-netlistan till en routad board + Gerbers. Du behöver inte göra EDA själv — filerna nedan
-laddas upp till en fab.
+netlistan till en **fullständigt routad, DRC-ren board + Gerbers**. Du behöver inte göra
+EDA själv — filerna nedan laddas upp till en fab.
 
 ## Vad som producerades
 
 | Fil | Innehåll |
 |---|---|
-| `weapon-module.kicad_pcb` | **routad** 4-lagers board (öppna i KiCad) |
-| `weapon-module-gerbers.zip` | **Gerbers + drill** (ladda upp till JLCPCB/PCBWay) |
+| `weapon-module.kicad_pcb` | **fullständigt routad** 4-lagers board (öppna i KiCad) |
+| `weapon-module-gerbers.zip` | **Gerbers + drill** (11 lager + drill, ladda upp till JLCPCB/PCBWay) |
 | `weapon-module-routed.png` | visuell render av routningen |
-| `weapon_module_place.py` | bygger placerad board ur netlistan (pcbnew) |
-| `ses_import.py` | applicerar Freerouting-rutter på boarden |
+| `strilas.pretty/` | **kund-footprints** (Vishay-emitter + ICM-45686 LGA-14) |
 
 ## Verktygskedjan (reproducerbar)
 
 ```
-weapon_module_netlist.py  → weapon-module.net      (SKiDL: schema/netlista)
-weapon_module_place.py    → weapon-module.kicad_pcb (placerad, nät, outline, kamerahål, 4 lager)
-ExportSpecctraDSN         → weapon-module.dsn
-freerouting (xvfb, headless) → weapon-module.ses    (autoroute ~5 s)
-ses_import.py             → spår/vior in i boarden + GND-plan (In1+B.Cu)
-kicad-cli pcb export gerbers/drill → gerbers.zip
+weapon_module_netlist.py   → weapon-module.net        (SKiDL: schema/netlista)
+make_footprints.py         → strilas.pretty/*.kicad_mod (emitter + IMU, datablads-mått)
+receiver_place.py weapon   → weapon-module.kicad_pcb   (placerad, nät, outline, Ø16-linshål, 4 lager)
+weapon_thermal_vias.py     → termiska vior under emittrarna FÖRE routning
+ExportSpecctraDSN          → weapon-module.dsn
+dsn_power_class.py         → effektnät i egen 0,4 mm-klass (rätt clearance)
+freerouting (xvfb, headless) → weapon-module.ses       (autoroute ~8 s, 0 oroutade)
+ses_apply.py               → spår/vior in i boarden
+weapon_finish.py           → kopparplan (In1=GND, In2=VBAT, B=GND, F=GND-fyll) + fyllning
+kicad-cli pcb export gerbers/drill → weapon-module-gerbers.zip
+render_weapon.py           → weapon-module-routed.png
 ```
 
-## Routnings-status
+## Routnings-status — KOMPLETT
 
-- **80 spårsegment + 3 vior, 4 lager, GND-plan på In1 + B.Cu.** All **kraft** (VBAT/VBAT_F/+3V3)
-  och de flesta signaler routade.
-- **6 förbindelser oroutade** = SPI-escape (SCK/MOSI/MISO/nCS/INT) till **IMU-placeholdern**.
-  Orsak: Bosch_LGA-14-platshållaren är 0,5 mm-pitch → autoroutern når inte de inre paddarna
-  utan korrekt fanout. **Detta löser sig när den riktiga ICM-45686-footprinten ersätter
-  platshållaren** (dess land-pattern ger ren via-fanout) — en normal, footprint-specifik åtgärd.
+- **20 komponenter, alla med riktiga footprints** (inga platshållare kvar).
+- **168 spårsegment + 26 vior** (varav 8 termiska under emittrarna), 4 lager.
+- **0 oroutade förbindelser** — hela nätet draget inkl. 0,5 mm-pitch-IMU:ns SPI-escape.
+- **Effektnät 0,4 mm** (VBAT/VBAT_F/N$2/LED_MID/LED_CATH), signal 0,2 mm.
+- **Kopparplan:** In1.Cu = GND, In2.Cu = VBAT (effekt), B.Cu = GND-retur, F.Cu = GND-fyll.
+- **Termiska vior** (4 per emitter) i katod-padden → baksidans koppar.
+- **Ø16 lins-urtag** i mitten hålls fritt från koppar (min 1,6 mm marginal).
 
-## ⚠️ Måste fixas före skarp tillverkning (normala sista steg)
+## Egenkontroll (kört i container, geometriskt)
 
-1. **Byt platshållar-footprints** mot exakta delar: **U1 → ICM-45686 LGA-14** (verifiera pinout!),
-   **D2/D3 → ams-OSRAM OSLON Black** (custom thermal pad). Routa då om SPI-escapen.
-2. **J1** ligger något under outline-kanten — nudge:a in den i KiCad (1 min).
-3. **Effektbredd:** autoroutern använde ~0,2 mm; **bredda VBAT/LED-pulsbanan** (1–3 A) + verifiera
-   termiska vias under LED:erna.
-4. **DRC i KiCad** (kicad-cli 7 saknar DRC; kör i GUI eller KiCad 8) → noll fel före fab.
+| Kontroll | Resultat |
+|---|---|
+| Komponent-krockar (courtyard) | **0** |
+| Delar utanför outline / i linshålet | **0** |
+| Koppar-koppar clearance (olika nät) | **0 brott @ 0,2 mm** (JLCPCB-min 0,152 mm) |
+| Koppar→kant / koppar→linshål | min **1,55 / 1,62 mm** |
+| Via annulär ring | **0,175 mm** (≥ 0,125 mm) |
+| Oroutade (connectivity) | **0** |
 
-## Ärlig sammanfattning
+## Footprints (verifierade mot datablad)
 
-Detta är en **autonomt autoroutad, ~87 % komplett board med färdiga Gerbers** — kraften och de
-flesta signaler är dragna, GND-plan på plats. De återstående SPI-escapen + footprint-bytena är
-footprint-specifika sista steg som hör ihop med att byta platshållarna mot de exakta delarna.
-Det är så långt en blind autoroute ansvarsfullt kan tas; resten är 30 min i KiCad med rätt
-footprints — inte EDA-design från scratch.
+- **D2/D3 — Vishay VSMA1094750X02 (940 nm)**: land per Vishay DocNo 80365 (ritn. 6.550-5366.9-3),
+  två sido-paddar (anod/katod) + central termisk katod-slug. 3,4×3,4 mm, 1,5 A DC / 5 A pulsat.
+- **U1 — TDK ICM-45686 LGA-14 2,5×3,0 mm, 0,5 mm-pitch**: pinout verifierad mot TDK AN-000483
+  Fig. 2 (pin-kompatibel ICM-45605/45686). SPI på pinnar 13/14/1/12 (SCLK/SDI/SDO/CS), INT1 pin 4.
+
+## Det enda som kvarstår (kan inte avgöras utan fysisk del — normalt sista steg)
+
+1. **Verifiera footprint-padstacken mot den köpta delens datablad** innan beställning (standard DFM).
+2. **Bänkmät ögonsäkerhet (Class 1 / AE)** per IEC 60825-1 vid driftströmmen — hårdvaru-strömtaket
+   (R2/Rset) är vakten; mät innan emittern pekas mot någon.
+
+Allt EDA-arbete (placering, routning, plan, clearance, Gerbers) är klart och granskat i container.

@@ -4,9 +4,12 @@ Genererar 'hardware/weapon-module.net' (importeras i KiCad/kinet2pcb för layout
 
 Driver för v1 = enkel, ögonsäker: effektresistor (Rset) sätter HÅRT strömtak,
 N-FET (Q1) gatar 56 kHz. (Buck-CC = effektivitetsuppgradering, se design-resolution §2.)
-Kameran (OV5647) sitter MEKANISKT i mitten; dess FFC går direkt till P4 → ej elektriskt här.
+Sikteskamera = USB OV9281 GS NoIR — sitter MEKANISKT bakom kortet (lins genom Ø16-hål),
+ansluts till P4 via USB-kabel → finns INTE elektriskt på detta kort.
 
-OBS: IC-pinnar (IMU) ska verifieras mot datablad innan layout — netlistan = BOM + konnektivitet.
+Skottstråle-emitter = Vishay VSMA1094750X02 (940 nm). IMU = TDK ICM-45686 (LGA-14).
+Bägge har kund-footprints i hardware/strilas.pretty (verifierade mot datablad).
+IMU-pinout verifierad mot TDK AN-000483 Fig.2 (pin-kompatibel ICM-45605/45686).
 """
 from skidl import Part, Pin, Net, generate_netlist, SKIDL, TEMPLATE
 
@@ -32,10 +35,13 @@ PFET = mk("AO3401", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT
 NFET = mk("AO3400", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3400")
 PTC = mk("PTC", "F", [(1, "~"), (2, "~")], "Fuse:Fuse_1206_3216Metric", "PTC_1A")
 TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
-LED = mk("SFH4715AS_940", "D", [(1, "A"), (2, "K")], "LED_SMD:LED_3.2x2.8mm", "940nm_OSLON")
-IMU = mk("ICM-45686", "U", [(1, "VDD"), (2, "VDDIO"), (3, "GND"), (4, "SCLK"),
-                            (5, "SDI"), (6, "SDO"), (7, "nCS"), (8, "INT1")],
-         "Sensor_Motion:InvenSense_ICM-426xx_LGA-14_2.5x3mm", "ICM-45686")
+LED = mk("VSMA1094750", "D", [(1, "A"), (2, "K")],
+         "strilas:IR_Emitter_Vishay_VSMA1094750", "VSMA1094750X02_940nm")
+# ICM-45686 LGA-14 — pin-nr enligt TDK AN-000483 Fig.2:
+# 1 SDO  2 RESV  3 RESV  4 INT1  5 VDDIO  6 GND  7 RESV
+# 8 VDD  9 INT2  10 RESV 11 RESV 12 CS  13 SCLK 14 SDI
+IMU = mk("ICM-45686", "U", [(i, i) for i in range(1, 15)],
+         "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-45686")
 MH = lambda n: mk(f"MH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", "M2.5")
 
 # ---------- nät ----------
@@ -75,9 +81,11 @@ D1["K"] += STR1; D2["A"] += STR1; D2["K"] += LEDC # 2 LED i serie
 Q1["D"] += LEDC; Q1["S"] += GND                   # N-FET drar strängen mot GND
 Rg[1] += IR_MOD; Rg[2] += IRG; Q1["G"] += IRG     # 56 kHz på gaten
 
-# ---------- IMU (SPI) + avkoppling ----------
-U2["VDD"] += P3V3; U2["VDDIO"] += P3V3; U2["GND"] += GND
-U2["SCLK"] += SCK; U2["SDI"] += MOSI; U2["SDO"] += MISO; U2["nCS"] += nCS; U2["INT1"] += INT
+# ---------- IMU (SPI 4-wire) + avkoppling ----------
+# pin-nr (TDK AN-000483 Fig.2):  8=VDD 5=VDDIO 6=GND 13=SCLK 14=SDI 1=SDO 12=CS 4=INT1
+U2[8] += P3V3; U2[5] += P3V3; U2[6] += GND        # VDD / VDDIO / GND
+U2[13] += SCK; U2[14] += MOSI; U2[1] += MISO; U2[12] += nCS; U2[4] += INT
+# pinnar 2,3,7,9,10,11 = RESV/INT2 -> ej anslutna (NC), enligt datablad
 Cd1[1] += P3V3; Cd1[2] += GND; Cd2[1] += P3V3; Cd2[2] += GND; Cd3[1] += P3V3; Cd3[2] += GND
 
 # ---------- mekanik (hål till GND) ----------

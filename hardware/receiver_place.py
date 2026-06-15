@@ -3,10 +3,17 @@
 Nyckeldelar placeras enligt receiver_boards_layout; smådelar grid-placeras i fri zon.
 Ritar outline (+ hjälm-centrumhål). Sparar .kicad_pcb. (Routas sedan av freerouting.)
 """
-import re, math, pcbnew
+import re, math, os, sys, pcbnew
 
 FPDIR = "/usr/share/kicad/footprints"
+LOCAL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "strilas.pretty")
 MM = pcbnew.FromMM
+
+
+def fp_load(lib, fp):
+    """Ladda footprint; 'strilas' = lokalt projektbibliotek, annars KiCad-standard."""
+    path = LOCAL if lib == "strilas" else f"{FPDIR}/{lib}.pretty"
+    return pcbnew.FootprintLoad(path, fp)
 
 
 def parse_net(path):
@@ -38,9 +45,9 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
     gi = 0
     for ref, fpname in comps.items():
         lib, fp = fpname.split(":")
-        f = pcbnew.FootprintLoad(f"{FPDIR}/{lib}.pretty", fp)
+        f = fp_load(lib, fp)
         if f is None:
-            print(f"  !! {fpname} ({ref})"); continue
+            print(f"  !! KAN EJ LADDA {fpname} ({ref})"); continue
         f.SetReference(ref)
         if ref in positions:
             x, y, rot = positions[ref]
@@ -94,17 +101,35 @@ helmet_pos = {f"U{i+1}": (38*math.cos(math.radians(i*45)), 38*math.sin(math.radi
 helmet_pos.update({"J2": (0, 0, 0), "J1": (0, -44, 0)})
 
 # ---- vapen-optikmodul (42×62, P4-carrier) ----
+# Lins-hål Ø16 i mitten (kamera bakom kortet): keepout x[-8,8] y[-12,4].
+# Pulsloop hålls kort: C2(reservoar)→R2(Rset)→D2→D3→Q1→GND uppe.
+# IMU + avkoppling i höger remsa; inmatningsskydd nere till vänster; headers nederst.
 weapon_pos = {
-    "D2": (-10, 20, 0), "D3": (10, 20, 0),         # emittrar
-    "U1": (-16.5, 0, 0),                           # IMU
-    "J1": (0, -27, 0),                             # P4-interface 2x6
-    "J2": (-15, -27, 0),                           # batteri-in
+    # topp: emittrar + pulsreservoar + Rset
+    "D2": (-9, 22, 0),  "D3": (9, 22, 0),          # 940 nm emittrar (skottstråle)
+    "C2": (-15, 14, 0), "R2": (0, 14, 90), "C1": (15, 14, 0),    # 220µF / Rset / 10µF
+    # höger remsa: 56 kHz-driver + IMU + avkoppling
+    "Q1": (15, 8, 0),   "R3": (15, 2, 90),         # N-FET + gate-R
+    "U1": (15, -5, 0),                             # IMU (fri från lins)
+    "C3": (10, -4, 90), "C4": (10, -9, 90), "C5": (15, -11, 0),  # IMU-avkoppling
+    # vänster remsa: inmatningsskydd (PTC -> reverse-FET -> TVS -> pulldown)
+    "F1": (-16, 8, 90), "Q2": (-16, 1, 0), "D1": (-16, -6, 90), "R1": (-16, -12, 90),
+    # nederkant: kontakter + monteringshål
+    "J2": (-15, -27, 90), "J1": (-1, -27, 90), "H3": (18, -26, 0),
+    "H1": (-18, 28, 0), "H2": (18, 28, 0),
+}
+
+BOARDS = {
+    "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
+                          vest_pos, ("rect", 29, 21), layers=2, free=(-24, 24, -18, 0)),
+    "helmet": lambda: place("hardware/helmet-halo.net", "hardware/helmet-halo.kicad_pcb",
+                            helmet_pos, ("circle", 50), layers=4, center_hole=10, free=(-30, 30, 28, 12)),
+    # vapnet: alla delar placeras explicit -> tom fri-zon (säker, ingen krock med lins)
+    "weapon": lambda: place("hardware/weapon-module.net", "hardware/weapon-module.kicad_pcb",
+                            weapon_pos, ("rect", 21, 31), layers=4, free=(19, 20, 30, 31), cutout=(0, -4, 8)),
 }
 
 if __name__ == "__main__":
-    place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
-          vest_pos, ("rect", 29, 21), layers=2, free=(-24, 24, -18, 0))
-    place("hardware/helmet-halo.net", "hardware/helmet-halo.kicad_pcb",
-          helmet_pos, ("circle", 50), layers=4, center_hole=10, free=(-30, 30, 28, 12))
-    place("hardware/weapon-module.net", "hardware/weapon-module.kicad_pcb",
-          weapon_pos, ("rect", 21, 31), layers=4, free=(-18, 18, -10, 14), cutout=(0, -4, 8))
+    sel = sys.argv[1:] or list(BOARDS)   # ange t.ex. 'weapon' för att bara bygga om vapnet
+    for name in sel:
+        BOARDS[name]()

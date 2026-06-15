@@ -17,22 +17,23 @@ print("STRILAS systemverifiering @ 150 m — exakt hårdvaru-spec")
 print("="*74)
 
 # ---------------------------------------------------------------- KOMPONENTER
-# Kamera: OmniVision OV5647 (NoIR) + M12 + 860 nm bandpass
-PX = 1.4e-6                      # pixelstorlek [m] (OV5647)
-NX, NY = 2592, 1944             # upplösning
-SENS_W = NX*PX                  # sensorbredd [m] = 3.629 mm
-QE_860 = 0.12                   # kvantverkningsgrad @860 nm (NoIR Bayer, konservativt)
-FULL_WELL = 6000               # e- mättnad (1.4 µm px)
+# Kamera (LÅST): OmniVision OV9281 mono GLOBAL SHUTTER NoIR + 6mm "no distortion" + 860nm bandpass
+PX = 3.0e-6                      # pixelstorlek [m] (OV9281, 3µm)
+NX, NY = 1280, 800              # upplösning (1MP global shutter)
+SENS_W = NX*PX                  # sensorbredd [m] = 3.84 mm (1/4")
+QE_860 = 0.25                   # kvantverkningsgrad @860 nm (mono NIR, inget Bayer-filter)
+FULL_WELL = 8000               # e- mättnad (3 µm px)
 READ_N = 3.0                    # e- läsbrus
-FOV_DEG = 33.4      # vald FOV (stock 6mm M12-lins, 60.6° diag → ~33° H)
-FNUM = 2.0                      # bländartal M12
+FOV_DEG = 18.2      # 12mm-lins på 3.84mm-sensor: 2·atan(3.84/24) = 18.2° H
+# (1 MP @ 6mm/35.5° upplöser bara ~9 px konstellation @150 m → otillräckligt; 12 mm krävs)
+FNUM = 2.0                      # bländartal
 TAU_LENS = 0.9                 # linstransmission
 TAU_BP = 0.7                    # bandpass-transmission
 BP_FWHM = 12.0                 # bandpass bandbredd [nm]
 f_px = (NX/2)/np.tan(np.radians(FOV_DEG/2))   # brännvidd i pixlar
 DEG_PX = FOV_DEG/NX                            # grader per pixel
 f_mm = (SENS_W/2)/np.tan(np.radians(FOV_DEG/2))*1e3
-print(f"\n[KAMERA] OV5647 {NX}×{NY}, px {PX*1e6:.1f}µm, M12 f≈{f_mm:.1f}mm, FOV {FOV_DEG}°, "
+print(f"\n[KAMERA] OV9281 mono GS {NX}×{NY}, px {PX*1e6:.1f}µm, f≈{f_mm:.1f}mm, FOV {FOV_DEG}°, "
       f"{DEG_PX*1000:.2f} m°/px (={DEG_PX:.4f}°/px), f={f_px:.0f}px, F/{FNUM}")
 
 # Konstellation: 860 nm IR-LED på kropp (front-aspekt), världskoord (mål @ x=150, mot skytt)
@@ -88,7 +89,7 @@ for t in (1e-3, 100e-6, 30e-6):
     print(f"  t_exp={t*1e6:6.0f}µs: signal {s:9.0f}e  bakgr {b:6.0f}e  SNR={sn:7.0f}{sat}")
 s,b,sn30 = snr(30e-6)
 det_ok = sn30 > 10
-print(f"Vid kort exp (30µs, undviker mättnad + rolling-smet): SNR={sn30:.0f} → detektion {PASS(det_ok)}")
+print(f"Vid kort exp (30µs, undviker mättnad; global shutter → ingen pan-smet): SNR={sn30:.0f} → detektion {PASS(det_ok)}")
 
 # ============================================================ 3. BÄRINGSPRECISION (MC)
 print("\n--- 3. BÄRINGSPRECISION (Monte Carlo, centroid-brus) ---")
@@ -131,20 +132,22 @@ print(f"@60 fps drift ≪ krav → {PASS(imu_ok)} (bekräftar: 1 IMU räcker; ar
 # ============================================================ 5. IR-SKOTT LÄNKBUDGET
 print("\n--- 5. IR-SKOTT → TSOP @150 m (940 nm, dagsljus + bandpass) ---")
 def omega(h): return 2*np.pi*(1-np.cos(np.radians(h)))
+# Emitter = Vishay VSMA1094750X02 (940 nm). Φe≈1.68 W/A nominellt; vi räknar
+# KONSERVATIVT med 1.08 W/A → verklig räckvidd/marginal ligger ÖVER det som visas.
 PHI_A, LENS_EFF, NEMIT = 1.08, 0.80, 2
 def Ie_shot(I, half): return LENS_EFF*PHI_A*I*max(1-0.05*(I-1),0.8)/omega(half)*NEMIT
 EMIN = 0.35e-3*30/4    # TSOP-tröskel: ideal × sol(30) ÷ bandpass(4)
 def maxrange(I, half): return np.sqrt(Ie_shot(I,half)/EMIN)
 print(f"  TSOP-tröskel (sol+bandpass) = {EMIN*1e3:.2f} mW/m²")
-for half,name in ((7.5,"medium 10195"),(5.0,"narrow 10048")):
+for half,name in ((7.5,"medium TIR "),(5.0,"narrow TIR ")):
     for I in (1.0,2.0,3.0):
         mr = maxrange(I,half)
         print(f"  {name} ±{half}°, {I:.0f}A: Ie={Ie_shot(I,half):5.1f} W/sr → räckvidd {mr:5.0f} m  {PASS(mr>=150)}")
-print(f"→ VALT: medium 10195 @ ~2A → {maxrange(2,7.5):.0f} m (kompakt 42×62-kort).")
+print(f"→ VALT: medium TIR  @ ~2A → {maxrange(2,7.5):.0f} m (kompakt 42×62-kort).")
 print(f"  Ie≈{Ie_shot(2,7.5):.0f} W/sr ≈ minsta Ie för 150 m (~59 W/sr) → ögonexponering oberoende av lins.")
 
 # ============================================================ 6. ÖGONSÄKERHET (vid IR-strömmen)
-print("\n--- 6. ÖGONSÄKERHET vid driftpunkten (VALT: medium 10195 @ 2A → 153 m, kompakt kort) ---")
+print("\n--- 6. ÖGONSÄKERHET vid driftpunkten (VALT: medium TIR  @ 2A → 153 m, kompakt kort) ---")
 I_need = 2.0
 Ie = Ie_shot(I_need,7.5)
 E100 = Ie/0.1**2
@@ -204,13 +207,13 @@ print(f"""
  2 Kamera-detektion .... {PASS(det_ok)}  SNR≫ vid kort exp (mättar → använd 30µs)
  3 Bäringsprecision .... {PASS(sig_bear<REQ_HEAD)}  σ={sig_bear:.4f}° ≪ krav {REQ_HEAD:.3f}°
  4 IMU inter-frame ..... {PASS(imu_ok)}  drift försumbar; 1 IMU räcker
- 5 IR-skott @150m ...... ✅ VALT: medium 10195 @ 2A → {maxrange(2,7.5):.0f}m (kompakt 42×62)
+ 5 IR-skott @150m ...... ✅ VALT: medium TIR  @ 2A → {maxrange(2,7.5):.0f}m (kompakt 42×62)
  6 Ögonsäkerhet ........ ⚠️ MÄTPUNKT  pt-källa {Eavg/MPE_pt:.0f}× över; extended täcker → mät (Ie sätts av räckvidd, ej lins)
  7 Ballistik ........... ✅  drop {drop*100:.0f}cm + lead modelleras
  8 End-to-end träff .... {PASS(hit/N2>0.98)}  {hit/N2*100:.1f}% torso, aim-RMS {150*np.tan(np.radians(sig_bear))*100:.1f}cm
 
 PRECISIONSKEDJAN (kamera→bäring→ballistik→träff) HÅLLER MED STOR MARGINAL.
-VALT: medium 10195 @ ~2A (kompakt 42×62-kort). Ögonexponeringen sätts av
+VALT: medium TIR  @ ~2A (kompakt 42×62-kort). Ögonexponeringen sätts av
 150m-räckviddskravet (~Ie 59 W/sr), EJ av lins → medium 2A ≈ minimum.
 Enda kvarvarande villkoret: uppmätt Class 1 (skenbar källa/AE) per IEC 60825-1.
 """)
