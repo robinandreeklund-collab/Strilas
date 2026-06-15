@@ -1,12 +1,16 @@
 # STRILAS — Kameraval (sikteskamera)
 
-> ## 🔒 LÅST: **Arducam 5MP OV5647 NoIR, M12-mount** (RPi 15-pin CSI, ~$15)
-> Amazon **B012S6WJOS** / Arducam. Likvärdig: **Waveshare 5MP OV5647 "Night Vision"** (Amazon B00N9YWLHE).
-> Samma sensor/kontakt/form (25×24 mm) som kit-kameran — **bara utan IR-cut → ser 860 nm.**
-> Drop-in: matchar PCB-kamerahålet (Ø16) + OV5647-drivrutinen. **Verifiera "NoIR/Night Vision"-varianten vid köp.**
+> ## 🔒 Två nivåer (custom PCB → tänk långsiktigt)
+> - **v1-bänk / snabbstart: Arducam 5MP OV5647 NoIR, M12** (B012S6WJOS, ~$15) — drop-in i kit:et,
+>   börja CV-utvecklingen direkt.
+> - **Custom-PCB (långsiktigt optimalt): SC2336** (2MP MIPI) — **NIR-native** (ser 860 nm utan
+>   filter-pyssel), **större 1/3″-pixlar → bäst IR-SNR** av de billiga, **P4-stödd** (esp_cam_sensor
+>   + jeff-cn-exempel), ~$5–10. Designa kortets kamera-urtag/kontakt för SC2336-modulen.
+> - **Global shutter** (ideal mot pan-smet) skjuts på: ingen *billig* GS-sensor har P4-drivrutin
+>   (OV9281/OV2311/AR0234 = egen drivrutin krävs; Mira220 = dyr eval). Rolling shutter + fast-pan-grind räcker.
 
 Kravet: **ser 860 nm** (måste, för att se målets konstellation), **P4-stödd** (`esp_cam_sensor`),
-**billig**, **passar kit:ets kontakt** (RPi 15-pin CSI). Resolution: ≥2 MP räcker för blob-konstellationen.
+**billig**. Resolution: ≥2 MP räcker för blob-konstellationen.
 
 ## Beslut: **OV5647 NoIR** ⭐
 
