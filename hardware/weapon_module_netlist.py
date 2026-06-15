@@ -23,8 +23,9 @@ def mk(name, ref, pins, fp, value=""):
     return p
 
 # ---------- parttyper ----------
-P4IF = mk("P4_IFACE", "J", [(i, i) for i in range(1, 13)],
-          "Connector_PinHeader_2.54mm:PinHeader_2x06_P2.54mm_Vertical", "P4-carrier-header")
+# RIGID 1-rads rätvinklig kantkontakt mot P4:ans HÖGRA kantrad (alla våra signaler ligger där)
+P4IF = mk("P4_EDGE", "J", [(i, i) for i in range(1, 14)],
+          "Connector_PinHeader_2.54mm:PinHeader_1x13_P2.54mm_Vertical", "P4-kantkontakt")
 BATT = mk("BATT_IN", "J", [(1, "VBAT"), (2, "GND")],
           "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical", "2S batteri")
 RES_T = mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric")
@@ -35,8 +36,8 @@ PFET = mk("AO3401", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT
 NFET = mk("AO3400", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3400")
 PTC = mk("PTC", "F", [(1, "~"), (2, "~")], "Fuse:Fuse_1206_3216Metric", "PTC_1A")
 TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
-LED = mk("VSMA1094750", "D", [(1, "A"), (2, "K")],
-         "strilas:IR_Emitter_Vishay_VSMA1094750", "VSMA1094750X02_940nm")
+LED = mk("SFH4725S", "D", [(1, "A"), (2, "K")],
+         "strilas:IR_Emitter_OSRAM_OSLON_Black_SFH4725S", "SFH4725S_940nm")
 # ICM-45686 LGA-14 — pin-nr enligt TDK AN-000483 Fig.2:
 # 1 SDO  2 RESV  3 RESV  4 INT1  5 VDDIO  6 GND  7 RESV
 # 8 VDD  9 INT2  10 RESV 11 RESV 12 CS  13 SCLK 14 SDI
@@ -71,16 +72,16 @@ U2 = IMU(); Cd1 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric")
 Cd2 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric"); Cd3 = CAP("1uF")
 H1, H2, H3 = MH(1)(), MH(2)(), MH(3)()
 H4, H5, H6, H7 = CMH(4)(), CMH(5)(), CMH(6)(), CMH(7)()   # kamerafäste (B0332)
-CL = [CLEG(i)() for i in range(1, 7)]                      # 6 kollimatorben (3/lins)
-HP = [PSTD(i)() for i in range(1, 5)]                      # 4 P4-standoffs
+CL = [CLEG(i)() for i in range(1, 5)]                      # 4 kollimatorben (2/lins: topp+ytter)
 J3 = TRIGC()                                               # trigger-in
 
 # ---------- J2 = batteri-in (2S) ; J1 = P4-carrier-header ----------
 J2["VBAT"] += VBAT_IN; J2["GND"] += GND
 # J1 till P4: VSYS(=VBAT) ut till P4, 3V3 in från P4, signaler till P4-GPIO
-J1[1] += VBAT; J1[2] += P3V3; J1[3] += GND; J1[4] += IR_MOD       # VSYS / 3V3 / GND / IR_MOD(GPIO20)
-J1[5] += SCK; J1[6] += MOSI; J1[7] += MISO; J1[8] += nCS          # SPI (GPIO22/23/26/27)
-J1[9] += INT; J1[10] += TRIG; J1[11] += GND; J1[12] += GND        # INT(GPIO32) / TRIG(GPIO21) / GND
+# 1x13 möter P4 högerkant: VSYS·GND·3V3·GPIO20·GPIO21·GND·GPIO22·GPIO23·GPIO26·GND·GPIO27·GPIO32·GND
+J1[1] += VBAT; J1[2] += GND; J1[3] += P3V3; J1[4] += IR_MOD; J1[5] += TRIG
+J1[6] += GND; J1[7] += SCK; J1[8] += MOSI; J1[9] += MISO; J1[10] += GND
+J1[11] += nCS; J1[12] += INT; J1[13] += GND
 J3["SIG"] += TRIG; J3["GND"] += GND                               # trigger-in (extern kabel)
 
 # ---------- kraftinmatning + skydd ----------
@@ -104,7 +105,7 @@ U2[13] += SCK; U2[14] += MOSI; U2[1] += MISO; U2[12] += nCS; U2[4] += INT
 Cd1[1] += P3V3; Cd1[2] += GND; Cd2[1] += P3V3; Cd2[2] += GND; Cd3[1] += P3V3; Cd3[2] += GND
 
 # ---------- mekanik (hål till GND) ----------
-for H in (H1, H2, H3, H4, H5, H6, H7, *CL, *HP):
+for H in (H1, H2, H3, H4, H5, H6, H7, *CL):
     H[1] += GND
 
 generate_netlist(file_="hardware/weapon-module.net")

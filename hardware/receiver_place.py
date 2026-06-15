@@ -107,25 +107,18 @@ helmet_pos.update({"J2": (0, 0, 0), "J1": (0, -44, 0)})
 # Kamerafäste (B0332 38×38): 4× M2-hål i 28×28-mönster runt linsaxeln (0,-4).
 #   H4(-14,10) H5(14,10) H6(-14,-18) H7(14,-18). Komponenter flyttade ut till kanterna
 #   så dessa hål + standoffs är fria. Kameran skruvas fast bakom kortet, lins genom Ø16.
-weapon_box = {   # 52×80 mm stackad box: kollimatorer+kamera fram, P4 bakom (standoffs+flex)
-    # --- topp: 2× emittrar + Ø20-kollimatorben (3/lins, Ø8.5 PCD) ---
-    "D2": (-12, 28, 0), "D3": (12, 28, 0),
-    "H8": (-12, 36.5, 0), "H9": (-19, 24, 0), "H10": (-5, 24, 0),     # D2-ben
-    "H11": (12, 36.5, 0), "H12": (5, 24, 0), "H13": (19, 24, 0),      # D3-ben
-    "R2": (0, 16, 90),                                               # Rset
-    # --- höger remsa: driver + IMU + avkoppling ---
-    "Q2": (22, 16, 0), "R3": (22, 9, 90), "C1": (22, 2, 0),
-    "U1": (22, -13, 0), "C3": (17, -13, 90), "C4": (22, -19, 0), "C5": (22, -25, 0),
-    # --- vänster remsa: inmatningsskydd ---
-    "F1": (-22, 16, 90), "Q1": (-22, 9, 0), "D1": (-22, 1, 90), "R1": (-22, -7, 90),
-    "C2": (-22, -14, 0),
-    # --- kamerafäste H4–H7 (B0332 28×28 om linsen (0,-2)) ---
-    "H4": (-14, 12, 0), "H5": (14, 12, 0), "H6": (-14, -16, 0), "H7": (14, -16, 0),
-    # --- P4-standoffs (71×21 centrerad) ---
-    "H14": (-8, 34, 0), "H15": (8, 34, 0), "H16": (-8, -25, 0), "H17": (8, -25, 0),
-    # --- nederkant: P4-flex + batteri + trigger + kort-montering ---
-    "J1": (0, -34, 90), "J2": (-20, -38, 90), "J3": (20, -38, 90),
-    "H1": (-23, 37, 0), "H2": (23, 37, 0), "H3": (-23, -31, 0),
+weapon_box = {   # 54×68 mm box (praktiskt minimum): 2× Ø20 + kamera fram, RIGID 1×13 P4-kantkontakt nedtill
+    "D2": (-12, 23, 0), "D3": (12, 23, 0),
+    "H8": (-12, 31.5, 0), "H9": (-19.4, 18.25, 0), "H10": (-4.6, 18.25, 0),
+    "H11": (12, 31.5, 0), "H12": (4.6, 18.25, 0), "H13": (19.4, 18.25, 0),
+    "R2": (0, 11, 90),
+    "Q2": (24, 14, 0), "R3": (24, 7, 90), "C1": (24, 0, 0),
+    "U1": (24, -9, 0), "C3": (19, -9, 90), "C4": (24, -15, 0), "C5": (24, -21, 0),
+    "F1": (-24, 14, 90), "Q1": (-24, 7, 0), "D1": (-24, 0, 90), "R1": (-24, -8, 90),
+    "C2": (-24, -15, 0),
+    "H4": (-14, 8, 0), "H5": (14, 8, 0), "H6": (-14, -20, 0), "H7": (14, -20, 0),
+    "J1": (-15, -25, 90), "J2": (-22, -30, 90), "J3": (22, -30, 90),
+    "H1": (-24, 31, 0), "H2": (24, 31, 0), "H3": (0, -31, 0),
 }
 
 weapon_pos = {
@@ -152,7 +145,7 @@ BOARDS = {
                             helmet_pos, ("circle", 50), layers=4, center_hole=10, free=(-30, 30, 28, 12)),
     # vapnet: alla delar placeras explicit -> tom fri-zon (säker, ingen krock med lins)
     "weapon": lambda: place("hardware/weapon-module.net", "hardware/weapon-module.kicad_pcb",
-                            weapon_box, ("rect", 26, 40), layers=4, free=(24, 25, 39, 40), cutout=(0, -2, 8)),
+                            weapon_box, ("rect", 27, 34), layers=4, free=(26, 27, 33, 34), cutout=(0, -6, 8)),
 }
 
 if __name__ == "__main__":

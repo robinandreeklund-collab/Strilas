@@ -125,6 +125,27 @@ def make_led():
     print("wrote", name)
 
 
+# ---------------- OSRAM OSLON Black SFH 4725S (940 nm) ----------------
+def make_oslon():
+    name = "IR_Emitter_OSRAM_OSLON_Black_SFH4725S"
+    s = header(name, "OSRAM OSLON Black SFH 4725S 940nm IR LED, 3.75x3.75mm; "
+                     "land E062.3010.91-06; pad1=A(anod, botten), pad2=K(katod, topp+central termisk)")
+    # OSLON Black land (E062.3010.91-06), router-vänlig: 1 anod-padd (botten) +
+    # 1 sammanslagen katod-/termisk-padd (övre 2/3). Elektriskt = datablad.
+    s += pad(1, 0.0, -0.95, 2.3, 0.75, rr=0.12)   # anod (botten)
+    s += pad(2, 0.0,  0.45, 2.3, 1.65, rr=0.12)   # katod + termisk (topp+mitt sammanslagna)
+    s += rect("F.Fab", 1.875, 1.875, 0.1)       # kropp 3.75x3.75
+    s += circle(0, 0, 1.5, "F.Fab", 0.1)        # rund lins
+    s += line(-1.9, 1.4, -1.4, 1.4, "F.SilkS", 0.15)   # katodstreck (topp)
+    s += circle(-1.75, 1.15, 0.12, "F.SilkS", 0.15)
+    s += rect("F.CrtYd", 2.05, 2.05, 0.05)
+    s += model(MDL_LED)
+    s += ")\n"
+    open(os.path.join(LIB, name+".kicad_mod"), "w").write(s)
+    print("wrote", name)
+
+
 if __name__ == "__main__":
     make_imu()
     make_led()
+    make_oslon()
