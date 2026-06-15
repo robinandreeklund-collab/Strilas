@@ -97,10 +97,12 @@ J2["VBAT"] += VBAT_IN; J2["GND"] += GND
 #   J1[12] GND                       GND
 #   J1[13] GPIO27                    nCS
 #   J1[14] GPIO32                    IMU_INT
-J1[1] += VBAT; J1[2] += GND;            J1[4] += P3V3
-J1[5] += IR_MOD; J1[7] += GND; J1[8] += SCK; J1[9] += MOSI
-J1[11] += MISO; J1[12] += GND; J1[13] += nCS; J1[14] += INT
-# J1[3]=EN, J1[6]=GPIO21, J1[10]=RUN lämnas oanslutna (NC) — drivs ej från vårt kort.
+# SPEGLAD pinout: P4 monteras STACKAD bakom optiken (kort-mot-kort, ansikte-mot-
+# ansikte) → pinouten speglas (pad k = forna pad 15-k) så stiften möts rätt fysiskt.
+J1[1] += INT; J1[2] += nCS; J1[3] += GND; J1[4] += MISO
+J1[6] += MOSI; J1[7] += SCK; J1[8] += GND
+J1[10] += IR_MOD; J1[11] += P3V3; J1[13] += GND; J1[14] += VBAT
+# NC: J1[5]=RUN, J1[9]=GPIO21, J1[12]=EN (drivs ej från vårt kort).
 
 # ---------- kraftinmatning + skydd ----------
 F1[1] += VBAT_IN; F1[2] += VBAT_F                 # PTC-säkring

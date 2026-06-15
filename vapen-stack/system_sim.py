@@ -39,7 +39,7 @@ POWER = {"VBUS","VSYS","3V3","+3V3","VBAT","VBAT_F","VBAT_IN"}
 def matemap():
     m = []
     for k in range(1, 15):
-        m.append(("OPT", "J1", str(k), "B", k + 1))     # optik J1 → edge B pin 2..15
+        m.append(("OPT", "J1", str(k), "B", 16 - k))   # STACKAD: speglad korrespondens     # optik J1 → edge B pin 2..15
     for k in range(1, 13):
         m.append(("FC", "J1", str(k), "A", k + 5))       # FC J1 → edge A pin 6..17
     for k in range(1, 4):
