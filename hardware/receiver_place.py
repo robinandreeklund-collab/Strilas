@@ -171,17 +171,21 @@ weapon_pos = {
     "H1": (-18, 28, 0), "H2": (18, 28, 0),
 }
 
-# ---- fire-control breakout (50×40, matar P4 edge A) ----
-# J1 = 1x12 stel kantkontakt mot edge A (vänster). Fan-out JST-PH:
-#   topp (öppning upp): 3V3-mata (J2), NFC (J8), recoil (J7)
-#   botten (öppning ned): trigger (J3), rack (J4), mag-release (J5), magwell (J6)
-#   centrum: I²C-pullups (R1/R2) + 3V3-avkoppling (C1/C2)
+# ---- fire-control-kort (71×21, STACKAS ovanpå P4, samma format) ----
+# FC-frame = P4-frame (lång axel = x). J1 = FEMALE socket mot P4 edge A pin6..17
+# @ (x=-18.3..+9.64, y=+9.28) — samma fysiska läge som P4-stiften (rak stack).
+# Stående JST (kabel upp) längs nederhalvan; extra IMU + I²C-pullups i mittbandet;
+# 4 monteringshål i linje med P4-standoffsen (-34.06/+19.73, ±9.15) → genomgående stack.
 firecontrol_pos = {
-    "J1": (-22, 14, 0),                                   # P4 edge-A mate (1x12, vertikal: pin1 topp → ned)
-    "J2": (-14, 10, 180), "J8": (0, 10, 180), "J7": (14, 10, 180),
-    "J3": (-12, -10, 0), "J4": (-3, -10, 0), "J5": (6, -10, 0), "J6": (15, -10, 0),
-    "R1": (-7, 2, 0), "R2": (-7, -2, 0), "C1": (3, 2, 0), "C2": (3, -2, 0),
-    "H1": (22, 18, 0), "H2": (22, -18, 0), "H3": (-22, 19, 0),
+    "J1": (-18.3, 9.28, 90),                                   # socket mot edge A (pin6..17)
+    "J2": (-28, -6, 0), "J3": (-20, -6, 0), "J4": (-13, -6, 0), "J5": (-6, -6, 0),
+    "J6": (1, -6, 0), "J7": (9, -6, 0), "J8": (28, -6, 0),      # stående JST-fan-out (klar av standoffs)
+    "U1": (10, 0.5, 0),                                        # extra IMU (I²C)
+    "C3": (5, 3.5, 0), "C4": (15, 3.5, 0),                     # IMU-avkoppling
+    "R1": (-1, 4, 0), "R2": (-5, 4, 0),                        # I²C-pullups
+    "C1": (-9, 3.5, 0), "C2": (-13, 3.5, 0),                   # 3V3-rail/NFC-avkoppling
+    "H1": (-34.06, 9.15, 0), "H2": (-34.06, -9.15, 0),
+    "H3": (19.73, 9.15, 0), "H4": (19.73, -9.15, 0),
 }
 
 BOARDS = {
@@ -194,7 +198,7 @@ BOARDS = {
                             weapon_box, ("rect", 27, 37), layers=4, free=(26, 27, 36, 37), cutout=(0, -6, 8)),
     # fire-control breakout: matar P4 edge A stelt (1x12), fan-out till greppets I/O
     "firecontrol": lambda: place("hardware/firecontrol.net", "hardware/firecontrol.kicad_pcb",
-                                 firecontrol_pos, ("rect", 25, 21), layers=2, free=(23, 24, 20, 21)),
+                                 firecontrol_pos, ("rect", 35.525, 10.5), layers=2, free=(33, 35, 9, 10)),
 }
 
 if __name__ == "__main__":

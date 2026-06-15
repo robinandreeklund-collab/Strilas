@@ -2,7 +2,7 @@
   (version "D")
   (design
     (source "firecontrol_netlist.py")
-    (date "06/15/2026 04:52 PM")
+    (date "06/15/2026 06:02 PM")
     (tool "SKiDL (2.2.3)")
     (sheet
       (number 1)
@@ -46,18 +46,18 @@
       (ref "C1")
       (value "100nF")
       (description "")
-      (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (footprint "Capacitor_SMD:C_0402_1005Metric")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
+          (name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "g3q3lO1Deo")
+          (name "SKiDL Tag") "tMlfHmV0BA")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:49"))
+          (name "SKiDL Line") "firecontrol_netlist.py:50"))
       (libsource
         (lib "NO_LIB")
         (part "C"))
@@ -65,23 +65,23 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "bdb8f9ab-c1cb-59ff-9426-d4c7fe764ccd"))
+      (tstamps "89849b36-3b4a-53d3-8e58-3437a3731c08"))
     (comp
       (ref "C2")
       (value "1uF")
       (description "")
-      (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (footprint "Capacitor_SMD:C_0402_1005Metric")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
+          (name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "J2dnPkAuDv")
+          (name "SKiDL Tag") "1ZMFGjyHWY")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:49"))
+          (name "SKiDL Line") "firecontrol_netlist.py:50"))
       (libsource
         (lib "NO_LIB")
         (part "C"))
@@ -89,7 +89,55 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "df8a6cff-4fe8-588f-8372-e49374d49ae8"))
+      (tstamps "6668ca5f-662f-5c37-ab6e-e3cc12b23884"))
+    (comp
+      (ref "C3")
+      (value "100nF")
+      (description "")
+      (footprint "Capacitor_SMD:C_0402_1005Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "OBz_UL9_LN")
+        (field
+          (name "SKiDL Line") "firecontrol_netlist.py:50"))
+      (libsource
+        (lib "NO_LIB")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "e87916c2-a0f9-506b-9e80-1b8d5d78e2a7"))
+    (comp
+      (ref "C4")
+      (value "100nF")
+      (description "")
+      (footprint "Capacitor_SMD:C_0402_1005Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "2bRu3fWUQo")
+        (field
+          (name "SKiDL Line") "firecontrol_netlist.py:50"))
+      (libsource
+        (lib "NO_LIB")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "3f9cb2e2-4f72-5b9d-866e-68914efaf6eb"))
     (comp
       (ref "H1")
       (value "M2")
@@ -103,9 +151,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "ecQG0AgJKz")
+          (name "SKiDL Tag") "sjISFHhQZv")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:65"))
+          (name "SKiDL Line") "firecontrol_netlist.py:67"))
       (libsource
         (lib "NO_LIB")
         (part "MH1"))
@@ -113,7 +161,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "9a827401-1ef3-54af-b807-34d30f0fe577"))
+      (tstamps "dee5d254-c545-5e38-938a-0272fcbc601b"))
     (comp
       (ref "H2")
       (value "M2")
@@ -127,9 +175,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "CLJxA0xQJU")
+          (name "SKiDL Tag") "CT6tKQ3aCH")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:65"))
+          (name "SKiDL Line") "firecontrol_netlist.py:67"))
       (libsource
         (lib "NO_LIB")
         (part "MH2"))
@@ -137,7 +185,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "914e77ee-4026-597c-9344-383b0f463d87"))
+      (tstamps "2481acc3-51ca-5c7a-b91a-8aa5136d59b9"))
     (comp
       (ref "H3")
       (value "M2")
@@ -151,9 +199,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "IkkiwMky_Q")
+          (name "SKiDL Tag") "NvSpAbZeO0")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:65"))
+          (name "SKiDL Line") "firecontrol_netlist.py:67"))
       (libsource
         (lib "NO_LIB")
         (part "MH3"))
@@ -161,23 +209,47 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "4f700ed8-3ce3-5994-a7dd-587a6c823d2f"))
+      (tstamps "18820782-09fd-5ded-83a4-688377f00c14"))
     (comp
-      (ref "J1")
-      (value "P4-kantkontakt (edge A)")
+      (ref "H4")
+      (value "M2")
       (description "")
-      (footprint "Connector_PinHeader_2.54mm:PinHeader_1x12_P2.54mm_Vertical")
+      (footprint "MountingHole:MountingHole_2.2mm_M2")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x12_P2.54mm_Vertical")
+          (name "Footprint") "MountingHole:MountingHole_2.2mm_M2")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "lGDEmiHLFo")
+          (name "SKiDL Tag") "nYGrZHO_Tg")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:59"))
+          (name "SKiDL Line") "firecontrol_netlist.py:67"))
+      (libsource
+        (lib "NO_LIB")
+        (part "MH4"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "804c6853-dcea-5204-8983-5c03a73fb2fa"))
+    (comp
+      (ref "J1")
+      (value "P4-socket (edge A)")
+      (description "")
+      (footprint "Connector_PinSocket_2.54mm:PinSocket_1x12_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinSocket_2.54mm:PinSocket_1x12_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "ij0sg3ryGW")
+        (field
+          (name "SKiDL Line") "firecontrol_netlist.py:60"))
       (libsource
         (lib "NO_LIB")
         (part "P4_EDGE_A"))
@@ -185,23 +257,23 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "16986550-034b-57e9-b27a-d9a52d069867"))
+      (tstamps "5d383c3b-1228-5026-aa24-287b2de5eaf4"))
     (comp
       (ref "J2")
       (value "3V3-mata (från edge B)")
       (description "")
-      (footprint "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal")
+      (footprint "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal")
+          (name "Footprint") "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "lstYSqPupS")
+          (name "SKiDL Tag") "QgIG2SMFEX")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:59"))
+          (name "SKiDL Line") "firecontrol_netlist.py:60"))
       (libsource
         (lib "NO_LIB")
         (part "PWR_IN"))
@@ -209,23 +281,23 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "3bf4585f-3b6a-5538-8f66-a5a2f52448ef"))
+      (tstamps "d44ce674-1c56-577c-9083-67b1ebd55be4"))
     (comp
       (ref "J3")
       (value "TRIGGER")
       (description "")
-      (footprint "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal")
+      (footprint "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal")
+          (name "Footprint") "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "ZHbmHKoqt6")
+          (name "SKiDL Tag") "8g2hD0Atdv")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:60"))
+          (name "SKiDL Line") "firecontrol_netlist.py:61"))
       (libsource
         (lib "NO_LIB")
         (part "TRIGGER"))
@@ -233,23 +305,23 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "df1402f8-5cef-5254-8c73-1e6fb5346cb6"))
+      (tstamps "06146ac3-8f5d-51b4-8c65-cee271ac4cc4"))
     (comp
       (ref "J4")
       (value "RACK_SW")
       (description "")
-      (footprint "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal")
+      (footprint "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal")
+          (name "Footprint") "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "owtYh1qr_Z")
+          (name "SKiDL Tag") "4M832mQ_1u")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:60"))
+          (name "SKiDL Line") "firecontrol_netlist.py:61"))
       (libsource
         (lib "NO_LIB")
         (part "RACK_SW"))
@@ -257,23 +329,23 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "7798490b-4f5f-59cb-9b52-667ad7b3e5bd"))
+      (tstamps "cb207828-5e4e-52a8-9c69-de61af07f21b"))
     (comp
       (ref "J5")
       (value "MAG_REL_SW")
       (description "")
-      (footprint "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal")
+      (footprint "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal")
+          (name "Footprint") "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "Lf3k8fUzp_")
+          (name "SKiDL Tag") "v90u3MTgFV")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:61"))
+          (name "SKiDL Line") "firecontrol_netlist.py:62"))
       (libsource
         (lib "NO_LIB")
         (part "MAG_REL_SW"))
@@ -281,23 +353,23 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "a76d62f4-db57-58c0-b57d-423bf7cd6cee"))
+      (tstamps "fd6af7e5-5a75-53e0-bb9b-241b1c55ebe7"))
     (comp
       (ref "J6")
       (value "MAGWELL_SW")
       (description "")
-      (footprint "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal")
+      (footprint "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal")
+          (name "Footprint") "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "EnddnTVRQQ")
+          (name "SKiDL Tag") "_UPq7_7RRt")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:61"))
+          (name "SKiDL Line") "firecontrol_netlist.py:62"))
       (libsource
         (lib "NO_LIB")
         (part "MAGWELL_SW"))
@@ -305,23 +377,23 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "e2a918a7-0c2c-5a78-a9a5-e8d6e59050a0"))
+      (tstamps "19eea2da-780b-54ed-a429-3c7d2cc8ecf5"))
     (comp
       (ref "J7")
       (value "recoil-styrning")
       (description "")
-      (footprint "Connector_JST:JST_PH_S3B-PH-K_1x03_P2.00mm_Horizontal")
+      (footprint "Connector_JST:JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "Connector_JST:JST_PH_S3B-PH-K_1x03_P2.00mm_Horizontal")
+          (name "Footprint") "Connector_JST:JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "Hh_lRbNL5e")
+          (name "SKiDL Tag") "PYiDHm4i8N")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:62"))
+          (name "SKiDL Line") "firecontrol_netlist.py:63"))
       (libsource
         (lib "NO_LIB")
         (part "RECOIL_CTRL"))
@@ -329,23 +401,23 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "61ff6d9f-6301-5c27-b1d8-45f12cdbc93c"))
+      (tstamps "6e6763e5-0af9-5e02-b8bf-d19c4899abd9"))
     (comp
       (ref "J8")
       (value "NFC PN532 (I²C)")
       (description "")
-      (footprint "Connector_JST:JST_PH_S4B-PH-K_1x04_P2.00mm_Horizontal")
+      (footprint "Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "Connector_JST:JST_PH_S4B-PH-K_1x04_P2.00mm_Horizontal")
+          (name "Footprint") "Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "kedPNtngyX")
+          (name "SKiDL Tag") "piA8DYNeUr")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:62"))
+          (name "SKiDL Line") "firecontrol_netlist.py:63"))
       (libsource
         (lib "NO_LIB")
         (part "NFC_PN532"))
@@ -353,7 +425,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "2ee4b347-74b7-598f-b2b4-962e543a8a32"))
+      (tstamps "9a0e9c24-adba-5610-adcd-1c658d0cd429"))
     (comp
       (ref "R1")
       (value "4k7")
@@ -367,9 +439,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "x6GWZdrT4J")
+          (name "SKiDL Tag") "fkL8Mdq8Qo")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:48"))
+          (name "SKiDL Line") "firecontrol_netlist.py:49"))
       (libsource
         (lib "NO_LIB")
         (part "R"))
@@ -377,7 +449,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "c2fc715b-bcc2-55b2-bc18-ad433ce7c6bf"))
+      (tstamps "f4e153d8-fc7d-5fbf-bc05-768327b5adb4"))
     (comp
       (ref "R2")
       (value "4k7")
@@ -391,9 +463,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "Tc1LMMWTQX")
+          (name "SKiDL Tag") "zxfzNeT4kN")
         (field
-          (name "SKiDL Line") "firecontrol_netlist.py:48"))
+          (name "SKiDL Line") "firecontrol_netlist.py:49"))
       (libsource
         (lib "NO_LIB")
         (part "R"))
@@ -401,7 +473,31 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "9cdf60ff-b56c-5823-80e2-dbc972b937f8")))
+      (tstamps "7ec54ce7-28cc-5930-9290-f5ae1021e9fd"))
+    (comp
+      (ref "U1")
+      (value "ICM-45686")
+      (description "")
+      (footprint "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "IM9Y8ZX90O")
+        (field
+          (name "SKiDL Line") "firecontrol_netlist.py:63"))
+      (libsource
+        (lib "NO_LIB")
+        (part "ICM-45686"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "5a9c95c6-a5c8-5c1b-8cdd-e3fb3e6fe36c")))
   (nets
     (net
       (code 1)
@@ -413,6 +509,14 @@
         (pintype "UNSPECIFIED"))
       (node
         (ref "C2")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C3")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C4")
         (pin "1")
         (pintype "UNSPECIFIED"))
       (node
@@ -430,6 +534,22 @@
       (node
         (ref "R2")
         (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U1")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U1")
+        (pin "12")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U1")
+        (pin "5")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U1")
+        (pin "8")
         (pintype "UNSPECIFIED")))
     (net
       (code 2)
@@ -444,6 +564,14 @@
         (pin "2")
         (pintype "UNSPECIFIED"))
       (node
+        (ref "C3")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C4")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
         (ref "H1")
         (pin "1")
         (pintype "UNSPECIFIED"))
@@ -453,6 +581,10 @@
         (pintype "UNSPECIFIED"))
       (node
         (ref "H3")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "H4")
         (pin "1")
         (pintype "UNSPECIFIED"))
       (node
@@ -490,9 +622,25 @@
       (node
         (ref "J8")
         (pin "4")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U1")
+        (pin "6")
         (pintype "UNSPECIFIED")))
     (net
       (code 3)
+      (name "IMU2_INT")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "4")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U1")
+        (pin "4")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 4)
       (name "MAGWELL")
       (class "Default")
       (node
@@ -504,7 +652,7 @@
         (pin "1")
         (pintype "UNSPECIFIED")))
     (net
-      (code 4)
+      (code 5)
       (name "MAG_REL")
       (class "Default")
       (node
@@ -516,7 +664,7 @@
         (pin "1")
         (pintype "UNSPECIFIED")))
     (net
-      (code 5)
+      (code 6)
       (name "NFC_SCL")
       (class "Default")
       (node
@@ -530,9 +678,13 @@
       (node
         (ref "R2")
         (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U1")
+        (pin "13")
         (pintype "UNSPECIFIED")))
     (net
-      (code 6)
+      (code 7)
       (name "NFC_SDA")
       (class "Default")
       (node
@@ -546,9 +698,13 @@
       (node
         (ref "R1")
         (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U1")
+        (pin "14")
         (pintype "UNSPECIFIED")))
     (net
-      (code 7)
+      (code 8)
       (name "RACK")
       (class "Default")
       (node
@@ -560,7 +716,7 @@
         (pin "1")
         (pintype "UNSPECIFIED")))
     (net
-      (code 8)
+      (code 9)
       (name "RECOIL_FAULT")
       (class "Default")
       (node
@@ -572,7 +728,7 @@
         (pin "2")
         (pintype "UNSPECIFIED")))
     (net
-      (code 9)
+      (code 10)
       (name "RECOIL_PWM")
       (class "Default")
       (node
@@ -584,7 +740,7 @@
         (pin "1")
         (pintype "UNSPECIFIED")))
     (net
-      (code 10)
+      (code 11)
       (name "TRIG")
       (class "Default")
       (node

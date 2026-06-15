@@ -2,18 +2,18 @@
 """STRILAS — FIRE-CONTROL-KORT (vapen): kretsdefinition i kod (SKiDL → KiCad-netlista).
 Genererar 'hardware/firecontrol.net'.
 
-Separat litet breakout-kort som matar ESP32-P4-WIFI6:s SIGNALKANT 'edge A'
-(VÄNSTERkanten) STELT — speglar hur optikmodulen matar edge B. Fan-out till
-greppets I/O via JST-PH. Optikmodulen förblir ren optik (edge B).
+STACKAS rakt ovanpå P4 (samma 71×21-format) och tar P4:ans SIGNALKANT edge A via en
+FEMALE socket (P4 bär male-stiften). Fan-out till greppets I/O via STÅENDE JST-PH
+(kabel rakt upp). Optikmodulen (edge B, under) förblir ren optik.
 
-EDGE A (verifierad mot Waveshares OFFICIELLA pinout-diagram, topp→botten):
-  GPIO52 GPIO51 GND GPIO31 GPIO30 GPIO29 GPIO28 GND GPIO50 GPIO49
-  GPIO5 GPIO4 GND GPIO3 GPIO2 SCL/GPIO8 SDA/GPIO7 GND DM/GPIO24 DP/GPIO25
-  (GPIO24/25 = USB D-/D+ → undviks. Default-I²C = SCL/GPIO8 + SDA/GPIO7.)
-  OBS: edge A har GND men INGEN kraftskena (VBUS/VSYS/3V3 ligger på edge B) →
-  NFC-läsaren matas via separat 3V3-mata (J_PWR) från optikkortet/P4 edge B.
+ORIENTERING: USB-upp (verifierad). FC-frame = P4-frame (lång axel = x), FC ligger rakt
+ovanför P4 i samma orientering → socket-paddar i samma (x,y) som P4 edge-A-stiften.
 
-Vi matar ett SAMMANHÄNGANDE block av 12 stift = edge A-pos 6..17 (GPIO29..GPIO7).
+EDGE A, pin n castellation: P4-x = -31 + (n-1)*2.54, y = +9.28. Använda pin 6..17:
+  6 GPIO29  7 GPIO28  8 GND  9 GPIO50  10 GPIO49  11 GPIO5  12 GPIO4
+  13 GND  14 GPIO3  15 GPIO2  16 GPIO8(SCL)  17 GPIO7(SDA)
+Edge A saknar kraftskena → 3V3 matas via egen stående JST (J2) från optikens +3V3-rail.
+GPIO50 (tidigare reserv) driver nu den EXTRA IMU:ns INT (I²C, delar NFC-bussen).
 """
 from skidl import Part, Pin, Net, generate_netlist, SKIDL, TEMPLATE
 
@@ -28,23 +28,24 @@ def mk(name, ref, pins, fp, value=""):
 
 
 # ---------- parttyper ----------
-# STEL kantkontakt mot P4 edge A (12 sammanhängande stift, pos 6..17).
+# FEMALE socket mot P4 edge A (12 stift, pos 6..17). P4 bär male-stiften.
 P4A = mk("P4_EDGE_A", "J", [(i, i) for i in range(1, 13)],
-         "Connector_PinHeader_2.54mm:PinHeader_1x12_P2.54mm_Vertical", "P4-kantkontakt (edge A)")
-# 3V3-mata in (från optikkort/P4 edge B) — edge A saknar kraftskena
+         "Connector_PinSocket_2.54mm:PinSocket_1x12_P2.54mm_Vertical", "P4-socket (edge A)")
+# STÅENDE JST-PH (kabel upp) — B*B-PH-K Vertical
 PWR = mk("PWR_IN", "J", [(1, "3V3"), (2, "GND")],
-         "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal", "3V3-mata (från edge B)")
-# brytar-fan-out (mikrobrytare → GPIO, P4:s interna pull-up; ingen R behövs)
-SW2 = lambda nm, sig: mk(nm, "J", [(1, sig), (2, "GND")],
-                         "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal", nm)
-# recoil-styrning → separat recoil-effektkort (eFuse EN/PWM ut, FAULT in, GND)
+         "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical", "3V3-mata (från edge B)")
+SW2 = lambda nm: mk(nm, "J", [(1, "SIG"), (2, "GND")],
+                    "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical", nm)
 REC = mk("RECOIL_CTRL", "J", [(1, "PWM"), (2, "FAULT"), (3, "GND")],
-         "Connector_JST:JST_PH_S3B-PH-K_1x03_P2.00mm_Horizontal", "recoil-styrning")
-# NFC-läsare (PN532, I²C) — SDA/SCL/3V3/GND
+         "Connector_JST:JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical", "recoil-styrning")
 NFC = mk("NFC_PN532", "J", [(1, "SDA"), (2, "SCL"), (3, "3V3"), (4, "GND")],
-         "Connector_JST:JST_PH_S4B-PH-K_1x04_P2.00mm_Horizontal", "NFC PN532 (I²C)")
+         "Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical", "NFC PN532 (I²C)")
+# EXTRA IMU — TDK ICM-45686 (LGA-14), samma som optiken men I²C. Pin-nr per TDK AN-000483:
+#   8=VDD 5=VDDIO 6=GND 13=SCLK(SCL) 14=SDI(SDA) 1=SDO(AD0) 12=CS 4=INT1
+IMU = mk("ICM-45686", "U", [(i, i) for i in range(1, 15)],
+         "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-45686")
 RES_T = mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric")
-CAP_T = mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0805_2012Metric")
+CAP_T = mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0402_1005Metric")
 RES = lambda v: RES_T(value=v)
 CAP = lambda v: CAP_T(value=v)
 MH = lambda n: mk(f"MH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2")
@@ -53,40 +54,32 @@ MH = lambda n: mk(f"MH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2
 GND, P3V3 = Net("GND"), Net("+3V3")
 TRIG, RACK, MAG_REL, MAGWELL = Net("TRIG"), Net("RACK"), Net("MAG_REL"), Net("MAGWELL")
 REC_PWM, REC_FLT = Net("RECOIL_PWM"), Net("RECOIL_FAULT")
-SDA, SCL = Net("NFC_SDA"), Net("NFC_SCL")
+SDA, SCL, IMU2_INT = Net("NFC_SDA"), Net("NFC_SCL"), Net("IMU2_INT")
 
 # ---------- instansiera ----------
 J1 = P4A(); Jpwr = PWR()
-Jtrig = SW2("TRIGGER", "SIG")(); Jrack = SW2("RACK_SW", "SIG")()
-Jmag = SW2("MAG_REL_SW", "SIG")(); Jmagw = SW2("MAGWELL_SW", "SIG")()
-Jrec = REC(); Jnfc = NFC()
-Rsda = RES("4k7"); Rscl = RES("4k7")            # I²C pull-ups till 3V3
-Cd1 = CAP("100nF"); Cd2 = CAP("1uF")            # 3V3-avkoppling vid NFC
-H1, H2, H3 = MH(1)(), MH(2)(), MH(3)()
+Jtrig = SW2("TRIGGER")(); Jrack = SW2("RACK_SW")()
+Jmag = SW2("MAG_REL_SW")(); Jmagw = SW2("MAGWELL_SW")()
+Jrec = REC(); Jnfc = NFC(); U1 = IMU()
+Rsda = RES("4k7"); Rscl = RES("4k7")            # I²C pull-ups
+Cn1 = CAP("100nF"); Cn2 = CAP("1uF")            # 3V3-rail/NFC-avkoppling
+Ci1 = CAP("100nF"); Ci2 = CAP("100nF")          # IMU VDD/VDDIO-avkoppling
+H1, H2, H3, H4 = MH(1)(), MH(2)(), MH(3)(), MH(4)()
 
-# ---------- J1 = P4 edge A (pos 6..17), verifierad mot officiell pinout ----------
-#   FC-stift  edge A-pos  P4-pin   nät
-#   J1[1]     6           GPIO29   MAGWELL  (magasin-närvaro)
-#   J1[2]     7           GPIO28   RECOIL_FAULT (in, eFuse open-drain → intern pull-up)
-#   J1[3]     8           GND      GND
-#   J1[4]     9           GPIO50   -- LEDIG (NC, Fas 2-hook)
-#   J1[5]     10          GPIO49   -- LEDIG (NC, Fas 2-hook)
-#   J1[6]     11          GPIO5    RACK     (charging-handle)
-#   J1[7]     12          GPIO4    TRIG     (avtryckare)
-#   J1[8]     13          GND      GND
-#   J1[9]     14          GPIO3    MAG_REL  (mag-release-spak)
-#   J1[10]    15          GPIO2    RECOIL_PWM (ut → eFuse EN/gate)
-#   J1[11]    16          GPIO8    NFC_SCL
-#   J1[12]    17          GPIO7    NFC_SDA
-J1[1] += MAGWELL; J1[2] += REC_FLT; J1[3] += GND
+# ---------- J1 = P4 edge A pin 6..17 (verifierad fysisk ordning, USB-upp) ----------
+#   J1.1  pin6  GPIO29  MAGWELL          J1.7  pin12 GPIO4  TRIG
+#   J1.2  pin7  GPIO28  RECOIL_FAULT     J1.8  pin13 GND
+#   J1.3  pin8  GND                      J1.9  pin14 GPIO3  MAG_REL
+#   J1.4  pin9  GPIO50  IMU2_INT         J1.10 pin15 GPIO2  RECOIL_PWM
+#   J1.5  pin10 GPIO49  (reserv NC)      J1.11 pin16 GPIO8  NFC_SCL
+#   J1.6  pin11 GPIO5   RACK             J1.12 pin17 GPIO7  NFC_SDA
+J1[1] += MAGWELL; J1[2] += REC_FLT; J1[3] += GND; J1[4] += IMU2_INT
 J1[6] += RACK; J1[7] += TRIG; J1[8] += GND
 J1[9] += MAG_REL; J1[10] += REC_PWM; J1[11] += SCL; J1[12] += SDA
-# J1[4]=GPIO50, J1[5]=GPIO49 lämnas NC (reserv-GPIO).
+# J1[5] = GPIO49 → NC (reserv).
 
-# ---------- 3V3-mata (edge A saknar kraftskena) ----------
+# ---------- 3V3-mata + fan-out ----------
 Jpwr["3V3"] += P3V3; Jpwr["GND"] += GND
-
-# ---------- fan-out till greppets I/O ----------
 Jtrig["SIG"] += TRIG; Jtrig["GND"] += GND
 Jrack["SIG"] += RACK; Jrack["GND"] += GND
 Jmag["SIG"] += MAG_REL; Jmag["GND"] += GND
@@ -94,14 +87,21 @@ Jmagw["SIG"] += MAGWELL; Jmagw["GND"] += GND
 Jrec["PWM"] += REC_PWM; Jrec["FAULT"] += REC_FLT; Jrec["GND"] += GND
 Jnfc["SDA"] += SDA; Jnfc["SCL"] += SCL; Jnfc["3V3"] += P3V3; Jnfc["GND"] += GND
 
+# ---------- extra IMU (I²C, delar NFC-bussen) ----------
+U1[8] += P3V3; U1[5] += P3V3; U1[6] += GND        # VDD / VDDIO / GND
+U1[12] += P3V3                                    # CS hög → I²C-läge
+U1[1] += P3V3                                     # SDO/AD0 hög → adress 0x69 (skild från PN532)
+U1[13] += SCL; U1[14] += SDA; U1[4] += IMU2_INT   # SCL / SDA / INT1
+Ci1[1] += P3V3; Ci1[2] += GND; Ci2[1] += P3V3; Ci2[2] += GND
+
 # ---------- I²C pull-ups + 3V3-avkoppling ----------
 Rsda[1] += P3V3; Rsda[2] += SDA
 Rscl[1] += P3V3; Rscl[2] += SCL
-Cd1[1] += P3V3; Cd1[2] += GND
-Cd2[1] += P3V3; Cd2[2] += GND
+Cn1[1] += P3V3; Cn1[2] += GND
+Cn2[1] += P3V3; Cn2[2] += GND
 
-# ---------- mekanik (hål till GND) ----------
-for H in (H1, H2, H3):
+# ---------- mekanik (4 hål i linje med P4-standoffsen → genomgående stack) ----------
+for H in (H1, H2, H3, H4):
     H[1] += GND
 
 generate_netlist(file_="hardware/firecontrol.net")
