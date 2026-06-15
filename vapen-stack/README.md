@@ -30,7 +30,8 @@ clearance i P4↔optik-gapet.
 
 **Färdig hop-assembly (allt i en fil):** `strilas-assembly.step` — alla tre korten
 i en STEP, co-orienterade, **12 mm plan-till-plan** (optik z0 · P4 z12 · FC z24).
-Standoffs läggs in av användaren. Regenereras med `python3 merge_assembly_step.py`.
+Standoffs läggs in av användaren. Regenereras med `python3 merge_assembly_step.py`
+(kräver `pip install cadquery` — bygger en korrekt OCCT-assembly, stel Z-placering).
 
 **BOM:** `BOM.csv` · `BOM.md` (komplett, alla kort + externa moduler). Regenereras
 med `python3 gen_bom.py`.
