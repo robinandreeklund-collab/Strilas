@@ -1,0 +1,7 @@
+
+# SKiDL build-artefakter
+*.erc
+*.log
+*_sklib.py
+__pycache__/
+*.pyc
