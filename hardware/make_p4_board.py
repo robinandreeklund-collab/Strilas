@@ -57,13 +57,27 @@ def main():
     hole("MP3", HOLE_XR, HOLE_Y)    # topp-höger (ESP-modul)
     hole("MP4", HOLE_XR, -HOLE_Y)   # botten-höger (ESP-modul)
 
-    # 2 castellerade pinrader (1×20, 2.54), pin-1 = 4.52 mm från vänsterkant.
-    # OBS: footprintens origo = pin-1; raden går +x därifrån (pin1@-31.0 → pin20@+17.25).
-    for ref, yy in (("J_TOP", ROW_Y), ("J_BOT", -ROW_Y)):
-        f = pcbnew.FootprintLoad(f"{FPDIR}/Connector_PinHeader_2.54mm.pretty",
-                                 "PinHeader_1x20_P2.54mm_Vertical")
-        f.SetReference(ref); f.SetPosition(V(PIN1_X, yy))
-        f.SetOrientationDegrees(90); b.Add(f)
+    def place_fp(ref, lib, name, x, y, rot=0):
+        f = pcbnew.FootprintLoad(f"{FPDIR}/{lib}.pretty", name)
+        f.SetReference(ref); f.SetPosition(V(x, y))
+        if rot: f.SetOrientationDegrees(rot)
+        b.Add(f); return f
+
+    # MALE pin-header — bara de stift som FAKTISKT används monteras (kortet köps olött,
+    # man löder endast nödvändiga header-stift). Mating-korten (optik/FC) får FEMALE socket.
+    #   pin n castellation: x = PIN1_X + (n-1)*PITCH ; raden går +x vid rot90.
+    #   Edge B (y=-9.28): pin 2..15 (VSYS..GPIO32) → optik-J1   → 1×14 @ pin2
+    #   Edge A (y=+9.28): pin 6..17 (GPIO29..GPIO7) → FC-stack  → 1×12 @ pin6
+    place_fp("J_B", "Connector_PinHeader_2.54mm", "PinHeader_1x14_P2.54mm_Vertical",
+             PIN1_X + 1 * PITCH, -ROW_Y, 90)
+    place_fp("J_A", "Connector_PinHeader_2.54mm", "PinHeader_1x12_P2.54mm_Vertical",
+             PIN1_X + 5 * PITCH, ROW_Y, 90)
+
+    # USB-C-mottagare i vänster ände (3D-modell → syns i STEP) — visar var USB ligger.
+    place_fp("USBC", "Connector_USB", "USB_C_Receptacle_HRO_TYPE-C-31-M-12", -34.0, 0, 90)
+    # Sekundär USB 2.0 (host) → kamera: 4-pin header (V / D- / D+ / G), centralt.
+    place_fp("J_CAM", "Connector_PinHeader_2.54mm", "PinHeader_1x04_P2.54mm_Vertical",
+             -4.0, 0, 90)
 
     # silk-markeringar (USB-C + ESP-modul + pin-1)
     def silk_rect(x0, y0, x1, y1, txt):
@@ -75,8 +89,11 @@ def main():
         t = pcbnew.PCB_TEXT(b); t.SetText(txt); t.SetPosition(V((x0 + x1) / 2, (y0 + y1) / 2))
         t.SetLayer(pcbnew.F_SilkS); t.SetTextSize(pcbnew.VECTOR2I(MM(1.2), MM(1.2))); b.Add(t)
 
-    silk_rect(-35.5, -5.5, -31.0, 5.5, "USB-C")          # USB-C, vänster ände
     silk_rect(17.3, -8.5, 35.5, 8.5, "ESP32-P4")         # ESP-modul, 18.27 mm höger zon
+    # text-etiketter (USB-C-änd + kamera-USB-pinout)
+    for tx, ty, s in ((-34.0, 6.5, "USB-C"), (-4.0, 3.2, "USB->KAM"), (4.5, -3.0, "V D- D+ G")):
+        t = pcbnew.PCB_TEXT(b); t.SetText(s); t.SetPosition(V(tx, ty))
+        t.SetLayer(pcbnew.F_SilkS); t.SetTextSize(pcbnew.VECTOR2I(MM(0.9), MM(0.9))); b.Add(t)
     # pin-1-markör
     p1 = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_CIRCLE)
     p1.SetCenter(V(PIN1_X, ROW_Y + 1.8)); p1.SetEnd(V(PIN1_X + 0.4, ROW_Y + 1.8))

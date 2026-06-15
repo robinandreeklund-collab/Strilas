@@ -27,8 +27,9 @@ def mk(name, ref, pins, fp, value=""):
 # OFFICIELLA pinout (datablad/silk): edge B i ordning (ESP-änd → USB-änd):
 #   VBUS·VSYS·GND·EN·3V3·GPIO20·GPIO21·GND·GPIO22·GPIO23·RUN·GPIO26·GND·GPIO27·GPIO32·...
 # Vi använder VSYS..GPIO32 = 14 sammanhängande stift (inkl EN & RUN som lämnas NC).
+# FEMALE socket — P4:an bär MALE-stiften, optikkortet tar emot dem (1×14 socket).
 P4IF = mk("P4_EDGE", "J", [(i, i) for i in range(1, 15)],
-          "Connector_PinHeader_2.54mm:PinHeader_1x14_P2.54mm_Vertical", "P4-kantkontakt")
+          "Connector_PinSocket_2.54mm:PinSocket_1x14_P2.54mm_Vertical", "P4-socket (edge B)")
 BATT = mk("BATT_IN", "J", [(1, "VBAT"), (2, "GND")],
           "Connector_JST:JST_XH_S2B-XH-A_1x02_P2.50mm_Horizontal", "2S batteri (JST-XH)")
 RES_T = mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric")

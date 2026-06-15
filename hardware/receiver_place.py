@@ -112,7 +112,8 @@ helmet_pos.update({"J2": (0, 0, 0), "J1": (0, -44, 0)})
 #   H4(-14,10) H5(14,10) H6(-14,-18) H7(14,-18). Komponenter flyttade ut till kanterna
 #   så dessa hål + standoffs är fria. Kameran skruvas fast bakom kortet, lins genom Ø16.
 # P4-VÄNSTERLÄGE (enligt användarens Fusion-modell): P4 (71×21) ligger bakom kortet,
-# huggande VÄNSTERKANTEN (centrum x≈-16, längd längs y, ESP-änden upp/USB-änden ned).
+# huggande VÄNSTERKANTEN (centrum x≈-16, längd längs y, USB-C-änden UPP/ESP-änden ned).
+# Edge B (VBUS/VSYS/3V3-sidan) ytterst (vänster) → optik-J1. Edge A (GPIO-sidan) inåt → FC-stack.
 # Kamerans B4B-ZR-kontakt riktad +x (höger) → fri från P4. J1 (P4-kantkontakt) flyttad
 # till vänsterkanten (P4:ans yttre signalrad). Kraft/skydd-remsa flyttad till HÖGERkanten;
 # Rset(R2)+bulk(C2) hålls nära emittrarna (höger-topp) för kort 56 kHz-pulsslinga.
@@ -146,9 +147,11 @@ weapon_box = {   # 54×74 mm: 2× Ø20-lins+kamera fram; P4 (15mm-standoff) bako
     # H3 höger-kant (mellan kraftremsan och H2), H4 centrum-topp (mellan linserna)
     "H1": (24, 34, 0), "H2": (24, -34, 0), "H3": (24, -22, 0),
     "H4": (0, 28, 0),
-    # 4 P4-standoff synkade mot P4:ans ALLA 4 hål (vänsterläge, centrum x=-16):
-    "H5": (-25.15, -34.06, 0), "H6": (-6.85, -34.06, 0),
-    "H7": (-6.85, 19.73, 0), "H20": (-25.15, 19.73, 0),   # H20 = 4:e (yttre, vid ESP-änden)
+    # 4 P4-standoff synkade mot P4:ans ALLA 4 hål. ORIENTERING USB-UPPÅT (verifierad:
+    # overlay J1↔edge B = 0 felmatchningar). Lägena förankrade i J1:s paddar:
+    #   optik_y = -native_x - 13.75 ; optik_x = native_y - 16.
+    "H5": (-25.15, -33.48, 0), "H6": (-6.85, -33.48, 0),    # ESP-änden (ned)
+    "H7": (-6.85, 20.31, 0), "H20": (-25.15, 20.31, 0),     # USB-C-änden (upp)
 }
 
 weapon_pos = {
