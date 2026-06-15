@@ -31,7 +31,14 @@ Kravet: **ser 860 nm** (måste, för att se målets konstellation), **P4-stödd*
 GS undviker pan-smet men kostar: **Mira220 mono** (~$141 eval) är den P4-stödda GS-NIR-vägen.
 Skjut på — rolling shutter + **fast-pan-grind** i firmware räcker för v1.
 
-## Åtgärd
+## Åtgärd — och köp inte en kamera du inte kan använda
 
-Sikteskamera = **OV5647 NoIR** (eller SC2336 om kontakten matchar). Kit:ets stock-OV5647 (med IR-cut)
-duger **inte** som sikte — använd den ev. till annat eller gör NoIR genom att ta bort filtret.
+Kit:ets stock-OV5647 (med IR-cut) duger **inte** som sikte som den är. Två rena vägar:
+
+1. **Köp kit UTAN kamera + OV5647 NoIR separat (~$12)** — om "utan kamera"-varianten är billigare
+   med ungefär kamerans pris. Garanterat, ingen mod-risk. **(rekommenderas)**
+2. **Köp kit med kamera + konvertera till NoIR** — RPi Cam Model B har justerbar M12-lins;
+   IR-cut-filtret sitter i linshållaren och kan tas bort → NoIR. Gratis, ~10 min, viss risk.
+
+P4 + C6 + högtalare behövs oavsett — frågan gäller bara kameran. SC2336 ($5–10 NIR-native) är
+billigast om dess 24-pin-kontakt matchar kit:et.
