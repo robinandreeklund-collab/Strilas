@@ -1,7 +1,12 @@
 # STRILAS — Kameraval (sikteskamera)
 
+> ## 🔒 LÅST: **Arducam 5MP OV5647 NoIR, M12-mount** (RPi 15-pin CSI, ~$15)
+> Amazon **B012S6WJOS** / Arducam. Likvärdig: **Waveshare 5MP OV5647 "Night Vision"** (Amazon B00N9YWLHE).
+> Samma sensor/kontakt/form (25×24 mm) som kit-kameran — **bara utan IR-cut → ser 860 nm.**
+> Drop-in: matchar PCB-kamerahålet (Ø16) + OV5647-drivrutinen. **Verifiera "NoIR/Night Vision"-varianten vid köp.**
+
 Kravet: **ser 860 nm** (måste, för att se målets konstellation), **P4-stödd** (`esp_cam_sensor`),
-**billig**, **passar kit:ets kontakt**. Resolution: ≥2 MP räcker gott för blob-konstellationen.
+**billig**, **passar kit:ets kontakt** (RPi 15-pin CSI). Resolution: ≥2 MP räcker för blob-konstellationen.
 
 ## Beslut: **OV5647 NoIR** ⭐
 

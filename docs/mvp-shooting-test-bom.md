@@ -57,7 +57,7 @@ högtalare ingår i kitet och stannar i scope (pose-väg + ljud senare).
 | 8 | **860 nm IR-pass/bandpass-filter** för sikteskameran | 1 | ~$8 | ser bara konstellationen → robust dag/natt |
 | 9 | Perfboard + lödd LED-strömväg + Dupont | 1 | ~$6 | **löd LED+driver fast** — breadboard tål inte 1–3 A |
 
-> **Sikteskamera = OV5647 NoIR (~$12, drop-in i kit:et, ser 860 nm)** — INTE kit:ets stock-OV5647
+> **Sikteskamera = Arducam 5MP OV5647 NoIR, M12** (Amazon B012S6WJOS, ~$15) — RPi 15-pin, drop-in,
 > som har IR-cut och **ej ser IR**. Billigare alt: **SC2336 NIR** (~$5–10, verifiera kontakt). Se
 > [`hardware/camera-selection.md`](../hardware/camera-selection.md). Rolling shutter hanteras med
 > fast-pan-grind; GS-uppgradering (Mira220, ~$141) skjuts på. CV-firmwaren skriver jag.
