@@ -71,6 +71,8 @@ Q1 = NFET(); Rg = RES("220R")
 U2 = IMU(); Cd1 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric")
 Cd2 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric"); Cd3 = CAP("1uF")
 H1, H2, H3 = MH(1)(), MH(2)(), MH(3)()
+HC = MH(16)()                       # centrum-kort-hål (mellan linserna)
+HP1, HP2, HP3 = MH(17)(), MH(18)(), MH(19)()   # 3 P4-standoff (15mm, synk mot P4-hål)
 H4, H5, H6, H7 = CMH(4)(), CMH(5)(), CMH(6)(), CMH(7)()   # kamerafäste (B0332)
 CL = [CLEG(i)() for i in range(1, 9)]   # 8 ben: Carclo 10734 4-bens-hållare (ritn. 60575), 4/lins
 J3 = TRIGC()                                               # trigger-in
@@ -105,7 +107,7 @@ U2[13] += SCK; U2[14] += MOSI; U2[1] += MISO; U2[12] += nCS; U2[4] += INT
 Cd1[1] += P3V3; Cd1[2] += GND; Cd2[1] += P3V3; Cd2[2] += GND; Cd3[1] += P3V3; Cd3[2] += GND
 
 # ---------- mekanik (hål till GND) ----------
-for H in (H1, H2, H3, H4, H5, H6, H7, *CL):
+for H in (H1, H2, H3, HC, HP1, HP2, HP3, H4, H5, H6, H7, *CL):
     H[1] += GND
 
 generate_netlist(file_="hardware/weapon-module.net")

@@ -111,24 +111,27 @@ helmet_pos.update({"J2": (0, 0, 0), "J1": (0, -44, 0)})
 # Kamerafäste (B0332 38×38): 4× M2-hål i 28×28-mönster runt linsaxeln (0,-4).
 #   H4(-14,10) H5(14,10) H6(-14,-18) H7(14,-18). Komponenter flyttade ut till kanterna
 #   så dessa hål + standoffs är fria. Kameran skruvas fast bakom kortet, lins genom Ø16.
-weapon_box = {   # 54×68 mm: 2× Ø20-lins+kamera fram; INGET under linserna; P4 längs höger 68 mm-kant
+weapon_box = {   # 54×74 mm: 2× Ø20-lins+kamera fram; P4 (15mm-standoff) synkad bakom; centrum-kort-hål
     "D2": (-12, 23, 0), "D3": (12, 23, 180),
-    # Carclo 10734 4-bens-hållare (ritn. 60575): 4 hål/lins Ø2.1 i 9.0×15.60 rektangel, LED centralt
-    "H8": (-16.5, 30.8, 0), "H9": (-7.5, 30.8, 0), "H10": (-16.5, 15.2, 0), "H11": (-7.5, 15.2, 0),   # D2
-    "H12": (7.5, 30.8, 0), "H13": (16.5, 30.8, 0), "H14": (7.5, 15.2, 0), "H15": (16.5, 15.2, 0),     # D3
-    # driver i CENTRUM-gapet mellan linserna (fritt från Ø20): N-FET + gate-R
+    # 8 Carclo-ben (H12-H19): D2 H12-H15, D3 H16-H19 — 9.0×15.60 rektangel/lins, Ø2.1
+    "H12": (-16.5, 30.8, 0), "H13": (-7.5, 30.8, 0), "H14": (-16.5, 15.2, 0), "H15": (-7.5, 15.2, 0),
+    "H16": (7.5, 30.8, 0), "H17": (16.5, 30.8, 0), "H18": (7.5, 15.2, 0), "H19": (16.5, 15.2, 0),
+    # driver i centrum-gapet
     "Q2": (0, 19, 90), "R3": (0, 14, 90),
-    # vänster kant (fritt från linsernas x=-22): Rset + inmatningsskydd
+    # vänster kant
     "R2": (-24, 18, 90), "F1": (-24, 10, 90), "Q1": (-24, 3, 0), "D1": (-24, -4, 90),
     "R1": (-24, -11, 90), "C2": (-24, -18, 0),
-    # höger kant: RIGID P4-kantkontakt (1×13, längs 68 mm)
-    "J1": (24, 15, 0),   # placeras fram för routning, flippas till baksidan efteråt
-    # kamerafäste (B0332 28×28 om lins (0,-6))
-    "H4": (-14, 8, 0), "H5": (14, 8, 0), "H6": (-14, -20, 0), "H7": (14, -20, 0),
-    # nederkant: ingångskond + IMU-kluster + batteri/trigger
-    "C1": (-17, -30, 0), "U1": (-8, -30, 0), "C3": (-2, -31, 90), "C4": (3, -31, 90), "C5": (9, -30, 0),
-    "J2": (-24, -25, 90), "J3": (16, -30, 90),
-    "H1": (-24, 31, 0), "H2": (24, 31, 0), "H3": (24, -22, 0),
+    # P4-kantkontakt höger (flippas till baksidan efter routning)
+    "J1": (24, 15, 0),
+    # kamerafäste H8-H11 (B0332 28×28 om lins (0,-6))
+    "H8": (-14, 8, 0), "H9": (14, 8, 0), "H10": (-14, -20, 0), "H11": (14, -20, 0),
+    # nederkant (uppflyttat till y-26 för att lämna plats åt P4-standoff vid y-32.5)
+    "J2": (-24, -26, 90), "C1": (-15, -26, 0), "C3": (-10, -26, 90), "U1": (-5, -26, 0),
+    "C4": (1, -26, 90), "C5": (6, -26, 0), "J3": (18, -26, 90),
+    # kort-monteringshål (hörn) + centrum + 3 P4-standoff (M2.5, 15mm)
+    "H1": (-24, 34, 0), "H2": (24, 34, 0), "H3": (-22, -34, 0),
+    "H4": (0, 28, 0),                                   # centrum-kort-hål (mellan linserna)
+    "H5": (12.5, 32.5, 0), "H6": (-2.5, -32.5, 0), "H7": (12.5, -32.5, 0),  # 3 P4-standoff
 }
 
 weapon_pos = {
@@ -155,7 +158,7 @@ BOARDS = {
                             helmet_pos, ("circle", 50), layers=4, center_hole=10, free=(-30, 30, 28, 12)),
     # vapnet: alla delar placeras explicit -> tom fri-zon (säker, ingen krock med lins)
     "weapon": lambda: place("hardware/weapon-module.net", "hardware/weapon-module.kicad_pcb",
-                            weapon_box, ("rect", 27, 35), layers=4, free=(26, 27, 34, 35), cutout=(0, -6, 8)),
+                            weapon_box, ("rect", 27, 37), layers=4, free=(26, 27, 36, 37), cutout=(0, -6, 8)),
 }
 
 if __name__ == "__main__":
