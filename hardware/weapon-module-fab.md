@@ -13,7 +13,7 @@ KiCad-format). Detta är allt en fab behöver **fram till routing**. Sista stege
 
 | Ref | Värde | Footprint | Roll |
 |---|---|---|---|
-| J1 | 2×5 2.54 mm | PinHeader_2x05 | → P4: VBAT·GND·IR_MOD·3V3·GND / SCK·MOSI·MISO·nCS·INT |
+| J1 | **P4-carrier-header (2×6)** — VSYS·3V3·GND·IR_MOD·SCK·MOSI·MISO·nCS·INT | P4 pluggas direkt (board-to-board) |
 | F1 | PTC ~1 A | Fuse_1206 | inskydd (över-ström) |
 | Q1 | AO3401 (P-FET) | SOT-23 | reverse-polarity-skydd |
 | R1 | 100 k | R_0805 | Q1 gate-pulldown |

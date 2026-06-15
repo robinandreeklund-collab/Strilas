@@ -20,8 +20,10 @@ def mk(name, ref, pins, fp, value=""):
     return p
 
 # ---------- parttyper ----------
-HDR = mk("Conn_2x05", "J", [(i, i) for i in range(1, 11)],
-         "Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical", "STRILAS_J1")
+P4IF = mk("P4_IFACE", "J", [(i, i) for i in range(1, 13)],
+          "Connector_PinHeader_2.54mm:PinHeader_2x06_P2.54mm_Vertical", "P4-carrier-header")
+BATT = mk("BATT_IN", "J", [(1, "VBAT"), (2, "GND")],
+          "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical", "2S batteri")
 RES_T = mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric")
 CAP_T = mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0805_2012Metric")
 RES = lambda v, fp="Resistor_SMD:R_0805_2012Metric": RES_T(value=v, footprint=fp)
@@ -42,7 +44,7 @@ IR_MOD, SCK, MOSI, MISO, nCS, INT = (Net(n) for n in ("IR_MOD", "SCK", "MOSI", "
 STR1, LEDC, IRG = Net("LED_MID"), Net("LED_CATH"), Net("Q1_GATE")
 
 # ---------- instansiera ----------
-J1 = HDR()
+J1 = P4IF(); J2 = BATT()
 F1 = PTC(); Q2 = PFET(); Rg2 = RES("100k"); Dtvs = TVS()
 Cin = CAP("10uF", "Capacitor_SMD:C_1206_3216Metric")
 Cbulk = CAP("220uF", "Capacitor_SMD:CP_Elec_6.3x7.7")
@@ -53,9 +55,12 @@ U2 = IMU(); Cd1 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric")
 Cd2 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric"); Cd3 = CAP("1uF")
 H1, H2, H3 = MH(1)(), MH(2)(), MH(3)()
 
-# ---------- J1 (2x5) pinmappning ----------
-J1[1] += VBAT_IN; J1[2] += GND; J1[3] += IR_MOD; J1[4] += P3V3; J1[5] += GND
-J1[6] += SCK; J1[7] += MOSI; J1[8] += MISO; J1[9] += nCS; J1[10] += INT
+# ---------- J2 = batteri-in (2S) ; J1 = P4-carrier-header ----------
+J2["VBAT"] += VBAT_IN; J2["GND"] += GND
+# J1 till P4: VSYS(=VBAT) ut till P4, 3V3 in från P4, signaler till P4-GPIO
+J1[1] += VBAT; J1[2] += P3V3; J1[3] += GND; J1[4] += IR_MOD       # VSYS / 3V3 / GND / IR_MOD(GPIO20)
+J1[5] += SCK; J1[6] += MOSI; J1[7] += MISO; J1[8] += nCS          # SPI (GPIO22/23/26/27)
+J1[9] += INT; J1[10] += GND; J1[11] += GND; J1[12] += GND         # INT(GPIO32) + GND
 
 # ---------- kraftinmatning + skydd ----------
 F1[1] += VBAT_IN; F1[2] += VBAT_F                 # PTC-säkring

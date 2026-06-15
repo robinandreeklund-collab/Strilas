@@ -24,7 +24,7 @@ def parse_net(path):
     return comps, nets
 
 
-def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free=(-20, 20, -15, 15)):
+def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free=(-20, 20, -15, 15), cutout=None):
     comps, nets = parse_net(netfile)
     board = pcbnew.CreateEmptyBoard()
     board.SetCopperLayerCount(layers)
@@ -74,6 +74,11 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
         ch = pcbnew.PCB_SHAPE(board, pcbnew.SHAPE_T_CIRCLE)
         ch.SetCenter(V(0, 0)); ch.SetEnd(V(center_hole, 0))
         ch.SetLayer(pcbnew.Edge_Cuts); ch.SetWidth(MM(0.15)); board.Add(ch)
+    if cutout:                              # lins-hål (kamera bakom kortet)
+        cx, cy, cr = cutout
+        co = pcbnew.PCB_SHAPE(board, pcbnew.SHAPE_T_CIRCLE)
+        co.SetCenter(V(cx, cy)); co.SetEnd(V(cx+cr, cy))
+        co.SetLayer(pcbnew.Edge_Cuts); co.SetWidth(MM(0.15)); board.Add(co)
     pcbnew.SaveBoard(pcbfile, board)
     print(f"  {pcbfile}: {len(fps)} komponenter, {len(nets)} nät")
 
@@ -88,8 +93,18 @@ vest_pos = {
 helmet_pos = {f"U{i+1}": (38*math.cos(math.radians(i*45)), 38*math.sin(math.radians(i*45)), i*45-90) for i in range(8)}
 helmet_pos.update({"J2": (0, 0, 0), "J1": (0, -44, 0)})
 
+# ---- vapen-optikmodul (42×62, P4-carrier) ----
+weapon_pos = {
+    "D2": (-10, 20, 0), "D3": (10, 20, 0),         # emittrar
+    "U1": (-16.5, 0, 0),                           # IMU
+    "J1": (0, -27, 0),                             # P4-interface 2x6
+    "J2": (-15, -27, 0),                           # batteri-in
+}
+
 if __name__ == "__main__":
     place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
           vest_pos, ("rect", 29, 21), layers=2, free=(-24, 24, -18, 0))
     place("hardware/helmet-halo.net", "hardware/helmet-halo.kicad_pcb",
           helmet_pos, ("circle", 50), layers=4, center_hole=10, free=(-30, 30, 28, 12))
+    place("hardware/weapon-module.net", "hardware/weapon-module.kicad_pcb",
+          weapon_pos, ("rect", 21, 31), layers=4, free=(-18, 18, -10, 14), cutout=(0, -4, 8))

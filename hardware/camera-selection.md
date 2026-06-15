@@ -1,6 +1,22 @@
 # STRILAS — Kameraval (sikteskamera)
 
-> ## 🔒 Två nivåer (custom PCB → tänk långsiktigt)
+> ## 🔒🔒 LÅST (användarbeslut): **USB OV9281 global shutter, 6 mm "no distortion", NoIR**
+> Singel-OV9281 (ej stereo). **Global shutter + mono + 3 µm-pixlar.** USB UVC → P4:ans USB OTG 2.0 HS.
+> **Lins: 6 mm "no distortion"** (smalast FOV ~33° + rektilinjär → ren solvePnP).
+> **MÅSTE vara no-IR-filter-varianten** — standardmodulens 650 nm-filter blockerar 860 nm.
+> Kameran sitter mekaniskt **bakom** optikkortet, linsen genom Ø16-hålet; ansluts till P4 via **USB-kabel**
+> (ej på kortets header). P4 mounteras som **carrier** (header-mount) — se nedan.
+>
+> ### P4-carrier pin-map (J1 → P4-GPIO)
+> | Signal | P4-pin | | Signal | P4-pin |
+> |---|---|---|---|---|
+> | VSYS (batteri→P4) | VSYS | | SCK | GPIO22 |
+> | 3V3 (P4→logik) | 3V3 | | MOSI | GPIO23 |
+> | IR_MOD | GPIO20 (RMT) | | MISO | GPIO26 |
+> | IMU INT | GPIO32 | | nCS | GPIO27 |
+> *(Batteri matas in på optikkortet J2 → VSYS till P4 + emitter-rail; trigger → egen P4-GPIO på greppet.)*
+
+> ## (Bakgrund) Två nivåer (custom PCB → tänk långsiktigt)
 > - **v1-bänk / snabbstart: Arducam 5MP OV5647 NoIR, M12** (B012S6WJOS, ~$15) — drop-in i kit:et,
 >   börja CV-utvecklingen direkt.
 > - **Custom-PCB (långsiktigt optimalt): SC2336** (2MP MIPI) — **NIR-native** (ser 860 nm utan
