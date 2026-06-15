@@ -30,7 +30,7 @@ def mk(name, ref, pins, fp, value=""):
 P4IF = mk("P4_EDGE", "J", [(i, i) for i in range(1, 15)],
           "Connector_PinHeader_2.54mm:PinHeader_1x14_P2.54mm_Vertical", "P4-kantkontakt")
 BATT = mk("BATT_IN", "J", [(1, "VBAT"), (2, "GND")],
-          "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical", "2S batteri")
+          "Connector_JST:JST_XH_S2B-XH-A_1x02_P2.50mm_Horizontal", "2S batteri (JST-XH)")
 RES_T = mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric")
 CAP_T = mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0805_2012Metric")
 RES = lambda v, fp="Resistor_SMD:R_0805_2012Metric": RES_T(value=v, footprint=fp)
@@ -55,7 +55,7 @@ CLEG = lambda n: mk(f"CLEG{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.1m
 PSTD = lambda n: mk(f"PSTD{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2_P4")
 # trigger-in (extern kabel via pipan)
 TRIGC = mk("TRIGGER", "J", [(1, "SIG"), (2, "GND")],
-           "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical", "trigger-in")
+           "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal", "trigger-in (JST-PH)")
 
 # ---------- nät ----------
 VBAT_IN, VBAT_F, VBAT, GND, P3V3 = Net("VBAT_IN"), Net("VBAT_F"), Net("VBAT"), Net("GND"), Net("+3V3")
