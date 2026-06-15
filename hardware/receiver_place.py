@@ -129,9 +129,11 @@ weapon_box = {   # 54×74 mm: 2× Ø20-lins+kamera fram; P4 (15mm-standoff) bako
     "R2": (24, 23, 90), "C2": (24, 16, 0),
     # inmatningsskydd på HÖGERkanten (frigör vänsterkanten för P4 + J1)
     "F1": (24, 9, 90), "Q1": (24, 3, 0), "D1": (24, -3, 90), "R1": (24, -9, 90), "C1": (24, -15, 0),
-    # batteri-in (JST-XH) längs NEDERKANTEN, kabelöppning nedåt (rot0) mot pipan. Ej under P4 (x>-5.5).
+    # batteri-in (JST-XH) längs NEDERKANTEN. OBS: flip_j1_back speglar kroppen topp-botten,
+    # så för att kabelöppningen ska peka NEDÅT (mot nederkanten) EFTER flippen placeras den
+    # rot180 (öppning uppåt FÖRE flip → nedåt EFTER). y=-25.3 ger ~2 mm marginal till kanten.
     # (trigger m.fl. fire-control-I/O ligger på separat kort mot P4 edge A — ej här.)
-    "J2": (8, -26, 0),
+    "J2": (8, -25.3, 180),
     # J1 = 1x14 P4-kantkontakt på VÄNSTERKANTEN (P4 vänd så signalkanten edge B ligger ytterst).
     # P4-pin (make_p4_board-index) m @ optikkort-y = -31 + (m-1)*2.54. Edge B (ESP→USB):
     #   VSYS=P4-pin19 (y=+14.71) ... GPIO32=P4-pin6 (y=-18.31). Origo=J1-pin1 (VSYS), går nedåt.
