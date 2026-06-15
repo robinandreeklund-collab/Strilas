@@ -62,7 +62,9 @@ def ladder(x0, y0, title, left_pairs, edge_name):
 
 # ---- edge B: optik J1 (14) ↔ P4 edge B pin 2..15 ----
 optJ1 = OPT.get("J1", {})
-pairsB = [(f"J1.{k}", optJ1.get(str(k)), EDGE_B[k]) for k in range(1, 15)]  # k→edgeB pin k+1 → idx k
+# STACKAD face-to-face: J_B flippad till P4:ans baksida → SPEGLAD mate. optik J1.k möter
+# P4 edge B-stift (15-k) (verifierat 0.000 mm mot _pads_z-geometrin): J1.1↔GPIO32 … J1.14↔VSYS.
+pairsB = [(f"J1.{k}", optJ1.get(str(k)), EDGE_B[15-k]) for k in range(1, 15)]
 ladder(1, 22, "OPTIK J1  ↔  P4 EDGE B", pairsB, "edge B")
 
 # ---- edge A: FC J1 (12) ↔ P4 edge A pin 6..17 ----

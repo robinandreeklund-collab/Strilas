@@ -2,7 +2,7 @@
   (version "D")
   (design
     (source "weapon_module_netlist.py")
-    (date "06/15/2026 11:05 PM")
+    (date "06/15/2026 11:23 PM")
     (tool "SKiDL (2.2.3)")
     (sheet
       (number 1)
@@ -55,7 +55,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "052RSSkwFc")
+          (name "SKiDL Tag") "uygDdO0FMz")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:38"))
       (libsource
@@ -65,7 +65,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "2c140650-6862-5977-8b71-ea7218a55ce5"))
+      (tstamps "bd640014-64a4-5df7-ac61-4c17a4a4b4ca"))
     (comp
       (ref "C2")
       (value "100uF")
@@ -79,7 +79,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "gFbwcWrRWT")
+          (name "SKiDL Tag") "T67XRGaLH4")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:38"))
       (libsource
@@ -89,7 +89,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "0d51e008-dce6-50b6-9084-b04b5f60dd87"))
+      (tstamps "d4d46210-8870-5d06-8a9e-f053a1405df5"))
     (comp
       (ref "C3")
       (value "100nF")
@@ -103,7 +103,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "IOcAveKF7Y")
+          (name "SKiDL Tag") "sLRDh7e7Bq")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:38"))
       (libsource
@@ -113,7 +113,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "f50c01fd-f428-5432-a63f-c8b4f20cf6a6"))
+      (tstamps "fcb3843c-973b-5fcf-88df-4cface05656f"))
     (comp
       (ref "C4")
       (value "100nF")
@@ -127,7 +127,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "VBp1dxakNz")
+          (name "SKiDL Tag") "hKo6wvCN8S")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:38"))
       (libsource
@@ -137,7 +137,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "decdae86-d0f8-5b48-b005-41aca43b4c92"))
+      (tstamps "ff5296a0-71f4-50b7-8e11-1b415e94fdef"))
     (comp
       (ref "C5")
       (value "1uF")
@@ -151,7 +151,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "BHnBgXND3h")
+          (name "SKiDL Tag") "5XWaErsOdL")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:38"))
       (libsource
@@ -161,7 +161,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "b50e94cb-ee6f-5a5a-b1f4-7483a5e62fec"))
+      (tstamps "f22cc84b-cd86-54cc-9794-be9cd0722c48"))
     (comp
       (ref "D1")
       (value "SMBJ12A")
@@ -175,7 +175,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "EsIbTiTfZG")
+          (name "SKiDL Tag") "01hjD6fXYf")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:67"))
       (libsource
@@ -185,7 +185,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "e998d619-5a9c-5795-b087-84ac0d88b2e6"))
+      (tstamps "06a888f2-c6fb-5112-858a-bb7c8081350a"))
     (comp
       (ref "D2")
       (value "SFH4725S_940nm")
@@ -199,7 +199,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "OMF4sSDoha")
+          (name "SKiDL Tag") "uF_eKObn04")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:71"))
       (libsource
@@ -209,7 +209,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "90fcbfd6-e896-5497-9c2f-f884fc8a9544"))
+      (tstamps "bd8137cd-f329-55bb-9bd6-350833caa563"))
     (comp
       (ref "D3")
       (value "SFH4725S_940nm")
@@ -223,7 +223,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "FGIaXuoV50")
+          (name "SKiDL Tag") "Vr5NsFwnjg")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:71"))
       (libsource
@@ -233,7 +233,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "2b3ebd2d-aecc-544e-a335-a41b92c41920"))
+      (tstamps "0f3360ea-f534-57fb-a2f5-f9c617a25932"))
     (comp
       (ref "F1")
       (value "PTC_1A")
@@ -247,7 +247,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "jnjDv8o1Ll")
+          (name "SKiDL Tag") "TwGYlk7kBb")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:67"))
       (libsource
@@ -257,7 +257,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "94a801e4-3c38-5076-baa0-ea4feb641d0f"))
+      (tstamps "1ff782f3-bb44-53aa-96a2-06c9b006486f"))
     (comp
       (ref "H1")
       (value "M2.5")
@@ -271,7 +271,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "l3OLG1NL5O")
+          (name "SKiDL Tag") "YrXiOrrTdv")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:75"))
       (libsource
@@ -281,7 +281,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "2a73721f-9a80-565a-8406-b3d60917691c"))
+      (tstamps "e8a459e9-d25e-5b45-924c-261ec60ff904"))
     (comp
       (ref "H10")
       (value "M2_kamera")
@@ -295,7 +295,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "P25Q9VBaJO")
+          (name "SKiDL Tag") "mgsWTaIgKC")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:78"))
       (libsource
@@ -305,7 +305,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "70bb1c99-0674-50d2-98d5-cf7168163a51"))
+      (tstamps "633977f7-a741-5c1a-be34-3ff67d24f2bf"))
     (comp
       (ref "H11")
       (value "M2_kamera")
@@ -319,7 +319,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "4Kw7mKd0kU")
+          (name "SKiDL Tag") "6qyohDkC2J")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:78"))
       (libsource
@@ -329,7 +329,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "975eb2e3-9274-5d09-82fe-eb9f7d7268b3"))
+      (tstamps "cd3fd4bb-75be-5061-8fae-18fdc800401d"))
     (comp
       (ref "H12")
       (value "Carclo10734-ben_Ø2.1")
@@ -343,7 +343,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "q7J72vClCT")
+          (name "SKiDL Tag") "8S6Xh1tR91")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:79"))
       (libsource
@@ -353,7 +353,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "e67a2d08-8c14-52f2-ab81-b4cd97d694a2"))
+      (tstamps "d428a994-67f0-5f08-b99d-c0c1cad5c4c8"))
     (comp
       (ref "H13")
       (value "Carclo10734-ben_Ø2.1")
@@ -367,7 +367,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "EjLsvIh1NM")
+          (name "SKiDL Tag") "FjllyocKcd")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:79"))
       (libsource
@@ -377,7 +377,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "9b8571ff-031c-50cd-9f82-97e5e7ff5bdd"))
+      (tstamps "bc7b08c4-05a2-59cf-9ff8-13b49a115b47"))
     (comp
       (ref "H14")
       (value "Carclo10734-ben_Ø2.1")
@@ -391,7 +391,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "2Y2MfNh_hR")
+          (name "SKiDL Tag") "gJpUQclk5h")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:79"))
       (libsource
@@ -401,7 +401,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "2402a203-ced3-5fd7-adeb-cd550e952974"))
+      (tstamps "bf3e7585-3247-5858-84ff-5d2229e9dfd4"))
     (comp
       (ref "H15")
       (value "Carclo10734-ben_Ø2.1")
@@ -415,7 +415,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "p7RG1V0pej")
+          (name "SKiDL Tag") "fqjwVumP3Z")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:79"))
       (libsource
@@ -425,7 +425,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "9a6d66c3-9285-5b36-8407-cc73c7a27d38"))
+      (tstamps "6e6ee97c-5e9e-5d15-ad6f-d712f6113067"))
     (comp
       (ref "H16")
       (value "Carclo10734-ben_Ø2.1")
@@ -439,7 +439,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "1kVoM2jlXS")
+          (name "SKiDL Tag") "HIUVKBXUFq")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:79"))
       (libsource
@@ -449,7 +449,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "069607d1-7124-519a-a9a2-97bd3450a5f5"))
+      (tstamps "e88c2ad8-2180-53aa-9098-6953a613e17a"))
     (comp
       (ref "H17")
       (value "Carclo10734-ben_Ø2.1")
@@ -463,7 +463,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "d53B9BD9H1")
+          (name "SKiDL Tag") "IAdgiRPwZz")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:79"))
       (libsource
@@ -473,7 +473,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "4706a393-e9e7-590b-a4d1-d4f5d5ead614"))
+      (tstamps "82ff90bc-9aac-59f2-850a-30cdd31bd040"))
     (comp
       (ref "H18")
       (value "Carclo10734-ben_Ø2.1")
@@ -487,7 +487,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "qNVSpk5sBj")
+          (name "SKiDL Tag") "rpxTnPueBE")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:79"))
       (libsource
@@ -497,7 +497,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "b1bc028e-906d-5951-a137-d77a42712118"))
+      (tstamps "71464095-4ab7-5cf9-8fc7-f26da82f2416"))
     (comp
       (ref "H19")
       (value "Carclo10734-ben_Ø2.1")
@@ -511,7 +511,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "k7j95fm5Ct")
+          (name "SKiDL Tag") "bZiAII4bI_")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:79"))
       (libsource
@@ -521,7 +521,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "e98e125b-4893-5168-88e0-52b21e92f8d2"))
+      (tstamps "4eddde5b-74d6-5b1a-9040-a6b8ca36201d"))
     (comp
       (ref "H2")
       (value "M2.5")
@@ -535,7 +535,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "4z5m4uRmhW")
+          (name "SKiDL Tag") "qOEsKQMixF")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:75"))
       (libsource
@@ -545,7 +545,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "a255b345-556f-5cec-9a95-8493f81f4176"))
+      (tstamps "adc17ecb-2ef2-5ff9-be32-07537bb3e1d5"))
     (comp
       (ref "H20")
       (value "M2.5")
@@ -559,7 +559,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "j2C54KzHC2")
+          (name "SKiDL Tag") "W8j86osBme")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:80"))
       (libsource
@@ -569,7 +569,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "da365d1e-6272-5480-bf56-7dfa3634ca38"))
+      (tstamps "4a626b9a-23b0-507f-92e0-78c31e9ac6ba"))
     (comp
       (ref "H3")
       (value "M2.5")
@@ -583,7 +583,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "7kkJwjkJnD")
+          (name "SKiDL Tag") "Id9IZDOYta")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:75"))
       (libsource
@@ -593,7 +593,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "7bcd3c6f-d425-5905-a42d-4d415779abfb"))
+      (tstamps "33f1132a-1f3e-54e2-bf52-63eab45d52b2"))
     (comp
       (ref "H4")
       (value "M2.5")
@@ -607,7 +607,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "1S6P2effhY")
+          (name "SKiDL Tag") "aVXAmXRLyA")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:76"))
       (libsource
@@ -617,7 +617,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "e7619d04-1f3b-5e9d-8fe4-6ef9e27094c7"))
+      (tstamps "5c299b57-e786-53ed-8585-955e95783c16"))
     (comp
       (ref "H5")
       (value "M2.5")
@@ -631,7 +631,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "uXmMYxsScf")
+          (name "SKiDL Tag") "qNjutPqA4T")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:77"))
       (libsource
@@ -641,7 +641,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "13ffdb40-3286-5f37-8cab-d4abbb01edd3"))
+      (tstamps "432512cb-bd14-5b3a-8814-f992478a81ba"))
     (comp
       (ref "H6")
       (value "M2.5")
@@ -655,7 +655,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "Au81hx3SYb")
+          (name "SKiDL Tag") "NlvNKLIsoO")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:77"))
       (libsource
@@ -665,7 +665,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "c6559ced-811a-550f-85e4-e3db17927aa2"))
+      (tstamps "4417fe36-4020-5e4e-8230-e542abb32e1f"))
     (comp
       (ref "H7")
       (value "M2.5")
@@ -679,7 +679,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "416OZdrtFz")
+          (name "SKiDL Tag") "cGgfm5fDWG")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:77"))
       (libsource
@@ -689,7 +689,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "fdf71a4e-05d8-571d-a271-aa11613bb4c2"))
+      (tstamps "f4b50c4a-bb74-5329-bc45-d312fb5c78ae"))
     (comp
       (ref "H8")
       (value "M2_kamera")
@@ -703,7 +703,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "N_qv8m2P9L")
+          (name "SKiDL Tag") "f3PqBlAw15")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:78"))
       (libsource
@@ -713,7 +713,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "6969f477-e2dc-5bd1-ba3c-0cd96e7e7f2c"))
+      (tstamps "79e1680e-02ab-5566-a243-fb873c12e20e"))
     (comp
       (ref "H9")
       (value "M2_kamera")
@@ -727,7 +727,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "tcLvUzkJI3")
+          (name "SKiDL Tag") "hOLD_Tl5PC")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:78"))
       (libsource
@@ -737,7 +737,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "95ee7131-a002-545e-a0e1-1b772a5619dc"))
+      (tstamps "b392f24c-1be7-5cd2-8e0c-41306a9dabb5"))
     (comp
       (ref "J1")
       (value "P4-socket (edge B)")
@@ -751,7 +751,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "VBqlXx_Hv8")
+          (name "SKiDL Tag") "jowQ7zyAZO")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:66"))
       (libsource
@@ -761,7 +761,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "6921fd9f-3678-5382-b0d7-a01908782b0b"))
+      (tstamps "5e54615e-c64e-532f-87f7-6d432fb9129b"))
     (comp
       (ref "J2")
       (value "2S batteri (JST-XH)")
@@ -775,7 +775,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "3Fgk5Wzror")
+          (name "SKiDL Tag") "otcjM9a8AA")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:66"))
       (libsource
@@ -785,7 +785,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "58efaa89-e7a1-58d8-8f72-bf37866764c9"))
+      (tstamps "5d4da0c0-2a0a-5a50-9220-583ac8facc6f"))
     (comp
       (ref "Q1")
       (value "AO3401")
@@ -799,7 +799,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "KXeI2ix6Dz")
+          (name "SKiDL Tag") "0BTr4L53Y_")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:67"))
       (libsource
@@ -809,7 +809,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "3ecc2c46-d150-5a82-b258-ac557f5366a0"))
+      (tstamps "a29c56cb-8039-5b98-9240-7ff13b98a949"))
     (comp
       (ref "Q2")
       (value "AO3400")
@@ -823,7 +823,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "ozC4jkxnqq")
+          (name "SKiDL Tag") "Zodhoq5478")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:72"))
       (libsource
@@ -833,7 +833,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "588b0d7c-d55e-5a2f-9db4-55ff32f0e8ff"))
+      (tstamps "e8937876-68be-55dc-9c6a-ea16e86cba93"))
     (comp
       (ref "R1")
       (value "100k")
@@ -847,7 +847,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "ka9pkMFQ1g")
+          (name "SKiDL Tag") "jwuzlSsIRQ")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:37"))
       (libsource
@@ -857,7 +857,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "e01e3faf-6c7e-50cf-a793-2544264145cd"))
+      (tstamps "ad950361-5ea2-5024-a89f-7c1a8abdf225"))
     (comp
       (ref "R2")
       (value "3R3_2W")
@@ -871,7 +871,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "uJBDEYbCIO")
+          (name "SKiDL Tag") "sP7kSxiL7s")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:37"))
       (libsource
@@ -881,7 +881,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "1137c8d0-c28f-5d9a-b120-af1be6ee82f0"))
+      (tstamps "04364414-05bf-58e3-9fc9-0371eda49e29"))
     (comp
       (ref "R3")
       (value "220R")
@@ -895,7 +895,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "zrZoZQKaEX")
+          (name "SKiDL Tag") "tJ6MowiTny")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:37"))
       (libsource
@@ -905,7 +905,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "4f825d98-40df-5179-91e4-3e2642615bf8"))
+      (tstamps "23dba17a-65da-5518-ae72-553163dc37f3"))
     (comp
       (ref "U1")
       (value "ICM-45686")
@@ -919,7 +919,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "249_oLMtZo")
+          (name "SKiDL Tag") "7Lmp0GEMOD")
         (field
           (name "SKiDL Line") "weapon_module_netlist.py:73"))
       (libsource
@@ -929,7 +929,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "83363b1a-f92c-53ed-aed8-b5856bc4a35d")))
+      (tstamps "e0399972-b0f4-5221-82a1-433287359fcc")))
   (nets
     (net
       (code 1)
@@ -1101,7 +1101,7 @@
       (class "Default")
       (node
         (ref "J1")
-        (pin "1")
+        (pin "4")
         (pintype "UNSPECIFIED"))
       (node
         (ref "U1")
@@ -1149,7 +1149,7 @@
       (class "Default")
       (node
         (ref "J1")
-        (pin "4")
+        (pin "7")
         (pintype "UNSPECIFIED"))
       (node
         (ref "U1")
@@ -1161,7 +1161,7 @@
       (class "Default")
       (node
         (ref "J1")
-        (pin "6")
+        (pin "2")
         (pintype "UNSPECIFIED"))
       (node
         (ref "U1")
@@ -1209,7 +1209,7 @@
       (class "Default")
       (node
         (ref "J1")
-        (pin "7")
+        (pin "6")
         (pintype "UNSPECIFIED"))
       (node
         (ref "U1")
@@ -1273,7 +1273,7 @@
       (class "Default")
       (node
         (ref "J1")
-        (pin "2")
+        (pin "1")
         (pintype "UNSPECIFIED"))
       (node
         (ref "U1")

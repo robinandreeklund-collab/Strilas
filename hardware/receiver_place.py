@@ -125,7 +125,7 @@ weapon_box = {   # 54×74 mm: 2× Ø20-lins+kamera fram; P4 (15mm-standoff) bako
     "H12": (-16.5, 30.8, 0), "H13": (-7.5, 30.8, 0), "H14": (-16.5, 15.2, 0), "H15": (-7.5, 15.2, 0),
     "H16": (7.5, 30.8, 0), "H17": (16.5, 30.8, 0), "H18": (7.5, 15.2, 0), "H19": (16.5, 15.2, 0),
     # NFET-driver i centrum-toppen (kort gate till emittrarna)
-    "Q2": (4, 19, 90), "R3": (4, 14, 90),
+    "Q2": (1, 19, 90), "R3": (1, 14, 90),   # flyttade vänster → klar av D3:s Carclo-ben H18
     # Rset + bulk nära emittrarna (höger-topp) — kort pulsslinga C2→R2→D3→…→Q2
     "R2": (24, 23, 90), "C2": (24, 16, 0),
     # inmatningsskydd på HÖGERkanten (frigör vänsterkanten för P4 + J1)
@@ -142,7 +142,7 @@ weapon_box = {   # 54×74 mm: 2× Ø20-lins+kamera fram; P4 (15mm-standoff) bako
     # kamerafäste H8-H11 (B0332 28×28 om lins (0,-6)); B4B-ZR-kontakt riktad +x (höger)
     "H8": (-14, 8, 0), "H9": (14, 8, 0), "H10": (-14, -20, 0), "H11": (14, -20, 0),
     # IMU + avkoppling vänster-centrum (under P4, NÄRA J1) → korta SPI-escapes till J1
-    "U1": (-19, -3, 0), "C3": (-22, 2, 90), "C4": (-19, -8, 0), "C5": (-15, -1, 90),  # IMU tätt intill J1 → korta SPI-nät
+    "U1": (-19, -3, 0), "C3": (-22, -7, 90), "C4": (-19, -8, 0), "C5": (-15, -1, 90),  # IMU tätt intill J1; C3 upp till matn.-sidan → fri nCS-escape ned-vänster
     # kort-monteringshål: alla x>-5.5 (ej under P4) — H1 topp-höger, H2 botten-höger,
     # H3 höger-kant (mellan kraftremsan och H2), H4 centrum-topp (mellan linserna)
     "H1": (24, 34, 0), "H2": (24, -34, 0), "H3": (24, -22, 0),

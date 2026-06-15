@@ -99,8 +99,13 @@ J2["VBAT"] += VBAT_IN; J2["GND"] += GND
 #   J1[14] GPIO32                    IMU_INT
 # SPEGLAD pinout: P4 monteras STACKAD bakom optiken (kort-mot-kort, ansikte-mot-
 # ansikte) → pinouten speglas (pad k = forna pad 15-k) så stiften möts rätt fysiskt.
-J1[1] += INT; J1[2] += nCS; J1[3] += GND; J1[4] += MISO
-J1[6] += MOSI; J1[7] += SCK; J1[8] += GND
+# SIGNAL↔GPIO-PERMUTATION: de 5 IMU/SPI-näten (INT,nCS,MISO,MOSI,SCK) ligger på
+# J1-stift {1,2,4,6,7} = P4-GPIO {32,27,26,23,22} — alla generiska GPIO (SPI går via
+# P4:ans GPIO-matris, INT är valfri GPIO). Permuterad för PLANÄR (korsningsfri) escape
+# IMU→J1 på ett enda lager (F_Cu): annars tvingas ett via-byte (nCS/INT byter Y-ordning).
+#   nCS →J1.1(GPIO32) · MOSI→J1.2(GPIO27) · INT→J1.4(GPIO26) · SCK→J1.6(GPIO23) · MISO→J1.7(GPIO22)
+J1[1] += nCS; J1[2] += MOSI; J1[3] += GND; J1[4] += INT
+J1[6] += SCK; J1[7] += MISO; J1[8] += GND
 J1[10] += IR_MOD; J1[11] += P3V3; J1[13] += GND; J1[14] += VBAT
 # NC: J1[5]=RUN, J1[9]=GPIO21, J1[12]=EN (drivs ej från vårt kort).
 

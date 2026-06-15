@@ -37,10 +37,17 @@ Standoffs läggs in av användaren. Regenereras med `python3 merge_assembly_step
 med `python3 gen_bom.py`.
 
 **Verifiering:** `python3 system_sim.py` → ström-/signalflöde över kortgränserna
-(0 typkrock · 0 utan ström · 0 dinglar). Bilder:
-- `port-matching.png` — varje stift etiketterat, mate-par med ✓
-- `edgeB-match-proof.png` — edge B↔optik: alla 14 stift + 4 hål, standoff-låst
+(0 typkrock · 0 utan ström · 0 dinglar). Bilder (regenereras ur live-netlista/-geometri):
+- `port-matching.png` — varje stift etiketterat, mate-par med ✓ (`render_port_labels.py`)
+- `edgeB-match-proof.png` — edge B↔optik: alla 14 stift + 4 hål, standoff-låst,
+  speglad mate J1.k↔P4-stift(15-k), verifierad 0.000 mm (`render_edgeb_proof.py`)
 - `system-flow.png` — kraft-/databuss-översikt
+
+> **Mate (verifierat 0.000 mm mot _pads_z-geometrin):** P4 edge B är flippad till baksidan
+> (J_B) → STACKAD/speglad mate, så optik **J1.k ↔ P4 edge B-stift (15-k)** (J1.1↔GPIO32 …
+> J1.14↔VSYS). Edge A (FC) är på framsidan → RAK mate (FC J1.k ↔ edge A-stift k+5).
+> De 5 IMU/SPI-näten ligger på J1-stift {1,2,4,6,7} = GPIO {32,27,26,23,22} och är
+> permuterade för planär (korsningsfri, via-fri) routning IMU→J1 på F_Cu.
 
 **Footprints:** `strilas.pretty/` (IR-emitter + ICM-456xx IMU).
 
