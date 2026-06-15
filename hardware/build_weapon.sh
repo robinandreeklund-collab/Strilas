@@ -31,16 +31,32 @@ PY
 echo "== 6) effektnät -> egen 0.4 mm-klass =="
 python3 hardware/dsn_power_class.py "$DSN"
 
-echo "== 7) autoroute (Freerouting, headless) =="
-xvfb-run -a java -jar /opt/freerouting.jar -de "$DSN" -do "$SES" -mp 120
+echo "== 7-8) autoroute (Freerouting, headless) + applicera SES =="
+# Freerouting är stokastisk: kör om tills ALLA signalnät (≠GND, fylls av plan) är routade.
+cp "$PCB" /tmp/_placed.kicad_pcb
+clean=0
+for seed in 1 2 3 4 5 6 7 8; do
+  xvfb-run -a java -jar /opt/freerouting.jar -de "$DSN" -do "$SES" -mp 200 >/dev/null 2>&1
+  cp /tmp/_placed.kicad_pcb "$PCB"
+  python3 hardware/ses_apply.py "$PCB" "$SES" >/dev/null
+  u=$(python3 - "$PCB" <<'PY'
+import pcbnew, math, sys
+b=pcbnew.LoadBoard(sys.argv[1])
+tr={}
+for t in b.GetTracks(): tr.setdefault(t.GetNetCode(),[]).extend(
+    [(t.GetStart().x/1e6,t.GetStart().y/1e6),(t.GetEnd().x/1e6,t.GetEnd().y/1e6)])
+print(sum(1 for f in b.GetFootprints() for p in f.Pads()
+    if p.GetNetname() not in ("","GND")
+    and not any(math.hypot(p.GetPosition().x/1e6-ex,p.GetPosition().y/1e6-ey)<0.4
+                for ex,ey in tr.get(p.GetNetCode(),[]))))
+PY
+)
+  echo "   seed $seed: signal-oroutade paddar = $u"
+  if [ "$u" = "0" ]; then clean=1; break; fi
+done
+[ "$clean" = "1" ] || { echo "  !! ingen ren routning på 8 försök"; exit 1; }
 
-echo "== 8) applicera SES (spår/vior) =="
-python3 hardware/ses_apply.py "$PCB" "$SES"
-
-echo "== 9) brygga emitter-näten (om Freerouting missar) =="
-python3 hardware/weapon_emitter_routes.py
-
-echo "== 10) flippa kontakter (J1/J2/J3) till baksidan =="
+echo "== 9) flippa kontakter (J1/J2/J3) till baksidan =="
 python3 hardware/flip_j1_back.py
 
 echo "== 11) kopparplan + fyllning =="

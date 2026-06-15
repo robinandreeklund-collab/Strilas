@@ -137,13 +137,14 @@ weapon_box = {   # 54×74 mm: 2× Ø20-lins+kamera fram; P4 (15mm-standoff) bako
     "J1": (-25.3, 11.5, 0),
     # kamerafäste H8-H11 (B0332 28×28 om lins (0,-6)); B4B-ZR-kontakt riktad +x (höger)
     "H8": (-14, 8, 0), "H9": (14, 8, 0), "H10": (-14, -20, 0), "H11": (14, -20, 0),
-    # IMU + avkoppling botten-centrum (höger om P4-zonen, x>-5.5)
-    "U1": (2, -28, 0), "C3": (-3, -29, 90), "C4": (7, -29, 0), "C5": (11, -28, 90),
+    # IMU + avkoppling vänster-centrum (under P4, NÄRA J1) → korta SPI-escapes till J1
+    "U1": (-12, -10, 0), "C3": (-18, -10, 90), "C4": (-12, -16, 0), "C5": (-7, -13, 90),
     # trigger-in höger-botten
     "J3": (17, -31, 90),
-    # kort-monteringshål: centrum + hörn (vänster topp-hörn vid P4-änden) + 3 P4-standoff
-    "H1": (24, 34, 0), "H2": (-24, 34, 0), "H3": (10, -34, 0),
-    "H4": (0, 28, 0),                                   # centrum-kort-hål (mellan linserna)
+    # kort-monteringshål: alla x>-5.5 (ej under P4) — H1 topp-höger, H2 botten-höger,
+    # H3 botten-centrum, H4 centrum-topp (mellan linserna)
+    "H1": (24, 34, 0), "H2": (24, -34, 0), "H3": (0, -34, 0),
+    "H4": (0, 28, 0),
     # 3 P4-standoff synkade mot P4:ans hål (vänsterläge, centrum x=-16):
     "H5": (-25.15, -34.06, 0), "H6": (-6.85, -34.06, 0), "H7": (-6.85, 19.73, 0),
 }

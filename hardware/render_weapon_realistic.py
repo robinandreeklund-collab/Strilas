@@ -23,11 +23,11 @@ def draw(ax, side):
     sgn = 1 if front else -1   # spegelvänd baksidan i X
     def X(x): return sgn*x
     # board (rundad grön platta)
-    board = FancyBboxPatch((-27, -34), 54, 68, boxstyle="round,pad=0,rounding_size=2.5",
+    board = FancyBboxPatch((-27, -37), 54, 74, boxstyle="round,pad=0,rounding_size=2.5",
                            fc=MASK, ec=EDGE, lw=2, zorder=1)
     ax.add_patch(board)
     # svag plan-textur (mörkare grön fält)
-    ax.add_patch(Rectangle((-26.7, -33.7), 53.4, 67.4, fc=MASK_D, ec="none", alpha=0.35, zorder=1.1))
+    ax.add_patch(Rectangle((-26.7, -36.7), 53.4, 73.4, fc=MASK_D, ec="none", alpha=0.35, zorder=1.1))
     # spår (koppar, syns svagt under mask)
     for t in b.GetTracks():
         if t.Type() == pcbnew.PCB_TRACE_T and t.GetLayer() == cu_layer:
@@ -61,8 +61,8 @@ def draw(ax, side):
             c = P(d.GetCenter()); r = (d.GetEnd().x-d.GetStart().x)/1e6
             ax.add_patch(Circle((X(c[0]), c[1]), abs(r), fill=False, ec=SILK, lw=0.6, zorder=5))
     # lins-urtag (genomgående hål)
-    ax.add_patch(Circle((0, 6), 8, fc="#0a0a0a", ec="#d9d9d9", lw=1.0, zorder=7))
-    ax.text(0, 6, "Ø16\nlins", fontsize=6, ha="center", va="center", color="#d9d9d9", zorder=8)
+    ax.add_patch(Circle((0, -6), 8, fc="#0a0a0a", ec="#d9d9d9", lw=1.0, zorder=7))
+    ax.text(0, -6, "Ø16\nlins", fontsize=6, ha="center", va="center", color="#d9d9d9", zorder=8)
     ax.set_aspect("equal"); ax.set_xlim(-30, 30); ax.set_ylim(-37, 37)
     ax.axis("off")
     ax.set_title(("FRAM (F.Cu — emitter-driver, IMU, headers)" if front
