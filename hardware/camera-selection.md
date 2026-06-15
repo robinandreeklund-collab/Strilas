@@ -9,8 +9,19 @@
 > - **Global shutter** (ideal mot pan-smet) skjuts på: ingen *billig* GS-sensor har P4-drivrutin
 >   (OV9281/OV2311/AR0234 = egen drivrutin krävs; Mira220 = dyr eval). Rolling shutter + fast-pan-grind räcker.
 
-Kravet: **ser 860 nm** (måste, för att se målets konstellation), **P4-stödd** (`esp_cam_sensor`),
-**billig**. Resolution: ≥2 MP räcker för blob-konstellationen.
+### USB-vägen (P4 har USB OTG 2.0 HS) — enda billiga global-shutter-vägen
+
+P4:an har **USB 2.0 HS host** + Espressifs **UVC-host-drivrutin** + **HW-JPEG-avkodare** → en
+**USB UVC-kamera fungerar**. Det låser upp **global shutter (OV9281, ~$30)** plug-and-play utan
+MIPI-drivrutin — GS tar bort rolling-shutter/pan-smet, den verkliga vinsten för ett rörligt vapen.
+Pris: USB-kabel (klumpigare än FFC) + JPEG-avkod-latens (litet med HW-JPEG) + mer firmware
+(USB-host+UVC). **OV9281 måste vara NoIR** (ser 860 nm). Ändrar EJ det routade kortet (kameran =
+mekanisk + kabelval).
+
+**Gaffel efter prioritet:** GS-precision på rörligt mål → **USB OV9281 GS**; enklast/lägst latens →
+**MIPI SC2336/OV5647 NoIR** (rolling + fast-pan-grind).
+
+Kravet: **ser 860 nm** (måste), **billig**. Resolution: ≥1–2 MP räcker för blob-konstellationen.
 
 ## Beslut: **OV5647 NoIR** ⭐
 

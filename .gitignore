@@ -11,3 +11,4 @@ __pycache__/
 *.ses
 hardware/gerbers/
 fr-*.log
+hardware/gb_*/
