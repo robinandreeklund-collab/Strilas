@@ -111,27 +111,41 @@ helmet_pos.update({"J2": (0, 0, 0), "J1": (0, -44, 0)})
 # Kamerafäste (B0332 38×38): 4× M2-hål i 28×28-mönster runt linsaxeln (0,-4).
 #   H4(-14,10) H5(14,10) H6(-14,-18) H7(14,-18). Komponenter flyttade ut till kanterna
 #   så dessa hål + standoffs är fria. Kameran skruvas fast bakom kortet, lins genom Ø16.
-weapon_box = {   # 54×74 mm: 2× Ø20-lins+kamera fram; P4 (15mm-standoff) synkad bakom; centrum-kort-hål
+# P4-VÄNSTERLÄGE (enligt användarens Fusion-modell): P4 (71×21) ligger bakom kortet,
+# huggande VÄNSTERKANTEN (centrum x≈-16, längd längs y, ESP-änden upp/USB-änden ned).
+# Kamerans B4B-ZR-kontakt riktad +x (höger) → fri från P4. J1 (P4-kantkontakt) flyttad
+# till vänsterkanten (P4:ans yttre signalrad). Kraft/skydd-remsa flyttad till HÖGERkanten;
+# Rset(R2)+bulk(C2) hålls nära emittrarna (höger-topp) för kort 56 kHz-pulsslinga.
+# Funktioner (skidl-ref): R2=Rset 3R3, C2=Cbulk 100µF, F1=PTC, Q1=PFET(rev-pol), D1=TVS,
+#   R1=100k-pulldown, C1=Cin 10µF, Q2=NFET-driver, R3=gate-R, U1=IMU, C3/C4/C5=IMU-avkoppl.
+weapon_box = {   # 54×74 mm: 2× Ø20-lins+kamera fram; P4 (15mm-standoff) bakom VÄNSTER; centrum-kort-hål
     "D2": (-12, 23, 0), "D3": (12, 23, 180),
     # 8 Carclo-ben (H12-H19): D2 H12-H15, D3 H16-H19 — 9.0×15.60 rektangel/lins, Ø2.1
     "H12": (-16.5, 30.8, 0), "H13": (-7.5, 30.8, 0), "H14": (-16.5, 15.2, 0), "H15": (-7.5, 15.2, 0),
     "H16": (7.5, 30.8, 0), "H17": (16.5, 30.8, 0), "H18": (7.5, 15.2, 0), "H19": (16.5, 15.2, 0),
-    # driver i centrum-gapet
-    "Q2": (0, 19, 90), "R3": (0, 14, 90),
-    # vänster kant
-    "R2": (-24, 18, 90), "F1": (-24, 10, 90), "Q1": (-24, 3, 0), "D1": (-24, -4, 90),
-    "R1": (-24, -11, 90), "C2": (-24, -18, 0),
-    # P4-kantkontakt höger (flippas till baksidan efter routning)
-    "J1": (24, 15, 0),
-    # kamerafäste H8-H11 (B0332 28×28 om lins (0,-6))
+    # NFET-driver i centrum-toppen (kort gate till emittrarna)
+    "Q2": (4, 19, 90), "R3": (4, 14, 90),
+    # Rset + bulk nära emittrarna (höger-topp) — kort pulsslinga C2→R2→D3→…→Q2
+    "R2": (24, 23, 90), "C2": (24, 16, 0),
+    # inmatningsskydd på HÖGERkanten (frigör vänsterkanten för P4 + J1)
+    "F1": (24, 9, 90), "Q1": (24, 3, 0), "D1": (24, -3, 90), "R1": (24, -9, 90), "C1": (24, -15, 0),
+    # batteri-in höger (kabelåtkomst, ej under P4) — indragen så paddarna ryms innanför kanten
+    "J2": (21.5, -22, 90),
+    # J1 = P4-kantkontakt på VÄNSTERKANTEN (P4:ans yttre signalrad, x≈-25.3).
+    # OBS: 1x13-footprintens origo = pin1, paddarna går NEDÅT 30.48 mm; pos=topp-pinnen
+    # vid y=11.5 ⇒ raden spänner y[-19,11.5] (inom P4:ans pinfält, fri från H5/H7).
+    "J1": (-25.3, 11.5, 0),
+    # kamerafäste H8-H11 (B0332 28×28 om lins (0,-6)); B4B-ZR-kontakt riktad +x (höger)
     "H8": (-14, 8, 0), "H9": (14, 8, 0), "H10": (-14, -20, 0), "H11": (14, -20, 0),
-    # nederkant (uppflyttat till y-26 för att lämna plats åt P4-standoff vid y-32.5)
-    "J2": (-24, -26, 90), "C1": (-15, -26, 0), "C3": (-10, -26, 90), "U1": (-5, -26, 0),
-    "C4": (1, -26, 90), "C5": (6, -26, 0), "J3": (18, -26, 90),
-    # kort-monteringshål (hörn) + centrum + 3 P4-standoff (M2.5, 15mm)
-    "H1": (-24, 34, 0), "H2": (24, 34, 0), "H3": (-22, -34, 0),
+    # IMU + avkoppling botten-centrum (höger om P4-zonen, x>-5.5)
+    "U1": (2, -28, 0), "C3": (-3, -29, 90), "C4": (7, -29, 0), "C5": (11, -28, 90),
+    # trigger-in höger-botten
+    "J3": (17, -31, 90),
+    # kort-monteringshål: centrum + hörn (vänster topp-hörn vid P4-änden) + 3 P4-standoff
+    "H1": (24, 34, 0), "H2": (-24, 34, 0), "H3": (10, -34, 0),
     "H4": (0, 28, 0),                                   # centrum-kort-hål (mellan linserna)
-    "H5": (12.5, 32.5, 0), "H6": (-2.5, -32.5, 0), "H7": (12.5, -32.5, 0),  # 3 P4-standoff
+    # 3 P4-standoff synkade mot P4:ans hål (vänsterläge, centrum x=-16):
+    "H5": (-25.15, -34.06, 0), "H6": (-6.85, -34.06, 0), "H7": (-6.85, 19.73, 0),
 }
 
 weapon_pos = {
