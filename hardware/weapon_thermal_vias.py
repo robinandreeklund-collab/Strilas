@@ -9,7 +9,7 @@ import pcbnew
 PCB = "hardware/weapon-module.kicad_pcb"
 OX, OY = 150.0, 120.0
 MM = pcbnew.FromMM
-EMIT = [(-9.0, 22.0, "LED_MID"), (9.0, 22.0, "LED_CATH")]   # emitter-centrum + katod-nät
+EMIT = [(-12.0, 28.0, "LED_MID"), (12.0, 28.0, "LED_CATH")]   # emitter-centrum + katod-nät
 
 
 def main():

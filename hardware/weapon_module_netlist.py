@@ -45,10 +45,18 @@ IMU = mk("ICM-45686", "U", [(i, i) for i in range(1, 15)],
 MH = lambda n: mk(f"MH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", "M2.5")
 # kamera-monteringshål (M2) — matchar Arducam B0332 28×28 mm-mönster
 CMH = lambda n: mk(f"CMH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2_kamera")
+# kollimator-hållarben (Ø1.6) runt varje emitter (generiskt 20 mm TIR-hållarmönster, 3 ben/lins)
+CLEG = lambda n: mk(f"CLEG{n}", "H", [(1, "1")], "MountingHole:MountingHole_2mm", "lens_ben")
+# P4-standoffs (M2) — fäster ESP32-P4-WIFI6 (71×21) bakom kortet
+PSTD = lambda n: mk(f"PSTD{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2_P4")
+# trigger-in (extern kabel via pipan)
+TRIGC = mk("TRIGGER", "J", [(1, "SIG"), (2, "GND")],
+           "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical", "trigger-in")
 
 # ---------- nät ----------
 VBAT_IN, VBAT_F, VBAT, GND, P3V3 = Net("VBAT_IN"), Net("VBAT_F"), Net("VBAT"), Net("GND"), Net("+3V3")
 IR_MOD, SCK, MOSI, MISO, nCS, INT = (Net(n) for n in ("IR_MOD", "SCK", "MOSI", "MISO", "nCS", "IMU_INT"))
+TRIG = Net("TRIG")
 STR1, LEDC, IRG = Net("LED_MID"), Net("LED_CATH"), Net("Q1_GATE")
 
 # ---------- instansiera ----------
@@ -63,13 +71,17 @@ U2 = IMU(); Cd1 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric")
 Cd2 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric"); Cd3 = CAP("1uF")
 H1, H2, H3 = MH(1)(), MH(2)(), MH(3)()
 H4, H5, H6, H7 = CMH(4)(), CMH(5)(), CMH(6)(), CMH(7)()   # kamerafäste (B0332)
+CL = [CLEG(i)() for i in range(1, 7)]                      # 6 kollimatorben (3/lins)
+HP = [PSTD(i)() for i in range(1, 5)]                      # 4 P4-standoffs
+J3 = TRIGC()                                               # trigger-in
 
 # ---------- J2 = batteri-in (2S) ; J1 = P4-carrier-header ----------
 J2["VBAT"] += VBAT_IN; J2["GND"] += GND
 # J1 till P4: VSYS(=VBAT) ut till P4, 3V3 in från P4, signaler till P4-GPIO
 J1[1] += VBAT; J1[2] += P3V3; J1[3] += GND; J1[4] += IR_MOD       # VSYS / 3V3 / GND / IR_MOD(GPIO20)
 J1[5] += SCK; J1[6] += MOSI; J1[7] += MISO; J1[8] += nCS          # SPI (GPIO22/23/26/27)
-J1[9] += INT; J1[10] += GND; J1[11] += GND; J1[12] += GND         # INT(GPIO32) + GND
+J1[9] += INT; J1[10] += TRIG; J1[11] += GND; J1[12] += GND        # INT(GPIO32) / TRIG(GPIO21) / GND
+J3["SIG"] += TRIG; J3["GND"] += GND                               # trigger-in (extern kabel)
 
 # ---------- kraftinmatning + skydd ----------
 F1[1] += VBAT_IN; F1[2] += VBAT_F                 # PTC-säkring
@@ -92,7 +104,7 @@ U2[13] += SCK; U2[14] += MOSI; U2[1] += MISO; U2[12] += nCS; U2[4] += INT
 Cd1[1] += P3V3; Cd1[2] += GND; Cd2[1] += P3V3; Cd2[2] += GND; Cd3[1] += P3V3; Cd3[2] += GND
 
 # ---------- mekanik (hål till GND) ----------
-for H in (H1, H2, H3, H4, H5, H6, H7):
+for H in (H1, H2, H3, H4, H5, H6, H7, *CL, *HP):
     H[1] += GND
 
 generate_netlist(file_="hardware/weapon-module.net")

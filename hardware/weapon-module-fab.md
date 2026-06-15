@@ -64,14 +64,14 @@ GND     : U1.GND(6) + allt retur + monteringshål   (IMU RESV 2,3,7,9,10,11 = NC
 - **Termiska vias** under LED-paddarna till baksidans koppar (pulsad effekt).
 - **EMI:** håll IR-driverns switchande nod borta från IMU-SPI-spåren.
 - DRC: 6/6 mil spår/gap (JLCPCB std), via 0.3/0.6 mm.
-- Kort **Ø42×62 mm**; placering enligt [`weapon_emitter_layout.py`](weapon_emitter_layout.py)
+- Kort **52×80 mm** (stackad box: P4 bakom); placering enligt [`weapon_emitter_layout.py`](weapon_emitter_layout.py)
   (kamera i mitten, 2 emittrar ovan, IMU + driver i sidoremsorna, J1 nedtill).
 
 ## Status: FÄRDIGROUTAD — Gerbers klara
 
 Hela kedjan (placering → routning → kopparplan → Gerbers) kördes autonomt i container; se
 [`weapon-module-routed.md`](weapon-module-routed.md) för stegen och egenkontrollen.
-**24 komponenter, 176 spår + 25 vior, 0 oroutade, 0 clearance-brott @ 0,2 mm.** Färdiga filer:
+**35 komponenter, 166 spår + 22 vior, 0 oroutade, 0 clearance-brott @ 0,2 mm.** Färdiga filer:
 
 - **`weapon-module-gerbers.zip`** → ladda upp direkt till JLCPCB/PCBWay (4-lager, 1,6 mm).
 - **`weapon-module.kicad_pcb`** → öppna i KiCad för granskning / GUI-DRC.

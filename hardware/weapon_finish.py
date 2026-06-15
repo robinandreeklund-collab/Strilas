@@ -33,7 +33,7 @@ def main():
         z.SetMinThickness(MM(0.2))
         z.SetIsFilled(False)
         ch = pcbnew.SHAPE_LINE_CHAIN()
-        for x, y in [(-20.7, -30.7), (20.7, -30.7), (20.7, 30.7), (-20.7, 30.7)]:
+        for x, y in [(-25.7, -39.7), (25.7, -39.7), (25.7, 39.7), (-25.7, 39.7)]:
             ch.Append(V(x, y))
         ch.SetClosed(True)
         z.AddPolygon(ch)

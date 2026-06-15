@@ -23,11 +23,11 @@ def draw(ax, side):
     sgn = 1 if front else -1   # spegelvänd baksidan i X
     def X(x): return sgn*x
     # board (rundad grön platta)
-    board = FancyBboxPatch((-21, -31), 42, 62, boxstyle="round,pad=0,rounding_size=2.5",
+    board = FancyBboxPatch((-26, -40), 52, 80, boxstyle="round,pad=0,rounding_size=2.5",
                            fc=MASK, ec=EDGE, lw=2, zorder=1)
     ax.add_patch(board)
     # svag plan-textur (mörkare grön fält)
-    ax.add_patch(Rectangle((-20.7, -30.7), 41.4, 61.4, fc=MASK_D, ec="none", alpha=0.35, zorder=1.1))
+    ax.add_patch(Rectangle((-25.7, -39.7), 51.4, 79.4, fc=MASK_D, ec="none", alpha=0.35, zorder=1.1))
     # spår (koppar, syns svagt under mask)
     for t in b.GetTracks():
         if t.Type() == pcbnew.PCB_TRACE_T and t.GetLayer() == cu_layer:
@@ -61,9 +61,9 @@ def draw(ax, side):
             c = P(d.GetCenter()); r = (d.GetEnd().x-d.GetStart().x)/1e6
             ax.add_patch(Circle((X(c[0]), c[1]), abs(r), fill=False, ec=SILK, lw=0.6, zorder=5))
     # lins-urtag (genomgående hål)
-    ax.add_patch(Circle((0, 4), 8, fc="#0a0a0a", ec="#d9d9d9", lw=1.0, zorder=7))
-    ax.text(0, 4, "Ø16\nlins", fontsize=6, ha="center", va="center", color="#d9d9d9", zorder=8)
-    ax.set_aspect("equal"); ax.set_xlim(-24, 24); ax.set_ylim(-34, 34)
+    ax.add_patch(Circle((0, 2), 8, fc="#0a0a0a", ec="#d9d9d9", lw=1.0, zorder=7))
+    ax.text(0, 2, "Ø16\nlins", fontsize=6, ha="center", va="center", color="#d9d9d9", zorder=8)
+    ax.set_aspect("equal"); ax.set_xlim(-29, 29); ax.set_ylim(-43, 43)
     ax.axis("off")
     ax.set_title(("FRAM (F.Cu — emitter-driver, IMU, headers)" if front
                   else "BAK (B.Cu — GND-plan, termiska vior)"), fontsize=9, color="#222")
@@ -71,7 +71,7 @@ def draw(ax, side):
 
 fig, (a1, a2) = plt.subplots(1, 2, figsize=(11, 9), facecolor="white")
 draw(a1, "F"); draw(a2, "B")
-fig.suptitle("STRILAS vapen-optikmodul  •  42 × 62 mm, 4-lager  •  940 nm-emitter + OV9281-lins (Ø16) + ICM-45686",
+fig.suptitle("STRILAS vapen-optikmodul  •  52 × 80 mm (stackad box: P4 bakom), 4-lager  •  940 nm-emitter + OV9281-lins (Ø16) + ICM-45686",
              fontsize=11, weight="bold")
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 plt.savefig("hardware/weapon-module-render.png", dpi=170, facecolor="white")

@@ -31,15 +31,16 @@ render_weapon.py           → weapon-module-routed.png
 
 ## Routnings-status — KOMPLETT
 
-- **24 komponenter, alla med riktiga footprints** (inga platshållare kvar).
-- **176 spårsegment + 25 vior** (varav 8 termiska under emittrarna), 4 lager.
+- **35 komponenter (52×80 mm box), alla med riktiga footprints** (inga platshållare kvar).
+- **166 spårsegment + 22 vior** (varav 8 termiska under emittrarna), 4 lager.
 - **0 oroutade förbindelser** — hela nätet draget inkl. 0,5 mm-pitch-IMU:ns SPI-escape.
 - **Effektnät 0,4 mm** (VBAT/VBAT_F/N$2/LED_MID/LED_CATH), signal 0,2 mm.
 - **Kopparplan:** In1.Cu = GND, In2.Cu = VBAT (effekt), B.Cu = GND-retur, F.Cu = GND-fyll.
 - **Termiska vior** (4 per emitter) i katod-padden → baksidans koppar.
 - **Ø16 lins-urtag** i mitten hålls fritt från koppar (min 1,6 mm marginal).
 - **Kamerafäste H4–H7** (M2, B0332 28×28-mönster) runt linsaxeln; kameran skruvas bakom kortet.
-- **P4** ansluts via **J1 (2×6)** + kort kabel (P4-kortet 71×21 mm sitter i vapenkroppen, ej bakom kameran).
+- **P4 (71×21) stackad BAKOM kortet** på 4 standoffs (H14–H17); ansluts via **J1 (2×6) + kort flex** till P4:ans högra kantrad (alla signaler ligger där). Flex pga kamerans 13 mm djup.
+- **2× Ø20 IR-kollimatorer** (H8–H13, 3 ben/lins) över emittrarna; **trigger-in (J3)** + **batteri (J2)** för externa kablar via pipan.
 
 ## Egenkontroll (kört i container, geometriskt)
 
