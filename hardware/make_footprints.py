@@ -132,8 +132,9 @@ def make_oslon():
                      "land E062.3010.91-06; pad1=A(anod, botten), pad2=K(katod, topp+central termisk)")
     # OSLON Black land (E062.3010.91-06), router-vänlig: 1 anod-padd (botten) +
     # 1 sammanslagen katod-/termisk-padd (övre 2/3). Elektriskt = datablad.
-    s += pad(1, 0.0, -0.95, 2.3, 0.75, rr=0.12)   # anod (botten)
-    s += pad(2, 0.0,  0.45, 2.3, 1.65, rr=0.12)   # katod + termisk (topp+mitt sammanslagna)
+    # gap anod↔katod = 0.45 mm (≥ clearance) så routning till en padd ej krockar med den andra
+    s += pad(1, 0.0, -1.05, 2.3, 0.70, rr=0.12)   # anod (botten)
+    s += pad(2, 0.0,  0.575, 2.3, 1.45, rr=0.12)  # katod + termisk (topp+mitt sammanslagna)
     s += rect("F.Fab", 1.875, 1.875, 0.1)       # kropp 3.75x3.75
     s += circle(0, 0, 1.5, "F.Fab", 0.1)        # rund lins
     s += line(-1.9, 1.4, -1.4, 1.4, "F.SilkS", 0.15)   # katodstreck (topp)

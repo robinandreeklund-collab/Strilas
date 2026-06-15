@@ -1,43 +1,45 @@
 #!/usr/bin/env python3
-"""De 2 emitter-näten Freerouting inte når (3-padds OSLON-anoder inringade av lins/
-kamerahål/ben): N$2 (Rset→D2-anod) och LED_MID (D2-katod→D3-anod). Dras explicit på
-F.Cu genom fria kanaler. Anod = nedre padd (nås underifrån), katod = övre.
-Körs efter ses_apply, FÖRE finish."""
+"""Brygga de 2 emitter-nät Freerouting inte når (D2 inringad): N$2 (Rset→D2-anod) och
+LED_MID (D2-katod→D3-anod). Via direkt på respektive padd → B.Cu genom de FRIA marginalerna
+(topp y>=25 / vänsterkant x<=-16) där inga signaler routats. Körs efter ses_apply, FÖRE finish
+(så GND-planet rensar runt). Per-nät paddsökning (robust mot pad-numrering)."""
 import pcbnew
-
 PCB = "hardware/weapon-module.kicad_pcb"
-OX, OY = 150.0, 120.0
 MM = pcbnew.FromMM
 
 
-def V(x, y): return pcbnew.VECTOR2I(MM(OX + x), MM(OY - y))
+def V(x, y): return pcbnew.VECTOR2I(MM(150 + x), MM(120 - y))
 
 
 def main():
     b = pcbnew.LoadBoard(PCB)
-    def padpos(ref, name, pick):
-        cs = [p.GetPosition() for f in b.GetFootprints() if f.GetReference() == ref
-              for p in f.Pads() if p.GetName() == name]
-        cs.sort(key=lambda v: v.y)            # störst .y = lägst i kort → 'lo'(anod)
-        return cs[-1] if pick == "lo" else cs[0]
-    def track(pts, net, w=0.4):
-        n = b.FindNet(net).GetNetCode()
-        for i in range(len(pts) - 1):
-            t = pcbnew.PCB_TRACK(b); t.SetStart(pts[i]); t.SetEnd(pts[i+1])
-            t.SetWidth(MM(w)); t.SetLayer(pcbnew.F_Cu); t.SetNetCode(n); b.Add(t)
-
-    r2 = padpos("R2", "2", "lo"); d2a = padpos("D2", "1", "lo")
-    d2k = padpos("D2", "2", "hi"); d3a = padpos("D3", "1", "lo")
-    # N$2: R2.2 → upp längs vänster → D2-anod underifrån
-    track([r2, V(-12, 14), d2a], "N$2")
-    # LED_MID: D2-katod → upp/över (y26, under kollimatorerna) → höger → D3-anod från höger
-    track([d2k, V(-12, 26), V(20, 26), V(20, 22), d3a], "LED_MID")
-
+    def pads(net):
+        nc = b.FindNet(net).GetNetCode()
+        return nc, [p.GetPosition() for f in b.GetFootprints() for p in f.Pads() if p.GetNetCode() == nc]
+    def via(p, nc):
+        v = pcbnew.PCB_VIA(b); v.SetPosition(p); v.SetWidth(MM(0.6)); v.SetDrill(MM(0.3))
+        v.SetLayerPair(pcbnew.F_Cu, pcbnew.B_Cu); v.SetNetCode(nc); b.Add(v)
+    def btrk(a, c, nc, w=0.4):
+        t = pcbnew.PCB_TRACK(b); t.SetStart(a); t.SetEnd(c)
+        t.SetWidth(MM(w)); t.SetLayer(pcbnew.B_Cu); t.SetNetCode(nc); b.Add(t)
+    def bridge(net, wps):
+        nc, pl = pads(net)
+        pl.sort(key=lambda p: p.x)
+        a, c = pl[0], pl[-1]
+        via(a, nc); via(c, nc)
+        chain = [a] + [V(*w) for w in wps] + [c]
+        for i in range(len(chain) - 1):
+            btrk(chain[i], chain[i + 1], nc)
+        print(f"  {net}: bryggad ({len(pl)} paddar)")
+    # LED_MID: D2-katod ↔ D3-anod via toppen (y=26, fri baksida ovan emittrarna)
+    bridge("LED_MID", [(-12, 26), (12, 26)])
+    # N$2: Rset ↔ D2-anod via vänsterkanten (x=-16, fri)
+    bridge("N$2", [(-16, 17), (-16, 22)])
     pcbnew.SaveBoard(PCB, b)
     b.BuildConnectivity()
     try: un = b.GetConnectivity().GetUnconnectedCount(True)
     except TypeError: un = b.GetConnectivity().GetUnconnectedCount()
-    print(f"  2 emitter-spår (F.Cu) tillagda; oroutade = {un}")
+    print(f"  oroutade = {un}")
 
 
 if __name__ == "__main__":

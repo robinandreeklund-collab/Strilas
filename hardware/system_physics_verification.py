@@ -132,9 +132,9 @@ print(f"@60 fps drift ≪ krav → {PASS(imu_ok)} (bekräftar: 1 IMU räcker; ar
 # ============================================================ 5. IR-SKOTT LÄNKBUDGET
 print("\n--- 5. IR-SKOTT → TSOP @150 m (940 nm, dagsljus + bandpass) ---")
 def omega(h): return 2*np.pi*(1-np.cos(np.radians(h)))
-# Emitter = Vishay VSMA1094750X02 (940 nm). Φe≈1.68 W/A nominellt; vi räknar
-# KONSERVATIVT med 1.08 W/A → verklig räckvidd/marginal ligger ÖVER det som visas.
-PHI_A, LENS_EFF, NEMIT = 1.08, 0.80, 2
+# Emitter = OSRAM OSLON Black SFH 4725S (940 nm, 980 mW @ 1 A → 0.98 W/A).
+# Optik = Carclo 10003 (Ø20 NARROW spot TIR, matchad för SFH 4725S).
+PHI_A, LENS_EFF, NEMIT = 0.98, 0.80, 2
 def Ie_shot(I, half): return LENS_EFF*PHI_A*I*max(1-0.05*(I-1),0.8)/omega(half)*NEMIT
 EMIN = 0.35e-3*30/4    # TSOP-tröskel: ideal × sol(30) ÷ bandpass(4)
 def maxrange(I, half): return np.sqrt(Ie_shot(I,half)/EMIN)

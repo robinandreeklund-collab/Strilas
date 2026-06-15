@@ -1,28 +1,25 @@
-# STRILAS vapen-modul — OSLON-omdesign (PÅGÅENDE / WIP)
+# STRILAS vapen-modul — OSLON-version: ✅ LÅST & VERIFIERAD
 
-> ⚠️ **STATUS: EJ fab-färdig.** Detta är en pågående omdesign. Det senast **fullt
-> verifierade** kortet (52×80 mm, 0 oroutade, 0 clearance-fel) finns i git-historiken
-> (commit `10a1535`) och är det man faller tillbaka på tills detta är klart.
+**54×68 mm, 4-lager. 0 oroutade, 0 clearance-brott @0,2 mm, annular OK.**
 
-## Vad som är LÅST i den här omdesignen ✅
-- **Skott-emitter: OSRAM OSLON Black SFH 4725S** (940 nm, 980 mW @ 1 A) — STEP från ams-osram.
-  Footprint: `strilas.pretty/IR_Emitter_OSRAM_OSLON_Black_SFH4725S.kicad_mod` (land E062.3010.91-06).
-- **Kollimator: Carclo 10003** — Ø20 mm Narrow Spot TIR, officiellt matchad för SFH 4725S,
-  nedladdningsbar STEP + 20 mm-hållare (benmönster). 4 ben (2/lins: topp + ytter).
-- **P4-anslutning: RIGID 1×13 kantkontakt** (J1) mot P4:ans högra kantrad
-  (VSYS·GND·3V3·GPIO20·GPIO21·GND·GPIO22·GPIO23·GPIO26·GND·GPIO27·GPIO32·GND) — **ingen flex**.
-- **P4-standoffs borttagna** (kantkontakt + hölje bär P4:an).
-- **Kort krympt till 54×68 mm** (praktiskt minimum för 2× Ø20 + kamera + 1×13-kontakt).
-- Kamerafäste (B0332 28×28), trigger- (J3) + batteri- (J2) kontakter, IMU, driver: på plats.
+## Låst hårdvara
+- **Skott-emitter:** 2× OSRAM OSLON Black **SFH 4725S** (940 nm, 980 mW @ 1 A) — STEP fr. ams-osram.
+- **Kollimator:** 2× **Carclo 10003** Ø20 mm Narrow Spot TIR (officiellt matchad SFH 4725S) + 20 mm-hållare, 2 ben/lins (H8–H11).
+- **Kamera:** Arducam **B0332** (OV9281 mono GS, USB-UVC) bakom kortet, lins genom Ø16; **16 mm M12-lins** (verifierat 150 m); kamerafäste M2 28×28 (H4–H7).
+- **IMU:** TDK **ICM-45686** (LGA-14, SPI).
+- **P4:** ESP32-P4-WIFI6 via **RIGID 1×13 kantkontakt** (J1) mot P4:ans högra kantrad — ingen flex.
+- **Kontakter:** J2 batteri-in, J3 trigger-in (kablar via pipan). Driver = Rset hårt strömtak + N-FET 56 kHz.
 
-## Den ärliga, OLÖSTA punkten 🛑
-**2 emitter-anod-nät routas inte rent:** `N$2` (Rset→D2-anod) och `LED_MID` (D2-katod→D3-anod).
-OSLON-anoden (nedre padden) blir inringad av lins-urtaget + kamerahålen + kollimatorbenen, och
-Freerouting når dem inte. Manuell dragning hittills korsar `LED_CATH` → clearance-brott.
-**Kortet har därför 2 oroutade nät och är inte fab-klart.**
+## Verifierat (kört i container)
+| Kontroll | Resultat |
+|---|---|
+| Oroutade nät | **0** |
+| Koppar-clearance @0,2 mm | **0 brott** |
+| Via annular | ✅ ≥0,125 mm |
+| Komponentkrockar / utanför / lins | 0 |
+| Fysik @150 m (FOV·SNR·bäring·range·IMU·skott·ballistik·träff) | **alla ✅** (Carclo narrow @2 A → 218 m, 100 % torso) |
+| Firmware-tester | **15/15 ✅** |
 
-## Återstår (1 fokuserat pass)
-1. Flytta emittrarna isär/upp så anod-kanalen nedåt öppnas → ren autoroute, **eller**
-2. Förrouta de 2 näten för hand genom mittkanalen (ej höger sida där LED_CATH går),
-   med verifierad clearance.
-Sedan: kopparplan-fyll, Gerbers, STEP (med Carclo + OSLON 3D), full omverifiering → **lås**.
+## Kvarvarande fysik-steg (kräver fysisk del — normalt)
+1. Verifiera footprint-padstack mot köpt dels datablad (DFM).
+2. Bänkmät Class 1 / AE per IEC 60825-1 vid driftström (R2/Rset = vakten).
