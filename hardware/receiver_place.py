@@ -166,6 +166,19 @@ weapon_pos = {
     "H1": (-18, 28, 0), "H2": (18, 28, 0),
 }
 
+# ---- fire-control breakout (50×40, matar P4 edge A) ----
+# J1 = 1x12 stel kantkontakt mot edge A (vänster). Fan-out JST-PH:
+#   topp (öppning upp): 3V3-mata (J2), NFC (J8), recoil (J7)
+#   botten (öppning ned): trigger (J3), rack (J4), mag-release (J5), magwell (J6)
+#   centrum: I²C-pullups (R1/R2) + 3V3-avkoppling (C1/C2)
+firecontrol_pos = {
+    "J1": (-22, 14, 0),                                   # P4 edge-A mate (1x12, vertikal: pin1 topp → ned)
+    "J2": (-14, 10, 180), "J8": (0, 10, 180), "J7": (14, 10, 180),
+    "J3": (-12, -10, 0), "J4": (-3, -10, 0), "J5": (6, -10, 0), "J6": (15, -10, 0),
+    "R1": (-7, 2, 0), "R2": (-7, -2, 0), "C1": (3, 2, 0), "C2": (3, -2, 0),
+    "H1": (22, 18, 0), "H2": (22, -18, 0), "H3": (-22, 19, 0),
+}
+
 BOARDS = {
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
                           vest_pos, ("rect", 29, 21), layers=2, free=(-24, 24, -18, 0)),
@@ -174,6 +187,9 @@ BOARDS = {
     # vapnet: alla delar placeras explicit -> tom fri-zon (säker, ingen krock med lins)
     "weapon": lambda: place("hardware/weapon-module.net", "hardware/weapon-module.kicad_pcb",
                             weapon_box, ("rect", 27, 37), layers=4, free=(26, 27, 36, 37), cutout=(0, -6, 8)),
+    # fire-control breakout: matar P4 edge A stelt (1x12), fan-out till greppets I/O
+    "firecontrol": lambda: place("hardware/firecontrol.net", "hardware/firecontrol.kicad_pcb",
+                                 firecontrol_pos, ("rect", 25, 21), layers=2, free=(23, 24, 20, 21)),
 }
 
 if __name__ == "__main__":
