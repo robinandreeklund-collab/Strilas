@@ -111,18 +111,24 @@ helmet_pos.update({"J2": (0, 0, 0), "J1": (0, -44, 0)})
 # Kamerafäste (B0332 38×38): 4× M2-hål i 28×28-mönster runt linsaxeln (0,-4).
 #   H4(-14,10) H5(14,10) H6(-14,-18) H7(14,-18). Komponenter flyttade ut till kanterna
 #   så dessa hål + standoffs är fria. Kameran skruvas fast bakom kortet, lins genom Ø16.
-weapon_box = {   # 54×68 mm box (praktiskt minimum): 2× Ø20 + kamera fram, RIGID 1×13 P4-kantkontakt nedtill
-    "D2": (-12, 23, 0), "D3": (12, 23, 180),  # D3 flippad: anod upptill → kort LED_MID-länk
-    "H8": (-12, 31.5, 0), "H9": (-19.4, 18.25, 0),    # D2: topp + ytter-vänster
-    "H10": (12, 31.5, 0), "H11": (19.4, 18.25, 0),    # D3: topp + ytter-höger
-    "R2": (-12, 17, 90),  # Rset under D2-anoden (kort N$2)
-    "Q2": (24, 14, 0), "R3": (24, 7, 90), "C1": (24, 0, 0),
-    "U1": (24, -9, 0), "C3": (19, -9, 90), "C4": (24, -15, 0), "C5": (24, -21, 0),
-    "F1": (-24, 14, 90), "Q1": (-24, 7, 0), "D1": (-24, 0, 90), "R1": (-24, -8, 90),
-    "C2": (-24, -15, 0),
+weapon_box = {   # 54×68 mm: 2× Ø20-lins+kamera fram; INGET under linserna; P4 längs höger 68 mm-kant
+    "D2": (-12, 23, 0), "D3": (12, 23, 180),
+    # 3 ben/lins (Carclo 10003-hållare): topp + ytter + inner
+    "H8": (-12, 31.5, 0), "H9": (-19.4, 18.75, 0), "H10": (-4.6, 18.75, 0),
+    "H11": (12, 31.5, 0), "H12": (4.6, 18.75, 0), "H13": (19.4, 18.75, 0),
+    # driver i CENTRUM-gapet mellan linserna (fritt från Ø20): N-FET + gate-R
+    "Q2": (0, 19, 90), "R3": (0, 14, 90),
+    # vänster kant (fritt från linsernas x=-22): Rset + inmatningsskydd
+    "R2": (-24, 18, 90), "F1": (-24, 10, 90), "Q1": (-24, 3, 0), "D1": (-24, -4, 90),
+    "R1": (-24, -11, 90), "C2": (-24, -18, 0),
+    # höger kant: RIGID P4-kantkontakt (1×13, längs 68 mm)
+    "J1": (24, 15, 0),
+    # kamerafäste (B0332 28×28 om lins (0,-6))
     "H4": (-14, 8, 0), "H5": (14, 8, 0), "H6": (-14, -20, 0), "H7": (14, -20, 0),
-    "J1": (-15, -29, 90), "J2": (-23, -23, 90), "J3": (23, -23, 90),  # J1 = P4-kantkontakt (THT)
-    "H1": (-24, 31, 0), "H2": (24, 31, 0), "H3": (-24, -30, 0),
+    # nederkant: ingångskond + IMU-kluster + batteri/trigger
+    "C1": (-17, -30, 0), "U1": (-8, -30, 0), "C3": (-2, -31, 90), "C4": (3, -31, 90), "C5": (9, -30, 0),
+    "J2": (-24, -25, 90), "J3": (16, -30, 90),
+    "H1": (-24, 31, 0), "H2": (24, 31, 0), "H3": (24, -22, 0),
 }
 
 weapon_pos = {

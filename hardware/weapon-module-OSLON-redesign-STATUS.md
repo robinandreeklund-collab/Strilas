@@ -20,7 +20,13 @@
 | Fysik @150 m (FOV·SNR·bäring·range·IMU·skott·ballistik·träff) | **alla ✅** (Carclo narrow @2 A → 218 m, 100 % torso) |
 | Firmware-tester | **15/15 ✅** |
 
-## Granskningsfixar (3D-genomgång)
+## Granskningsfixar (3D-genomgång, omgång 2)
+- **3 ben/lins** (Carclo 10003-hållare): D2 H8/H9/H10, D3 H11/H12/H13 (topp+ytter+inner).
+- **Inget under Ø20-linserna:** Rset flyttad till vänsterkant, N-FET+gate-R i centrum-gapet mellan linserna.
+- **P4-kontakt (J1) längs HÖGER 68 mm-kant** → P4:s 71 mm aligns med 68 mm = bara 3 mm överflöd (ej 17 mm).
+- **Kamera-standoffs** (Würth M2 10 mm 3D) på H4–H7.
+
+## Tidigare granskningsfixar
 - **Kollimatorben:** nu 2 symmetriska ben PER lins (D2: H8/H9, D3: H10/H11) — tidigare satt 3 ben fel runt D2 + 1 på D3.
 - **Kamera-standoffs:** H4–H7 (M2, 28×28 om linsen) har nu 3D-standoff-modeller (Würth WA-SMSI 10 mm) → syns i STEP. Kameran (B0332) skruvas bakom på dessa.
 - **P4-kantkontakt (J1, 1×13 THT):** ligger som vertikal header (KiCad:s flip-till-baksida segfaultar i denna headless-build). Det är en genomgående header — montera den som baksides-/vinkelvariant i GUI:t för P4 bakom; routning/pad-läge är identiskt.

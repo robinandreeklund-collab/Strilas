@@ -72,7 +72,7 @@ U2 = IMU(); Cd1 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric")
 Cd2 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric"); Cd3 = CAP("1uF")
 H1, H2, H3 = MH(1)(), MH(2)(), MH(3)()
 H4, H5, H6, H7 = CMH(4)(), CMH(5)(), CMH(6)(), CMH(7)()   # kamerafäste (B0332)
-CL = [CLEG(i)() for i in range(1, 5)]                      # 4 kollimatorben (2/lins: topp+ytter)
+CL = [CLEG(i)() for i in range(1, 7)]                      # 6 kollimatorben (3/lins: topp+ytter+inner)
 J3 = TRIGC()                                               # trigger-in
 
 # ---------- J2 = batteri-in (2S) ; J1 = P4-carrier-header ----------
