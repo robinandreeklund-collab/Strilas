@@ -1,0 +1,47 @@
+Kort,Referenser,Antal,Värde,Footprint,Typ
+Optik (weapon-module),R1,1,100k,Resistor_SMD:R_0805_2012Metric,elektrisk
+Optik (weapon-module),"C3,C4",2,100nF,Capacitor_SMD:C_0402_1005Metric,elektrisk
+Optik (weapon-module),C2,1,100uF,Capacitor_SMD:C_1210_3225Metric,elektrisk
+Optik (weapon-module),C1,1,10uF,Capacitor_SMD:C_1206_3216Metric,elektrisk
+Optik (weapon-module),C5,1,1uF,Capacitor_SMD:C_0805_2012Metric,elektrisk
+Optik (weapon-module),R3,1,220R,Resistor_SMD:R_0805_2012Metric,elektrisk
+Optik (weapon-module),J2,1,2S batteri (JST-XH),Connector_JST:JST_XH_S2B-XH-A_1x02_P2.50mm_Horizontal,elektrisk
+Optik (weapon-module),R2,1,3R3_2W,Resistor_SMD:R_2512_6332Metric,elektrisk
+Optik (weapon-module),Q2,1,AO3400,Package_TO_SOT_SMD:SOT-23,elektrisk
+Optik (weapon-module),Q1,1,AO3401,Package_TO_SOT_SMD:SOT-23,elektrisk
+Optik (weapon-module),U1,1,ICM-45686,strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx,elektrisk
+Optik (weapon-module),J1,1,P4-socket (edge B),Connector_PinSocket_2.54mm:PinSocket_1x14_P2.54mm_Vertical,elektrisk
+Optik (weapon-module),F1,1,PTC_1A,Fuse:Fuse_1206_3216Metric,elektrisk
+Optik (weapon-module),"D2,D3",2,SFH4725S_940nm,strilas:IR_Emitter_OSRAM_OSLON_Black_SFH4725S,elektrisk
+Optik (weapon-module),D1,1,SMBJ12A,Diode_SMD:D_SMB,elektrisk
+Optik (weapon-module),"H12,H13,H14,H15,H16,H17,H18,H19",8,Carclo10734-ben_Ø2.1,MountingHole:MountingHole_2.1mm,mekanik
+Optik (weapon-module),"H1,H2,H20,H3,H4,H5,H6,H7",8,M2.5,MountingHole:MountingHole_2.5mm,mekanik
+Optik (weapon-module),"H10,H11,H8,H9",4,M2_kamera,MountingHole:MountingHole_2.2mm_M2,mekanik
+Fire-control,"C1,C3,C4,C5,C6",5,100nF,Capacitor_SMD:C_0402_1005Metric,elektrisk
+Fire-control,C2,1,1uF,Capacitor_SMD:C_0402_1005Metric,elektrisk
+Fire-control,"R1,R2",2,4k7,Resistor_SMD:R_0805_2012Metric,elektrisk
+Fire-control,"U1,U2",2,ICM-45686,strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx,elektrisk
+Fire-control,J6,1,MAGWELL_SW,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,elektrisk
+Fire-control,J5,1,MAG_REL_SW,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,elektrisk
+Fire-control,J8,1,NFC PN532 (I²C),Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical,elektrisk
+Fire-control,J1,1,P4-socket (edge A),Connector_PinSocket_2.54mm:PinSocket_1x12_P2.54mm_Vertical,elektrisk
+Fire-control,J4,1,RACK_SW,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,elektrisk
+Fire-control,J3,1,TRIGGER,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,elektrisk
+Fire-control,J2,1,edge-B kraft-tapp 3V3+GND,Connector_PinSocket_2.54mm:PinSocket_1x03_P2.54mm_Vertical,elektrisk
+Fire-control,J7,1,recoil-styrning,Connector_JST:JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical,elektrisk
+Fire-control,"H1,H2,H3,H4",4,M2,MountingHole:MountingHole_2.2mm_M2,mekanik
+P4-carrier (lödbara headers på Waveshare-modulen),J_CAM,1,PinHeader_1x04_P2.54mm_Vertical,PinHeader_1x04_P2.54mm_Vertical,elektrisk
+P4-carrier (lödbara headers på Waveshare-modulen),J_A,1,PinHeader_1x12_P2.54mm_Vertical,PinHeader_1x12_P2.54mm_Vertical,elektrisk
+P4-carrier (lödbara headers på Waveshare-modulen),J_B,1,PinHeader_1x14_P2.54mm_Vertical,PinHeader_1x14_P2.54mm_Vertical,elektrisk
+P4-carrier (lödbara headers på Waveshare-modulen),USBC,1,USB_C_Receptacle_HRO_TYPE-C-31-M-12,USB_C_Receptacle_HRO_TYPE-C-31-M-12,elektrisk
+P4-carrier (lödbara headers på Waveshare-modulen),"MP1,MP2,MP3,MP4",4,MountingHole_2.2mm_M2,MountingHole_2.2mm_M2,mekanik
+
+EXTERNA MODULER (kabelanslutna),,,,,
+Antal,Artikel,Variant,Not,,
+1,ESP32-P4-WIFI6,Waveshare,"Huvudprocessor (Pico-format). Edge B→optik, edge A→FC.",,
+1,PN532 NFC-modul,modul,"Magasin-NFC. Kabel → FC J8 (I²C, 3V3).",,
+1,USB-kamera (OV9281/B0332),modul,Kabel → P4 J_CAM (USB 2.0).,,
+1,LiPo-batteri,—,Kabel → optik J2 (VBAT).,,
+1,Recoil-effektkort,separat PCB,eFuse+aktuator. Kabel → FC J7 (PWM/FAULT/GND).,,
+4,Mikrobrytare,—,Trigger/rack/mag-release/magwell. Kabel → FC J3–J6.,,
+4,M2-standoff + skruv,15 mm,Genomgående stack: optik–P4–FC.,,
