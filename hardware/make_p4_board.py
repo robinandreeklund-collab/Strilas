@@ -57,12 +57,12 @@ def main():
     hole("MP3", HOLE_XR, HOLE_Y)    # topp-höger (ESP-modul)
     hole("MP4", HOLE_XR, -HOLE_Y)   # botten-höger (ESP-modul)
 
-    # 2 castellerade pinrader (1×20, 2.54), pin-1 = 4.52 mm från vänsterkant
-    field_cx = PIN1_X + (NPIN - 1) * PITCH / 2.0     # radens centrum-x
+    # 2 castellerade pinrader (1×20, 2.54), pin-1 = 4.52 mm från vänsterkant.
+    # OBS: footprintens origo = pin-1; raden går +x därifrån (pin1@-31.0 → pin20@+17.25).
     for ref, yy in (("J_TOP", ROW_Y), ("J_BOT", -ROW_Y)):
         f = pcbnew.FootprintLoad(f"{FPDIR}/Connector_PinHeader_2.54mm.pretty",
                                  "PinHeader_1x20_P2.54mm_Vertical")
-        f.SetReference(ref); f.SetPosition(V(field_cx, yy))
+        f.SetReference(ref); f.SetPosition(V(PIN1_X, yy))
         f.SetOrientationDegrees(90); b.Add(f)
 
     # silk-markeringar (USB-C + ESP-modul + pin-1)
