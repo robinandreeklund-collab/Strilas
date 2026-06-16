@@ -27,12 +27,12 @@ NextPCB min-order är oftast 5 st → 5 optik (1 behövs nu) + 5 väst-patchar =
 
 ## Våglängdsplan (måste matcha)
 - **Skott (optik D2/D3):** 940 nm — **SFH 4725CS** (efterträder discontinued SFH 4725S; samma OSLON Black-paket, kund-levererad).
-- **Konstellation (väst D4/D5):** 850 nm — **VSMY12850** (1206). Kamerans IR-pass = **850 nm** → ser konstellationen, avvisar 940 nm-skottet. TSOP4856 tar emot 940 nm-skottet.
-- **Dagsljus@150 m:** uppgradera konstellationen till högeffekt **VSMY98545** (350–1600 mW/sr, eget paket → väst-respin). VSMY12850 (10 mW/sr) räcker för närhålls-bänktestet.
+- **Konstellation (väst D4/D5):** 860 nm — **SFH 4715AS** (OSLON Black, 900 mW/sr@1A, högeffekt f. 150 m dagsljus). Kamerans IR-pass = **860 nm** → ser konstellationen, avvisar 940 nm-skottet. TSOP4856 tar emot 940 nm-skottet.
+- **Dagsljus-SNR @150 m:** budget i `../ritningar/daylight-snr-budget.md` (SFH 4715AS @0,5 A ≈ SNR 50–80 nominellt, marginal för verkliga förluster). Slutbekräftas på bänk.
 
 ## Köps separat (ej PCB)
 - **ESP32-P4-WIFI6** (Waveshare) — kör optikkortet + kameran.
-- **Arducam OV9281 USB-kamera** + **IR-pass-filter 850 nm** (matchar västens 850 nm-konstellation; avvisar 940 nm-skottet). Kör **50–60 fps @1280×800** över
+- **Arducam OV9281 USB-kamera** + **IR-pass-filter 860 nm** (matchar västens 860 nm SFH 4715AS-konstellation; avvisar 940 nm-skottet). Kör **50–60 fps @1280×800** över
   P4:ans **USB 2.0 OTG High-Speed** (4-pol: VBUS·D−·D+·GND). 120 fps kräver beskärning/MJPEG
   (>480 Mbps full ruta) — ej nödvändigt för prototypen.
 - **GY-601N1 breakout-IMU** (välj **ICM-42688**-varianten = närmast vår familj) → P4 via **SPI**:

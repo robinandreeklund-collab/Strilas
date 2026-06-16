@@ -17,7 +17,7 @@ def mk(name, ref, pins, fp, value=""):
 def defs():
     return dict(
         TSOP=mk("TSOP4856", "U", [(1, "OUT"), (2, "GND"), (3, "VS")], "OptoDevice:Vishay_MINIMOLD-3Pin", "TSOP4856"),
-        LED=mk("LED850", "D", [(1, "A"), (2, "K")], "LED_SMD:LED_1206_3216Metric", "850nm"),
+        LED=mk("SFH4715AS", "D", [(1, "A"), (2, "K")], "strilas:IR_Emitter_OSRAM_OSLON_Black_SFH4725S", "SFH4715AS_860nm"),
         ORD=mk("ORdiode", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SOD-123", "BAT54"),
         NFET=mk("AO3400", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3400"),
         R=mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric"),
@@ -45,8 +45,10 @@ def build(n_tsop, n_led, gnss, out_file):
     # konstellations-LED + driver
     Q = P["NFET"](); Q["S"] += GND; Q["D"] += LEDC
     Rg = P["R"](value="220R"); Rg[1] += LED_EN; Rg[2] += Q["G"]
+    # konstellation = högeffekt 860 nm OSLON SFH 4715AS (900 mW/sr @1A) för 150 m dagsljus.
+    # Serieresistor 10R 2512 (2W) → ~0,5 A/LED ≈ 470 mW/sr vid VBAT 2S (blink-modulerad, låg duty).
     for i in range(n_led):
-        led = P["LED"](); rl = P["R"](value="100R")
+        led = P["LED"](); rl = P["R"](value="10R", footprint="Resistor_SMD:R_2512_6332Metric")
         rl[1] += VBAT; rl[2] += led["A"]; led["K"] += LEDC
     # GNSS U.FL (hjälm)
     if gnss:

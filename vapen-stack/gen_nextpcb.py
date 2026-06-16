@@ -42,7 +42,8 @@ MPN = {
     # --- väst-patch ---
     "TSOP4856":    ("TSOP4856", "Vishay", "IR-mottagare 56 kHz (940 nm), MINIMOLD-3", "", "skott-RX"),
     "BAT54":       ("BAT54-7-F", "Diodes Inc", "Schottky SOD-123 (OR av TSOP-utgångar)", "", ""),
-    "850nm":       ("VSMY12850", "Vishay", "IR-LED 850 nm 1206 (konstellation)", "", "MATCHA kamerans 850 nm IR-pass; dagsljus@150m → uppgradera VSMY98545 (eget paket)"),
+    "SFH4715AS_860nm": ("SFH 4715AS", "ams OSRAM", "IR-LED 860 nm OSLON Black, 900 mW/sr@1A (konstellation)", "", "MATCHA kamerans 860 nm IR-pass; högeffekt f. 150 m dagsljus"),
+    "10R":         ("CRCW251210R0FKEGHP", "Vishay", "Res 10R 1% 2W 2512 (HP) — LED-serieR konstellation", "", ""),
     "100R":        ("RC0805FR-07100RL", "Yageo", "Res 100R 1% 0805", "", ""),
     "10k":         ("RC0805FR-0710KL", "Yageo", "Res 10k 1% 0805", "", ""),
     "VBAT·GND·DATA·LED_EN":("2.54-1x04-FH", "generisk", "Stiftlist 1x04 2.54 mm", "", "till väst-nod"),

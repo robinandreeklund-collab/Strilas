@@ -95,10 +95,18 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
 
 
 # ---- väst-patch (58×42) ----
-vest_pos = {
-    "U1": (-17, 4, 0), "U2": (0, 4, 0), "U3": (17, 4, 0),         # TSOP
-    "D1": (-22, 15, 0), "D2": (22, -13, 0),                       # LED (konstellation) – obs: refs from netlist order
-    "J1": (14, -10, 0),   # flyttad in från kanten (-17 lät J1-pads hänga utanför board y-21)
+vest_pos = {   # 58×42 (±29,±21). FULL explicit placering (inga grid-delar) — OSLON-LED + 2512 R är stora.
+    # refs (netlist-ordning): U1-3=TSOP · D1-3=OR-dioder · D4,D5=OSLON-konstellation 860nm
+    # R1=DATA-pullup · R2=gate · R3,R4=LED-serieR(2512 10R) · C1=bulk · C2-4=TSOP-avkoppl · Q1=driver
+    "U1": (-17, 16, 0), "U2": (0, 16, 0), "U3": (17, 16, 0),       # TSOP4856 (top, mot skytt)
+    "D1": (-17, 9.5, 0), "D2": (0, 9.5, 0), "D3": (17, 9.5, 0),    # OR-dioder (under varje TSOP)
+    "C2": (-17, 4.5, 0), "C3": (0, 4.5, 0), "C4": (17, 4.5, 0),    # TSOP-avkoppling
+    "D4": (-21, -2, 0), "D5": (21, -2, 0),                          # OSLON 860nm konstellation (spridda)
+    "R3": (-12, -2, 90),"R4": (12, -2, 90),                         # LED-serieR 10R 2512 (inboard)
+    "Q1": (0, -8, 0),   "R2": (7, -8, 90),                          # N-FET-driver + gate-R
+    "C1": (-20, -10, 0),"R1": (-12, -10, 0),                        # bulk 10µF / DATA-pullup
+    "J1": (14, -9, 0),                                              # 1x4 — pin1 origo; pin4 @ rel -16,6 (innanför -21)
+    "H1": (-26, 18, 0), "H2": (26, 18, 0), "H3": (-26, -18, 0), "H4": (26, -18, 0),
 }
 # ---- hjälm-halo (Ø100) ----
 helmet_pos = {f"U{i+1}": (38*math.cos(math.radians(i*45)), 38*math.sin(math.radians(i*45)), i*45-90) for i in range(8)}

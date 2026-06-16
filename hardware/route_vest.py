@@ -1,23 +1,34 @@
 #!/usr/bin/env python3
-"""STRILAS — route väst-patch (2-lager) rent: GND-pour FÖRST (så freerouting bara drar
-signalnät, ej GND), freeroute, applicera SES, re-fyll pour, verifiera, Gerbers/STEP."""
-import subprocess, sys, math, pcbnew
+"""STRILAS — route väst-patch (2-lager): freeroute ALLA nät (inkl GND som spår → inga
+GND-öar), applicera SES, verifiera (0 oroutade + 0 oconnected + 0 clearance), Gerbers/STEP.
+(pour_gnd finns kvar men används ej i no-pour-flödet.)"""
+import subprocess, sys, math, shutil, pcbnew
 PCB="hardware/vest-patch.kicad_pcb"; DSN="hardware/vest-patch.dsn"; SES="hardware/vest-patch.ses"
 MM=pcbnew.FromMM
 
-def pour_gnd(path):
+def gnd_code(b):
+    for f in b.GetFootprints():
+        for pd in f.Pads():
+            if pd.GetNetname()=="GND": return pd.GetNetCode()
+    return None
+
+def pour_gnd(path, stitch=True):
     b=pcbnew.LoadBoard(path)
     for z in [x for x in b.Zones()]: b.Remove(z)
-    bb=b.GetBoardEdgesBoundingBox(); gnd=b.FindNet("GND").GetNetCode(); m=MM(0.4)
+    bb=b.GetBoardEdgesBoundingBox(); gnd=gnd_code(b); m=MM(0.4)
     for layer in (pcbnew.F_Cu, pcbnew.B_Cu):
         z=pcbnew.ZONE(b); z.SetLayer(layer); z.SetNetCode(gnd)
         z.SetLocalClearance(MM(0.25)); z.SetMinThickness(MM(0.2)); z.SetIsFilled(False)
-        z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)   # solid GND-pad-anslutning → inga termiska gap
+        z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
         ch=pcbnew.SHAPE_LINE_CHAIN()
         for x,y in [(bb.GetLeft()+m,bb.GetTop()+m),(bb.GetRight()-m,bb.GetTop()+m),
                     (bb.GetRight()-m,bb.GetBottom()-m),(bb.GetLeft()+m,bb.GetBottom()-m)]:
             ch.Append(int(x),int(y))
         ch.SetClosed(True); z.AddPolygon(ch); b.Add(z)
+    if stitch:   # GND-stitchning F↔B vid fria mitt-kanter (klart av komponenter; origo 150,120)
+        for dx,dy in [(-26,8),(26,8),(-26,-12),(26,-12)]:
+            v=pcbnew.PCB_VIA(b); v.SetPosition(pcbnew.VECTOR2I(MM(150+dx),MM(120-dy)))
+            v.SetDrill(MM(0.4)); v.SetWidth(MM(0.8)); v.SetNetCode(gnd); b.Add(v)
     pcbnew.ZONE_FILLER(b).Fill(b.Zones()); pcbnew.SaveBoard(path,b)
 
 def unrouted(path):
@@ -34,33 +45,29 @@ def verify(path):
         items.append((t.GetNetCode(),set(lays),t.GetEffectiveShape()))
     for f in b.GetFootprints():
         for pd in f.Pads(): items.append((pd.GetNetCode(),set(L for L in CU if pd.IsOnLayer(L)),pd.GetEffectiveShape()))
-    v=0
-    for i in range(len(items)):
-        for j in range(i+1,len(items)):
-            if items[i][0]==items[j][0] or not(items[i][1]&items[j][1]): continue
-            if items[i][2].Collide(items[j][2],int(0.2e6)): v+=1
+    v=sum(1 for i in range(len(items)) for j in range(i+1,len(items))
+          if items[i][0]!=items[j][0] and (items[i][1]&items[j][1]) and items[i][2].Collide(items[j][2],int(0.2e6)))
     b.BuildConnectivity()
     try: un=b.GetConnectivity().GetUnconnectedCount(True)
     except TypeError: un=b.GetConnectivity().GetUnconnectedCount()
     return v,un
 
-# 1) route ALLA nät (inkl GND som spår) — ingen pour → inga GND-öar (2-lager, som originalet)
-import shutil; shutil.copy(PCB,"/tmp/_vest_pp.kicad_pcb")
+# 1) route ALLA nät (inkl GND som spår) — freerouting kopplar varje GND-nod → inga öar
+shutil.copy(PCB,"/tmp/_vest_pp.kicad_pcb")
 b=pcbnew.LoadBoard(PCB); pcbnew.ExportSpecctraDSN(b,DSN)
 clean=False
-for seed in range(1,9):
+for seed in range(1,11):
     subprocess.run(["xvfb-run","-a","java","-jar","/opt/freerouting.jar","-de",DSN,"-do",SES,"-mp","200"],
                    stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     shutil.copy("/tmp/_vest_pp.kicad_pcb",PCB)
     subprocess.run(["python3","hardware/ses_apply.py",PCB,SES],stdout=subprocess.DEVNULL)
     u=unrouted(PCB)
-    print(f"  seed {seed}: oroutade={u}")
+    print(f"  seed {seed}: signal-oroutade={u}")
     if u==0: clean=True; break
 if not clean: print("!! ingen ren routning"); sys.exit(1)
 v,un=verify(PCB); print(f"clearance-brott@0.2mm={v}  oconnected={un}")
 if v or un: print("!! DRC ej ren"); sys.exit(1)
 print("REN board.")
-# Gerbers + STEP
 import os
 os.system("rm -rf /tmp/gbv && mkdir -p /tmp/gbv")
 subprocess.run(["kicad-cli","pcb","export","gerbers","-o","/tmp/gbv/",PCB],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
