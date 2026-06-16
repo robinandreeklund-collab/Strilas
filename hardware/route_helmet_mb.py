@@ -29,7 +29,7 @@ def finish(path):
         z = pcbnew.ZONE(b); z.SetLayer(layer); z.SetNetCode(b.FindNet(net).GetNetCode())
         z.SetLocalClearance(MM(0.25)); z.SetMinThickness(MM(0.2)); z.SetIsFilled(False)
         ch = pcbnew.SHAPE_LINE_CHAIN()
-        for x, y in [(-39.5, -30.5), (39.5, -30.5), (39.5, 30.5), (-39.5, 30.5)]: ch.Append(V(x, y))
+        for x, y in [(-47.5, -37.5), (47.5, -37.5), (47.5, 37.5), (-47.5, 37.5)]: ch.Append(V(x, y))
         ch.SetClosed(True); z.AddPolygon(ch); b.Add(z)
     add_zone(pcbnew.In1_Cu, "GND"); add_zone(pcbnew.In2_Cu, "VBAT")
     add_zone(pcbnew.B_Cu, "GND"); add_zone(pcbnew.F_Cu, "GND")

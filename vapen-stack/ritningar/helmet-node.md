@@ -95,3 +95,22 @@ Underlag: `nextpcb/helmet-mb-bom.xls` + `helmet-mb-centroid.xls` + `helmet-mb-ge
 
 **Kvarstår (bänk):** buck-3,3 V innan XIAO · F9P UART+I²C + IST8310 + IIM-42653 på samma I²C (adresser:
 IST8310 0x0E, IIM-42653 0x68 — ingen krock) · GNSS/INS-fusion-firmware · 165-läsning · LED_EN-broadcast.
+
+---
+
+## v3 (2026-06): ESP32-C6-devkit + HÖGTALARE/MIK (ersätter XIAO-versionen)
+Bytte nod-ESP **XIAO-S3 → ESP32-C6-DevKitC-1** (Waveshare N16, electrokit) på hjälm-moderkortet —
+samma byte görs på väst-moderkortet (enkel sourcing, WiFi6 genomgående).
+
+**Varför C6:** WiFi 6 (matchar vapnets ESP32-P4-WIFI6 → bättre mesh/latens) + **23 GPIO** → nu ryms
+**ljud (högtalare + mik)** för träff-feedback, OCH vi slopar 74HC165:an (alla 5 DATA läses direkt på GPIO).
+Avvägning: större kort (96×76 mm) och C6 single-HP-core (räcker för feedback-ljud + enkel röst; tung
+voice-codec skulle föredra S3). Mik+högtalare ENBART på hjälmen; västen = vibratorer (haptik).
+
+**Hjälm-mb v3** (`hardware/helmet_mb_netlist.py`, 96×76 4-lager, routat rent 0/0/0):
+- ESP32-C6-DevKitC-1 (2× 1x16-sockel), matas 3V3, WiFi6. GPIO: UART2 + I²C2 + IMU_INT1 + LED_EN1 +
+  5 DATA + I²S4 + amp_SD1 = 16 av 23 (reserv kvar). Strapping GPIO8/9/15 + USB GPIO12/13 undvikna.
+- 2S → AP63203-buck 3,3V. ZED-F9P RTK-puck (8-pol GH, UART+I²C). IIM-42653 IMU (I²C delad + INT).
+- 4 egna TSOP4856 (ledade, diagonal-aim) → diod-OR. 4 patch-DATA. 2 topp-LED + driver.
+- **LJUD:** MAX98357A-amp-breakout (1x7 + högtalare) + I²S-MEMS-mik-breakout (1x6).
+- 4 patch-kontakter (1x5) + 2S-batteri. Deliverables: `nextpcb/helmet-mb-bom/centroid/gerbers/STEP`.
