@@ -1,81 +1,83 @@
 # STRILAS — ballistik & avståndsmätning (analys)
 
 > Skisser: [`vapen-layout.png`](vapen-layout.png) · [`ballistik-avstand.png`](ballistik-avstand.png)
+> Bygger på de låsta optikbesluten i [`../../hardware/weapon-module-design-resolution.md`](../../hardware/weapon-module-design-resolution.md) §1 & §6.
+> *(Rättat: en tidigare version här använde naiv 2-beacon-stadiametri + 8,7 mm-lins och
+> underdrev precisionen grovt. Systemet använder aktiv konstellation + PnP + 16 mm-lins.)*
 
 ## Frågan
-Skjuter du mot ett mål på 150 m måste du sikta **ovanför** målet (kulfall/kulbana).
-Men då ligger inte kamerans centrum på målets centrum. Hur hittar systemet
-avståndet, och hur hanteras att man måste hålla över?
+Skjuter du mot ett mål på 150 m måste du sikta **ovanför** målet (kulfall). Men då
+ligger inte kamerans centrum på målets centrum. Hur hittar systemet avståndet, och
+hur hanteras hållover?
 
-## 1. Grundinsikten: ljus faller inte — ballistik måste **beräknas**
-En IR-stråle (940 nm-skottet) går rakt; den påverkas inte av gravitation. Vill vi
-simulera **riktig kulbana** kan vi alltså INTE låta strålen fysiskt "träffa" målet
-och kalla det en träff på långt håll. I stället:
+## 1. Grundinsikt: ljus faller inte → ballistik **beräknas**
+940 nm-skottstrålen går rakt. Riktig kulbana kan därför inte fås fysiskt — den
+**beräknas i firmware**, vilket kräver **avstånd R**. Kulfall (v₀≈900 m/s) vid 150 m:
+`½·g·(R/v)² ≈ 14 cm`, dvs en hållpunkt ≈ 0,9 mrad (~3 MOA) över målet.
 
-- **Kameran** är sensorn som mäter *var* målet är (vinkel) och *hur långt bort* (avstånd).
-- **Firmware** räknar ut kulans bana (fall över avståndet) och avgör träff/miss.
-- **IR-LED:n (940 nm)** är **skott-kommunikation** (skytte-ID + skottdata till mål/server),
-  inte det som avgör geometrin.
+## 2. Avståndet kommer ur **PnP på en aktiv IR-konstellation** (inte LED:n, inte stadiametri)
+Målet bär en **aktiv konstellation** av modulerade 860 nm-LED i ett **känt 3D-mönster**.
+Kameran tar punkternas 2D-projektion och löser **PnP (Perspective-n-Point)** → hela
+posen: **avstånd R + bäring + orientering** på en gång (robustare än 2-punkts
+stadiametri, som bara ger avstånd ur en baslinje).
 
-Kulfall (ex. v₀≈900 m/s): `fall ≈ ½·g·(R/v₀)²`. Vid R=150 m → t≈0,167 s →
-**fall ≈ 14 cm**, dvs en hållpunkt på `≈ fall/R ≈ 0,9 mrad` (~3 MOA) över målet.
+**Varför aktiv konstellation:** modulerade LED + **frame-differencing** + 860 nm-bandpass
+→ rena ljuspunkter (blobbar) även i dagsljus; **global shutter** (OV9281) → ingen
+rörelsesmet. Det räcker med få pixlar per punkt + subpixel-centroidering — till skillnad
+från passiva ArUco-markörer som kräver ~20–30 px för avkodning.
 
-## 2. Hur avståndet R fås — stadiametriskt med kameran
-Målet bär **IR-beacons med känd geometri** (t.ex. två beacons med känt avstånd S,
-eller en känd kropps-/markörbredd). Kameran mäter deras **vinkelstorlek i pixlar**:
+**Optik (låst):** Arducam B0332 (OV9281, 1280×800, **3 µm**, global shutter) + IR-pass-filter,
+**lins 16 mm M12 (~13,7° FOV)**. Vid 150 m: ~14 px LED-separation + **~24 px baslinje** → robust PnP.
+
+## 3. Precision @150 m (rätt siffror)
+| Storhet | Värde @150 m | Hur |
+|---|---|---|
+| Vinkelskala | **0,0107 °/px** | p/f = 3 µm / 16 mm |
+| **Bäring** (mål-läge) | **≈ 0,001° → ≈ 2,8 mm** | subpixel-centroid ~0,1 px; ≪ kravet 0,19° |
+| **Avstånd R** (PnP) | **±0,3–0,9 m** (sub-meter) | ~24 px baslinje, modulerade blobbar 0,05–0,1 px; konstellation (≥4 LED, minsta-kvadrat) ≈ ±0,3 m |
+| IMU inter-frame-drift | 0,0005° @60 fps | kameran re-ankrar attityden varje frame |
+
+Bäringen (~mm-klass) är det som avgör om träffpunkten hamnar på målet. Avståndet matar
+**bara** ballistik-hållpunkten — och den är **mycket** okänslig för R-fel:
 
 ```
-R = f · S / (p · n)
-   f = brännvidd, p = pixelstorlek (OV9281 = 3 µm), n = pixlar mellan beacons, S = verklig separation
+d(kulfall)/dR ≈ 1,8 mm per meter R-fel  @150 m
+→  ±0,9 m avståndsfel  ⇒  ±1,6 mm hållpunktsfel   (försumbart)
 ```
 
-Det är exakt samma princip som en mil-dot-kikare. Inget time-of-flight behövs
-(skulle kräva ns-timing — ej möjligt med denna hårdvara). IR-LED:n kan **inte**
-mäta avstånd tillförlitligt (reflex-intensitet är opålitlig).
+Så även om avståndet skulle vara dåligt blir det knappt något siktfel. Den tidigare
+"±2 m"-siffran var dels fel metod/lins, dels skulle den ändå bara gett ±3,6 mm hållpunkt.
 
-**Räkneexempel (150 m):** f≈8,7 mm (~25° HFOV), S=0,4 m →
-`n = 8,7e-3·0,4 / (3e-6·150) ≈ 7,7 px`.
-- Vinkelupplösning/pixel: `p/f ≈ 0,35 mrad/px`.
-- Med **subpixel-centroiding** av beacon-mitten (~0,1 px) → avståndsfel ≈ 0,1/7,7 ≈ **1,3 % → ±2 m @ 150 m**.
-- Längre brännvidd eller större S ⇒ bättre noggrannhet (men mindre synfält).
+## 4. Varför "kameracentrum ≠ målcentrum" är avsiktligt
+Kameran mäter målets exakta läge i bilden (ur konstellationens centroider) **plus** R.
+Firmware:
+1. boresight = bildmitt (dit pipan pekar),
+2. R → kulfall → **hållpunkts-prick** under mitten (pixel-offset),
+3. **träff om** simulerad bana (boresight + fall över R) skär målet inom träffradie.
 
-## 3. Varför "kameracentrum ≠ målcentrum" är helt OK
-Systemet kräver INTE att mitten ligger på målet. Kameran mäter målets **exakta läge i
-bilden** (azimut/elevation relativt boresight) plus avståndet. Firmware gör:
+En hållpunkts-retikel flyttar sig nedåt med avståndet; du lägger konstellationen på den.
+Bildmitten får peka över målet — det är poängen.
 
-1. boresight-riktning = dit pipan pekar (bildens mitt),
-2. avstånd R (steg 2) → **kulfall** → omräknat till en **pixel-hållpunkt** under mitten,
-3. **träff om** den simulerade kulbanan (boresight + fall över R) skär målet (inom träffradie).
+## 5. Roller — "punkter av kalkyleringar"
+- **Beräkningspunkterna = konstellationens LED-centroider i kamerabilden.** Ur dem löser
+  PnP både bäring och avstånd. Där görs "punkterna" — i kameran.
+- **IR-LED (940 nm):** skott-ID/LOS + anti-fusk; **inte** geometrin (och inte avståndet).
+  Eftersom boresight pekar över målet vid hållover bär strålen skottdata och träffen
+  adjungeras av skyttens kamera+firmware (som har bäring + R exakt) och rapporteras.
+- **Kamera (860 nm-pass):** ser konstellationen, avvisar egen 940 nm-stråle (ingen självbländning).
+- **IMU (ICM-42670-P):** stel mot optiska axeln; kameran re-ankrar varje frame.
 
-I praktiken visas en **hållpunkts-retikel** som flyttar sig nedåt med avståndet; du
-lägger den på målet. Bildens geometriska mitt får alltså gärna peka över målet —
-det är själva poängen med hållpunkten.
-
-## 4. Roller — "punkter av kalkyleringar"
-- **Beräkningspunkterna = beacon-centroiderna i kamerabilden.** Ur dem fås både
-  vinkel (läge) och avstånd (separation). Det är där "punkterna" görs — i kameran.
-- **IR-LED (940 nm):** skickar skottet/ID:t. Eftersom boresight (och 940 nm-strålen)
-  pekar *över* målet vid hållover, ska strålen ha en **bred nog kon** ELLER så bär
-  strålen bara skott-ID och **träffen adjungeras av skyttens kamera+firmware** och
-  rapporteras (till mål/server). Kameran "ser" redan exakt vilket mål och var.
-- **Kamera (OV9281, 860 nm-bandpass):** ser målets 860 nm-beacons, avvisar egen
-  940 nm-stråle → ingen självbländning.
-
-## 5. Praktiska rekommendationer / designval
-- **Beacon-geometri:** minst två beacons med så stor känd separation S som möjligt
-  (axelbredd ~0,4–0,5 m) för bäst avståndsupplösning; koda dem (blink-ID) så flera
-  mål kan särskiljas.
-- **Brännvidd:** välj lins efter max-avstånd vs synfält. 150 m kräver god centroiding;
-  ~8–16 mm + subpixel ger ±1–3 m.
-- **Ballistikmodell i firmware:** tabell/parametrar per "vapentyp" (v₀, BC) → fall(R);
-  enkel `½g(R/v)²` räcker för spel, lägg ev. luftmotstånd om realism krävs.
-- **Hit-adjudikering:** låt skyttens enhet räkna träffen (den har vinkel + R exakt) och
-  skicka utfallet; 940 nm används för LOS-ID och anti-fusk, inte som "kula".
-- **Kalibrering:** boresight↔kamera-mitt kalibreras en gång (parallax pipa↔lins);
-  parallaxen är försumbar bortom några meter men korrigeras i tabell för närhåll.
+## 6. Designval / kvar att verifiera
+- **FOV/brännvidd** sätts egentligen av §1.3-testet (syns konstellationen @150 m i dagsljus?).
+  16 mm = trolig landning; 6 mm räcker bara ~80 m. Smalare FOV = bättre dagsljus-SNR.
+- **Konstellationsgeometri:** ≥4 LED i känt 3D-mönster (icke-koplanärt) → entydig, robust PnP;
+  koda blink-ID per mål för flera samtidiga mål.
+- **Kalibrering:** kamera-intrinsics (schackruta) + extrinsics IMU↔kameraram en gång;
+  boresight↔kameramitt-parallax tabelleras för närhåll.
+- **Ballistikmodell:** `½g(R/v)²` räcker för spel; lägg luftmotstånd/BC vid behov.
 
 ## TL;DR
-Avståndet kommer från **kameran** (beacon-separation i pixlar, stadiametriskt) — inte
-från LED:n. Firmware räknar kulfallet för det avståndet och lägger en **hållpunkt**;
-träff avgörs av om den simulerade banan skär målet. Att sikta över målet är inbyggt i
-hållpunkten — kameracentrum behöver aldrig ligga på målet.
+Avståndet kommer ur **PnP på den aktiva IR-konstellationen i kameran** (16 mm-lins),
+inte ur LED:n eller naiv stadiametri. Bäring ≈ **mm-klass** @150 m, avstånd **sub-meter**,
+och ballistik-hållpunkten är så okänslig för avståndsfel (~1,8 mm/m) att precisionen är
+gott och väl tillräcklig. Att sikta över målet ligger i den beräknade hållpunkten.
