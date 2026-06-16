@@ -1,10 +1,23 @@
 # STRILAS — uppdaterad precisionsanalys: IIM-42653 + 120 fps (FÖRSLAG)
 
 > Figur: [`precision-iim42653.png`](precision-iim42653.png) · bygger på [`precision-analys.md`](precision-analys.md)
-> **Status:** detta är en **förhandsanalys** av föreslagen ändring. Korten bär fortfarande
-> **ICM-42670-P** tills bytet görs. **Pinout LÅST (drop-in) mot DS-000529** (se nedan); endast
-> exakt gyrobrus + skalfaktor återstår att läsa ur databladets elektriska-data-sida.
-> Konfidens flaggas per tal.
+> **Status:** förhandsanalys av föreslagen ändring; korten bär fortfarande **ICM-42670-P** tills
+> bytet görs. **Pinout OCH alla elektriska tal nu LÅSTA mot DS-000529** (gyro/accel-spec-sidorna).
+> Inga uppskattningar kvar på IMU-sidan.
+
+## IIM-42653 verifierade tal (DS-000529)
+| Gyro | Värde | | Accel | Värde |
+|---|---|---|---|---|
+| Rate Noise Spectral Density | **0,005 °/s/√Hz** | | brus (X/Y) | 65 µg/√Hz |
+| Scale-factor init. tolerans | **±0,5 %** | | scale-factor init. | ±0,5 % |
+| Scale-factor över temp | ±0,005 %/°C | | zero-g | ±20 mg |
+| ZRO (bias) | ±0,5 °/s, ±0,04 °/s/°C | | FSR | ±4 / 8 / 16 / 32 g |
+| Nonlinjäritet / cross-axis | ±0,1 % / ±1,25 % | | | |
+| FSR | **±4000 … ±31,25 dps** | | temp / shock | −40…+105 °C / 20 000 g |
+| I²C-adress (AD0) | 0x68 / 0x69 | | | bekräftar FC dual-IMU |
+
+*(RNSD 0,005 är något högre än ICM-42688:s 0,0028 — priset för ±4000 dps FSR — men försumbart i
+bryggan. Vinsten: ±0,5 % skalfaktor + ±4000 dps + industri-temp/shock.)*
 
 ## Pinout — VERIFIERAD drop-in (DS-000529, IIM-42653)
 De 8 signalstift vår design använder är **identiska** med ICM-42670/42688-footprinten:
@@ -27,7 +40,7 @@ Skala: **1° = 2 618 mm @150 m**.
 |---|---|---|---|
 | Centroid-brus (0,1 px) | 2,8 mm | 2,8 mm | SNR-/optikberoende, oförändrat |
 | Intrinsisk kalib-rest | 5,2 mm | **3,9 mm** | low-distortion-lins → modellen passar bättre *(uppskattning, kalibreringsberoende)* |
-| IMU mellan-frame-brygga | 2,4 mm | **1,0–1,4 mm** | 120 fps + lägre IMU-brus *(IIM-tal ej låst; ofarligt oavsett)* |
+| IMU mellan-frame-brygga | 2,4 mm | **1,2 mm** | 120 fps + RNSD 0,005 °/s/√Hz (LÅST) |
 | Avstånd→hållpunkt (±0,9 m) | 1,6 mm | 1,6 mm | d(fall)/dR ≈ 1,8 mm/m |
 | **RSS** | **≈ 6,6 mm** | **≈ 5,2 mm** | |
 
@@ -47,7 +60,7 @@ Det här var systemets svaghet. Tre konkreta vinster:
    |---|---|---|---|
    | 10° | 262 mm | 785 mm | **131 mm** |
    | 20° | 524 mm | 1571 mm | **262 mm** |
-   → ~2–6× mindre transient. *(0,5 % är industri-typiskt; exakt IIM-42653-värde låses mot datablad.)*
+   → ~2–6× mindre transient. *(±0,5 % nu LÅST ur DS-000529; över temp endast ±0,005 %/°C extra.)*
 3. **120 fps → kortare brygga + halverat oskärpefönster.** Re-ankring var 8,3 ms (mot 16,7);
    målet hålls låst genom mer av recoilen → kortare/ingen dödräkning.
 
