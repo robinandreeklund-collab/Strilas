@@ -6,7 +6,7 @@ Optik (weapon-module),C1,1,10uF,Capacitor_SMD:C_1206_3216Metric,elektrisk
 Optik (weapon-module),C5,1,1uF,Capacitor_SMD:C_0805_2012Metric,elektrisk
 Optik (weapon-module),R3,1,220R,Resistor_SMD:R_0805_2012Metric,elektrisk
 Optik (weapon-module),J2,1,2S batteri (JST-XH),Connector_JST:JST_XH_S2B-XH-A_1x02_P2.50mm_Horizontal,elektrisk
-Optik (weapon-module),R2,1,3R3_2W,Resistor_SMD:R_2512_6332Metric,elektrisk
+Optik (weapon-module),"R2,R4",2,6R8,Resistor_SMD:R_2512_6332Metric,elektrisk
 Optik (weapon-module),Q2,1,AO3400,Package_TO_SOT_SMD:SOT-23,elektrisk
 Optik (weapon-module),Q1,1,AO3401,Package_TO_SOT_SMD:SOT-23,elektrisk
 Optik (weapon-module),U1,1,ICM-42670-P,strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx,elektrisk

@@ -69,9 +69,10 @@ J1 = P4IF(); J2 = BATT()
 F1 = PTC(); Q2 = PFET(); Rg2 = RES("100k"); Dtvs = TVS()
 Cin = CAP("10uF", "Capacitor_SMD:C_1206_3216Metric")
 Cbulk = CAP("100uF", "Capacitor_SMD:C_1210_3225Metric")   # MLCC reservoar (låg-ESR f. 56 kHz-puls)
-Rset = RES("3R3_2W", "Resistor_SMD:R_2512_6332Metric")
+Rset = RES("6R8", "Resistor_SMD:R_2512_6332Metric")   # Rset = 2× 6R8 1W PARALLELLT (=3.4Ω, 2W tot)
 D1, D2 = LED(), LED()
 Q1 = NFET(); Rg = RES("220R")
+Rset2 = RES("6R8", "Resistor_SMD:R_2512_6332Metric")   # 2:a Rset-resistorn (skapas SIST → ref R4, ingen omnumrering av R3)
 U2 = IMU(); Cd1 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric")
 Cd2 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric"); Cd3 = CAP("1uF")
 H1, H2, H3 = MH(1)(), MH(2)(), MH(3)()
@@ -119,7 +120,8 @@ Cin[1] += VBAT; Cin[2] += GND
 Cbulk[1] += VBAT; Cbulk[2] += GND                 # reservoar för pulsen
 
 # ---------- IR-emitterdriver (Rset hårt strömtak + 56 kHz-gate) ----------
-Rset[1] += VBAT; Rset[2] += D1["A"]               # effektresistor sätter Imax
+Rset[1] += VBAT; Rset[2] += D1["A"]               # effektresistor sätter Imax (R2)
+Rset2[1] += VBAT; Rset2[2] += D1["A"]             # parallell (R4) → in-stock 1W-par istället f. specialdel 2W
 D1["K"] += STR1; D2["A"] += STR1; D2["K"] += LEDC # 2 LED i serie
 Q1["D"] += LEDC; Q1["S"] += GND                   # N-FET drar strängen mot GND
 Rg[1] += IR_MOD; Rg[2] += IRG; Q1["G"] += IRG     # 56 kHz på gaten

@@ -2,7 +2,7 @@
 
 Stack: **optik (weapon-module) → ESP32-P4 → fire-control**. 3V3 matas batteri→VSYS→P4-reg→3V3 (FC via edge-B-tapp).
 
-## Optik (weapon-module)  (37 st)
+## Optik (weapon-module)  (38 st)
 
 | Antal | Referenser | Värde | Footprint | Typ |
 |---|---|---|---|---|
@@ -13,7 +13,7 @@ Stack: **optik (weapon-module) → ESP32-P4 → fire-control**. 3V3 matas batter
 | 1 | C5 | 1uF | `Capacitor_SMD:C_0805_2012Metric` | elektrisk |
 | 1 | R3 | 220R | `Resistor_SMD:R_0805_2012Metric` | elektrisk |
 | 1 | J2 | 2S batteri (JST-XH) | `Connector_JST:JST_XH_S2B-XH-A_1x02_P2.50mm_Horizontal` | elektrisk |
-| 1 | R2 | 3R3_2W | `Resistor_SMD:R_2512_6332Metric` | elektrisk |
+| 2 | R2,R4 | 6R8 | `Resistor_SMD:R_2512_6332Metric` | elektrisk |
 | 1 | Q2 | AO3400 | `Package_TO_SOT_SMD:SOT-23` | elektrisk |
 | 1 | Q1 | AO3401 | `Package_TO_SOT_SMD:SOT-23` | elektrisk |
 | 1 | U1 | ICM-42670-P | `strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx` | elektrisk |
@@ -65,4 +65,4 @@ Stack: **optik (weapon-module) → ESP32-P4 → fire-control**. 3V3 matas batter
 | 4 | Mikrobrytare | — | Trigger/rack/mag-release/magwell. Kabel → FC J3–J6. |
 | 4 | M2-standoff + skruv | 15 mm | Genomgående stack: optik–P4–FC. |
 
-**PCB-komponenter totalt: 67 st** (exkl. externa moduler).
+**PCB-komponenter totalt: 68 st** (exkl. externa moduler).
