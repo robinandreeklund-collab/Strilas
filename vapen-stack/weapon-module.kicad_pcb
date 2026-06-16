@@ -104,7 +104,7 @@
         (effects (font (size 0.8 0.8) (thickness 0.12)))
       (tstamp 2a63e5fc-70c9-4da1-9b8a-ee21a104a218)
     )
-    (fp_text value "InvenSense_LGA-14_2.5x3mm_ICM-456xx" (at 0 3.2) (layer "F.Fab")
+    (fp_text value "IIM-42653" (at 0 3.2) (layer "F.Fab")
         (effects (font (size 0.8 0.8) (thickness 0.12)))
       (tstamp dfb1049f-ae24-4456-8200-89a19475c441)
     )

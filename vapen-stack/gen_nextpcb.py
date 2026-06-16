@@ -27,7 +27,7 @@ MPN = {
     "SMBJ12A":     ("SMBJ12A", "Littelfuse", "TVS unidir 12V SMB", "", ""),
     "SFH4725S_940nm":("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black", "", "Bestyckas av NextPCB (matchad, ~10 dgr)"),
     "PTC_1A":      ("JK-MSMD075-16V", "JinKe", "PTC resättbar 0.75A-hold 16V 1206 (in-stock-typ)", "", "Likvärdig in-stock PTC OK; verifiera hold-ström"),
-    "ICM-42670-P": ("ICM-42670-P", "TDK InvenSense", "6-axlig IMU (SPI/I2C) LGA-14, IN-STOCK", "", ""),
+    "IIM-42653": ("IIM-42653", "TDK InvenSense", "6-axlig industri-IMU LGA-14, ±4000dps, -40..+105C", "", ""),
     # --- kontakter (genomplåt → selektiv/handlödning) ---
     "P4-socket (edge B)":      ("2.54-1x14-FH", "generisk", "Stiftsockel 1x14 2.54mm THT (hona)", "", "TH; valfri likvärdig IN-STOCK 2.54 hona OK"),
     "P4-socket (edge A)":      ("2.54-1x12-FH", "generisk", "Stiftsockel 1x12 2.54mm THT (hona)", "", "TH; valfri likvärdig IN-STOCK 2.54 hona OK"),

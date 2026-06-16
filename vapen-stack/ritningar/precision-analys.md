@@ -1,6 +1,9 @@
 # STRILAS — ärlig precisionsanalys (verkliga komponenter)
 
 > Figur: [`precision-felbudget.png`](precision-felbudget.png) · jfr [`ballistik-analys.md`](ballistik-analys.md)
+> **OBS: IMU bytt till IIM-42653** (drop-in) — denna baslinjeanalys skrevs för ICM-42670-P;
+> låsta IIM-42653-tal + uppdaterad budget finns i [`precision-iim42653.md`](precision-iim42653.md).
+>
 > **Ingen hype.** Alla tal är 1σ-uppskattningar med angivna antaganden; det som inte är
 > uppmätt flaggas som **OVERIFIERAT**.
 

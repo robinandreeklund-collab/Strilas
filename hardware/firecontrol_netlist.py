@@ -42,11 +42,11 @@ REC = mk("RECOIL_CTRL", "J", [(1, "PWM"), (2, "FAULT"), (3, "GND")],
          "Connector_JST:JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical", "recoil-styrning")
 NFC = mk("NFC_PN532", "J", [(1, "SDA"), (2, "SCL"), (3, "3V3"), (4, "GND")],
          "Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical", "NFC PN532 (I²C)")
-# EXTRA IMU — TDK ICM-42670-P (LGA-14), samma som optiken men I²C. Pin-nr per DS-000451:
-#   8=VDD 5=VDDIO 6=GND 7=FSYNC(→GND) 13=SCLK(SCL) 14=SDI(SDA) 1=SDO(AD0) 12=CS(→VDDIO=I²C) 4=INT1
-# (IN-STOCK; drop-in mot 42688/45686 — samma footprint/pinout, pin7 FSYNC tål GND oanvänd.)
-IMU = mk("ICM-42670-P", "U", [(i, i) for i in range(1, 15)],
-         "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-42670-P")
+# EXTRA IMU — TDK IIM-42653 (LGA-14), samma som optiken men I²C. Pin-nr per DS-000529:
+#   8=VDD 5=VDDIO 6=GND 7=RESV(→GND) 13=SCLK(SCL) 14=SDI(SDA) 1=SDO(AD0) 12=CS(→VDDIO=I²C) 4=INT1
+# (drop-in: 8 signalstift identiska med 426xx; AUX1 2/3/10/11 = NC. I²C 0x68/0x69 via AD0.)
+IMU = mk("IIM-42653", "U", [(i, i) for i in range(1, 15)],
+         "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "IIM-42653")
 RES_T = mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric")
 CAP_T = mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0402_1005Metric")
 RES = lambda v: RES_T(value=v)

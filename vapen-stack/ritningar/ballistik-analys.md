@@ -65,7 +65,7 @@ Bildmitten får peka över målet — det är poängen.
   Eftersom boresight pekar över målet vid hållover bär strålen skottdata och träffen
   adjungeras av skyttens kamera+firmware (som har bäring + R exakt) och rapporteras.
 - **Kamera (860 nm-pass):** ser konstellationen, avvisar egen 940 nm-stråle (ingen självbländning).
-- **IMU (ICM-42670-P):** stel mot optiska axeln; kameran re-ankrar varje frame.
+- **IMU (IIM-42653):** stel mot optiska axeln; kameran re-ankrar varje frame.
 
 ## 6. Designval / kvar att verifiera
 - **FOV/brännvidd** sätts egentligen av §1.3-testet (syns konstellationen @150 m i dagsljus?).

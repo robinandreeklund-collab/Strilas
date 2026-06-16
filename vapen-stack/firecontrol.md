@@ -49,15 +49,15 @@ Bär även en **extra IMU** (I²C). Optikmodulen (edge B, under P4) förblir ren
 | J3–J6 | JST-PH B2B vertikal 2-pin | trigger / rack / mag-release / magwell (interna pull-ups) |
 | J7 | JST-PH B3B vertikal 3-pin | recoil-effektkort (PWM/FAULT/GND) |
 | J8 | JST-PH B4B vertikal 4-pin | NFC PN532 (SDA/SCL/3V3/GND) |
-| U1 | TDK ICM-42670-P (LGA-14) | **extra IMU #1**, I²C 0x69 (AD0 hög), INT=GPIO50 |
-| U2 | TDK ICM-42670-P (LGA-14) | **extra IMU #2**, I²C 0x68 (AD0 låg), INT=GPIO49 |
+| U1 | TDK IIM-42653 (LGA-14) | **extra IMU #1**, I²C 0x69 (AD0 hög), INT=GPIO50 |
+| U2 | TDK IIM-42653 (LGA-14) | **extra IMU #2**, I²C 0x68 (AD0 låg), INT=GPIO49 |
 | R1/R2 | 4k7 | I²C-pullups (delas av NFC + båda IMU) |
 | C1/C2 | 100nF / 1µF | 3V3-rail/NFC-avkoppling |
 | C3/C4 | 100nF | U1 VDD/VDDIO-avkoppling |
 | C5/C6 | 100nF | U2 VDD/VDDIO-avkoppling |
 | H1–H4 | M2 | i linje med P4-standoffsen → genomgående stack |
 
-> **2 IMU på delad I²C-buss** (max på en buss — ICM-42670-P har bara adress 0x68/0x69).
+> **2 IMU på delad I²C-buss** (max på en buss — IIM-42653 har bara adress 0x68/0x69).
 > Båda: CS hög → I²C-läge; SDO/AD0 sätter adress. Delar SDA/SCL (GPIO7/8) med NFC
 > (PN532 = 0x24/0x48, ingen krock); egna INT på GPIO50 resp GPIO49.
 > Fler än 2 skulle kräva I²C-mux (TCA9548A) eller SPI + bredare socket — ej valt.

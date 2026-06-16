@@ -1,8 +1,7 @@
 # STRILAS — uppdaterad precisionsanalys: IIM-42653 + 120 fps (FÖRSLAG)
 
 > Figur: [`precision-iim42653.png`](precision-iim42653.png) · bygger på [`precision-analys.md`](precision-analys.md)
-> **Status:** förhandsanalys av föreslagen ändring; korten bär fortfarande **ICM-42670-P** tills
-> bytet görs. **Pinout OCH alla elektriska tal nu LÅSTA mot DS-000529** (gyro/accel-spec-sidorna).
+> **Status:** förhandsanalys av föreslagen ändring; korten bär nu **IIM-42653** (bytet gjort). **Pinout OCH alla elektriska tal nu LÅSTA mot DS-000529** (gyro/accel-spec-sidorna).
 > Inga uppskattningar kvar på IMU-sidan.
 
 ## IIM-42653 verifierade tal (DS-000529)
