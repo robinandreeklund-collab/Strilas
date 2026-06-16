@@ -76,4 +76,4 @@ def build(n_tsop, n_led, gnss, out_file):
 
 if __name__ == "__main__":
     build(3, 2, False, "hardware/vest-patch.net")     # väst-patch
-    build(8, 4, True, "hardware/helmet-halo.net")     # hjälm-halo
+    # hjälm-noden byggs nu av hardware/helmet_netlist.py (komplett nod: buck+XIAO-S3+GNSS+audio)

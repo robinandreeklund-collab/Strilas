@@ -45,3 +45,25 @@ kameran frame-differensar dem oberoende. Hjälmen kan alltså vara helt självst
 Egen ESP i hjälmen = **rätt val**: slipper nack-kabeln och får högtalare/röst-comms trådlöst på köpet.
 Frame-sync är inget hinder (huvud/torso är separata pose-kroppar ändå). Välj **S3** för seriöst ljud,
 annars **C6**. Priset är ett extra litet batteri per spelare — lös med gemensam laddningsdocka.
+
+---
+
+## Byggt kort (2026-06): komplett hjälm-nod
+Ø100 mm, **4-lager** (In1=GND-plan, In2=VBAT-plan), routad **rent** (0 oroutade · 0 clearance · 0 oconnected).
+Netlista: `hardware/helmet_netlist.py` · placering: `hardware/receiver_place.py` (helmet) · route: `hardware/route_helmet.py`.
+
+**Arkitektur (verifierad mot datablad):**
+- **2S-batteri** (laddas i docka) → **AP63203** synk-buck (TSOT23-6, 3.8–32 V in, 2 A; FB-delare 31.6k/10k → 3.33 V).
+  Buck-3V3 matar XIAO via dess 3V3-stift + alla sensorer/GNSS/mik/audio. Konstellations-LED:erna drivs DIREKT från 2S.
+- **Stackad ESP: XIAO ESP32-S3** (2× 1×7 sockel, centrum) — matas från kortets 3V3, programmeras via egen USB-C.
+  GPIO: D0=DATA, D1=LED_EN, D2/D3=I²S BCLK/LRCK, D4=I²S→amp, D5=I²S←mik, D6/D7=GNSS UART, D9=amp SD.
+- **8× TSOP4856** (940 nm skott-RX, utåt på ringen, 360°) → 8× BAT54 diod-OR → DATA (3,3 V-logik, 10k pullup).
+- **4× SFH4715AS** 860 nm-konstellation (mellan TSOP-paren) + AO3400-driver (10R 2512, blink-modulerad) ← LED_EN.
+- **GNSS:** ATGM336H-5N-modul (egen antenn) på 1×5-header → XIAO-UART.
+- **I²S-ljud:** MAX98357A-amp-breakout (1×7 + högtalare) + I²S-MEMS-mik-breakout (1×6) → röst/spelljud.
+
+**Köps separat (pluggas på header):** XIAO ESP32-S3, ATGM336H-GNSS-modul, MAX98357A-amp-breakout + högtalare,
+I²S-MEMS-mik-breakout, 2S-LiPo. **NextPCB monterar** allt ytmonterat (buck, TSOP, LED, BAT54, NFET, R/C/L);
+TH-headers/sockets (J1–J6) löder du själv. Underlag: `nextpcb/helmet-bom.xls` + `helmet-centroid.xls` + `helmet-halo-gerbers.zip`.
+
+**Kvarstår (bänk):** buck-utgång 3,3 V verifieras innan ESP plugg; I²S audio + GNSS-fix bekräftas; konstellations-duty ≤50 %.

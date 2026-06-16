@@ -109,9 +109,33 @@ vest_pos = {   # 58×42 (±29,±21). FULL explicit placering (inga grid-delar) �
     "J1": (14, -9, 0),                                              # 1x4 — pin1 origo; pin4 @ rel -16,6 (innanför -21)
     "H1": (-26, 18, 0), "H2": (26, 18, 0), "H3": (-26, -18, 0), "H4": (26, -18, 0),
 }
-# ---- hjälm-halo (Ø100) ----
-helmet_pos = {f"U{i+1}": (38*math.cos(math.radians(i*45)), 38*math.sin(math.radians(i*45)), i*45-90) for i in range(8)}
-helmet_pos.update({"J2": (0, 0, 0), "J1": (0, -44, 0)})
+# ---- hjälm-NOD (Ø100, komplett: buck+XIAO-S3+8TSOP+4LED+GNSS+I2S-audio) ----
+# Ring (r=42) = 8× TSOP utåtriktade (360° huvud) + diod-OR + avkoppling strax innanför.
+# 4× LED-konstellation (r=45) mellan TSOP-paren. Centrum = stackad XIAO + buck + modul-headers.
+def _ring(r, deg): return (round(r*math.cos(math.radians(deg)), 1), round(r*math.sin(math.radians(deg)), 1))
+helmet_pos = {}
+for i in range(8):                                   # U2..U9 TSOP, D1..D8 BAT54, C4..C11 avkoppl (yttre ring)
+    a = i*45
+    helmet_pos[f"U{i+2}"] = (*_ring(41, a), (a+90) % 360)
+    helmet_pos[f"D{i+1}"] = (*_ring(34, a), (a+90) % 360)
+    helmet_pos[f"C{i+4}"] = (*_ring(26, a), (a+90) % 360)
+for i in range(4):                                   # D9..D12 LED, R5..R8 10R-serieR (mellan TSOP-paren)
+    a = 22.5 + i*90
+    helmet_pos[f"D{i+9}"] = (*_ring(45, a), (a+90) % 360)
+    helmet_pos[f"R{i+5}"] = (*_ring(36, a), (a+90) % 360)
+helmet_pos.update({                                  # centrum-disk (r<27, innanför avkopplings-ringen)
+    "J1": (-7.6, 0, 0), "J2": (7.6, 0, 0),           # XIAO ESP32-S3 (2× 1x7 sockel, lodräta rader)
+    "U1": (-4, 17, 0), "L1": (4, 17, 0),             # buck + induktor (ovan XIAO)
+    "C1": (-10, 14, 0), "C2": (-10, 20, 0), "C3": (12, 19, 0),  # Cbst / Cin / Cout
+    "R1": (-1, 22, 90), "R2": (-1, 13, 90),          # FB-delare
+    "R3": (-12, 9, 0),                               # DATA-pullup (nära XIAO D0)
+    "J3": (-7, -19, 0),                              # GNSS-modul 1x5 (vänster-botten, klar av 270°-eker)
+    "J4": (21, 2, 0), "J5": (-22, 0, 0),             # amp 1x7 (höger) / mik 1x6 (vänster)
+    "Q1": (13, 13, 0), "R4": (17, 12, 90),           # LED-driver + gate
+    "J6": (35, -7, 0),                               # 2S-batteri JST (tom yttre-ring-lucka, mellan U9/U2)
+    "H1": _ring(47, 45) + (0,), "H2": _ring(47, 135) + (0,),
+    "H3": _ring(47, 225) + (0,), "H4": _ring(47, 315) + (0,),
+})
 
 # ---- vapen-optikmodul (42×62, P4-carrier) ----
 # Lins-hål Ø16 i mitten (kamera bakom kortet): keepout x[-8,8] y[-12,4].
@@ -205,7 +229,7 @@ BOARDS = {
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
                           vest_pos, ("rect", 29, 21), layers=2, free=(-24, 24, -18, 0)),
     "helmet": lambda: place("hardware/helmet-halo.net", "hardware/helmet-halo.kicad_pcb",
-                            helmet_pos, ("circle", 50), layers=4, center_hole=10, free=(-30, 30, 28, 12)),
+                            helmet_pos, ("circle", 50), layers=4, free=(-3, 3, -3, 3)),
     # vapnet: alla delar placeras explicit -> tom fri-zon (säker, ingen krock med lins)
     "weapon": lambda: place("hardware/weapon-module.net", "hardware/weapon-module.kicad_pcb",
                             weapon_box, ("rect", 27, 37), layers=4, free=(26, 27, 36, 37), cutout=(0, -6, 8)),
