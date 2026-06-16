@@ -4,6 +4,11 @@
 
 Think MILES / laser-tag, but with simulated ballistics, physical recoil feedback, NFC-based ammunition logistics, and an open telemetry stack you own.
 
+> 📖 **Komplett systemguide (master-referens):** [`STRILAS-SYSTEM-GUIDE.md`](STRILAS-SYSTEM-GUIDE.md)
+> — allt på ett ställe: arkitektur, ballistik/räckvidd, precision, hitbox, algoritm, optik, RTK-position,
+> haptik, korten, batteritid, eye-safety, tillverkning, verifiering och repo-karta.
+> Tillverkningsberedskap: [`vapen-stack/nextpcb/FORSTA-BATCH.md`](vapen-stack/nextpcb/FORSTA-BATCH.md).
+
 ---
 
 ## ⚠️ Safety first — read this before building anything
