@@ -94,17 +94,19 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
     print(f"  {pcbfile}: {len(fps)} komponenter, {len(nets)} nät")
 
 
-# ---- väst-patch (KOMPAKT 38×28) — liten, lätt att placera; 3V3 från moderkort (ingen LDO) ----
-vest_pos = {   # ±19,±14. refs: U1-3=TSOP · D1-3=OR-dioder · D4,D5=OSLON 860nm · R3,R4=10R 2512
-    # R1=DATA-pullup · R2=gate · C1=bulk · C2-4=TSOP-avkoppl · Q1=driver · J1=5-pol (matchar moderkort)
-    "U1": (-11, 10.5, 0), "U2": (-2.5, 10.5, 0), "U3": (6, 10.5, 0),  # TSOP4856 tät rad (origo -2,53 off → kroppar centrerade -8,5/0/8,5)
-    "D1": (-8.5, 4.5, 0), "D2": (0, 4.5, 0), "D3": (8.5, 4.5, 0),     # OR-dioder (under varje TSOP)
-    "C2": (-8.5, 0.5, 0), "C3": (0, 0.5, 0), "C4": (8.5, 0.5, 0),     # TSOP-avkoppling (3V3)
-    "D4": (-16.5, 9, 0), "D5": (16.5, 9, 0),                       # OSLON 860nm konstellation (sidorna)
-    "R3": (-16.5, 1.5, 90), "R4": (16.5, 1.5, 90),                 # LED-serieR 10R 2512 (vertikala, under LED)
-    "Q1": (-4, -5.5, 0), "R2": (2, -5.5, 90), "R1": (8, -5.5, 0),  # N-FET + gate-R + DATA-pullup
-    "C1": (-12, -5.5, 0),                                          # bulk 10µF (VBAT)
-    "J1": (-6.35, -11.5, 90),                                      # 1x5 (centrerad vid rot90), nederkant
+# ---- väst-patch (täcknings-NOD ~36×30) — 4 ledade TSOP (3 fläktade åt sidan + 1 rakt upp), kardborre ----
+# Benen BÖJS för att rikta domerna: U1/U2/U3 = sidled-fläkt (~-45°/0°/+45°), U4 = rakt upp. 3V3 fr moderkort.
+vest_pos = {   # ±18,±15. refs: U1-4=TSOP(MOLD) · D1-4=OR-dioder · D5,D6=OSLON 860nm · R3,R4=10R 2512
+    # origo-offset +2,5 → kropp-centrum = origo+2,5 (MOLD-paddrad). R1=DATA-pull · R2=gate · C1=bulk · C2-5=avkoppl
+    "U1": (-12.5, 13, 0), "U2": (-2.5, 13, 0), "U3": (7.5, 13, 0),  # 3 sida-TSOP topp (kropp-ctr -10/0/10)
+    "U4": (-2.5, 6, 0),                                            # upp-TSOP (kropp-ctr 0; dom rakt upp)
+    "D5": (-15.5, 6, 0), "D6": (15.5, 6, 0),                       # OSLON 860nm konstellation (sidorna)
+    "R3": (-15.5, -0.5, 90), "R4": (15.5, -0.5, 90),               # LED-serieR 10R 2512
+    "D1": (-9, -2, 0), "D2": (-3, -2, 0), "D3": (3, -2, 0), "D4": (9, -2, 0),  # OR-dioder (rad, centrerat)
+    "C2": (-9, -6, 0), "C3": (-3, -6, 0), "C4": (3, -6, 0), "C5": (9, -6, 0),  # TSOP-avkoppling
+    "Q1": (-9, -9.5, 0), "R2": (-4, -9.5, 90), "R1": (1, -9.5, 0),  # N-FET + gate-R + DATA-pullup
+    "C1": (7, -9.5, 0),                                          # bulk 10µF (VBAT)
+    "J1": (-6.35, -14, 90),                                        # 1x5 (matchar moderkort), nederkant
 }   # inga monteringshål — lim/kardborre-fäst patch
 # ---- hjälm-NOD (Ø100, komplett: buck+XIAO-S3+8TSOP+4LED+GNSS+I2S-audio) ----
 # Ring (r=42) = 8× TSOP utåtriktade (360° huvud) + diod-OR + avkoppling strax innanför.
@@ -242,7 +244,7 @@ vest_mb_pos.update({
 
 BOARDS = {
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
-                          vest_pos, ("rect", 19, 14), layers=2, free=(-3, 3, -3, 3)),
+                          vest_pos, ("rect", 18, 16), layers=2, free=(-3, 3, -3, 3)),
     "vest_mb": lambda: place("hardware/vest-mb.net", "hardware/vest-mb.kicad_pcb",
                              vest_mb_pos, ("rect", 50, 30), layers=4, free=(-3, 3, -3, 3)),
     "helmet": lambda: place("hardware/helmet-halo.net", "hardware/helmet-halo.kicad_pcb",

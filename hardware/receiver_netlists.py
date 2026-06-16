@@ -21,7 +21,9 @@ def mk(name, ref, pins, fp, value=""):
 
 def defs():
     return dict(
-        TSOP=mk("TSOP4856", "U", [(1, "OUT"), (2, "GND"), (3, "VS")], "OptoDevice:Vishay_MINIMOLD-3Pin", "TSOP4856"),
+        # TSOP4856 = LEDAD (genomplåt) 3-bens IR-mottagare (Vishay doc 82459, 6,0×6,95×5,6, AGC2).
+        # MOLD-footprint (rätt storlek). Benen BÖJS för att rikta domen (3 åt sidan + 1 rakt upp/patch).
+        TSOP=mk("TSOP4856", "U", [(1, "OUT"), (2, "GND"), (3, "VS")], "OptoDevice:Vishay_MOLD-3Pin", "TSOP4856"),
         LED=mk("SFH4715AS", "D", [(1, "A"), (2, "K")], "strilas:IR_Emitter_OSRAM_OSLON_Black_SFH4725S", "SFH4715AS_860nm"),
         ORD=mk("ORdiode", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SOD-123", "BAT54"),
         NFET=mk("AO3400", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3400"),
@@ -66,5 +68,5 @@ def build(n_tsop, n_led, gnss, out_file):
 
 
 if __name__ == "__main__":
-    build(3, 2, False, "hardware/vest-patch.net")     # väst-patch
+    build(4, 2, False, "hardware/vest-patch.net")     # väst-patch: 4 TSOP (3 sida-fläkt + 1 upp) + 2 LED
     # hjälm-noden byggs nu av hardware/helmet_netlist.py (komplett nod: buck+XIAO-S3+GNSS+audio)

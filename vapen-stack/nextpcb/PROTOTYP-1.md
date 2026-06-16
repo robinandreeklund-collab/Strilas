@@ -16,7 +16,7 @@ NextPCB min-order är oftast 5 st → 5 optik (1 behövs nu) + 5 väst-patchar =
 > Samma routade optikkort som produktion — bara IMU:n obestyckad. IMU-footprinten finns kvar
 > för framtida produktionsversion (då IMU sätts tillbaka på kortet, stelt mot optiska axeln).
 
-- **Optik:** 54×74 mm, **4-lager**. **Väst-patch:** **38×28 mm** (kompakt, lim/kardborre-fäst), **2-lager**. FR-4 1,6 mm, HASL/ENIG.
+- **Optik:** 54×74 mm, **4-lager**. **Väst-patch:** **36×32 mm täcknings-nod** (4 ledade TSOP4856: 3 fläktade åt sidan + 1 rakt upp, ben böjs för att rikta domerna; lim/kardborre-fäst), **2-lager**. FR-4 1,6 mm, HASL/ENIG.
 - Väst-patchen är **färdigroutad** (0 oroutade · 0 clearance · 0 oconnected). **Liten patch:** ingen LDO
   och inga skruvhål — **3,3 V kommer från väst-moderkortet** via 5-pol J1 (VBAT·GND·DATA·LED_EN·3V3,
   matchar moderkortets zon-kontakt). TSOP4856 (abs-max 6 V) matas alltså av moderkortets buck-3V3,
@@ -26,7 +26,7 @@ NextPCB min-order är oftast 5 st → 5 optik (1 behövs nu) + 5 väst-patchar =
 
 ## Kund-lödda TH-kontakter (NextPCB gör endast SMT)
 - **Optik:** J1 (1×14 P4-socket) + J2 (JST-XH batteri) = **DNP** → du sourcar + lödder själv.
-- **Väst-patch:** J1 (1×4) = **DNP** → du sourcar + lödder själv.
+- **Väst-patch:** J1 (1×5) + 4× TSOP4856 (ledade, böjs/riktas för hand) = **DNP** → du sourcar + lödder själv; NextPCB monterar SMD (LED/dioder/R/C/FET).
 - → NextPCB monterar bara ytmonterat (billigare, ingen selektiv-/handlödning); centroiderna
   utesluter dessa kontakter.
 
