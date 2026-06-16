@@ -55,6 +55,8 @@ def verify(path):
 # 1) route ALLA nät (inkl GND som spår) — freerouting kopplar varje GND-nod → inga öar
 shutil.copy(PCB,"/tmp/_vest_pp.kicad_pcb")
 b=pcbnew.LoadBoard(PCB); pcbnew.ExportSpecctraDSN(b,DSN)
+# bredda kraft-/LED-nät till 0,4 mm (TSOP-3V3 stannar smalt; LED-grenar bär ~0,5 A)
+subprocess.run(["python3","hardware/dsn_power_class.py",DSN])
 clean=False
 for seed in range(1,11):
     subprocess.run(["xvfb-run","-a","java","-jar","/opt/freerouting.jar","-de",DSN,"-do",SES,"-mp","200"],

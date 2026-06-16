@@ -104,7 +104,8 @@ vest_pos = {   # 58×42 (±29,±21). FULL explicit placering (inga grid-delar) �
     "D4": (-21, -2, 0), "D5": (21, -2, 0),                          # OSLON 860nm konstellation (spridda)
     "R3": (-12, -2, 90),"R4": (12, -2, 90),                         # LED-serieR 10R 2512 (inboard)
     "Q1": (0, -8, 0),   "R2": (7, -8, 90),                          # N-FET-driver + gate-R
-    "C1": (-20, -10, 0),"R1": (-12, -10, 0),                        # bulk 10µF / DATA-pullup
+    "C1": (-20, -10, 0),"R1": (-12, -10, 0),                        # bulk 10µF (VBAT) / DATA-pullup (3V3)
+    "U4": (-4, -14, 0), "C5": (-11, -14, 90), "C6": (4, -14, 0),    # 3V3-LDO (HT7333-A SOT-89) + Cin/Cout
     "J1": (14, -9, 0),                                              # 1x4 — pin1 origo; pin4 @ rel -16,6 (innanför -21)
     "H1": (-26, 18, 0), "H2": (26, 18, 0), "H3": (-26, -18, 0), "H4": (26, -18, 0),
 }

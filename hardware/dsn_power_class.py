@@ -6,7 +6,9 @@ Användning: python dsn_power_class.py <board.dsn>
 """
 import re, sys
 
-POWER = {"VBAT", "VBAT_F", "VBAT_IN", "N$2", "LED_MID", "LED_CATH"}
+# Effekt-/LED-nät (vapen + väst/hjälm). LED_A* = väst/hjälm konstellations-grenar.
+POWER = {"VBAT", "VBAT_F", "VBAT_IN", "N$2", "LED_MID", "LED_CATH",
+         "LED_A1", "LED_A2", "LED_A3", "LED_A4"}
 
 
 def main(dsn):
@@ -24,9 +26,11 @@ def main(dsn):
     # lägg in ny power-klass efter kicad_default-klassens avslut
     kc = re.search(r'\(class kicad_default.*?\n      \)\n    \)', t, re.S)
     block = kc.group(0)
+    # auto-detektera via-padstack (4-lager: Via[0-3]_..., 2-lager: Via[0-1]_...) → funkar för båda
+    vm = re.search(r'\b(Via\[0-\d\]_\d+:\d+_um)\b', t)
+    circuit = f'\n      (circuit\n        (use_via {vm.group(1)})\n      )' if vm else ''
     pclass = (
-        '\n    (class power "" ' + " ".join(pwr) + '\n'
-        '      (circuit\n        (use_via Via[0-3]_600:300_um)\n      )\n'
+        '\n    (class power "" ' + " ".join(pwr) + circuit + '\n'
         '      (rule\n        (width 400)\n        (clearance 200.1)\n      )\n    )'
     )
     t = t[:kc.end()] + pclass + t[kc.end():]

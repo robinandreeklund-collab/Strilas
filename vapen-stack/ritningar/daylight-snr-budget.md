@@ -1,6 +1,6 @@
 # STRILAS — dagsljus-SNR-budget @150 m (konstellation → kamera)
 
-> Varför väst/hjälm-konstellationen MÅSTE vara högeffekt **SFH 4715AS** (860 nm OSLON, 900 mW/sr@1A),
+> Varför väst/hjälm-konstellationen MÅSTE vara högeffekt **SFH 4715AS** (860 nm OSLON, **Ie 780 mW/sr@1A**, datablad),
 > inte en svag 1206. Detta är den #1-mätpunkt design-resolution §1.3 flaggade — här är budgeten.
 
 ## Antaganden (verkliga delar)
@@ -10,7 +10,7 @@
 | Lins | 16 mm, f/2 → bländardiameter 8 mm, area **5,0·10⁻⁵ m²** |
 | Filter | 860 nm bandpass, FWHM ~30 nm, T ≈ 0,7 ; lins-T ≈ 0,85 |
 | Exponering | 100 µs (kort → fryser recoil, släpper lite ljus) |
-| LED | SFH 4715AS 860 nm; drivs ~0,5 A → **470 mW/sr** (900 mW/sr vid 1 A) |
+| LED | SFH 4715AS 860 nm; drivs ~0,4–0,5 A → **~390 mW/sr** (780 mW/sr vid 1 A, databl.) |
 | Avstånd | 150 m, klar atmosfär (T ≈ 0,95) |
 
 ## Signal (LED, per frame)
@@ -43,14 +43,17 @@ En svag 1206 (10 mW/sr) ger **nominellt** SNR ~19 — ser bra ut på papper. MEN
 äter 10–50×: **off-axis** (80°-stråle → lägre intensitet i vinkel), **solglimt/flare**, **filter-
 vinkelskift**, **dis/aerosol** sämre dagar, **damm/repor**, **defokus**. Då:
 - 1206 @10 mW/sr → derat SNR **0,4–2** → **faller** i fält.
-- SFH 4715AS @470 mW/sr → derat SNR **8–40** → **håller** med marginal.
+- SFH 4715AS @~390 mW/sr → derat SNR **7–35** → **håller** med marginal.
 
 → Högeffekt-OSLON ger den **marginal** som krävs för att klara 150 m dagsljus i verkligheten.
 Det är därför Prototyp 1 kör SFH 4715AS, inte en närhålls-1206.
 
-## Patch-drivning (väst/hjälm)
-VBAT(2S) → **10R 2512 (2W)** → SFH 4715AS → N-FET (LED_EN-modulerad, låg duty) → GND.
-~0,5 A/LED → 470 mW/sr. Vid 1 A → 900 mW/sr (mer marginal, mer värme — välj vid bringup).
+## Patch-drivning (väst/hjälm) — verifierad kraftarkitektur
+**LED-gren:** VBAT(2S) → **10R 2512 (2W)** → SFH 4715AS → N-FET (LED_EN-modulerad) → GND.
+~0,4–0,5 A/LED → ~390 mW/sr. **OBS:** 0,5 A i 10R = 2,5 W topp → kör **max ~50 % duty**
+(modulerad konstellation, ej DC) annars överhettas 2 W-motståndet. LED-spår breddade till 0,4 mm.
+**Logik-gren (separat):** TSOP4856 (**abs-max VS = 6 V**) + DATA-pullup matas från en lokal
+**HT7333-A 3,3 V-LDO** (Vin ≤ 12 V → 2S OK), EJ direkt från VBAT. DATA blir ren 3,3 V mot väst-noden.
 
 ## Kvar att mäta (ärligt)
 - Bänkmät faktisk blob-SNR @150 m i sol (slutgiltig bekräftelse) — budgeten har stor marginal men
