@@ -25,7 +25,7 @@ KiCad-format). Kortet är **färdigroutat** (4-lager) med Gerbers — se status 
 | D2, D3 | **Vishay VSMA1094750X02 (940 nm)** | `strilas:IR_Emitter_Vishay_VSMA1094750` | 2× IR-skott-emitter i serie (1,5 A DC / 5 A puls) |
 | Q1 | AO3400 (N-FET) | SOT-23 | 56 kHz-gate |
 | R3 | 220 Ω | R_0805 | gate-resistor |
-| U1 | **TDK ICM-42688-P** | `strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx` | IMU (SPI 4-wire); pin-komp. m. ICM-426xx/456xx-familjen |
+| U1 | **TDK ICM-42670-P** | `strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx` | IMU (SPI 4-wire); pin-komp. m. ICM-426xx/456xx-familjen |
 | C3, C4 | 100 nF | C_0402 | IMU-avkoppling |
 | C5 | 1 µF | C_0805 | 3V3-bulk |
 | H1–H3 | M2.5 | MountingHole_2.5mm | kort-montering (till GND) |
@@ -53,7 +53,7 @@ VBAT_IN : F1.1 J1.1                    (batteri in)
 VBAT_F  : F1.2 Q1.3                    (efter säkring → reverse-FET drain)
 VBAT    : C1 C2 D1(TVS) Q2.S R2(Rset)  (skyddad rail; Q2 = reverse-P-FET)
 R2→D2→D3→Q1.D (LED-sträng) ; Q1.S→GND ; Q1.G←R3←IR_MOD   (driver + 56 kHz-gate, Q1 = N-FET)
-SPI     : SCK(13)/MOSI(14)/MISO(1)/nCS(12)/INT1(4)  ↔  U1(ICM-42688-P)  ↔  J1
+SPI     : SCK(13)/MOSI(14)/MISO(1)/nCS(12)/INT1(4)  ↔  U1(ICM-42670-P)  ↔  J1
 +3V3    : U1.VDD(8)/VDDIO(5) + C3/C4/C5 + J1.2
 GND     : U1.GND(6)+RESV(7) + allt retur + monteringshål   (IMU RESV 2,3,9,10,11 = NC per datablad)
 ```

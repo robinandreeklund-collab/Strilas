@@ -42,13 +42,13 @@ PTC = mk("PTC", "F", [(1, "~"), (2, "~")], "Fuse:Fuse_1206_3216Metric", "PTC_1A"
 TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
 LED = mk("SFH4725S", "D", [(1, "A"), (2, "K")],
          "strilas:IR_Emitter_OSRAM_OSLON_Black_SFH4725S", "SFH4725S_940nm")
-# ICM-42688-P LGA-14 — pin-nr enligt TDK DS-000347 §4.1 (pin-KOMPATIBEL med ICM-456xx):
-# 1 SDO  2 RESV  3 RESV  4 INT1  5 VDDIO  6 GND  7 RESV(→GND)
-# 8 VDD  9 INT2/FSYNC  10 RESV 11 RESV 12 CS  13 SCLK 14 SDI
-# (bytte från ICM-45686 → ICM-42688-P: lägre gyrobrus 2.8 vs 3.8 mdps/√Hz + brett
-#  andrahandsutbud. Samma footprint/pinout → kort oförändrat; pin7 RESV kopplas GND.)
-IMU = mk("ICM-42688-P", "U", [(i, i) for i in range(1, 15)],
-         "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-42688-P")
+# ICM-42670-P LGA-14 — pin-nr enligt TDK DS-000451 / referensschema NW-MOT-ICM42670-P:
+# 1 SDO  2 RESV  3 RESV  4 INT1  5 VDDIO  6 GND  7 FSYNC(→GND när oanvänd)
+# 8 VDD  9 INT2  10 RESV 11 RESV 12 CS  13 SCLK 14 SDI
+# (IN-STOCK hos LCSC/NextPCB; DROP-IN mot 42688/45686 — samma footprint/pinout,
+#  enda skillnad pin7 FSYNC istället f. RESV, men "connect to GND if not used" → samma koppling.)
+IMU = mk("ICM-42670-P", "U", [(i, i) for i in range(1, 15)],
+         "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-42670-P")
 MH = lambda n: mk(f"MH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", "M2.5")
 # kamera-monteringshål (M2) — matchar Arducam B0332 28×28 mm-mönster
 CMH = lambda n: mk(f"CMH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2_kamera")
@@ -127,7 +127,7 @@ Rg[1] += IR_MOD; Rg[2] += IRG; Q1["G"] += IRG     # 56 kHz på gaten
 # ---------- IMU (SPI 4-wire) + avkoppling ----------
 # pin-nr (TDK AN-000483 Fig.2):  8=VDD 5=VDDIO 6=GND 13=SCLK 14=SDI 1=SDO 12=CS 4=INT1
 U2[8] += P3V3; U2[5] += P3V3; U2[6] += GND        # VDD / VDDIO / GND
-U2[7] += GND                                      # pin7 RESV → GND (ICM-42688-P §4.1)
+U2[7] += GND                                      # pin7 FSYNC → GND (oanvänd, ICM-42670-P)
 U2[13] += SCK; U2[14] += MOSI; U2[1] += MISO; U2[12] += nCS; U2[4] += INT
 # pinnar 2,3,9,10,11 = RESV/INT2/FSYNC -> ej anslutna (NC), enligt datablad
 Cd1[1] += P3V3; Cd1[2] += GND; Cd2[1] += P3V3; Cd2[2] += GND; Cd3[1] += P3V3; Cd3[2] += GND

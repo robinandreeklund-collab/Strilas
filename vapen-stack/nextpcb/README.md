@@ -22,11 +22,11 @@ Package/Footprint · Description · Procurement Type · Customer Note`
 - Monteringshål (H*) och Carclo-linsben är **kort-features, ej komponenter** → ej i BOM.
 
 ## Att VERIFIERA före beställning (`Customer Note`-flaggor)
-1. **U1/U2 IMU = TDK ICM-42688-P** — lägre gyrobrus (2.8 vs 3.8 mdps/√Hz). **Pin-kompatibel**
-   med hela ICM-426xx/456xx-familjen i SAMMA footprint → kan bestyckas med ICM-42686-P eller
-   industri-temp **IIM-42652** (−40…+105 °C) utan kortändring. **OBS LEDTID:** NextPCB visar
-   ~316–327 dgr för ICM-42688-P (TDK-IMU:er är bristvara där). Alternativ: prova en familje-MPN
-   ovan, sätt IMU:n `C` och köp själv (DigiKey/Mouser/LCSC har lager), eller acceptera ledtiden.
+1. **U1/U2 IMU = TDK ICM-42670-P** — vald för att den är **IN-STOCK** hos LCSC/NextPCB (C3288646),
+   till skillnad från ICM-42688-P/45686 (~285–327 dgr ledtid). Pinout verifierad mot databladet
+   DS-000451 (`../../datasheet/`): pin 7 = FSYNC ("connect to GND if not used" → vår koppling).
+   **Drop-in i SAMMA footprint** som hela ICM-426xx/456xx-familjen → vill du senare ha lägre
+   gyrobrus kan ICM-42688-P bestyckas på exakt samma kort utan ändring.
 2. **D2/D3 SFH 4725S** (IR-emitter) — bestyckas av NextPCB (matchad, ~10 dgr). INTE kund-levererad
    → kortet kommer komplett bestyckat. (Linser/kamera tillkommer separat, se huvud-README.)
 3. **R2 (optik) 3R3 2W 2512** — effektresistor (IR-strömtak). MPN är 2 W-variant (Vishay HP); bekräfta effekt.
