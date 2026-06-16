@@ -61,6 +61,10 @@ MPN = {
     "AMP: 3V3·GND·SD·GAIN·DIN·BCLK·LRC": ("2.54-1x07-FH", "generisk", "Header 1x07 → MAX98357A-amp-breakout", "", "TH; amp+högtalare köps separat"),
     "MIC: 3V3·GND·SD·WS·SCK·LR": ("2.54-1x06-FH", "generisk", "Header 1x06 → I²S MEMS-mik-breakout", "", "TH; mik köps separat"),
     "2S batteri":  ("S2B-XH-A(LF)(SN)", "JST", "JST-XH 2-pol header 2.5mm THT (2S-batteri)", "", "TH"),
+    # --- väst-moderkort ---
+    "74HC165":     ("SN74HC165DR", "Texas Instruments", "8-bit PISO shift-register SOIC-16 (läs 10 DATA via SPI)", "", ""),
+    "TPIC6B595":   ("TPIC6B595DWR", "Texas Instruments", "Power 8-bit shift-register SOIC-20W, 150mA/kanal open-drain (vibrator-driver)", "", ""),
+    "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB": ("2.54-1x06", "generisk", "Header 1x06 → väst-patch + zon-vibrator", "", "TH; patch (pin1-4) + ERM-motor (pin5-6) kund-kablas"),
     "100R":        ("RC0805FR-07100RL", "Yageo", "Res 100R 1% 0805", "", ""),
     "10k":         ("RC0805FR-0710KL", "Yageo", "Res 10k 1% 0805", "", ""),
     "VBAT·GND·DATA·LED_EN":("2.54-1x04-FH", "generisk", "Stiftlist 1x04 2.54 mm", "", "till väst-nod"),

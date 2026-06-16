@@ -225,9 +225,29 @@ firecontrol_pos = {
     "H3": (19.73, 9.15, 0), "H4": (19.73, -9.15, 0),
 }
 
+# ---- väst-moderkort (90×60, väst-nod) — 10 zon-kontakter + XIAO-S3 + 165/TPIC + buck ----
+vest_mb_pos = {}
+for i, xc in enumerate([-38, -19, 0, 19, 38]):  # xc = önskad mitt; origo = xc-6.35 (1x6 sträcker +x vid rot90)
+    vest_mb_pos[f"J{i+1}"] = (xc - 6.35, 24, 90)  # övre zon-rad J1-J5 (1x6, rot90, centrerad)
+    vest_mb_pos[f"J{i+6}"] = (xc - 6.35, -24, 90)  # nedre zon-rad J6-J10
+vest_mb_pos.update({
+    "J11": (-7.6, 0, 0), "J12": (7.6, 0, 0),     # XIAO ESP32-S3 (2× 1x7 sockel), centrum
+    "U2": (-32, 8, 0), "U3": (-32, -8, 0),       # 2× 74HC165 (DATA-läsning), vänster
+    "C5": (-37, 8, 90), "C6": (-37, -8, 90),     # 165-avkoppling
+    "U4": (32, 9, 0), "U5": (32, -9, 0),         # 2× TPIC6B595 (VIB-driver), höger
+    "C7": (40, 4, 90), "C8": (40, -4, 90),       # TPIC-avkoppling
+    "U1": (-22, 12, 0), "L1": (-15, 12, 0),      # buck + induktor (övre-vänster mittband)
+    "C1": (-26, 8, 0), "C2": (-28, 15, 0), "C3": (-9, 13, 0), "C4": (-9, 8, 0),  # Cbst/Cin/Cout/Cbulk
+    "R1": (-19, 7, 90), "R2": (-15, 7, 90),      # FB-delare
+    "J13": (18, -10, 0),                         # 2S-batteri JST (höger mittband)
+    "H1": (-46, 27, 0), "H2": (46, 27, 0), "H3": (-46, -27, 0), "H4": (46, -27, 0),
+})
+
 BOARDS = {
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
                           vest_pos, ("rect", 29, 21), layers=2, free=(-24, 24, -18, 0)),
+    "vest_mb": lambda: place("hardware/vest-mb.net", "hardware/vest-mb.kicad_pcb",
+                             vest_mb_pos, ("rect", 50, 30), layers=4, free=(-3, 3, -3, 3)),
     "helmet": lambda: place("hardware/helmet-halo.net", "hardware/helmet-halo.kicad_pcb",
                             helmet_pos, ("circle", 50), layers=4, free=(-3, 3, -3, 3)),
     # vapnet: alla delar placeras explicit -> tom fri-zon (säker, ingen krock med lins)
