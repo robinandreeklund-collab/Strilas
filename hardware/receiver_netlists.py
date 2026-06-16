@@ -29,7 +29,7 @@ def defs():
         LDO=mk("HT7333-A", "U", [(1, "GND"), (2, "VIN"), (3, "VOUT")], "Package_TO_SOT_SMD:SOT-89-3", "HT7333-A"),
         R=mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric"),
         C=mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0805_2012Metric", "100nF"),
-        J=mk("Conn_1x04", "J", [(i, i) for i in range(1, 5)], "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical", "VBAT·GND·DATA·LED_EN"),
+        J=mk("Conn_1x05", "J", [(i, i) for i in range(1, 6)], "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical", "VBAT·GND·DATA·LED_EN·3V3"),
         UFL=mk("U.FL", "J", [(1, "S"), (2, "G")], "Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical", "GNSS"),
         MH=mk("MH", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", "M2.5"),
     )
@@ -40,9 +40,9 @@ def build(n_tsop, n_led, gnss, out_file):
     P = defs()
     VBAT, GND, DATA, LED_EN, LEDC = Net("VBAT"), Net("GND"), Net("DATA"), Net("LED_EN"), Net("LED_CATH")
     P3V3 = Net("+3V3")                                                # lokal logik-rail (LDO-utgång)
-    J1 = P["J"]()
-    J1[1] += VBAT; J1[2] += GND; J1[3] += DATA; J1[4] += LED_EN
-    Rpu = P["R"](value="10k"); Rpu[1] += P3V3; Rpu[2] += DATA         # DATA pullup → 3V3 (EJ VBAT) → 3,3 V-logik
+    J1 = P["J"]()                                                    # 5-pol → matchar moderkortets zon-kontakt
+    J1[1] += VBAT; J1[2] += GND; J1[3] += DATA; J1[4] += LED_EN; J1[5] += P3V3  # 3V3 KOMMER FRÅN moderkortet
+    Rpu = P["R"](value="10k"); Rpu[1] += P3V3; Rpu[2] += DATA         # DATA pullup → 3V3 → 3,3 V-logik
     Cb = P["C"](value="10uF", footprint="Capacitor_SMD:C_1206_3216Metric"); Cb[1] += VBAT; Cb[2] += GND  # LED-bulk på VBAT
     # TSOP-array + diod-OR  (TSOP matas från +3V3, EJ VBAT — abs-max VS = 6 V)
     for i in range(n_tsop):
@@ -60,18 +60,9 @@ def build(n_tsop, n_led, gnss, out_file):
         led = P["LED"](); rl = P["R"](value="10R", footprint="Resistor_SMD:R_2512_6332Metric")
         a = Net(f"LED_A{i+1}")                                        # namngivet LED-anodnät (för power-klass)
         rl[1] += VBAT; rl[2] += a; led["A"] += a; led["K"] += LEDC
-    # lokal 3,3 V LDO (HT7333-A): VBAT → +3V3 för TSOP + DATA-pullup. Vin 2S < 12 V abs-max.
-    ldo = P["LDO"](); ldo["VIN"] += VBAT; ldo["GND"] += GND; ldo["VOUT"] += P3V3
-    cin = P["C"](value="1uF"); cin[1] += VBAT; cin[2] += GND          # LDO-in
-    cout = P["C"](value="10uF", footprint="Capacitor_SMD:C_1206_3216Metric"); cout[1] += P3V3; cout[2] += GND  # LDO-ut (stabilitet)
-    # GNSS U.FL (hjälm)
-    if gnss:
-        u = P["UFL"](); u["S"] += Net("GNSS_RF"); u["G"] += GND
-    # monteringshål
-    for _ in range(4):
-        P["MH"]()[1] += GND
+    # (Ingen LDO — 3,3 V från moderkortet. Inga skruvhål — patchen lim/kardborre-fästs → minsta yta.)
     generate_netlist(file_=out_file)
-    print(f"  {out_file}: {n_tsop} TSOP, {n_led} LED, LDO HT7333-A" + (", GNSS U.FL" if gnss else ""))
+    print(f"  {out_file}: {n_tsop} TSOP, {n_led} LED (3V3 från moderkort, ingen LDO, lim-fäst)")
 
 
 if __name__ == "__main__":

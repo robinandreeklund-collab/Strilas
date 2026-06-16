@@ -94,21 +94,18 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
     print(f"  {pcbfile}: {len(fps)} komponenter, {len(nets)} nät")
 
 
-# ---- väst-patch (58×42) ----
-vest_pos = {   # 58×42 (±29,±21). FULL explicit placering (inga grid-delar) — OSLON-LED + 2512 R är stora.
-    # refs (netlist-ordning): U1-3=TSOP · D1-3=OR-dioder · D4,D5=OSLON-konstellation 860nm
-    # R1=DATA-pullup · R2=gate · R3,R4=LED-serieR(2512 10R) · C1=bulk · C2-4=TSOP-avkoppl · Q1=driver
-    "U1": (-17, 16, 0), "U2": (0, 16, 0), "U3": (17, 16, 0),       # TSOP4856 (top, mot skytt)
-    "D1": (-17, 9.5, 0), "D2": (0, 9.5, 0), "D3": (17, 9.5, 0),    # OR-dioder (under varje TSOP)
-    "C2": (-17, 4.5, 0), "C3": (0, 4.5, 0), "C4": (17, 4.5, 0),    # TSOP-avkoppling
-    "D4": (-21, -2, 0), "D5": (21, -2, 0),                          # OSLON 860nm konstellation (spridda)
-    "R3": (-12, -2, 90),"R4": (12, -2, 90),                         # LED-serieR 10R 2512 (inboard)
-    "Q1": (0, -8, 0),   "R2": (7, -8, 90),                          # N-FET-driver + gate-R
-    "C1": (-20, -10, 0),"R1": (-12, -10, 0),                        # bulk 10µF (VBAT) / DATA-pullup (3V3)
-    "U4": (-4, -14, 0), "C5": (-11, -14, 90), "C6": (4, -14, 0),    # 3V3-LDO (HT7333-A SOT-89) + Cin/Cout
-    "J1": (14, -9, 0),                                              # 1x4 — pin1 origo; pin4 @ rel -16,6 (innanför -21)
-    "H1": (-26, 18, 0), "H2": (26, 18, 0), "H3": (-26, -18, 0), "H4": (26, -18, 0),
-}
+# ---- väst-patch (KOMPAKT 38×28) — liten, lätt att placera; 3V3 från moderkort (ingen LDO) ----
+vest_pos = {   # ±19,±14. refs: U1-3=TSOP · D1-3=OR-dioder · D4,D5=OSLON 860nm · R3,R4=10R 2512
+    # R1=DATA-pullup · R2=gate · C1=bulk · C2-4=TSOP-avkoppl · Q1=driver · J1=5-pol (matchar moderkort)
+    "U1": (-11, 10.5, 0), "U2": (-2.5, 10.5, 0), "U3": (6, 10.5, 0),  # TSOP4856 tät rad (origo -2,53 off → kroppar centrerade -8,5/0/8,5)
+    "D1": (-8.5, 4.5, 0), "D2": (0, 4.5, 0), "D3": (8.5, 4.5, 0),     # OR-dioder (under varje TSOP)
+    "C2": (-8.5, 0.5, 0), "C3": (0, 0.5, 0), "C4": (8.5, 0.5, 0),     # TSOP-avkoppling (3V3)
+    "D4": (-16.5, 9, 0), "D5": (16.5, 9, 0),                       # OSLON 860nm konstellation (sidorna)
+    "R3": (-16.5, 1.5, 90), "R4": (16.5, 1.5, 90),                 # LED-serieR 10R 2512 (vertikala, under LED)
+    "Q1": (-4, -5.5, 0), "R2": (2, -5.5, 90), "R1": (8, -5.5, 0),  # N-FET + gate-R + DATA-pullup
+    "C1": (-12, -5.5, 0),                                          # bulk 10µF (VBAT)
+    "J1": (-6.35, -11.5, 90),                                      # 1x5 (centrerad vid rot90), nederkant
+}   # inga monteringshål — lim/kardborre-fäst patch
 # ---- hjälm-NOD (Ø100, komplett: buck+XIAO-S3+8TSOP+4LED+GNSS+I2S-audio) ----
 # Ring (r=42) = 8× TSOP utåtriktade (360° huvud) + diod-OR + avkoppling strax innanför.
 # 4× LED-konstellation (r=45) mellan TSOP-paren. Centrum = stackad XIAO + buck + modul-headers.
@@ -245,7 +242,7 @@ vest_mb_pos.update({
 
 BOARDS = {
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
-                          vest_pos, ("rect", 29, 21), layers=2, free=(-24, 24, -18, 0)),
+                          vest_pos, ("rect", 19, 14), layers=2, free=(-3, 3, -3, 3)),
     "vest_mb": lambda: place("hardware/vest-mb.net", "hardware/vest-mb.kicad_pcb",
                              vest_mb_pos, ("rect", 50, 30), layers=4, free=(-3, 3, -3, 3)),
     "helmet": lambda: place("hardware/helmet-halo.net", "hardware/helmet-halo.kicad_pcb",

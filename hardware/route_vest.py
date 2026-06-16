@@ -58,17 +58,19 @@ b=pcbnew.LoadBoard(PCB); pcbnew.ExportSpecctraDSN(b,DSN)
 # bredda kraft-/LED-nät till 0,4 mm (TSOP-3V3 stannar smalt; LED-grenar bär ~0,5 A)
 subprocess.run(["python3","hardware/dsn_power_class.py",DSN])
 clean=False
-for seed in range(1,11):
+for seed in range(1,17):
     subprocess.run(["xvfb-run","-a","java","-jar","/opt/freerouting.jar","-de",DSN,"-do",SES,"-mp","200"],
                    stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     shutil.copy("/tmp/_vest_pp.kicad_pcb",PCB)
     subprocess.run(["python3","hardware/ses_apply.py",PCB,SES],stdout=subprocess.DEVNULL)
     u=unrouted(PCB)
-    print(f"  seed {seed}: signal-oroutade={u}")
-    if u==0: clean=True; break
-if not clean: print("!! ingen ren routning"); sys.exit(1)
-v,un=verify(PCB); print(f"clearance-brott@0.2mm={v}  oconnected={un}")
-if v or un: print("!! DRC ej ren"); sys.exit(1)
+    if u>1: print(f"  seed {seed}: signal-oroutade={u}"); continue
+    subprocess.run(["python3","hardware/vest_stitch.py"],stdout=subprocess.DEVNULL)  # VBAT R4.1→R3.1 (B_Cu)
+    v,un=verify(PCB)
+    print(f"  seed {seed}: signal-oroutade={u} → stitch → clearance={v} oconnected={un}")
+    if v==0 and un==0: clean=True; break   # signal + GND (no-pour-spår) + stitch alla rena
+if not clean: print("!! ingen helt ren routning"); sys.exit(1)
+print(f"clearance-brott@0.2mm=0  oconnected=0")
 print("REN board.")
 import os
 os.system("rm -rf /tmp/gbv && mkdir -p /tmp/gbv")

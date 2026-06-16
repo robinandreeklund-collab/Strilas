@@ -67,7 +67,7 @@ MPN = {
     "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB": ("2.54-1x06", "generisk", "Header 1x06 → väst-patch + zon-vibrator", "", "TH; patch (pin1-4) + ERM-motor (pin5-6) kund-kablas"),
     "100R":        ("RC0805FR-07100RL", "Yageo", "Res 100R 1% 0805", "", ""),
     "10k":         ("RC0805FR-0710KL", "Yageo", "Res 10k 1% 0805", "", ""),
-    "VBAT·GND·DATA·LED_EN":("2.54-1x04-FH", "generisk", "Stiftlist 1x04 2.54 mm", "", "till väst-nod"),
+    "VBAT·GND·DATA·LED_EN·3V3":("2.54-1x05", "generisk", "Stiftlist 1x05 2.54 mm → väst-moderkortets zon-kontakt", "", "TH; 3V3 från moderkortet (ingen LDO på patchen)"),
 }
 
 def netvals(path):
