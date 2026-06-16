@@ -103,7 +103,7 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
     print(f"  {pcbfile}: {len(fps)} komponenter, {len(nets)} nät")
 
 
-# ---- väst-patch (täcknings-NOD 46×46, FYRFALDIGT SYMMETRISK) — 4 ledade TSOP4856, kardborre/lim ----
+# ---- väst-patch (täcknings-NOD 32×32, FYRFALDIGT SYMMETRISK, kompakt) — 4 ledade TSOP4856, kardborre/lim ----
 # SIKTE (beräknat optimum, se vapen-stack/ritningar/patch-sikte.md): 4 mottagare jämnt 90° isär i
 # DIAMANT (NÖ/NV/SV/SÖ), var och en böjd ~40° UTÅT från kortets normal (ben böjs; silk-pil visar).
 # → 99,5 % av framåt-hemisfären, 100 % inom 60° zenit, ~2,3 mottagare ser ett frontalskott (redundans).
@@ -112,22 +112,20 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
 # Refs: U1-4=TSOP · varje TSOP har egen OR-diod (D1-4) + avkoppl-C (C2-5) BREDVID sig (4 identiska kluster).
 #       D5,D6=OSLON 860nm konstellation (N/S, symmetriskt) · R3,R4=10R 2512 · delat: J1=1x5, Q1=FET,
 #       R1=DATA-pull, R2=gate, C1=bulk — centrerat. (konstellations-LED ≠ per-TSOP; de är kamera-markörer.)
-vest_pos = {   # ±23. diamant-TSOP (kropp-radie 15, dom radiellt ut); D/C tangentiellt @ r9.6; LED på N/S-axeln
-    "U3": (11.48, 7.88, 135), "D3": (7.77, 5.64, 45), "C4": (5.64, 7.77, 45),       # NÖ-kluster
-    "U2": (-7.88, 11.48, 225), "D2": (-5.64, 7.77, 135), "C3": (-7.77, 5.64, 135),  # NV-kluster
-    "U1": (-11.48, -7.88, 315), "D1": (-7.77, -5.64, 45), "C2": (-5.64, -7.77, 45), # SV-kluster
-    "U4": (7.88, -11.48, 45), "D4": (5.64, -7.77, 135), "C5": (7.77, -5.64, 135),   # SÖ-kluster
-    "D5": (0, 20, 0), "R3": (0, 13.3, 90),       # N konstellations-LED + serieR (på y-axeln)
-    "D6": (0, -20, 0), "R4": (0, -13.3, 90),      # S
+vest_pos = {   # ±18. KOMPAKT diamant-TSOP (kropp-radie 14, dom radiellt ut); D/C tangentiellt; LED nära kanten
+    "U3": (10.77, 7.17, 135), "D3": (7.95, 4.23, 45), "C4": (4.23, 7.95, 45),       # NÖ-kluster
+    "U2": (-7.17, 10.77, 225), "D2": (-4.23, 7.95, 135), "C3": (-7.95, 4.23, 135),  # NV-kluster
+    "U1": (-10.77, -7.17, 315), "D1": (-7.95, -4.23, 45), "C2": (-4.23, -7.95, 45), # SV-kluster
+    "U4": (7.17, -10.77, 45), "D4": (4.23, -7.95, 135), "C5": (7.95, -4.23, 135),   # SÖ-kluster
+    "D5": (0, 13.5, 0), "D6": (0, -13.5, 0),     # konstellations-LED på N/S (nära kanten)
+    "R3": (11.5, 0, 90), "R4": (-11.5, 0, 90),    # LED-serieR (2512) i Ö/V-zonerna (fria i diamant)
     "J1": (-5.08, 0, 90),                          # 1x5 horisontellt centrerat (Ö–V-bandet)
     "C1": (-2.6, 3.6, 0), "Q1": (2.6, 3.6, 0),     # bulk + FET strax ovan kontakten
     "R1": (-2.6, -3.6, 0), "R2": (2.6, -3.6, 0),   # DATA-pullup + gate-R strax under
 }   # inga monteringshål — lim/kardborre-fäst patch
-# sikt-etiketter på silkscreen: böj-instruktion (Ö/V-axeln, fri) + riktning per TSOP-kluster
+# sikt-etiketter på silkscreen: böj-instruktion (fria y-axel-slivrar mellan center och LED)
 vest_labels = [
-    (-15, 0, "LUTA", 1.0), (15, 0, "40 UT", 1.0),   # böj benen 40° UTÅT (radiellt)
-    (8.5, 8.5, "NO", 0.8), (-8.5, 8.5, "NV", 0.8),
-    (-8.5, -8.5, "SV", 0.8), (8.5, -8.5, "SO", 0.8),
+    (0, 6.8, "40 UT", 0.8), (0, -6.8, "40 UT", 0.8),   # böj alla TSOP-ben 40° UTÅT (radiellt)
 ]
 # ---- hjälm-NOD (Ø100, komplett: buck+XIAO-S3+8TSOP+4LED+GNSS+I2S-audio) ----
 # Ring (r=42) = 8× TSOP utåtriktade (360° huvud) + diod-OR + avkoppling strax innanför.
@@ -285,7 +283,7 @@ BOARDS = {
     "helmet_mb": lambda: place("hardware/helmet-mb.net", "hardware/helmet-mb.kicad_pcb",
                                helmet_mb_pos, ("rect", 48, 38), layers=4, free=(-3, 3, -3, 3)),
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
-                          vest_pos, ("rect", 23, 23), layers=2, free=(-2, 2, -2, 2), labels=vest_labels),
+                          vest_pos, ("rect", 16, 16), layers=2, free=(-2, 2, -2, 2), labels=vest_labels),
     "vest_mb": lambda: place("hardware/vest-mb.net", "hardware/vest-mb.kicad_pcb",
                              vest_mb_pos, ("rect", 50, 30), layers=4, free=(-3, 3, -3, 3)),
     # vapnet: alla delar placeras explicit -> tom fri-zon (säker, ingen krock med lins)
