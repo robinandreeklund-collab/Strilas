@@ -1,0 +1,75 @@
+# STRILAS — uppdaterad precisionsanalys: IIM-42653 + 120 fps (FÖRSLAG)
+
+> Figur: [`precision-iim42653.png`](precision-iim42653.png) · bygger på [`precision-analys.md`](precision-analys.md)
+> **Status:** detta är en **förhandsanalys** av föreslagen ändring. Korten bär fortfarande
+> **ICM-42670-P** tills bytet görs. Pinout/exakta IIM-tal **låses mot databladet** (`datasheet/`)
+> innan något ändras. Konfidens flaggas per tal.
+
+## Vad som ändras
+| | Nu (på kortet) | Föreslaget |
+|---|---|---|
+| IMU | ICM-42670-P (verifierad: gyro 0,007 °/s/√Hz, ±2000 dps, ±1 °/s ZRO) | **IIM-42653** (industri/AEC-Q100, **±4000 dps**, ultralågt brus, stram skalfaktor) |
+| Kamera | OV9281 (antog 60 fps) | OV9281 **120 fps**, **low-distortion M12** (bekräftat av produktlänk) |
+
+Allt övrigt (16 mm-lins, 0,0107 °/px, PnP-konstellation, arkitektur "kameran = sikte") oförändrat.
+Skala: **1° = 2 618 mm @150 m**.
+
+## 1. Steady-state (mål i bild) — var redan litet, blir lite bättre
+| Felkälla | nu | föreslaget | not |
+|---|---|---|---|
+| Centroid-brus (0,1 px) | 2,8 mm | 2,8 mm | SNR-/optikberoende, oförändrat |
+| Intrinsisk kalib-rest | 5,2 mm | **3,9 mm** | low-distortion-lins → modellen passar bättre *(uppskattning, kalibreringsberoende)* |
+| IMU mellan-frame-brygga | 2,4 mm | **1,0–1,4 mm** | 120 fps + lägre IMU-brus *(IIM-tal ej låst; ofarligt oavsett)* |
+| Avstånd→hållpunkt (±0,9 m) | 1,6 mm | 1,6 mm | d(fall)/dR ≈ 1,8 mm/m |
+| **RSS** | **≈ 6,6 mm** | **≈ 5,2 mm** | |
+
+**Slutsats oförändrad:** sensorbruset (~5 mm 1σ) är ~27× mindre än hållpunkten (140 mm).
+Det är fortfarande **siktet som avgör träff, inte elektroniken** — den önskade "måste-sikta"-känslan.
+Steady-state var alltså aldrig problemet; uppgraderingen ger marginal, inte räddning.
+
+## 2. Recoil — här gör IIM-42653 + 120 fps verklig nytta
+Det här var systemets svaghet. Tre konkreta vinster:
+
+1. **±4000 dps FSR = ingen gyro-mättning (binär vinst).** En skarp recoil-puls kan toppa
+   över ±2000 dps; mättar gyrot blir integrationen under bryggan skräp. ±4000 dps tar bort
+   den failure-moden helt. *(Detta är säkert — det är en FSR-siffra, inte en gissning.)*
+2. **Stram industri-skalfaktor minskar ur-FOV-dödräkningen.** Felet när målet lämnar bild
+   = skalfaktorfel × integrerad vinkel:
+   | ur FOV | konsument ~1 % | konsument ~3 % | **industri ~0,5 %** (IIM, låses) |
+   |---|---|---|---|
+   | 10° | 262 mm | 785 mm | **131 mm** |
+   | 20° | 524 mm | 1571 mm | **262 mm** |
+   → ~2–6× mindre transient. *(0,5 % är industri-typiskt; exakt IIM-42653-värde låses mot datablad.)*
+3. **120 fps → kortare brygga + halverat oskärpefönster.** Re-ankring var 8,3 ms (mot 16,7);
+   målet hålls låst genom mer av recoilen → kortare/ingen dödräkning.
+
+**MEN — ärligt:** ur-FOV-felet **försvinner inte**. En bättre IMU och 120 fps **minskar** det,
+men den verkliga fixen är att **hålla målet i bild**: kort exponering (≤100 µs), ev. något
+bredare FOV, begränsad recoil-amplitud, och regeln "**skottet landar/adjungeras vid återlås**".
+IIM-42653 köper marginal, inte mirakel.
+
+## 3. Det IMU-bytet INTE rör (oförändrade risker)
+- **Dagsljus-SNR @150 m (fortfarande #1, overifierad).** Syns målets modulerade 860 nm-konstellation
+  mot solsken på 150 m? IMU:n påverkar inte detta alls. **120 fps gör det dessutom något svårare**
+  (kortare exponering per frame = mindre ljus) — en avvägning att mäta vid bringup.
+- **Kalibrering** (intrinsisk + ev. extrinsisk) — fortfarande en mätpunkt.
+- **Recoil-aktuatorn** — obyggd; verkliga rate/amplitud okända.
+
+## 4. Gun-emittern (SFH4725S, 1→3 A) — separat från sikt-precisionen
+Viktigt att inte blanda ihop: gun-emittern är **skottet** (940 nm). Den påverkar
+- **skott-räckvidd/registrering** (hur säkert målet/servern tar emot skott-ID:t på 150 m) och
+- **ögonsäkerhet** (IEC 60825-1) — design-resolution §3: vid 1 A ~54 W/sr, ~2,1 mW in i öga @1 m;
+  konservativt Class 1 ~0,1 A full-auto / 0,67 A semi, men utsträckt-källa-relaxation kan tillåta
+  1–3 A **om uppmätt**. → Att gå mot 3 A är en **mät- och säkerhetsfråga**, inte en precisionsfråga.
+
+Den påverkar **inte** kamerans bäring/avstånd (det är målets 860 nm-konstellation). Om man vill
+köpa **detektionsräckvidd/SNR @150 m** är hävstången målets **konstellations-LED-effekt** +
+exponering + FOV — inte gun-emittern.
+
+## TL;DR
+IIM-42653 + 120 fps är rätt uppgradering, men av rätt skäl: steady-state var redan bra (~5 mm),
+**vinsten ligger i recoil** — ±4000 dps tar bort mättningsrisken (säker vinst), industri-skalfaktor
++ 120 fps minskar ur-FOV-dödräkningen ~2–6×. Den eliminerar den dock inte; att hålla målet i bild
+(FOV/exponering/återlås) är fortfarande den verkliga fixen, och **dagsljus-SNR @150 m är kvar som
+största overifierade risken** — orörd av IMU-bytet. Exakta IIM-42653-tal + pinout låses mot
+databladet innan vi ändrar korten.
