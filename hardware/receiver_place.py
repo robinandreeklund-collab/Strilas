@@ -127,7 +127,7 @@ weapon_box = {   # 54×74 mm: 2× Ø20-lins+kamera fram; P4 (15mm-standoff) bako
     # NFET-driver i centrum-toppen (kort gate till emittrarna)
     "Q2": (1, 19, 90), "R3": (1, 14, 90),   # flyttade vänster → klar av D3:s Carclo-ben H18
     # Rset + bulk nära emittrarna (höger-topp) — kort pulsslinga C2→R2→D3→…→Q2
-    "R2": (24, 23, 90), "C2": (24, 16, 0), "R4": (19, 23, 90),   # R4 = 2:a Rset parallellt (in-stock 1W-par)
+    "R2": (24, 23, 90), "C2": (24, 16, 0),
     # inmatningsskydd på HÖGERkanten (frigör vänsterkanten för P4 + J1)
     "F1": (24, 9, 90), "Q1": (24, 3, 0), "D1": (24, -3, 90), "R1": (24, -9, 90), "C1": (24, -15, 0),
     # batteri-in (JST-XH) längs NEDERKANTEN. OBS: flip_j1_back speglar kroppen topp-botten,
