@@ -95,8 +95,14 @@ subprocess.run(["python3", "hardware/dsn_power_class.py", DSN])
 shutil.copy(PCB, "/tmp/_vmb_placed.kicad_pcb")
 clean = False
 for seed in range(1, 13):
-    subprocess.run(["xvfb-run", "-a", "java", "-jar", "/opt/freerouting.jar", "-de", DSN, "-do", SES, "-mp", "150"],
+    if os.path.exists(SES): os.remove(SES)   # tvinga ny SES → ingen stale-återanvändning
+    # hård per-seed-timeout: headless-freerouting hänger ibland @1% CPU → döda + nästa seed
+    subprocess.run(["timeout", "-k", "5", "240", "xvfb-run", "-a",
+                    "java", "-jar", "/opt/freerouting.jar", "-de", DSN, "-do", SES, "-mp", "100"],
                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run(["bash", "-c", "pkill -9 -f freerouting.jar 2>/dev/null; pkill -9 Xvfb 2>/dev/null; true"])
+    if not os.path.exists(SES) or os.path.getsize(SES) < 1000:
+        print(f"  seed {seed}: freerouting timeout/ingen SES — nästa seed"); continue
     shutil.copy("/tmp/_vmb_placed.kicad_pcb", PCB)
     subprocess.run(["python3", "hardware/ses_apply.py", PCB, SES], stdout=subprocess.DEVNULL)
     u = unrouted(PCB); print(f"  seed {seed}: signal-oroutade = {u}")
