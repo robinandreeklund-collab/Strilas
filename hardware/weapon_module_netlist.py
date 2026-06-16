@@ -2,8 +2,11 @@
 """STRILAS — VAPEN-OPTIKMODUL: kretsdefinition i kod (SKiDL → KiCad-netlista).
 Genererar 'hardware/weapon-module.net' (importeras i KiCad/kinet2pcb för layout→Gerbers).
 
-Driver för v1 = enkel, ögonsäker: effektresistor (Rset) sätter HÅRT strömtak,
-N-FET (Q1) gatar 56 kHz. (Buck-CC = effektivitetsuppgradering, se design-resolution §2.)
+Driver = AKTIV KONSTANTSTRÖMS-SÄNKA (op-amp OPA171 + DPAK pass-FET + sense-resistor):
+I = Vref/Rsense, BATTERI-OBEROENDE (passiv Rset gav 0,3–0,6 A som sjönk med batteriet).
+Sense-resistorn + 3,3 V-referensdelaren = HÅRT HW-strömtak (~1,0 A) → realiserar
+eye-safety design-regel #1 ("ögonsäkerhet i hårdvara"). IR_MOD gatar referensen → 56 kHz.
+Skalbar till 3 A endast via avsiktligt Rsense-byte + IEC 60825-1-ommätning (eye-safety-budget.md).
 Sikteskamera = USB OV9281 GS NoIR — sitter MEKANISKT bakom kortet (lins genom Ø16-hål),
 ansluts till P4 via USB-kabel → finns INTE elektriskt på detta kort.
 
@@ -37,7 +40,13 @@ CAP_T = mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0805_2012Metric")
 RES = lambda v, fp="Resistor_SMD:R_0805_2012Metric": RES_T(value=v, footprint=fp)
 CAP = lambda v, fp="Capacitor_SMD:C_0805_2012Metric": CAP_T(value=v, footprint=fp)
 PFET = mk("AO3401", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3401")
-NFET = mk("AO3400", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3400")
+# Pass-FET för konstantströms-sänkan: DPAK (TO-252) logic-level N-FET, pin 1=G 2=D(tab) 3=S.
+# Linjär drift vid låg Vds (~1,4–1,8 V) → 1,8–4,2 W puls @1–3 A; DPAK + kopparplan klarar skurar.
+DFET = mk("AOD4184A", "Q", [(1, "G"), (2, "D"), (3, "S")], "Package_TO_SOT_SMD:TO-252-2", "AOD4184A")
+# OPA171 (SOT-23-5 DBV) pin (TI-datablad SBOS516H Fig.4-2): 1=OUT 2=V- 3=IN+ 4=IN- 5=V+.
+# 2,7–36 V matning (drivs från VBAT), in-CM inkl. V- (kan känna 0,2 V shunt), RR-utgång (gate-drive).
+OPAMP = mk("OPA171", "U", [(1, "OUT"), (2, "V-"), (3, "IN+"), (4, "IN-"), (5, "V+")],
+           "Package_TO_SOT_SMD:SOT-23-5", "OPA171")
 PTC = mk("PTC", "F", [(1, "~"), (2, "~")], "Fuse:Fuse_1206_3216Metric", "PTC_1A")
 TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
 LED = mk("SFH4725S", "D", [(1, "A"), (2, "K")],
@@ -62,18 +71,24 @@ PSTD = lambda n: mk(f"PSTD{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2m
 # ---------- nät ----------
 VBAT_IN, VBAT_F, VBAT, GND, P3V3 = Net("VBAT_IN"), Net("VBAT_F"), Net("VBAT"), Net("GND"), Net("+3V3")
 IR_MOD, SCK, MOSI, MISO, nCS, INT = (Net(n) for n in ("IR_MOD", "SCK", "MOSI", "MISO", "nCS", "IMU_INT"))
-STR1, LEDC, IRG = Net("LED_MID"), Net("LED_CATH"), Net("Q1_GATE")
+STR1, LEDC, GATE = Net("LED_MID"), Net("LED_CATH"), Net("DRV_GATE")
+VREF, SENSE = Net("IDRV_REF"), Net("IDRV_SENSE")   # CC-sänka: gatad referens + ström-sense
 
 # ---------- instansiera ----------
 J1 = P4IF(); J2 = BATT()
 F1 = PTC(); Q2 = PFET(); Rg2 = RES("100k"); Dtvs = TVS()
 Cin = CAP("10uF", "Capacitor_SMD:C_1206_3216Metric")
 Cbulk = CAP("100uF", "Capacitor_SMD:C_1210_3225Metric")   # MLCC reservoar (låg-ESR f. 56 kHz-puls)
-Rset = RES("3R3_2W", "Resistor_SMD:R_2512_6332Metric")
 D1, D2 = LED(), LED()
-Q1 = NFET(); Rg = RES("220R")
 U2 = IMU(); Cd1 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric")
 Cd2 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric"); Cd3 = CAP("1uF")
+# ---- aktiv konstantströms-sänka (ersätter passiv Rset) — instansieras EFTER IMU så IMU=U1 ----
+Uop = OPAMP()                                              # U2 = OPA171
+Qd = DFET()                                                # Q2 = DPAK pass-FET
+Rsense = RES("0R2", "Resistor_SMD:R_2512_6332Metric")      # sätter I = Vref/Rsense
+Rdiv_a = RES("15k"); Rdiv_b = RES("1k")                    # IR_MOD → ~0,206 V referens (3,3/16)
+Rgate = RES("100R")                                        # gate-isolering (pol m. FET Ciss)
+Cop = CAP("100nF"); Ccomp = CAP("100pF")                   # op-amp-avkoppling + slingkompensering
 H1, H2, H3 = MH(1)(), MH(2)(), MH(3)()
 HC = MH(16)()                       # centrum-kort-hål (mellan linserna)
 HP1, HP2, HP3 = MH(17)(), MH(18)(), MH(19)()   # 3 P4-standoff (15mm, synk mot P4-hål)
@@ -118,11 +133,19 @@ Dtvs["K"] += VBAT; Dtvs["A"] += GND               # TVS-clamp
 Cin[1] += VBAT; Cin[2] += GND
 Cbulk[1] += VBAT; Cbulk[2] += GND                 # reservoar för pulsen
 
-# ---------- IR-emitterdriver (Rset hårt strömtak + 56 kHz-gate) ----------
-Rset[1] += VBAT; Rset[2] += D1["A"]               # effektresistor sätter Imax
-D1["K"] += STR1; D2["A"] += STR1; D2["K"] += LEDC # 2 LED i serie
-Q1["D"] += LEDC; Q1["S"] += GND                   # N-FET drar strängen mot GND
-Rg[1] += IR_MOD; Rg[2] += IRG; Q1["G"] += IRG     # 56 kHz på gaten
+# ---------- IR-emitterdriver: AKTIV KONSTANTSTRÖMS-SÄNKA, 56 kHz-gatad ----------
+# Battery-OBEROENDE: op-amp håller SENSE = VREF → I = VREF/Rsense, oavsett VBAT (så länge
+# headroom finns, dvs VBAT > 2·Vf + Vsense ≈ 6,9 V → kör 7,0 V lågspänningsspärr i firmware).
+# Modulation: IR_MOD (3,3 V logik) → spänningsdelare → VREF ~0,206 V vid hög → I≈1,0 A; vid låg
+# → VREF=0 → op-amp drar gaten låg → FET av. (Skalbar till 3 A: minska Rsense / öka VREF.)
+D1["A"] += VBAT; D1["K"] += STR1; D2["A"] += STR1; D2["K"] += LEDC   # 2× 940 nm i serie, anod på VBAT
+Qd["D"] += LEDC; Qd["S"] += SENSE; Qd["G"] += GATE                   # pass-FET (DPAK)
+Rsense[1] += SENSE; Rsense[2] += GND                                 # ström-sense 0,2 Ω → 1 A @0,206 V
+Uop["V+"] += VBAT; Uop["V-"] += GND                                  # op-amp matas från VBAT
+Uop["IN+"] += VREF; Uop["IN-"] += SENSE; Uop["OUT"] += Rgate[1]; Rgate[2] += GATE
+Rdiv_a[1] += IR_MOD; Rdiv_a[2] += VREF; Rdiv_b[1] += VREF; Rdiv_b[2] += GND   # 15k/1k → 0,206 V
+Ccomp[1] += Uop["OUT"]; Ccomp[2] += SENSE                            # slingkomp (Miller; bänktrimma)
+Cop[1] += VBAT; Cop[2] += GND                                       # op-amp-avkoppling
 
 # ---------- IMU (SPI 4-wire) + avkoppling ----------
 # pin-nr (TDK AN-000483 Fig.2):  8=VDD 5=VDDIO 6=GND 13=SCLK 14=SDI 1=SDO 12=CS 4=INT1

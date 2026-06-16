@@ -30,7 +30,7 @@ NextPCB min-order är oftast 5 st → 5 optik (1 behövs nu) + 5 väst-patchar =
   utesluter dessa kontakter.
 
 ## Våglängdsplan (måste matcha)
-- **Skott (optik D2/D3):** 940 nm — **SFH 4725CS** (efterträder discontinued SFH 4725S; samma OSLON Black-paket, kund-levererad).
+- **Skott (optik D2/D3):** 940 nm — **SFH 4725CS** (efterträder discontinued SFH 4725S; samma OSLON Black-paket, kund-levererad). Drivs av **aktiv konstantströms-sänka** (OPA171 + DPAK-FET + 0R2 sense) → **stabil ~1 A oberoende av batterinivå** (HW-strömtak = eye-safety; 56 kHz-gatad).
 - **Konstellation (väst D4/D5):** 860 nm — **SFH 4715AS** (OSLON Black, **Ie 780 mW/sr@1A** databl., högeffekt f. 150 m dagsljus). Kamerans IR-pass = **860 nm** → ser konstellationen, avvisar 940 nm-skottet. TSOP4856 tar emot 940 nm-skottet. Drivs ~0,4–0,5 A (max ~50 % duty — 2,5 W topp i 10R).
 - **TSOP-matning:** lokal **HT7333-A 3,3 V-LDO** (U4) matar TSOP+DATA (TSOP tål EJ VBAT 2S; abs-max 6 V).
 - **Dagsljus-SNR @150 m:** budget i `../ritningar/daylight-snr-budget.md` (SFH 4715AS @~0,4–0,5 A ≈ derat-SNR 7–35, marginal för verkliga förluster). Slutbekräftas på bänk.

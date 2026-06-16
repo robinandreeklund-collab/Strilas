@@ -115,7 +115,7 @@ helmet_pos.update({"J2": (0, 0, 0), "J1": (0, -44, 0)})
 
 # ---- vapen-optikmodul (42×62, P4-carrier) ----
 # Lins-hål Ø16 i mitten (kamera bakom kortet): keepout x[-8,8] y[-12,4].
-# Pulsloop hålls kort: C2(reservoar)→R2(Rset)→D2→D3→Q1→GND uppe.
+# Pulsloop hålls kort: C2(reservoar)→D2→D3→Q2(CC pass-FET)→R2(sense)→GND uppe.
 # IMU + avkoppling i höger remsa; inmatningsskydd nere till vänster; headers nederst.
 # Kamerafäste (B0332 38×38): 4× M2-hål i 28×28-mönster runt linsaxeln (0,-4).
 #   H4(-14,10) H5(14,10) H6(-14,-18) H7(14,-18). Komponenter flyttade ut till kanterna
@@ -125,18 +125,22 @@ helmet_pos.update({"J2": (0, 0, 0), "J1": (0, -44, 0)})
 # Edge B (VBUS/VSYS/3V3-sidan) ytterst (vänster) → optik-J1. Edge A (GPIO-sidan) inåt → FC-stack.
 # Kamerans B4B-ZR-kontakt riktad +x (höger) → fri från P4. J1 (P4-kantkontakt) flyttad
 # till vänsterkanten (P4:ans yttre signalrad). Kraft/skydd-remsa flyttad till HÖGERkanten;
-# Rset(R2)+bulk(C2) hålls nära emittrarna (höger-topp) för kort 56 kHz-pulsslinga.
-# Funktioner (skidl-ref): R2=Rset 3R3, C2=Cbulk 100µF, F1=PTC, Q1=PFET(rev-pol), D1=TVS,
-#   R1=100k-pulldown, C1=Cin 10µF, Q2=NFET-driver, R3=gate-R, U1=IMU, C3/C4/C5=IMU-avkoppl.
+# AKTIV KONSTANTSTRÖMS-SÄNKA (ersätter Rset): op-amp U2 + DPAK pass-FET Q2 + sense R2 +
+# referensdelare R3/R4 + gate-R R5 + komp C7 + op-amp-avkoppl C6. Klustret i fria zonen
+# x[-10,10] y[4,13] (mellan kamerahål H8/H9 @±14, under Carclo-ben @y15.2, ovan lins-keepout @y2).
+# Funktioner (skidl-ref): U2=OPA171, Q2=AOD4184A(DPAK), R2=0R2 sense, R3=15k, R4=1k, R5=100R gate,
+#   C2=Cbulk 100µF, C6=op-amp-avkoppl, C7=komp 100pF, F1=PTC, Q1=PFET(rev-pol), D1=TVS,
+#   R1=100k-pulldown, C1=Cin 10µF, U1=IMU, C3/C4/C5=IMU-avkoppl.
 weapon_box = {   # 54×74 mm: 2× Ø20-lins+kamera fram; P4 (15mm-standoff) bakom VÄNSTER; centrum-kort-hål
     "D2": (-12, 23, 0), "D3": (12, 23, 180),
     # 8 Carclo-ben (H12-H19): D2 H12-H15, D3 H16-H19 — 9.0×15.60 rektangel/lins, Ø2.1
     "H12": (-16.5, 30.8, 0), "H13": (-7.5, 30.8, 0), "H14": (-16.5, 15.2, 0), "H15": (-7.5, 15.2, 0),
     "H16": (7.5, 30.8, 0), "H17": (16.5, 30.8, 0), "H18": (7.5, 15.2, 0), "H19": (16.5, 15.2, 0),
-    # NFET-driver i centrum-toppen (kort gate till emittrarna)
-    "Q2": (1, 19, 90), "R3": (1, 14, 90),   # flyttade vänster → klar av D3:s Carclo-ben H18
-    # Rset + bulk nära emittrarna (höger-topp) — kort pulsslinga C2→R2→D3→…→Q2
-    "R2": (24, 23, 90), "C2": (24, 16, 0),
+    # konstantströms-sänka i centrum-fria zonen (kort LED_CATH→Q2 + gate-loop)
+    "Q2": (8.5, 9, 90), "R2": (-2, 5, 0),                # DPAK pass-FET (höger) + 0R2 sense (källa→GND)
+    "U2": (-9, 11, 0), "C7": (-9, 7.5, 0), "C6": (-9, 4.5, 0),  # op-amp + komp + avkoppl (vänsterkolumn)
+    "R3": (-5, 11, 0), "R4": (-1, 11, 0), "R5": (3, 11, 0),  # delare 15k/1k + gate-R (toppraden)
+    "C2": (18, 18, 0),                                   # bulk 100µF nära LED-anod/VBAT (topp-höger)
     # inmatningsskydd på HÖGERkanten (frigör vänsterkanten för P4 + J1)
     "F1": (24, 9, 90), "Q1": (24, 3, 0), "D1": (24, -3, 90), "R1": (24, -9, 90), "C1": (24, -15, 0),
     # batteri-in (JST-XH) längs NEDERKANTEN. OBS: flip_j1_back speglar kroppen topp-botten,

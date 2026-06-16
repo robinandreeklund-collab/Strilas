@@ -52,9 +52,14 @@ print(sum(1 for f in b.GetFootprints() for p in f.Pads()
 PY
 )
   echo "   seed $seed: signal-oroutade paddar = $u"
-  if [ "$u" = "0" ]; then clean=1; break; fi
+  # 2 kvarvarande = J1.11(+3V3)/J1.14(VBAT) i boxade hörnet → handroutas i steg 8b
+  # (VBAT når dessutom In2-VBAT-planet). Acceptera <=2; connectivity-grinden är steg 15.
+  if [ "$u" -le 2 ]; then clean=1; break; fi
 done
-[ "$clean" = "1" ] || { echo "  !! ingen ren routning på 8 försök"; exit 1; }
+[ "$clean" = "1" ] || { echo "  !! routning gav >2 oroutade på 8 försök"; exit 1; }
+
+echo "== 8b) handrouta de 2 boxade kraftstiften (+3V3/VBAT) =="
+python3 hardware/weapon_stitch.py
 
 echo "== 9) flippa kontakter (J1/J2/J3) till baksidan =="
 python3 hardware/flip_j1_back.py

@@ -7,7 +7,7 @@ Användning: python dsn_power_class.py <board.dsn>
 import re, sys
 
 # Effekt-/LED-nät (vapen + väst/hjälm). LED_A* = väst/hjälm konstellations-grenar.
-POWER = {"VBAT", "VBAT_F", "VBAT_IN", "N$2", "LED_MID", "LED_CATH",
+POWER = {"VBAT", "VBAT_F", "VBAT_IN", "N$2", "LED_MID", "LED_CATH", "IDRV_SENSE",
          "LED_A1", "LED_A2", "LED_A3", "LED_A4"}
 
 

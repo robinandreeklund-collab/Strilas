@@ -27,10 +27,11 @@ HS PHY** (DM/DP = ESP32-P4 pin 49/50). UVC-host @50–60 fps bekräftad. *(MX1.2
 Inga ennods-nät, inga oavslutade pins. Alla nät elektriskt vettiga (kontrollerade nod-för-nod).
 
 ## 3. Ström-/effektsimulering (datablads-förankrad)
-**Optik skott-emitter** (VBAT 2S → Rset 3R3 2W → 2× SFH4725CS → AO3400):
-I ≈ 0,3–0,6 A topp (Vf-summan ~6,4 V äter rail:en). Rset ≈ 1,1 W i 2 W → **OK**.
-Skott-räckvidd: **TIR-kollimatorn** (Carclo 10734) ger ~40–90× → I_eff 13–50 W/sr ≫ kravet
-~8 W/sr @150 m → **når 150 m med marginal**. "1 A" var headroom, inte räckviddskrav.
+**Optik skott-emitter** (VBAT 2S → 2× SFH4725CS → **aktiv CC-sänka**: OPA171 + DPAK-FET + 0R2 sense):
+I = Vref/Rsense = 0,206 V / 0,2 Ω ≈ **1,0 A STABILT, batteri-oberoende** (ersätter passiv Rset som
+gav 0,3–0,6 A sjunkande). DPAK-FET-förlust ~1,8 W puls @1 A (skurar → låg medeleffekt). Hård
+HW-strömtak ~1,0 A (3,3 V-delaren × Rsense) = eye-safety design-regel #1 i HW. 3 A = avsiktligt
+Rsense-byte + IEC 60825-1-ommätning. Skott-räckvidd: TIR-kollimator → I_eff ≫ krav @150 m.
 
 **Väst-konstellation** (VBAT 2S → 10R 2512 → SFH4715AS): ~0,4–0,5 A/gren → ~390 mW/sr.
 LED-spår breddade till **0,4 mm**. **Villkor:** ≤50 % duty (0,5 A i 10R = 2,5 W topp i 2 W).
@@ -43,14 +44,22 @@ LED-spår breddade till **0,4 mm**. **Villkor:** ≤50 % duty (0,5 A i 10R = 2,5
 | 3 | Väst LED-nät 0,2 mm (~1 A summa) | Medel | Breddade till 0,4 mm via `dsn_power_class`. ✔ Fixat |
 | 4 | 10R drar 2,5 W topp i 2 W-motstånd | Medel | Dokumenterat max ~50 % duty (BOM-note + budget). ✔ |
 
-## 5. Ärlig kvarstående notering (ej board-killer)
-- **Optik-emitter når inte stabil 1 A** vid 2S med 2 LED i serie + 3R3 (~0,3–0,6 A, sjunker när
-  batteriet laddas ur). Räcker för 150 m-skott TACK VARE kollimatorn. För batteri-oberoende,
-  stabil/högre ström krävs CC-buck (design-resolution §2 framtida uppgradering) — ej nödvändig nu.
+## 5. Åtgärdat: emitter-ström (var 0,3–0,6 A → nu stabil 1 A)
+- **FIXAT:** passiv Rset → **aktiv konstantströms-sänka** (OPA171-op-amp matad från VBAT + DPAK
+  pass-FET + 0R2 sense). I = Vref/Rsense ≈ 1,0 A, **oberoende av batterinivå**, 56 kHz-gatad via
+  IR_MOD-referensdelaren. Realiserar samtidigt eye-safety design-regel #1 (HW-strömtak). Kortet
+  omplacerat + omroutat (clearance 0 / oconnected 0); 2 boxade kraftstift (J1.11/J1.14) handroutade.
+- **Bänk-validering kvarstår (analogt):** DC-arbetspunkten (1 A, batteri-oberoende) är exakt och
+  bevisad analytiskt; slingkompenseringen (C7 100 pF) + 56 kHz-flankskärpan är START-värden att
+  bekräfta på bänk/SPICE (inneboende för alla aktiva drivsteg). OPA171 3 MHz/1,5 V/µs ger ~2 µs-
+  flanker (mjuk men 56 kHz-fundamentalen stark → TSOP-OK); snabbare op-amp = skarpare vid behov.
+
+## 6. Kvarstående (ej board-killer)
 - **Helmet-halo** ingår EJ i Prototyp 1 och är inte omroutad efter LED-/LDO-ändringen (samma fix
   ärvs av netlistan men kortet måste routas om före hjälm-produktion).
 
-## 6. Slutsats
+## 7. Slutsats
 Optik- och väst-patchkorten är **kontrollerade och redo för Prototyp 1-produktion**. P4-matchning
-100 %, strömvägar verifierade, DRC ren, board-killer-felet åtgärdat. Slutlig dagsljus-SNR + duty/
-exponerings-trim bekräftas på bänk (kvarstår alltid att mäta på riktigt).
+100 %, strömvägar verifierade (skott-emittern nu **stabil 1 A batteri-oberoende** via aktiv CC-sänka),
+DRC ren, alla board-killers åtgärdade. Slutlig dagsljus-SNR + CC-slingkomp + duty/exponerings-trim
+bekräftas på bänk (kvarstår alltid att mäta på riktigt).

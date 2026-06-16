@@ -20,10 +20,16 @@ MPN = {
     "100k":  ("RC0805FR-07100KL", "Yageo", "Res 100k 1% 1/8W 0805", "", ""),
     "220R":  ("RC0805FR-07220RL", "Yageo", "Res 220R 1% 1/8W 0805", "", ""),
     "4k7":   ("RC0805FR-074K7L", "Yageo", "Res 4.7k 1% 1/8W 0805", "", ""),
-    "3R3_2W":("CRCW25123R30FKEGHP", "Vishay", "Res 3.3R 1% 2W 2512 (HP) — Rset eye-safety", "", ""),
+    "3R3_2W":("CRCW25123R30FKEGHP", "Vishay", "Res 3.3R 1% 2W 2512 (HP) — (legacy, ej i CC-driver)", "", ""),
+    "0R2":   ("PE2512FKE070R200L", "Yageo", "Res 0.2R 1% 2W 2512 sense — CC-driver sätter ~1A (Vref/Rs)", "", "verifiera basbibliotek; HW-strömtak/ögonsäkerhet"),
+    "15k":   ("RC0805FR-0715KL", "Yageo", "Res 15k 1% 0805 — CC-referensdelare (övre)", "", ""),
+    "1k":    ("RC0805FR-071KL", "Yageo", "Res 1k 1% 0805 — CC-referensdelare (undre)", "", ""),
+    "100pF": ("CL21C101JBANNNC", "Samsung", "MLCC 100pF 50V C0G 0805 — slingkomp", "", ""),
     # --- halvledare ---
     "AO3401":      ("AO3401A", "Alpha & Omega", "P-MOSFET -30V SOT-23 (rev-pol-skydd)", "", ""),
-    "AO3400":      ("AO3400A", "Alpha & Omega", "N-MOSFET 30V SOT-23 (IR-driver 56kHz)", "", ""),
+    "AO3400":      ("AO3400A", "Alpha & Omega", "N-MOSFET 30V SOT-23 (väst LED-driver 56kHz)", "", ""),
+    "AOD4184A":    ("AOD4184A", "Alpha & Omega", "N-MOSFET 40V logic-level DPAK (TO-252) — CC pass-FET (linjär)", "", ""),
+    "OPA171":      ("OPA171AIDBVR", "Texas Instruments", "Op-amp 36V 3MHz SOT-23-5 — CC-sänkans regulator", "", ""),
     "SMBJ12A":     ("SMBJ12A", "Littelfuse", "TVS unidir 12V SMB", "", ""),
     "SFH4725S_940nm":("SFH 4725CS", "ams OSRAM", "IR-emitter 940nm OSLON Black (efterträder SFH 4725S, discont.)", "C", "Kund-levererad; verifiera padstack mot 4725CS"),
     "PTC_1A":      ("MF-MSMF075/16X-2", "Bourns", "PTC resättbar 0.75A-hold 16V 1206", "", "NOTE: verifiera hold-ström mot systemtopp"),
@@ -67,22 +73,20 @@ HDR = ["Designator*", "Quantity*", "Manufacturer Part Number*", "Manufacturer",
 def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozenset()):
     vals = netvals(board_net)
     b = pcbnew.LoadBoard(board_pcb)
-    groups = defaultdict(list)   # (value) -> [(ref, package)]
-    pkg_of = {}
+    groups = defaultdict(list)   # (value, footprint) -> [ref]  (gruppera på BÅDE värde och paket)
     for f in b.GetFootprints():
         ref = f.GetReference()
         fp = str(f.GetFPID().GetLibItemName())
         if "MountingHole" in fp:        # kort-feature, ej placerad komponent
             continue
         val = vals.get(ref, f.GetValue())
-        groups[val].append(ref); pkg_of[ref] = fp
+        groups[(val, fp)].append(ref)
     wb = xlwt.Workbook(); ws = wb.add_sheet("BOM")
     bold = xlwt.easyxf("font: bold on")
     for c, h in enumerate(HDR): ws.write(0, c, h, bold)
     row = 1
-    for val in sorted(groups, key=lambda v: groups[v][0] if False else v):
-        refs = sorted(groups[val], key=refkey)
-        pkg = pkg_of[refs[0]]
+    for (val, pkg) in sorted(groups):
+        refs = sorted(groups[(val, pkg)], key=refkey)
         key = val
         if val == "1uF" and "0402" in pkg: key = "1uF@0402"   # paket-specifik MPN
         mpn, mfr, desc, proc, note = MPN.get(key, ("", "", val, "", "SAKNAR MPN — fyll i"))

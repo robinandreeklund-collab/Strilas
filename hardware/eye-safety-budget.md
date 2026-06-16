@@ -34,7 +34,10 @@ utsträckt källa**. Om den uppmätta **skenbara källan ≥ α_max (100 mrad)**
 
 ## Design-regler (beslutade)
 
-1. **HW-strömtak** via U6:s sense-resistor (firmware kan bara gå lägre) — "ögonsäkerhet i hårdvara".
+1. **HW-strömtak** via sense-resistor (firmware kan bara gå lägre) — "ögonsäkerhet i hårdvara".
+   **REALISERAT** (2026-06): aktiv CC-sänka (U2=OPA171 + DPAK-FET + R2=0R2 sense) i optik-netlistan.
+   Hård gräns I = Vref/Rsense; Vref ≤ 0,206 V (3,3 V-delaren 15k/1k) → I_max ≈ **1,0 A i HW**.
+   Högre ström (mot 3 A) kräver avsiktligt mindre Rsense + förnyad mätning enligt nedan.
 2. **Börja på 0,5–1 A** vid bringup.
 3. **Cap full-auto-duty** i firmware (semi är ~6–7× snällare).
 4. **2 separata emittrar** = 2 skenbara källor → var och en lägre exponering.
