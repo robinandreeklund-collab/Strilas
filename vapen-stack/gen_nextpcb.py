@@ -25,7 +25,7 @@ MPN = {
     "AO3401":      ("AO3401A", "Alpha & Omega", "P-MOSFET -30V SOT-23 (rev-pol-skydd)", "", ""),
     "AO3400":      ("AO3400A", "Alpha & Omega", "N-MOSFET 30V SOT-23 (IR-driver 56kHz)", "", ""),
     "SMBJ12A":     ("SMBJ12A", "Littelfuse", "TVS unidir 12V SMB", "", ""),
-    "SFH4725S_940nm":("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black", "C", "Kund-levererad (specialdel, ej i NextPCB-bibl.)"),
+    "SFH4725S_940nm":("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black", "", "Bestyckas av NextPCB (matchad, ~10 dgr)"),
     "PTC_1A":      ("MF-MSMF075/16X-2", "Bourns", "PTC resättbar 0.75A-hold 16V 1206", "", "NOTE: verifiera hold-ström mot systemtopp"),
     "ICM-42688-P": ("ICM-42688-P", "TDK InvenSense", "6-axlig IMU (SPI/I2C) LGA-14, 2.8 mdps", "", ""),
     # --- kontakter (genomplåt → selektiv/handlödning) ---
