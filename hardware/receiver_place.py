@@ -31,7 +31,7 @@ def parse_net(path):
     return comps, nets
 
 
-def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free=(-20, 20, -15, 15), cutout=None):
+def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free=(-20, 20, -15, 15), cutout=None, labels=None):
     comps, nets = parse_net(netfile)
     board = pcbnew.CreateEmptyBoard()
     board.SetCopperLayerCount(layers)
@@ -90,24 +90,45 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
         co = pcbnew.PCB_SHAPE(board, pcbnew.SHAPE_T_CIRCLE)
         co.SetCenter(V(cx, cy)); co.SetEnd(V(cx+cr, cy))
         co.SetLayer(pcbnew.Edge_Cuts); co.SetWidth(MM(0.15)); board.Add(co)
+    # silkscreen-etiketter (t.ex. sikt-pilar för TSOP-böjning): (x, y, text, [size_mm])
+    for lab in (labels or []):
+        lx, ly, txt = lab[0], lab[1], lab[2]
+        sz = lab[3] if len(lab) > 3 else 1.2
+        t = pcbnew.PCB_TEXT(board); t.SetText(txt)
+        t.SetPosition(V(lx, ly)); t.SetLayer(pcbnew.F_SilkS)
+        t.SetTextSize(pcbnew.VECTOR2I(MM(sz), MM(sz))); t.SetTextThickness(MM(sz * 0.15))
+        t.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER)
+        board.Add(t)
     pcbnew.SaveBoard(pcbfile, board)
     print(f"  {pcbfile}: {len(fps)} komponenter, {len(nets)} nät")
 
 
-# ---- väst-patch (täcknings-NOD ~36×30) — 4 ledade TSOP (3 fläktade åt sidan + 1 rakt upp), kardborre ----
-# Benen BÖJS för att rikta domerna: U1/U2/U3 = sidled-fläkt (~-45°/0°/+45°), U4 = rakt upp. 3V3 fr moderkort.
-vest_pos = {   # ±18,±15. refs: U1-4=TSOP(MOLD) · D1-4=OR-dioder · D5,D6=OSLON 860nm · R3,R4=10R 2512
-    # origo-offset +2,5 → kropp-centrum = origo+2,5 (MOLD-paddrad). R1=DATA-pull · R2=gate · C1=bulk · C2-5=avkoppl
-    "U1": (-12.5, 13, 0), "U2": (-2.5, 13, 0), "U3": (7.5, 13, 0),  # 3 sida-TSOP topp (kropp-ctr -10/0/10)
-    "U4": (-2.5, 6, 0),                                            # upp-TSOP (kropp-ctr 0; dom rakt upp)
-    "D5": (-15.5, 6, 0), "D6": (15.5, 6, 0),                       # OSLON 860nm konstellation (sidorna)
-    "R3": (-15.5, -0.5, 90), "R4": (15.5, -0.5, 90),               # LED-serieR 10R 2512
-    "D1": (-9, -2, 0), "D2": (-3, -2, 0), "D3": (3, -2, 0), "D4": (9, -2, 0),  # OR-dioder (rad, centrerat)
-    "C2": (-9, -6, 0), "C3": (-3, -6, 0), "C4": (3, -6, 0), "C5": (9, -6, 0),  # TSOP-avkoppling
-    "Q1": (-9, -9.5, 0), "R2": (-4, -9.5, 90), "R1": (1, -9.5, 0),  # N-FET + gate-R + DATA-pullup
-    "C1": (7, -9.5, 0),                                          # bulk 10µF (VBAT)
-    "J1": (-6.35, -14, 90),                                        # 1x5 (matchar moderkort), nederkant
+# ---- väst-patch (täcknings-NOD 40×36) — 4 ledade TSOP4856 i KORS, kardborre/lim-fäst ----
+# SIKTE (användarens design): 1 mottagare RAKT FRAM (center, ut ur kortet = mot fienden) + 3 riktade
+# i kortets plan mot kanterna: VÄNSTER · UPP · HÖGER. Benen BÖJS så domen pekar åt sin kant.
+# Dom-aim vs footprint-rot (verifierat): rot0=NED, rot90=HÖGER, rot180=UPP, rot270=VÄNSTER.
+# Refs: U1=vänster · U2=upp · U3=höger · U4=FRAM(center) · D1-4=OR-dioder · D5,D6=OSLON 860nm
+#       R3,R4=10R 2512 · R1=DATA-pull · R2=gate · C1=bulk · C2-5=TSOP-avkoppl · J1=1x5.
+vest_pos = {   # ±20,±18.  (origo = pad1; kropp/dom skjuter ~6 mm i aim-riktningen)
+    "U1": (-15, 0, 270),   # VÄNSTER-mottagare (dom mot -x, vänsterkant)
+    "U2": (2.5, 10, 180),  # UPP-mottagare (dom mot +y, toppkant)
+    "U3": (9, 0, 90),      # HÖGER-mottagare (dom mot +x, högerkant)
+    "U4": (-2.5, 3, 0),    # FRAM-mottagare (center, plant monterad → lins rakt ut ur kortet)
+    "D5": (-17, 14, 0), "D6": (15, 14, 0),                         # OSLON 860nm konstellation (toppkant-hörn)
+    "R3": (-17, 8, 90), "R4": (17, 8, 90),                         # LED-serieR 10R 2512
+    "D1": (-10.5, -5, 0), "D2": (-3.5, -5, 0), "D3": (3.5, -5, 0), "D4": (10.5, -5, 0),  # OR-dioder (rad)
+    "C2": (-10.5, -9, 0), "C3": (-3.5, -9, 0), "C4": (3.5, -9, 0), "C5": (10.5, -9, 0),  # TSOP-avkoppl
+    "Q1": (-11, -12.8, 0), "R2": (-5, -12.8, 90), "R1": (0, -12.8, 0),  # N-FET + gate-R + DATA-pullup
+    "C1": (7, -12.8, 0),                                          # bulk 10µF (VBAT)
+    "J1": (-6.35, -16.2, 90),                                     # 1x5 (matchar moderkort), nederkant
 }   # inga monteringshål — lim/kardborre-fäst patch
+# sikt-etiketter på silkscreen (så böjriktningen syns permanent på kortet)
+vest_labels = [
+    (-15, 5.5, "< VANS", 1.0),     # vänster
+    (2.5, 15.5, "UPP ^", 1.0),     # upp
+    (12.5, 5.5, "HOGER >", 1.0),   # höger
+    (-2.5, -1.5, "FRAM (o)", 1.0), # fram (center, ut ur kortet)
+]
 # ---- hjälm-NOD (Ø100, komplett: buck+XIAO-S3+8TSOP+4LED+GNSS+I2S-audio) ----
 # Ring (r=42) = 8× TSOP utåtriktade (360° huvud) + diod-OR + avkoppling strax innanför.
 # 4× LED-konstellation (r=45) mellan TSOP-paren. Centrum = stackad XIAO + buck + modul-headers.
@@ -264,7 +285,7 @@ BOARDS = {
     "helmet_mb": lambda: place("hardware/helmet-mb.net", "hardware/helmet-mb.kicad_pcb",
                                helmet_mb_pos, ("rect", 48, 38), layers=4, free=(-3, 3, -3, 3)),
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
-                          vest_pos, ("rect", 18, 16), layers=2, free=(-3, 3, -3, 3)),
+                          vest_pos, ("rect", 20, 18), layers=2, free=(-3, 3, -3, 3), labels=vest_labels),
     "vest_mb": lambda: place("hardware/vest-mb.net", "hardware/vest-mb.kicad_pcb",
                              vest_mb_pos, ("rect", 50, 30), layers=4, free=(-3, 3, -3, 3)),
     # vapnet: alla delar placeras explicit -> tom fri-zon (säker, ingen krock med lins)

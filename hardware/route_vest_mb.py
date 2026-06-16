@@ -90,7 +90,12 @@ def verify(path):
     return v, un
 
 
-b = pcbnew.LoadBoard(PCB); pcbnew.ExportSpecctraDSN(b, DSN)
+b = pcbnew.LoadBoard(PCB)
+_tr = list(b.GetTracks()); _zo = list(b.Zones())  # samla FÖRST (mutering ogiltigförklarar iteratorn)
+for t in _tr: b.Remove(t)                          # rensa ev. spår/via från tidigare routning
+for z in _zo: b.Remove(z)                          # rensa ev. kopparplan → ren DSN (inga "multiple vias skipped")
+pcbnew.SaveBoard(PCB, b)                            # spara ren placerad board (placerings-utgångsläge)
+pcbnew.ExportSpecctraDSN(b, DSN)
 subprocess.run(["python3", "hardware/dsn_power_class.py", DSN])
 shutil.copy(PCB, "/tmp/_vmb_placed.kicad_pcb")
 clean = False

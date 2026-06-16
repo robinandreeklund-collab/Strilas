@@ -53,8 +53,12 @@ def verify(path):
     return v,un
 
 # 1) route ALLA nät (inkl GND som spår) — freerouting kopplar varje GND-nod → inga öar
+b=pcbnew.LoadBoard(PCB)
+for t in list(b.GetTracks()): b.Remove(t)        # rensa ev. spår/via från tidigare routning
+for z in list(b.Zones()): b.Remove(z)            # ren DSN (inga "multiple vias skipped" → ingen modal-dialog-hängning)
+pcbnew.SaveBoard(PCB,b)
 shutil.copy(PCB,"/tmp/_vest_pp.kicad_pcb")
-b=pcbnew.LoadBoard(PCB); pcbnew.ExportSpecctraDSN(b,DSN)
+pcbnew.ExportSpecctraDSN(b,DSN)
 # bredda kraft-/LED-nät till 0,4 mm (TSOP-3V3 stannar smalt; LED-grenar bär ~0,5 A)
 subprocess.run(["python3","hardware/dsn_power_class.py",DSN])
 clean=False
