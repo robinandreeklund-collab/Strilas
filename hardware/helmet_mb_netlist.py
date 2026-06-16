@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""STRILAS — HJÄLM-MODERKORT ("holo"-kort), v3 m. ESP32-C6-devkit + ljud. SKiDL → 'hardware/helmet-mb.net'.
+"""STRILAS — HJÄLM-MODERKORT ("holo"-kort), v4 m. ESP32-P4-WIFI6 (samma som vapnet) + ljud. SKiDL → 'hardware/helmet-mb.net'.
 Centralt hjälm-nav: 4 lösa dubbel-aim-patchar (front/bak/vä/hö) + F9P-puck + batteri + HÖGTALARE/MIK. 4-lager.
 
 ARKITEKTUR (verifierad mot datablad):
@@ -37,6 +37,16 @@ NFET = mk("AO3400", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT
 F9P = mk("ZED-F9P", "J", [(1, "VCC"), (2, "GND"), (3, "TXD"), (4, "RXD"), (5, "SDA"), (6, "SCL"), (7, "PPS"), (8, "RSV")],
          "Connector_JST:JST_GH_SM08B-GHS-TB_1x08-1MP_P1.25mm_Horizontal", "ZED-F9P RTK (UART+I²C)")
 SOCK16 = mk("Conn_1x16", "J", [(i, i) for i in range(1, 17)], "Connector_PinSocket_2.54mm:PinSocket_1x16_P2.54mm_Vertical", "ESP32-C6 1x16 sockel")
+# ESP32-P4-WIFI6 (samma kort som vapnet!) — 2× kant-sockel (1x20). Pinout 100% verifierad mot
+# Waveshares datablad (edge A + edge B). P4 självförsörjer via VSYS; carrier-buck ger 3V3 för last.
+P4B = mk("P4_EDGE_B", "J", [(1, "VBUS"), (2, "VSYS"), (3, "GND"), (4, "EN"), (5, "P3V3"), (6, "GPIO20"),
+         (7, "GPIO21"), (8, "GNDb"), (9, "GPIO22"), (10, "GPIO23"), (11, "RUN"), (12, "GPIO26"),
+         (13, "GNDc"), (14, "GPIO27"), (15, "GPIO32"), (16, "GPIO33"), (17, "GPIO46"), (18, "GNDd"),
+         (19, "GPIO47"), (20, "GPIO48")], "Connector_PinSocket_2.54mm:PinSocket_1x20_P2.54mm_Vertical", "P4-WIFI6 edge B")
+P4A = mk("P4_EDGE_A", "J", [(1, "GPIO52"), (2, "GPIO51"), (3, "GND"), (4, "GPIO31"), (5, "GPIO30"),
+         (6, "GPIO29"), (7, "GPIO28"), (8, "GNDb"), (9, "GPIO50"), (10, "GPIO49"), (11, "GPIO5"),
+         (12, "GPIO4"), (13, "GNDc"), (14, "GPIO3"), (15, "GPIO2"), (16, "GPIO8"), (17, "GPIO7"),
+         (18, "GNDd"), (19, "GPIO24"), (20, "GPIO25")], "Connector_PinSocket_2.54mm:PinSocket_1x20_P2.54mm_Vertical", "P4-WIFI6 edge A")
 PATCH = mk("PatchConn", "J", [(1, "VBAT"), (2, "GND"), (3, "DATA"), (4, "LED_EN"), (5, "P3V3")],
            "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical", "Patch: VBAT·GND·DATA·LED_EN·3V3")
 HDR = lambda n, lbl: mk(f"Conn_1x0{n}", "J", [(i, i) for i in range(1, n + 1)],
@@ -103,32 +113,18 @@ Ja[1] += P3V3; Ja[2] += GND; Ja[3] += AMP_SD; Ja[4] += Net("AMP_GAIN"); Ja[5] +=
 Jm = HDR(6, "MIC: 3V3·GND·SD·WS·SCK·LR")()
 Jm[1] += P3V3; Jm[2] += GND; Jm[3] += I2S_DIN; Jm[4] += LRCK; Jm[5] += BCLK; Jm[6] += GND  # LR→GND = vänster
 
-# ---------- stackad ESP32-C6-DevKitC-1 (2× 1x16) ----------
-# J1: 1=3V3 2=RST 3=GPIO4 4=GPIO5 5=GPIO6 6=GPIO7 7=GPIO0 8=GPIO1 9=GPIO8 10=GPIO10 11=GPIO11 12=GPIO2 13=GPIO3 14=5V 15=GND 16=NC
-JC1 = SOCK16()
-JC1[1] += P3V3; JC1[15] += GND        # 3V3 (mata C6 via 3V3-stift) + GND
-JC1[3] += DP[3]      # GPIO4  → patch-DATA 4
-JC1[5] += I2C_SDA    # GPIO6  → I²C SDA (F9P + IMU)
-JC1[6] += I2C_SCL    # GPIO7  → I²C SCL
-JC1[7] += IMU_INT    # GPIO0  ← IMU INT
-JC1[8] += LED_EN     # GPIO1  → konstellation broadcast
-JC1[10] += DP[1]     # GPIO10 → patch-DATA 2
-JC1[11] += DP[2]     # GPIO11 → patch-DATA 3
-JC1[12] += DATA_OB   # GPIO2  → onboard-TSOP-DATA
-JC1[13] += DP[0]     # GPIO3  → patch-DATA 1
-# pin2(RST), pin4(GPIO5 reserv), pin9(GPIO8 strap), pin14(5V) = NC
-JC1[14] += Net("NC_5V")
-# J3: 1=GND 2=GPIO16(TX) 3=GPIO17(RX) 4=GPIO15 5=GPIO23 6=GPIO22 7=GPIO21 8=GPIO20 9=GPIO19 10=GPIO18 11=GPIO9 12=GND 13=GPIO13 14=GPIO12 15=GND 16=NC
-JC3 = SOCK16()
-JC3[1] += GND; JC3[12] += GND; JC3[15] += GND
-JC3[2] += GNSS_RX    # GPIO16 TX → F9P RXD
-JC3[3] += GNSS_TX    # GPIO17 RX ← F9P TXD
-JC3[6] += AMP_SD     # GPIO22 → amp SD
-JC3[7] += I2S_DOUT   # GPIO21 → amp DIN
-JC3[8] += LRCK       # GPIO20 I²S LR-clock
-JC3[9] += BCLK       # GPIO19 I²S bit-clock
-JC3[10] += I2S_DIN   # GPIO18 ← mik
-# pin4(GPIO15 strap), pin5(GPIO23 reserv), pin11(GPIO9 strap), pin13/14(GPIO13/12 USB) = NC
+# ---------- stackad ESP32-P4-WIFI6 (2× kant-sockel, samma kort som vapnet) ----------
+# Edge B = kraft-tapp: VSYS=VBAT (P4:ans buck självförsörjer), GND. Övriga edge-B-stift NC.
+JB = P4B()
+JB["VSYS"] += VBAT; JB["GND"] += GND; JB["GNDb"] += GND; JB["GNDc"] += GND; JB["GNDd"] += GND
+# Edge A = alla signaler (16 GPIO). I²C på dedikerade GPIO8(SCL)/GPIO7(SDA).
+JA = P4A()
+JA["GND"] += GND; JA["GNDb"] += GND; JA["GNDc"] += GND; JA["GNDd"] += GND
+JA["GPIO7"] += I2C_SDA; JA["GPIO8"] += I2C_SCL          # I²C (F9P + IMU)
+JA["GPIO5"] += GNSS_RX; JA["GPIO4"] += GNSS_TX          # UART → F9P
+JA["GPIO3"] += IMU_INT; JA["GPIO2"] += LED_EN
+JA["GPIO52"] += DATA_OB; JA["GPIO51"] += DP[0]; JA["GPIO31"] += DP[1]; JA["GPIO30"] += DP[2]; JA["GPIO29"] += DP[3]  # 5 DATA
+JA["GPIO28"] += BCLK; JA["GPIO50"] += LRCK; JA["GPIO49"] += I2S_DOUT; JA["GPIO24"] += I2S_DIN; JA["GPIO25"] += AMP_SD  # I²S + amp
 
 # ---------- batteri + monteringshål ----------
 Jb = BATT(); Jb["VBAT"] += VBAT; Jb["GND"] += GND
@@ -136,4 +132,4 @@ for _ in range(4):
     MH()[1] += GND
 
 generate_netlist(file_="hardware/helmet-mb.net")
-print("wrote hardware/helmet-mb.net (hjälm-mb v3: ESP32-C6 + buck + F9P + IIM-42653 + 4 TSOP + 2 LED + ljud + 4 patch)")
+print("wrote hardware/helmet-mb.net (hjälm-mb v4: ESP32-P4-WIFI6 + buck + F9P + IIM-42653 + 4 TSOP + 2 LED + ljud + 4 patch)")

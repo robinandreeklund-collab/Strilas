@@ -8,18 +8,57 @@ MM = pcbnew.FromMM; OX, OY = 150.0, 120.0
 def V(x, y): return pcbnew.VECTOR2I(MM(OX + x), MM(OY - y))
 
 
+PLANE_NETS = ("GND", "VBAT")   # får kopparplan i finish() → behöver ej full spår-routning
+
+
 def unrouted(path):
-    b = pcbnew.LoadBoard(path); tr = {}; pc = {}
+    """Antal signal-nät som EJ är helt sammankopplade (union-find över spår/via/pad, utan plan).
+    Plan-näten (GND/VBAT) hoppas över; de fylls som plan senare. Fångar nät-öar (delade nät)."""
+    b = pcbnew.LoadBoard(path)
+    CU = [pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu]
+    items = []   # (net, key, [(x,y,layer-or-None-for-via)])
+    for i, t in enumerate(b.GetTracks()):
+        net = t.GetNetname()
+        if not net:
+            continue
+        if t.Type() == pcbnew.PCB_VIA_T:
+            p = t.GetPosition(); items.append((net, ("v", i), [(p.x, p.y, None)]))
+        else:
+            s, e, L = t.GetStart(), t.GetEnd(), t.GetLayer()
+            items.append((net, ("t", i), [(s.x, s.y, L), (e.x, e.y, L)]))
+    netpads = {}
     for f in b.GetFootprints():
         for p in f.Pads():
-            if p.GetNetname(): pc[p.GetNetname()] = pc.get(p.GetNetname(), 0) + 1
-    for t in b.GetTracks():
-        tr.setdefault(t.GetNetCode(), []).extend(
-            [(t.GetStart().x/1e6, t.GetStart().y/1e6), (t.GetEnd().x/1e6, t.GetEnd().y/1e6)])
-    return sum(1 for f in b.GetFootprints() for p in f.Pads()
-               if p.GetNetname() not in ("", "GND") and pc.get(p.GetNetname(), 0) >= 2
-               and not any(math.hypot(p.GetPosition().x/1e6-ex, p.GetPosition().y/1e6-ey) < 0.4
-                           for ex, ey in tr.get(p.GetNetCode(), [])))
+            net = p.GetNetname()
+            if not net:
+                continue
+            pos = p.GetPosition(); lays = [L for L in CU if p.IsOnLayer(L)]
+            key = ("p", f.GetReference() + "." + p.GetName())
+            items.append((net, key, [(pos.x, pos.y, L) for L in lays] or [(pos.x, pos.y, None)]))
+            netpads.setdefault(net, []).append(key)
+    bynet = {}
+    for net, key, pts in items:
+        bynet.setdefault(net, []).append((key, pts))
+    par = {}
+    def find(x):
+        par.setdefault(x, x)
+        while par[x] != x: par[x] = par[par[x]]; x = par[x]
+        return x
+    bad = 0
+    for net, pads in netpads.items():
+        if net in PLANE_NETS or len(pads) < 2:
+            continue
+        elems = bynet.get(net, [])
+        for i in range(len(elems)):
+            for j in range(i + 1, len(elems)):
+                (ka, pa), (kb, pb) = elems[i], elems[j]
+                touch = any((la is None or lb is None or la == lb)
+                            and math.hypot(xa - xb, ya - yb) < 60000   # 0.06 mm
+                            for xa, ya, la in pa for xb, yb, lb in pb)
+                if touch: par[find(ka)] = find(kb)
+        if len({find(k) for k in pads}) > 1:
+            bad += 1
+    return bad
 
 
 def finish(path):

@@ -226,23 +226,24 @@ firecontrol_pos = {
 
 # ---- väst-moderkort v2 (100×60, väst-nod) — 10 zon-kontakter + ESP32-C6-devkit + 2×TPIC + buck ----
 vest_mb_pos = {}
-for i, xc in enumerate([-38, -19, 0, 19, 38]):  # xc = önskad mitt; origo = xc-6.35 (1x6 sträcker +x vid rot90)
+for i, xc in enumerate([-36, -18, 0, 18, 36]):  # xc = önskad mitt; origo = xc-6.35 (1x6 sträcker +x vid rot90)
     vest_mb_pos[f"J{i+1}"] = (xc - 6.35, 24, 90)  # övre zon-rad J1-J5 (1x6, rot90, centrerad)
     vest_mb_pos[f"J{i+6}"] = (xc - 6.35, -24, 90)  # nedre zon-rad J6-J10
 vest_mb_pos.update({
-    "J11": (-20, 6, 90), "J12": (-20, -6, 90),   # ESP32-C6 (2× 1x16, centrum; origin -20 centrerar 40mm-raden)
+    "J11": (-25.4, 9.28, 90), "J12": (-25.4, -9.28, 90),  # ESP32-P4-WIFI6 (2× 1x20 kant-sockel; rader 18.56mm, origin -25.4 centrerar)
     "U2": (-41, 11, 0), "C5": (-33, 11, 0),      # TPIC6B595 #1 (VIB-driver) + avkoppl (vänster)
     "U3": (41, 11, 0), "C6": (33, 11, 0),        # TPIC6B595 #2 + avkoppl (höger)
-    "U1": (-10, -15, 0), "L1": (-3, -15, 0),     # buck + induktor (nedre-centrum, under C6)
-    "C1": (-15, -15, 0), "C2": (-15, -11, 0), "C3": (4, -15, 0), "C4": (10, -15, 0),  # Cbst/Cin/Cout/Cbulk
-    "R1": (-7, -11, 90), "R2": (1, -11, 90),     # FB-delare
+    # buck-kluster i fria bandet y[-13..-21] (under P4 edge-A-raden @y-9.28, ovan nedre zon-rad @y-24)
+    "U1": (-10, -16, 0), "L1": (-3, -16, 0),     # buck + induktor (nedre-centrum)
+    "C1": (-17, -16, 0), "C2": (-17, -13, 0), "C3": (4, -16, 0), "C4": (11, -16, 0),  # Cin/.. + Cbulk
+    "R1": (-7, -13, 90), "R2": (1, -13, 90),     # FB-delare
     "J13": (38, -12, 0),                         # 2S-batteri JST (höger, under TPIC)
     "H1": (-48, 28, 0), "H2": (48, 28, 0), "H3": (-48, -28, 0), "H4": (48, -28, 0),
 })
 
 # ---- hjälm-MODERKORT v3 (90×70, "holo") — ESP32-C6-devkit + buck + F9P + IMU + 4 TSOP + 2 LED + ljud + 4 patch ----
 helmet_mb_pos = {
-    "J8": (-20, 11.4, 90), "J9": (-20, -11.4, 90),   # ESP32-C6 (2× 1x16, centrum; origin -20 centrerar 40mm-raden)
+    "J8": (-25.4, 9.28, 90), "J9": (-25.4, -9.28, 90),  # ESP32-P4-WIFI6 (2× 1x20 kant-sockel; rader 18.56mm, 50.8mm/rad)
     "U3": (-43, 30, 0), "D1": (-33, 30, 0), "C6": (-42, 24, 0),     # NV TSOP-kluster
     "U4": (32, 30, 0), "D2": (27, 30, 0), "C7": (41, 24, 0),        # NÖ
     "U5": (-43, -31, 0), "D3": (-33, -31, 0), "C8": (-42, -25, 0),  # SV
@@ -251,12 +252,12 @@ helmet_mb_pos = {
     "Q1": (0, 27, 0), "R4": (-6, 27, 90),            # topp-LED-driver
     "U2": (28, 4, 0), "C4": (32, 5.5, 0), "C5": (32, 2.5, 0),  # IIM-42653 IMU (höger om C6)
     "U1": (-39, 13, 0), "L1": (-32, 13, 0), "C1": (-44, 10, 0), "C2": (-44, 16, 0), "C3": (-30, 9, 0),  # buck
-    "R1": (-36, 8, 90), "R2": (-27, 16, 90), "R3": (-24, 9, 90),    # FB-delare + onboard DATA-pullup
+    "R1": (-36, 8, 90), "R2": (-27, 16, 90), "R3": (-20, 14, 90),    # FB-delare + onboard DATA-pullup (R3 ovan P4-sockel)
     "J1": (-5, -34, 0),                              # ZED-F9P 8-pol GH (botten-centrum)
     "J6": (45, 30, 0), "J7": (45, -16, 0),           # amp (1x7) / mik (1x6) — höger kant (lodrät)
     "J2": (-45, -12, 0), "J3": (45, 8, 0), "J4": (-34, -35, 90), "J5": (16, -35, 90),  # 4 patch-kontakter
     "J10": (26, -14, 0),                             # 2S-batteri JST
-    "H1": (-47, 35, 0), "H2": (47, 35, 0), "H3": (-47, -35, 0), "H4": (47, -35, 0),
+    "H1": (-47, 35, 0), "H2": (47, 35, 0), "H3": (-47, -35, 0), "H4": (47, -35, 0),  # hörn (courtyard-overhang OK; hål inom kant)
 }
 
 BOARDS = {
