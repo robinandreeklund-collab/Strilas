@@ -103,31 +103,31 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
     print(f"  {pcbfile}: {len(fps)} komponenter, {len(nets)} nät")
 
 
-# ---- väst-patch (täcknings-NOD 40×36) — 4 ledade TSOP4856 i KORS, kardborre/lim-fäst ----
-# SIKTE (användarens design): 1 mottagare RAKT FRAM (center, ut ur kortet = mot fienden) + 3 riktade
-# i kortets plan mot kanterna: VÄNSTER · UPP · HÖGER. Benen BÖJS så domen pekar åt sin kant.
-# Dom-aim vs footprint-rot (verifierat): rot0=NED, rot90=HÖGER, rot180=UPP, rot270=VÄNSTER.
-# Refs: U1=vänster · U2=upp · U3=höger · U4=FRAM(center) · D1-4=OR-dioder · D5,D6=OSLON 860nm
-#       R3,R4=10R 2512 · R1=DATA-pull · R2=gate · C1=bulk · C2-5=TSOP-avkoppl · J1=1x5.
-vest_pos = {   # ±20,±18.  (origo = pad1; kropp/dom skjuter ~6 mm i aim-riktningen)
-    "U1": (-15, 0, 270),   # VÄNSTER-mottagare (dom mot -x, vänsterkant)
-    "U2": (2.5, 10, 180),  # UPP-mottagare (dom mot +y, toppkant)
-    "U3": (9, 0, 90),      # HÖGER-mottagare (dom mot +x, högerkant)
-    "U4": (-2.5, 3, 0),    # FRAM-mottagare (center, plant monterad → lins rakt ut ur kortet)
-    "D5": (-17, 14, 0), "D6": (15, 14, 0),                         # OSLON 860nm konstellation (toppkant-hörn)
-    "R3": (-17, 8, 90), "R4": (17, 8, 90),                         # LED-serieR 10R 2512
-    "D1": (-10.5, -5, 0), "D2": (-3.5, -5, 0), "D3": (3.5, -5, 0), "D4": (10.5, -5, 0),  # OR-dioder (rad)
-    "C2": (-10.5, -9, 0), "C3": (-3.5, -9, 0), "C4": (3.5, -9, 0), "C5": (10.5, -9, 0),  # TSOP-avkoppl
-    "Q1": (-11, -12.8, 0), "R2": (-5, -12.8, 90), "R1": (0, -12.8, 0),  # N-FET + gate-R + DATA-pullup
-    "C1": (7, -12.8, 0),                                          # bulk 10µF (VBAT)
-    "J1": (-6.35, -16.2, 90),                                     # 1x5 (matchar moderkort), nederkant
+# ---- väst-patch (täcknings-NOD 46×46, FYRFALDIGT SYMMETRISK) — 4 ledade TSOP4856, kardborre/lim ----
+# SIKTE (beräknat optimum, se vapen-stack/ritningar/patch-sikte.md): 4 mottagare jämnt 90° isär i
+# DIAMANT (NÖ/NV/SV/SÖ), var och en böjd ~40° UTÅT från kortets normal (ben böjs; silk-pil visar).
+# → 99,5 % av framåt-hemisfären, 100 % inom 60° zenit, ~2,3 mottagare ser ett frontalskott (redundans).
+# Full 4-falds symmetri → patchen kan placeras i VALFRI vridning på västen och funkar lika bra.
+# Dom-aim vs footprint-rot (verif.): rot0=NED rot90=HÖGER rot180=UPP rot270=VÄNSTER → aim_az=(rot+270)%360.
+# Refs: U1-4=TSOP · varje TSOP har egen OR-diod (D1-4) + avkoppl-C (C2-5) BREDVID sig (4 identiska kluster).
+#       D5,D6=OSLON 860nm konstellation (N/S, symmetriskt) · R3,R4=10R 2512 · delat: J1=1x5, Q1=FET,
+#       R1=DATA-pull, R2=gate, C1=bulk — centrerat. (konstellations-LED ≠ per-TSOP; de är kamera-markörer.)
+vest_pos = {   # ±23. diamant-TSOP (kropp-radie 15, dom radiellt ut); D/C tangentiellt @ r9.6; LED på N/S-axeln
+    "U3": (11.48, 7.88, 135), "D3": (7.77, 5.64, 45), "C4": (5.64, 7.77, 45),       # NÖ-kluster
+    "U2": (-7.88, 11.48, 225), "D2": (-5.64, 7.77, 135), "C3": (-7.77, 5.64, 135),  # NV-kluster
+    "U1": (-11.48, -7.88, 315), "D1": (-7.77, -5.64, 45), "C2": (-5.64, -7.77, 45), # SV-kluster
+    "U4": (7.88, -11.48, 45), "D4": (5.64, -7.77, 135), "C5": (7.77, -5.64, 135),   # SÖ-kluster
+    "D5": (0, 20, 0), "R3": (0, 13.3, 90),       # N konstellations-LED + serieR (på y-axeln)
+    "D6": (0, -20, 0), "R4": (0, -13.3, 90),      # S
+    "J1": (-5.08, 0, 90),                          # 1x5 horisontellt centrerat (Ö–V-bandet)
+    "C1": (-2.6, 3.6, 0), "Q1": (2.6, 3.6, 0),     # bulk + FET strax ovan kontakten
+    "R1": (-2.6, -3.6, 0), "R2": (2.6, -3.6, 0),   # DATA-pullup + gate-R strax under
 }   # inga monteringshål — lim/kardborre-fäst patch
-# sikt-etiketter på silkscreen (så böjriktningen syns permanent på kortet)
+# sikt-etiketter på silkscreen: böj-instruktion (Ö/V-axeln, fri) + riktning per TSOP-kluster
 vest_labels = [
-    (-15, 5.5, "< VANS", 1.0),     # vänster
-    (2.5, 15.5, "UPP ^", 1.0),     # upp
-    (12.5, 5.5, "HOGER >", 1.0),   # höger
-    (-2.5, -1.5, "FRAM (o)", 1.0), # fram (center, ut ur kortet)
+    (-15, 0, "LUTA", 1.0), (15, 0, "40 UT", 1.0),   # böj benen 40° UTÅT (radiellt)
+    (8.5, 8.5, "NO", 0.8), (-8.5, 8.5, "NV", 0.8),
+    (-8.5, -8.5, "SV", 0.8), (8.5, -8.5, "SO", 0.8),
 ]
 # ---- hjälm-NOD (Ø100, komplett: buck+XIAO-S3+8TSOP+4LED+GNSS+I2S-audio) ----
 # Ring (r=42) = 8× TSOP utåtriktade (360° huvud) + diod-OR + avkoppling strax innanför.
@@ -285,7 +285,7 @@ BOARDS = {
     "helmet_mb": lambda: place("hardware/helmet-mb.net", "hardware/helmet-mb.kicad_pcb",
                                helmet_mb_pos, ("rect", 48, 38), layers=4, free=(-3, 3, -3, 3)),
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
-                          vest_pos, ("rect", 20, 18), layers=2, free=(-3, 3, -3, 3), labels=vest_labels),
+                          vest_pos, ("rect", 23, 23), layers=2, free=(-2, 2, -2, 2), labels=vest_labels),
     "vest_mb": lambda: place("hardware/vest-mb.net", "hardware/vest-mb.kicad_pcb",
                              vest_mb_pos, ("rect", 50, 30), layers=4, free=(-3, 3, -3, 3)),
     # vapnet: alla delar placeras explicit -> tom fri-zon (säker, ingen krock med lins)
