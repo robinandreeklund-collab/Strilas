@@ -69,6 +69,10 @@ MPN = {
     "100R":        ("RC0805FR-07100RL", "Yageo", "Res 100R 1% 0805", "", ""),
     "10k":         ("RC0805FR-0710KL", "Yageo", "Res 10k 1% 0805", "", ""),
     "VBAT·GND·DATA·LED_EN·3V3":("2.54-1x05", "generisk", "Stiftlist 1x05 2.54 mm → väst-moderkortets zon-kontakt", "", "TH; 3V3 från moderkortet (ingen LDO på patchen)"),
+    # --- P4-WIFI6 kant-socklar (moderkort: ESP32-P4-WIFI6 stackas i 2× 1x20 hona) ---
+    "P4-WIFI6 edge B": ("2.54-1x20-FH", "generisk", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge B (kraft)", "", "TH; kund-lödd. ESP32-P4-WIFI6 köps separat (Waveshare)"),
+    "P4-WIFI6 edge A": ("2.54-1x20-FH", "generisk", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge A (signaler)", "", "TH; kund-lödd. ESP32-P4-WIFI6 köps separat (Waveshare)"),
+    "SFH4725S_940nm": ("SFH 4725CS", "ams OSRAM", "IR-emitter 940nm OSLON Black (efterträder SFH 4725S) — SAMMA leverantör som patch-LED", "C", "Kund-levererad; OSLON Black-paket = samma footprint som SFH4715AS"),
 }
 
 def netvals(path):
@@ -156,3 +160,12 @@ if __name__ == "__main__":
     print("OPTIK-PROTOTYP (IMU DNP, J1/J2 kund-lödd):"); build("weapon-module.kicad_pcb", "weapon-module.net",
           "nextpcb/optik-PROTOTYP-bom.xls", dnp_refs={"U1","C3","C4","C5"}, cust_refs={"J1","J2"})
     centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"U1","C3","C4","C5","J1","J2"})
+    # HJÄLM-MODERKORT (ESP32-P4-WIFI6, rund): TH-kontakter kund-lödda (P4-socklar/patch/amp/mik/batteri);
+    # J1 = ZED-F9P GH (SMD → NextPCB monterar).
+    HMB_CUST = {"J2","J3","J4","J5","J6","J7","J8","J9","J10"}
+    print("HJÄLM-MB:"); build("helmet-mb.kicad_pcb", "helmet-mb.net", "nextpcb/helmet-mb-bom.xls", cust_refs=HMB_CUST)
+    centroid("helmet-mb.kicad_pcb", "nextpcb/helmet-mb-centroid.csv", exclude=HMB_CUST)
+    # VÄST-MODERKORT (ESP32-P4-WIFI6): alla TH-kontakter (zon-headers/P4-socklar/batteri) kund-lödda.
+    VMB_CUST = {f"J{i}" for i in range(1, 14)}
+    print("VÄST-MB:"); build("vest-mb.kicad_pcb", "vest-mb.net", "nextpcb/vest-mb-bom.xls", cust_refs=VMB_CUST)
+    centroid("vest-mb.kicad_pcb", "nextpcb/vest-mb-centroid.csv", exclude=VMB_CUST)

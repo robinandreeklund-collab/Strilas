@@ -120,7 +120,10 @@ Användaren: *"varför kan jag inte bara köra samma som på vapnet? p4 c6? … 
 underhålla med samma kort överallt."* → båda moderkorten kör nu **exakt samma ESP32-P4-WIFI6**
 (Waveshare) som vapnets optikmodul. En enda ESP-source genom hela systemet, WiFi6 genomgående.
 
-**Hjälm-mb v4** (`hardware/helmet_mb_netlist.py`, 96×76 mm 4-lager, routat rent 0/0/0):
+**Hjälm-mb v4** (`hardware/helmet_mb_netlist.py`, **RUND Ø104 mm** 4-lager, routat rent 0/0/0):
+- **Rund skiva** (önskemål): P4 central horisontell; 4 TSOP radiellt utåt på ringen (NÖ/NV/SV/SÖ,
+  360° huvudtäckning); 2 konstellations-LED N/S; 8 kontakter + 4 monteringshål jämnt runt kransen;
+  buck/IMU/LED-driver i crescents. F9P-puck monteras på centrum.
 - **ESP32-P4-WIFI6**, 2× 1×20 kant-sockel (edge A=signaler, edge B=kraft-tapp). Pinout verifierad
   mot Waveshares datablad. P4 självförsörjer via VSYS=VBAT; carrier-buck (AP63203) ger 3,3 V för
   laster (sensorer/F9P/IMU/ljud/patch-rail). ~40 GPIO → gott om marginal.
