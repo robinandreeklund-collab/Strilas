@@ -2,8 +2,16 @@
 
 > Figur: [`precision-iim42653.png`](precision-iim42653.png) · bygger på [`precision-analys.md`](precision-analys.md)
 > **Status:** detta är en **förhandsanalys** av föreslagen ändring. Korten bär fortfarande
-> **ICM-42670-P** tills bytet görs. Pinout/exakta IIM-tal **låses mot databladet** (`datasheet/`)
-> innan något ändras. Konfidens flaggas per tal.
+> **ICM-42670-P** tills bytet görs. **Pinout LÅST (drop-in) mot DS-000529** (se nedan); endast
+> exakt gyrobrus + skalfaktor återstår att läsa ur databladets elektriska-data-sida.
+> Konfidens flaggas per tal.
+
+## Pinout — VERIFIERAD drop-in (DS-000529, IIM-42653)
+De 8 signalstift vår design använder är **identiska** med ICM-42670/42688-footprinten:
+`1=AP_SDO(MISO) · 4=INT1 · 5=VDDIO · 6=GND · 8=VDD · 12=AP_CS · 13=AP_SCLK · 14=AP_SDI(MOSI)`.
+Skillnad: stift **2/3/10/11 = AUX1** (sekundär SPI, oanvänd → NC) i stället för RESV; **7=RESV**
+(vår pin7→GND giltig); **9=INT2/FSYNC/CLKIN** (NC). I²C på FC oförändrat (12=AP_CS→VDDIO, 1=AD0).
+→ **Ingen omdragning** — endast värde/MPN byts. ±4000 dps · ±32g · −40…+105 °C · 20 000 g bekräftat.
 
 ## Vad som ändras
 | | Nu (på kortet) | Föreslaget |
