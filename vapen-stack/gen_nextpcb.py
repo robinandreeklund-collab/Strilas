@@ -95,11 +95,20 @@ def centroid(board_pcb, out_csv):
         rows.append([f.GetReference(), f"{x:.4f}", f"{y:.4f}",
                      "Bottom" if f.IsFlipped() else "Top", f"{f.GetOrientationDegrees():.2f}"])
     rows.sort(key=lambda r: refkey(r[0]))
+    head = ["Designator", "Mid X(mm)", "Mid Y(mm)", "Layer", "Rotation"]
     with open(out_csv, "w", newline="") as fh:
-        w = csv.writer(fh)
-        w.writerow(["Designator", "Mid X(mm)", "Mid Y(mm)", "Layer", "Rotation"])
-        w.writerows(rows)
-    print(f"  {out_csv}: {len(rows)} placeringar")
+        w = csv.writer(fh); w.writerow(head); w.writerows(rows)
+    # NextPCB-uppladdning kräver zip/rar/xls/xlsx → skriv även .xls
+    out_xls = out_csv.rsplit(".", 1)[0] + ".xls"
+    wb = xlwt.Workbook(); ws = wb.add_sheet("Centroid")
+    bold = xlwt.easyxf("font: bold on")
+    for c, h in enumerate(head): ws.write(0, c, h, bold)
+    for i, r in enumerate(rows, 1):
+        ws.write(i, 0, r[0])
+        for c in (1, 2, 4): ws.write(i, c, float(r[c]))
+        ws.write(i, 3, r[3])
+    wb.save(out_xls)
+    print(f"  {out_csv} + {out_xls}: {len(rows)} placeringar")
 
 if __name__ == "__main__":
     import os; os.makedirs("nextpcb", exist_ok=True)
