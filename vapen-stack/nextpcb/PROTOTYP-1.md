@@ -19,6 +19,12 @@ NextPCB min-order är oftast 5 st → 5 optik (1 behövs nu) + 5 väst-patchar =
 - **Optik:** 54×74 mm, **4-lager**. **Väst-patch:** 58×42 mm, **2-lager**. FR-4 1,6 mm, HASL/ENIG.
 - Väst-patchen är nu **färdigroutad** (0 oroutade · 0 clearance · 0 oconnected); J1 inflyttad i kortet (tidigare hängde den utanför kanten — fixat).
 
+## Kund-lödda TH-kontakter (NextPCB gör endast SMT)
+- **Optik:** J1 (1×14 P4-socket) + J2 (JST-XH batteri) = **DNP** → du sourcar + lödder själv.
+- **Väst-patch:** J1 (1×4) = **DNP** → du sourcar + lödder själv.
+- → NextPCB monterar bara ytmonterat (billigare, ingen selektiv-/handlödning); centroiderna
+  utesluter dessa kontakter.
+
 ## Köps separat (ej PCB)
 - **ESP32-P4-WIFI6** (Waveshare) — kör optikkortet + kameran.
 - **Arducam OV9281 USB-kamera** + **IR-pass-filter** (860 nm). Kör **50–60 fps @1280×800** över

@@ -62,7 +62,7 @@ def refkey(r):
 HDR = ["Designator*", "Quantity*", "Manufacturer Part Number*", "Manufacturer",
        "Package/Footprint", "Description", "Procurement Type", "Customer Note"]
 
-def build(board_pcb, board_net, out_xls, dnp_refs=frozenset()):
+def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozenset()):
     vals = netvals(board_net)
     b = pcbnew.LoadBoard(board_pcb)
     groups = defaultdict(list)   # (value) -> [(ref, package)]
@@ -86,6 +86,8 @@ def build(board_pcb, board_net, out_xls, dnp_refs=frozenset()):
         mpn, mfr, desc, proc, note = MPN.get(key, ("", "", val, "", "SAKNAR MPN — fyll i"))
         if refs and all(r in dnp_refs for r in refs):
             proc = "DNP"; note = "Prototyp: monteras EJ (IMU via GY-601N1-breakout på P4)"
+        elif refs and all(r in cust_refs for r in refs):
+            proc = "DNP"; note = "Kund sourcar + lödder själv (TH-kontakt)"
         ws.write(row, 0, ",".join(refs)); ws.write(row, 1, len(refs))
         ws.write(row, 2, mpn); ws.write(row, 3, mfr); ws.write(row, 4, pkg)
         ws.write(row, 5, desc); ws.write(row, 6, proc); ws.write(row, 7, note)
@@ -126,9 +128,10 @@ if __name__ == "__main__":
     centroid("weapon-module.kicad_pcb", "nextpcb/optik-centroid.csv")
     print("FIRE-CONTROL:"); build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls")
     centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv")
-    print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls")
-    centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv")
-    # Prototyp-optik: IMU + dess avkoppling DNP (kör breakout-IMU på P4 istället)
-    print("OPTIK-PROTOTYP (IMU DNP):"); build("weapon-module.kicad_pcb", "weapon-module.net",
-          "nextpcb/optik-PROTOTYP-bom.xls", dnp_refs={"U1","C3","C4","C5"})
-    centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"U1","C3","C4","C5"})
+    print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls",
+          cust_refs={"J1"})                                   # J1 kund-lödd
+    centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude={"J1"})
+    # Prototyp-optik: IMU DNP (breakout på P4) + J1/J2 kund-lödda (TH)
+    print("OPTIK-PROTOTYP (IMU DNP, J1/J2 kund-lödd):"); build("weapon-module.kicad_pcb", "weapon-module.net",
+          "nextpcb/optik-PROTOTYP-bom.xls", dnp_refs={"U1","C3","C4","C5"}, cust_refs={"J1","J2"})
+    centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"U1","C3","C4","C5","J1","J2"})
