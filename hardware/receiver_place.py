@@ -224,22 +224,20 @@ firecontrol_pos = {
     "H3": (19.73, 9.15, 0), "H4": (19.73, -9.15, 0),
 }
 
-# ---- väst-moderkort (90×60, väst-nod) — 10 zon-kontakter + XIAO-S3 + 165/TPIC + buck ----
+# ---- väst-moderkort v2 (100×60, väst-nod) — 10 zon-kontakter + ESP32-C6-devkit + 2×TPIC + buck ----
 vest_mb_pos = {}
 for i, xc in enumerate([-38, -19, 0, 19, 38]):  # xc = önskad mitt; origo = xc-6.35 (1x6 sträcker +x vid rot90)
     vest_mb_pos[f"J{i+1}"] = (xc - 6.35, 24, 90)  # övre zon-rad J1-J5 (1x6, rot90, centrerad)
     vest_mb_pos[f"J{i+6}"] = (xc - 6.35, -24, 90)  # nedre zon-rad J6-J10
 vest_mb_pos.update({
-    "J11": (-7.6, 0, 0), "J12": (7.6, 0, 0),     # XIAO ESP32-S3 (2× 1x7 sockel), centrum
-    "U2": (-32, 8, 0), "U3": (-32, -8, 0),       # 2× 74HC165 (DATA-läsning), vänster
-    "C5": (-37, 8, 90), "C6": (-37, -8, 90),     # 165-avkoppling
-    "U4": (32, 9, 0), "U5": (32, -9, 0),         # 2× TPIC6B595 (VIB-driver), höger
-    "C7": (40, 4, 90), "C8": (40, -4, 90),       # TPIC-avkoppling
-    "U1": (-22, 12, 0), "L1": (-15, 12, 0),      # buck + induktor (övre-vänster mittband)
-    "C1": (-26, 8, 0), "C2": (-28, 15, 0), "C3": (-9, 13, 0), "C4": (-9, 8, 0),  # Cbst/Cin/Cout/Cbulk
-    "R1": (-19, 7, 90), "R2": (-15, 7, 90),      # FB-delare
-    "J13": (18, -10, 0),                         # 2S-batteri JST (höger mittband)
-    "H1": (-46, 27, 0), "H2": (46, 27, 0), "H3": (-46, -27, 0), "H4": (46, -27, 0),
+    "J11": (-20, 6, 90), "J12": (-20, -6, 90),   # ESP32-C6 (2× 1x16, centrum; origin -20 centrerar 40mm-raden)
+    "U2": (-41, 11, 0), "C5": (-33, 11, 0),      # TPIC6B595 #1 (VIB-driver) + avkoppl (vänster)
+    "U3": (41, 11, 0), "C6": (33, 11, 0),        # TPIC6B595 #2 + avkoppl (höger)
+    "U1": (-10, -15, 0), "L1": (-3, -15, 0),     # buck + induktor (nedre-centrum, under C6)
+    "C1": (-15, -15, 0), "C2": (-15, -11, 0), "C3": (4, -15, 0), "C4": (10, -15, 0),  # Cbst/Cin/Cout/Cbulk
+    "R1": (-7, -11, 90), "R2": (1, -11, 90),     # FB-delare
+    "J13": (38, -12, 0),                         # 2S-batteri JST (höger, under TPIC)
+    "H1": (-48, 28, 0), "H2": (48, 28, 0), "H3": (-48, -28, 0), "H4": (48, -28, 0),
 })
 
 # ---- hjälm-MODERKORT v3 (90×70, "holo") — ESP32-C6-devkit + buck + F9P + IMU + 4 TSOP + 2 LED + ljud + 4 patch ----

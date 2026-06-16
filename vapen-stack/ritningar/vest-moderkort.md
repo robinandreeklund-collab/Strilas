@@ -49,3 +49,10 @@ Underlag: `nextpcb/vest-mb-bom.xls` + `vest-mb-centroid.xls` + `vest-mb-gerbers.
 ## Kvarstår (rena bänkmätningar, ej design)
 Bekräfta 3,33 V på buck-utgången · kör `vest_mb_hw.selftest()` och bekräfta zon↔bit-mappningen
 (1 konstant, matchar netlistan) · trimma vibb-PWM-känslan genom väst-tyget.
+
+---
+## v2 (2026-06): ESP32-C6-devkit (ersätter XIAO-S3)
+Nod-ESP bytt **XIAO-S3 → ESP32-C6-DevKitC-1** (samma som hjälm-mb → WiFi6 genomgående, enkel source).
+C6:s 23 GPIO → **10 patch-DATA läses direkt** (74HC165 borttagna). TPIC6B595 ×2 (vibratorer) kvar.
+GPIO: 10 DATA + TPIC(SER/SRCK/RCK)3 + LED_EN1 = 14 av 23. Inget ljud (väst = vibratorer; ljud på hjälmen).
+100×60 4-lager, routat rent 0/0/0. C6 (2× 1x16-sockel) centrum, TPIC på sidorna, buck nedan, 10 zoner kant.
