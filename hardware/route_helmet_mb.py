@@ -8,7 +8,8 @@ MM = pcbnew.FromMM; OX, OY = 150.0, 120.0
 def V(x, y): return pcbnew.VECTOR2I(MM(OX + x), MM(OY - y))
 
 
-PLANE_NETS = ("GND", "VBAT")   # får kopparplan i finish() → behöver ej full spår-routning
+PLANE_NETS = ("GND", "+3V3")   # får kopparplan i finish() → behöver ej full spår-routning
+# OBS: +3V3 planas (flest pads + måste korsa P4-sockel-"väggen"); VBAT (färre pads) routas som spår.
 
 
 def unrouted(path):
@@ -70,7 +71,7 @@ def finish(path):
         ch = pcbnew.SHAPE_LINE_CHAIN()
         for x, y in [(-47.5, -37.5), (47.5, -37.5), (47.5, 37.5), (-47.5, 37.5)]: ch.Append(V(x, y))
         ch.SetClosed(True); z.AddPolygon(ch); b.Add(z)
-    add_zone(pcbnew.In1_Cu, "GND"); add_zone(pcbnew.In2_Cu, "VBAT")
+    add_zone(pcbnew.In1_Cu, "GND"); add_zone(pcbnew.In2_Cu, "+3V3")   # In2 = +3V3-plan (flest pads)
     add_zone(pcbnew.B_Cu, "GND"); add_zone(pcbnew.F_Cu, "GND")
     pcbnew.ZONE_FILLER(b).Fill(b.Zones()); pcbnew.SaveBoard(path, b)
 
