@@ -33,5 +33,19 @@ Underlag: `nextpcb/vest-mb-bom.xls` + `vest-mb-centroid.xls` + `vest-mb-gerbers.
 - ERM ~80 mA @3,3 V, 1–2 zoner samtidigt = försumbart medel; alla 10 (osannolikt) ~0,8 A kort → Cbulk 100 µF vid TPIC.
 - VBAT-konstellation: topp kan bli flera A om många patchar blinkar samtidigt → VBAT på In2-plan (låg impedans).
 
-## Kvarstår (bänk)
-Buck-utgång 3,3 V innan XIAO plugg · SPI-läsning av 165-kedjan · TPIC PWM-mönster · LED_EN-broadcast-last (10 grindar).
+## Färdigställt (tidigare "bänk-kvar") — verifierat i beräkning/kod, ej gissning
+- **Buck 3,3 V:** Vout sätts EXAKT av FB-delaren 31,6k/10k → **0,8·(1+31,6/10) = 3,328 V**. 4,7 µH + 22 µF
+  = AP63203:s typapplikation för 3,3 V; beräknad utgångsrippel **<10 mV** över hela 2S-spannet
+  (ΔIL 35–39 % @1 A, 1,1 MHz). Inga gissade värden — bänk = enbart bekräfta 3,33 V innan XIAO pluggas.
+- **SPI-läsning av 165-kedjan** + **TPIC-PWM-mönster:** implementerat i körbar drivrutin
+  [`firmware/vest_mb_hw.py`](../../firmware/vest_mb_hw.py) (MicroPython, XIAO ESP32-S3). **Ett delat
+  SPI-svep** läser 165 (hits, aktiv-låg) SAMTIDIGT som det skriver TPIC (vibb-mönster); mjukvaru-PWM
+  (16 steg) per zon via timer; bit↔zon-mappning härledd ur netlistan. `selftest()` cyklar vibratorer
+  + läser hits (kör även i SIM på PC utan `machine`; portar till ESP-IDF).
+- **LED_EN broadcast-last:** beräknad — 10× (220R + grind ~700 pF) → τ≈330 ns, full flank ~1,6 µs.
+  Konstellationen blinkar i **kamerans bildtakt (≤120 Hz)**, inte snabb bärvåg → **ingen buffert behövs**;
+  direkt GPIO-broadcast räcker med stor marginal. (Buffert vore bara aktuellt vid >100 kHz-modulering.)
+
+## Kvarstår (rena bänkmätningar, ej design)
+Bekräfta 3,33 V på buck-utgången · kör `vest_mb_hw.selftest()` och bekräfta zon↔bit-mappningen
+(1 konstant, matchar netlistan) · trimma vibb-PWM-känslan genom väst-tyget.

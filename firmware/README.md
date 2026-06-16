@@ -28,7 +28,8 @@ python3 -m firmware.benchmark     # server-prestanda (~57k adj/s)
 | `engine.py` | **server**: pairing FireEvent↔IRHit, lag-komp, tick-loop | laptop/server |
 | `adjudicator.py` | **dom**: ballistik + lead + geometri × IR-grind + anti-fusk | server |
 | `weapon_node.py` | vapen-logik: perception + engage → signerad FireEvent | ESP32-P4 |
-| `target_node.py` | mål-logik: TSOP → IRHit + PlayerState | ESP32-C5 |
+| `target_node.py` | mål-logik: TSOP → IRHit + PlayerState | ESP32-C5/XIAO-S3 |
+| `vest_mb_hw.py` | **väst-moderkortets HW-I/O**: 74HC165-läsning + TPIC6B595-PWM + LED_EN (delat SPI-svep) | XIAO ESP32-S3 (MicroPython→ESP-IDF) |
 | `world_sim.py` | **sim-harness**: fejk-kamera, IR-länk, scenario | *ersätts av hårdvaran* |
 
 ## Vad som är verifierat i kod (@150 m, allt PASS)
