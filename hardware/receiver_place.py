@@ -260,28 +260,59 @@ vest_mb_pos.update({
     "H1": (-48, 28, 0), "H2": (48, 28, 0), "H3": (-48, -28, 0), "H4": (48, -28, 0),
 })
 
-# ---- hjälm-MODERKORT v3 (90×70, "holo") — ESP32-C6-devkit + buck + F9P + IMU + 4 TSOP + 2 LED + ljud + 4 patch ----
+# ---- hjälm-MODERKORT v4 (RUND Ø~104, "holo") — ESP32-P4-WIFI6 + buck + F9P + IMU + 4 TSOP + 2 LED + ljud + 4 patch ----
+# RUND skiva (F9P-puck monteras ovanpå centrum). P4 central horisontell; 4 TSOP radiellt utåt på ringen
+# (NÖ/NV/SV/SÖ, dom ut för 360° huvudtäckning); 2 konstellations-LED N/S; kringdelar i krans/crescents.
+# Genererad av cirkulär bbox-center-layout (se commit-historik). Domer riktas radiellt ut.
 helmet_mb_pos = {
-    "J8": (-25.4, 9.28, 90), "J9": (-25.4, -9.28, 90),  # ESP32-P4-WIFI6 (2× 1x20 kant-sockel; rader 18.56mm, 50.8mm/rad)
-    "U3": (-43, 30, 0), "D1": (-33, 30, 0), "C6": (-42, 24, 0),     # NV TSOP-kluster
-    "U4": (32, 30, 0), "D2": (27, 30, 0), "C7": (41, 24, 0),        # NÖ
-    "U5": (-43, -31, 0), "D3": (-33, -31, 0), "C8": (-42, -25, 0),  # SV
-    "U6": (32, -31, 0), "D4": (27, -31, 0), "C9": (41, -25, 0),     # SÖ
-    "D5": (-4, 32, 0), "D6": (4, 32, 0), "R5": (-10, 32, 90), "R6": (10, 32, 90),  # topp-LED
-    "Q1": (0, 27, 0), "R4": (-6, 27, 90),            # topp-LED-driver
-    "U2": (28, 4, 0), "C4": (32, 5.5, 0), "C5": (32, 2.5, 0),  # IIM-42653 IMU (höger om C6)
-    "U1": (-39, 13, 0), "L1": (-32, 13, 0), "C1": (-44, 10, 0), "C2": (-44, 16, 0), "C3": (-30, 9, 0),  # buck
-    "R1": (-36, 8, 90), "R2": (-27, 16, 90), "R3": (-20, 14, 90),    # FB-delare + onboard DATA-pullup (R3 ovan P4-sockel)
-    "J1": (-5, -34, 0),                              # ZED-F9P 8-pol GH (botten-centrum)
-    "J6": (45, 30, 0), "J7": (45, -16, 0),           # amp (1x7) / mik (1x6) — höger kant (lodrät)
-    "J2": (-45, -12, 0), "J3": (45, 8, 0), "J4": (-34, -35, 90), "J5": (16, -35, 90),  # 4 patch-kontakter
-    "J10": (26, -14, 0),                             # 2S-batteri JST
-    "H1": (-47, 35, 0), "H2": (47, 35, 0), "H3": (-47, -35, 0), "H4": (47, -35, 0),  # hörn (courtyard-overhang OK; hål inom kant)
+    "J8": (-25.4, 9.28, 90),
+    "J9": (-25.4, -9.28, 90),
+    "U4": (29.86, 26.27, 135),
+    "D2": (24.51, 20.57, 45),
+    "C7": (19.51, 24.09, 45),
+    "U3": (-26.27, 29.86, 225),
+    "D1": (-20.57, 24.51, 135),
+    "C6": (-24.09, 19.51, 135),
+    "U5": (-29.86, -26.27, 315),
+    "D3": (-24.51, -20.57, 45),
+    "C8": (-19.51, -24.09, 45),
+    "U6": (26.27, -29.86, 45),
+    "D4": (20.57, -24.51, 135),
+    "C9": (24.09, -19.51, 135),
+    "D5": (0.0, 45.0, 0),
+    "R5": (0.0, 38.0, 90),
+    "D6": (-0.0, -45.0, 0),
+    "R6": (-0.0, -38.0, 90),
+    "J10": (36.55, -1.25, 90),
+    "J2": (31.45, 12.71, 112),
+    "J3": (31.45, -12.71, 68),
+    "J6": (-38.65, 22.31, 60),
+    "J1": (-39.0, 0.0, 90),
+    "J7": (-37.54, -21.68, 120),
+    "J4": (-15.07, -41.42, 160),
+    "J5": (11.6, -31.88, 20),
+    "Q1": (9.0, 14.91, 0),
+    "R4": (14.0, 15.0, 90),
+    "U2": (-7.84, 15.0, 0),
+    "C4": (-12.0, 15.0, 90),
+    "C5": (-4.0, 15.0, 90),
+    "U1": (-9.0, -15.09, 0),
+    "L1": (-1.0, -15.0, 0),
+    "C1": (-16.0, -14.5, 0),
+    "C2": (-16.0, -18.5, 0),
+    "C3": (6.0, -15.0, 0),
+    "R1": (-5.0, -18.5, 90),
+    "R2": (4.0, -18.5, 90),
+    "R3": (11.0, -15.0, 90),
+    "H1": (20.29, 43.5, 0),
+    "H2": (-20.29, 43.5, 0),
+    "H3": (-20.29, -43.5, 0),
+    "H4": (20.29, -43.5, 0),
 }
 
 BOARDS = {
     "helmet_mb": lambda: place("hardware/helmet-mb.net", "hardware/helmet-mb.kicad_pcb",
-                               helmet_mb_pos, ("rect", 48, 38), layers=4, free=(-3, 3, -3, 3)),
+                               helmet_mb_pos, ("circle", 52), layers=4, free=(-3, 3, -3, 3)),
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
                           vest_pos, ("rect", 16, 16), layers=2, free=(-2, 2, -2, 2), labels=vest_labels),
     "vest_mb": lambda: place("hardware/vest-mb.net", "hardware/vest-mb.kicad_pcb",

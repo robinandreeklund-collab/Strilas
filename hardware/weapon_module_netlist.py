@@ -10,9 +10,10 @@ Skalbar till 3 A endast via avsiktligt Rsense-byte + IEC 60825-1-ommätning (eye
 Sikteskamera = USB OV9281 GS NoIR — sitter MEKANISKT bakom kortet (lins genom Ø16-hål),
 ansluts till P4 via USB-kabel → finns INTE elektriskt på detta kort.
 
-Skottstråle-emitter = Vishay VSMA1094750X02 (940 nm). IMU = TDK ICM-45686 (LGA-14).
-Bägge har kund-footprints i hardware/strilas.pretty (verifierade mot datablad).
-IMU-pinout verifierad mot TDK AN-000483 Fig.2 (pin-kompatibel ICM-45605/45686).
+Skottstråle-emitter = ams OSRAM SFH 4725S/4725CS (940 nm, OSLON Black) — SAMMA leverantör/paket
+som patchens/hjälmens konstellations-LED (SFH 4715AS, 860 nm OSLON Black) → enhetlig optik-sourcing.
+IMU = TDK InvenSense IIM-42653 (industri-IMU, LGA-14 2.5×3 mm). Kund-footprints i strilas.pretty.
+IMU-pinout verifierad mot TDK DS-000529 (IIM-42653).
 """
 from skidl import Part, Pin, Net, generate_netlist, SKIDL, TEMPLATE
 
