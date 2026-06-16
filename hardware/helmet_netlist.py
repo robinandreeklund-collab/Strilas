@@ -44,6 +44,11 @@ SOCK7 = mk("Conn_1x07", "J", [(i, i) for i in range(1, 8)], "Connector_PinSocket
 HDR = lambda n, lbl: mk(f"Conn_1x0{n}", "J", [(i, i) for i in range(1, n + 1)],
                         f"Connector_PinHeader_2.54mm:PinHeader_1x0{n}_P2.54mm_Vertical", lbl)
 BATT = mk("BATT_2S", "J", [(1, "VBAT"), (2, "GND")], "Connector_JST:JST_XH_S2B-XH-A_1x02_P2.50mm_Horizontal", "2S batteri")
+# ZED-F9P RTK-puck (komplett: F9P + multiband-antenn + IST8310-kompass + metallbas, centrum-monterad).
+# 8-pol 1,25 mm låsbar (JST GH). 3–9 V (typ 5 V, 80 mA) → matas från VBAT(2S, inom 3–9 V). UART + I²C(kompass).
+# OBS: stift-ORDNINGEN nedan ska MATCHA modulens kabel — verifiera mot säljarens/u-blox pinout (din modul).
+F9P = mk("ZED-F9P", "J", [(1, "VCC"), (2, "GND"), (3, "TXD"), (4, "RXD"), (5, "SDA"), (6, "SCL"), (7, "PPS"), (8, "RSV")],
+         "Connector_JST:JST_GH_SM08B-GHS-TB_1x08-1MP_P1.25mm_Horizontal", "ZED-F9P RTK (UART+I²C)")
 MH = mk("MH", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", "M2.5")
 
 # ---------- nät ----------
@@ -52,6 +57,7 @@ DATA, LED_EN, LEDC = Net("DATA"), Net("LED_EN"), Net("LED_CATH")
 SW, BST, FB = Net("SW"), Net("BST"), Net("FB")
 BCLK, LRCK, I2S_DOUT, I2S_DIN = Net("I2S_BCLK"), Net("I2S_LRCK"), Net("I2S_DOUT"), Net("I2S_DIN")
 GNSS_TX, GNSS_RX, AMP_SD = Net("GNSS_TX"), Net("GNSS_RX"), Net("AMP_SD")
+I2C_SDA, I2C_SCL = Net("I2C_SDA"), Net("I2C_SCL")             # F9P-config + IST8310-kompass
 
 # ---------- buck: 2S → 3,3 V @2A (matar all logik + XIAO) ----------
 Ubk = BUCK()
@@ -80,27 +86,30 @@ for i in range(4):
     a = Net(f"LED_A{i+1}")
     rl[1] += VBAT; rl[2] += a; led["A"] += a; led["K"] += LEDC
 
-# ---------- stackad XIAO ESP32-S3 (2× 1x7 sockel) ----------
+# ---------- stackad XIAO ESP32-S3 (2× 1x7 sockel) — alla 11 GPIO används ----------
 # vänster rad: D0..D6 = GPIO1,2,3,4,5,6,43 ; höger rad: 5V,GND,3V3,D10,D9,D8,D7
 JL = SOCK7(); JR = SOCK7()
 JL[1] += DATA       # D0  GPIO1  ← skott-DATA
 JL[2] += LED_EN     # D1  GPIO2  → konstellation-gate
 JL[3] += BCLK       # D2  GPIO3  I²S bit-clock
 JL[4] += LRCK       # D3  GPIO4  I²S LR-clock
-JL[5] += I2S_DOUT   # D4  GPIO5  I²S data ut → amp
-JL[6] += I2S_DIN    # D5  GPIO6  I²S data in ← mik
-JL[7] += GNSS_RX    # D6  GPIO43 UART TX → GNSS RX
+JL[5] += I2C_SDA    # D4  GPIO5  I²C SDA (F9P-config + IST8310-kompass)
+JL[6] += I2C_SCL    # D5  GPIO6  I²C SCL
+JL[7] += GNSS_RX    # D6  GPIO43 UART TX → F9P RXD
 JR[1] += Net("NC_5V")   # 5V  (XIAO matas via 3V3 → 5V oanvänd)
 JR[2] += GND            # GND
 JR[3] += P3V3           # 3V3 (matas från kortets buck)
-JR[4] += Net("S3_D10")  # D10 GPIO9  (reserv)
-JR[5] += AMP_SD         # D9  GPIO8  → amp SD/mode
-JR[6] += Net("S3_D8")   # D8  GPIO7  (reserv)
-JR[7] += GNSS_TX        # D7  GPIO44 UART RX ← GNSS TX
+JR[4] += AMP_SD         # D10 GPIO9  → amp SD/mode
+JR[5] += I2S_DIN        # D9  GPIO8  I²S data in ← mik
+JR[6] += I2S_DOUT       # D8  GPIO7  I²S data ut → amp
+JR[7] += GNSS_TX        # D7  GPIO44 UART RX ← F9P TXD
 
-# ---------- GNSS-modul (ATGM336H-5N, egen antenn) 1x5 ----------
-Jg = HDR(5, "GNSS: 3V3·GND·TX·RX·PPS")()
-Jg[1] += P3V3; Jg[2] += GND; Jg[3] += GNSS_TX; Jg[4] += GNSS_RX; Jg[5] += Net("GNSS_PPS")
+# ---------- ZED-F9P RTK-puck (centrum, egen antenn+kompass) 8-pol JST GH ----------
+Jg = F9P()
+Jg["VCC"] += VBAT; Jg["GND"] += GND          # 3–9 V → VBAT(2S) OK
+Jg["TXD"] += GNSS_TX; Jg["RXD"] += GNSS_RX   # UART → XIAO
+Jg["SDA"] += I2C_SDA; Jg["SCL"] += I2C_SCL   # I²C (kompass + config)
+Jg["PPS"] += Net("GNSS_PPS"); Jg["RSV"] += Net("F9P_RSV")
 
 # ---------- I²S audio: MAX98357A-amp-breakout (1x7, högtalare på modulen) ----------
 Ja = HDR(7, "AMP: 3V3·GND·SD·GAIN·DIN·BCLK·LRC")()

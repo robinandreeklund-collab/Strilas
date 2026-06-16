@@ -126,7 +126,7 @@ helmet_pos.update({                                  # centrum-disk (r<27, innan
     "C1": (-10, 14, 0), "C2": (-10, 20, 0), "C3": (12, 19, 0),  # Cbst / Cin / Cout
     "R1": (-1, 22, 90), "R2": (-1, 13, 90),          # FB-delare
     "R3": (-12, 9, 0),                               # DATA-pullup (nära XIAO D0)
-    "J3": (-7, -19, 0),                              # GNSS-modul 1x5 (vänster-botten, klar av 270°-eker)
+    "J3": (0, -21.5, 0),                             # ZED-F9P 8-pol JST GH (nedan XIAO; puck i centrum, kabel)
     "J4": (21, 2, 0), "J5": (-22, 0, 0),             # amp 1x7 (höger) / mik 1x6 (vänster)
     "Q1": (13, 13, 0), "R4": (17, 12, 90),           # LED-driver + gate
     "J6": (35, -7, 0),                               # 2S-batteri JST (tom yttre-ring-lucka, mellan U9/U2)

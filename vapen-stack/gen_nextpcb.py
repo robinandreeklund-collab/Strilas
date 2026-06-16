@@ -57,7 +57,7 @@ MPN = {
     "31.6k":       ("RC0805FR-0731K6L", "Yageo", "Res 31.6k 1% 0805 — buck FB (övre, 3.33V)", "", ""),
     "22uF":        ("CL31A226KAHNNNE", "Samsung", "MLCC 22uF 25V X5R 1206 — buck-utgång", "", ""),
     "XIAO-S3 1x7 sockel": ("2.54-1x07-FH", "generisk", "Sockel 1x07 2.54mm (XIAO ESP32-S3 stack, 2 st)", "", "TH; XIAO ESP32-S3 köps separat"),
-    "GNSS: 3V3·GND·TX·RX·PPS": ("2.54-1x05-FH", "generisk", "Header 1x05 → GNSS-modul ATGM336H-5N", "", "TH; GNSS-modul köps separat (egen antenn)"),
+    "ZED-F9P RTK (UART+I²C)": ("SM08B-GHS-TB(LF)(SN)", "JST", "JST GH 8-pol SMD-sockel → kabel till ZED-F9P RTK-puck", "", "ZED-F9P-puck köps separat (komplett: F9P+antenn+IST8310-kompass, centrum-monterad); VERIFIERA kabel-pinout"),
     "AMP: 3V3·GND·SD·GAIN·DIN·BCLK·LRC": ("2.54-1x07-FH", "generisk", "Header 1x07 → MAX98357A-amp-breakout", "", "TH; amp+högtalare köps separat"),
     "MIC: 3V3·GND·SD·WS·SCK·LR": ("2.54-1x06-FH", "generisk", "Header 1x06 → I²S MEMS-mik-breakout", "", "TH; mik köps separat"),
     "2S batteri":  ("S2B-XH-A(LF)(SN)", "JST", "JST-XH 2-pol header 2.5mm THT (2S-batteri)", "", "TH"),
