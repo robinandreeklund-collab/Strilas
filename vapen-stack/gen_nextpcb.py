@@ -25,7 +25,7 @@ MPN = {
     "AO3401":      ("AO3401A", "Alpha & Omega", "P-MOSFET -30V SOT-23 (rev-pol-skydd)", "", ""),
     "AO3400":      ("AO3400A", "Alpha & Omega", "N-MOSFET 30V SOT-23 (IR-driver 56kHz)", "", ""),
     "SMBJ12A":     ("SMBJ12A", "Littelfuse", "TVS unidir 12V SMB", "", ""),
-    "SFH4725S_940nm":("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black", "C", "Kund-levererad (specialdel) — bestyckas, du levererar delen"),
+    "SFH4725S_940nm":("SFH 4725CS", "ams OSRAM", "IR-emitter 940nm OSLON Black (efterträder SFH 4725S, discont.)", "C", "Kund-levererad; verifiera padstack mot 4725CS"),
     "PTC_1A":      ("MF-MSMF075/16X-2", "Bourns", "PTC resättbar 0.75A-hold 16V 1206", "", "NOTE: verifiera hold-ström mot systemtopp"),
     "IIM-42653": ("IIM-42653", "TDK InvenSense", "6-axlig industri-IMU LGA-14, ±4000dps, -40..+105C", "", ""),
     # --- kontakter (genomplåt → selektiv/handlödning) ---
@@ -42,7 +42,7 @@ MPN = {
     # --- väst-patch ---
     "TSOP4856":    ("TSOP4856", "Vishay", "IR-mottagare 56 kHz (940 nm), MINIMOLD-3", "", "skott-RX"),
     "BAT54":       ("BAT54-7-F", "Diodes Inc", "Schottky SOD-123 (OR av TSOP-utgångar)", "", ""),
-    "860nm":       ("SFH 4053-Z", "ams OSRAM", "IR-LED 860 nm 1206 (konstellation)", "", "VIKTIGT: 860 nm (matchar kamerans bandpass)"),
+    "850nm":       ("VSMY12850", "Vishay", "IR-LED 850 nm 1206 (konstellation)", "", "MATCHA kamerans 850 nm IR-pass; dagsljus@150m → uppgradera VSMY98545 (eget paket)"),
     "100R":        ("RC0805FR-07100RL", "Yageo", "Res 100R 1% 0805", "", ""),
     "10k":         ("RC0805FR-0710KL", "Yageo", "Res 10k 1% 0805", "", ""),
     "VBAT·GND·DATA·LED_EN":("2.54-1x04-FH", "generisk", "Stiftlist 1x04 2.54 mm", "", "till väst-nod"),

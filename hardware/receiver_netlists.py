@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """STRILAS — receiver-kort (väst-patch + hjälm-halo): netlistor i kod (SKiDL → KiCad).
 Genererar vest-patch.net + helmet-halo.net. TSOP OR:as via dioder → 1 DATA-linje;
-860 nm-konstellation drivs av N-FET (LED_EN); hjälm har GNSS U.FL. → place + route → Gerbers.
+850 nm-konstellation drivs av N-FET (LED_EN); hjälm har GNSS U.FL. → place + route → Gerbers.
 """
 from skidl import Part, Pin, Net, generate_netlist, SKIDL, TEMPLATE, reset
 
@@ -17,7 +17,7 @@ def mk(name, ref, pins, fp, value=""):
 def defs():
     return dict(
         TSOP=mk("TSOP4856", "U", [(1, "OUT"), (2, "GND"), (3, "VS")], "OptoDevice:Vishay_MINIMOLD-3Pin", "TSOP4856"),
-        LED=mk("LED860", "D", [(1, "A"), (2, "K")], "LED_SMD:LED_1206_3216Metric", "860nm"),
+        LED=mk("LED850", "D", [(1, "A"), (2, "K")], "LED_SMD:LED_1206_3216Metric", "850nm"),
         ORD=mk("ORdiode", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SOD-123", "BAT54"),
         NFET=mk("AO3400", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3400"),
         R=mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric"),
