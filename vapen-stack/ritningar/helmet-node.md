@@ -67,3 +67,31 @@ I²S-MEMS-mik-breakout, 2S-LiPo. **NextPCB monterar** allt ytmonterat (buck, TSO
 TH-headers/sockets (J1–J6) löder du själv. Underlag: `nextpcb/helmet-bom.xls` + `helmet-centroid.xls` + `helmet-halo-gerbers.zip`.
 
 **Kvarstår (bänk):** buck-utgång 3,3 V verifieras innan ESP plugg; I²S audio + GNSS-fix bekräftas; konstellations-duty ≤50 %.
+
+---
+
+## v2 (2026-06): hjälm-MODERKORT + distribuerade patchar (ersätter platta ringen)
+Den platta hjälm-ringen är **pensionerad**. Hjälmen blir nu som västen: **4 lösa dubbel-aim-patchar**
+(front/bak/vä/hö, kardborre, samma patch som västen) + ett **centralt hjälm-moderkort** ("holo"-kortet).
+
+**Hjälm-moderkort** (`hardware/helmet_mb_netlist.py`, 80×62 mm 4-lager, routat rent 0/0/0):
+- **XIAO ESP32-S3** (Seeed, samma som väst-moderkortet → enkel sourcing), matas från kortets 3V3.
+- **2S → AP63203-buck → 3,3 V** (XIAO + 165 + IMU + TSOP). LED-konstellation på VBAT.
+- **ZED-F9P RTK-puck** (8-pol JST GH): cm-RTK + IST8310-kompass + antenn, matas VBAT (3–9 V), UART+I²C.
+- **IIM-42653 IMU** (I²C, delar F9P-bussen + 1 INT) → **GNSS/INS-fusion** (bättre RTK, överbryggar
+  multipath/skugga) + **lokal huvud-attityd**. Samma IMU som optik/fire-control.
+- **4 egna TSOP4856** (ledade, ben böjs/sprids i diagonal-vinklar som kompletterar de 4 patcharna)
+  → diod-OR → 1 DATA. Plus 4 patch-DATA → alla 5 läses via **74HC165** (SPI, sparar GPIO).
+- **2 topp-konstellations-LED** (860 nm) + driver (LED_EN broadcast → patchar + topp-LED).
+- 4 patch-kontakter (1x5: VBAT·GND·DATA·LED_EN·3V3) + 2S-batteri-JST.
+- GPIO (XIAO 11): UART2 + I²C2 + IMU_INT1 + LED_EN1 + 165(SCK/MISO/LD)3 = **9 (2 reserv)**.
+
+**Ljud (talcomms):** ryms INTE på XIAO:n samtidigt med F9P+IMU+9 mottagare (I²S = 4 GPIO till). Utelämnat
+i v2; vill man ha tal-comms i hjälmen krävs en större ESP eller att man offrar nåt — separat beslut.
+
+**Köps separat / kund-lödda:** XIAO-S3, ZED-F9P-puck, 4 patchar, 2S-LiPo. NextPCB monterar all SMD
+(buck, 165, IMU, F9P-GH-kontakt, BAT54, LED, R/C/L); ledade TSOP + 2.54-kontakter/sockets löder du själv.
+Underlag: `nextpcb/helmet-mb-bom.xls` + `helmet-mb-centroid.xls` + `helmet-mb-gerbers.zip`.
+
+**Kvarstår (bänk):** buck-3,3 V innan XIAO · F9P UART+I²C + IST8310 + IIM-42653 på samma I²C (adresser:
+IST8310 0x0E, IIM-42653 0x68 — ingen krock) · GNSS/INS-fusion-firmware · 165-läsning · LED_EN-broadcast.

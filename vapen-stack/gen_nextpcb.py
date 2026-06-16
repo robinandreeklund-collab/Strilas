@@ -65,6 +65,7 @@ MPN = {
     "74HC165":     ("SN74HC165DR", "Texas Instruments", "8-bit PISO shift-register SOIC-16 (läs 10 DATA via SPI)", "", ""),
     "TPIC6B595":   ("TPIC6B595DWR", "Texas Instruments", "Power 8-bit shift-register SOIC-20W, 150mA/kanal open-drain (vibrator-driver)", "", ""),
     "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB": ("2.54-1x06", "generisk", "Header 1x06 → väst-patch + zon-vibrator", "", "TH; patch (pin1-4) + ERM-motor (pin5-6) kund-kablas"),
+    "Patch: VBAT·GND·DATA·LED_EN·3V3": ("2.54-1x05", "generisk", "Header 1x05 → dubbel-aim-patch (hjälm-moderkort)", "", "TH; kund-lödd"),
     "100R":        ("RC0805FR-07100RL", "Yageo", "Res 100R 1% 0805", "", ""),
     "10k":         ("RC0805FR-0710KL", "Yageo", "Res 10k 1% 0805", "", ""),
     "VBAT·GND·DATA·LED_EN·3V3":("2.54-1x05", "generisk", "Stiftlist 1x05 2.54 mm → väst-moderkortets zon-kontakt", "", "TH; 3V3 från moderkortet (ingen LDO på patchen)"),

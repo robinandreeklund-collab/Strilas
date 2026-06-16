@@ -242,13 +242,35 @@ vest_mb_pos.update({
     "H1": (-46, 27, 0), "H2": (46, 27, 0), "H3": (-46, -27, 0), "H4": (46, -27, 0),
 })
 
+# ---- hjälm-MODERKORT (76×60, "holo"-kortet) — XIAO+buck+F9P+IMU+165 + 4 egna TSOP + 2 LED + 4 patch ----
+# 4 egna TSOP (U4-7) i hörnen, ben böjs diagonalt ut (kompletterar front/bak/vä/hö-patcharna).
+helmet_mb_pos = {
+    # 4 egna TSOP i hörnen (ben böjs diagonalt ut) + OR-diod + avkoppl bredvid (origin+2.5 → kropp +x)
+    "U4": (-34, 25, 0), "D1": (-24, 25, 0), "C7": (-33, 19, 0),     # NV
+    "U5": (20, 25, 0), "D2": (15, 25, 0), "C8": (29, 19, 0),        # NÖ
+    "U6": (-34, -24, 0), "D3": (-24, -24, 0), "C9": (-33, -18, 0),  # SV
+    "U7": (20, -24, 0), "D4": (15, -24, 0), "C10": (29, -18, 0),    # SÖ
+    "J6": (-7.6, 11, 0), "J7": (7.6, 11, 0),         # XIAO ESP32-S3 (övre-centrum; sträcker nedåt)
+    "J1": (-7, -10, 0),                              # ZED-F9P 8-pol GH (under XIAO)
+    "U3": (16, 2, 0), "C5": (20, 3.5, 0), "C6": (20, 0.5, 0),  # IIM-42653 IMU + avkoppling (höger-mitt)
+    "U2": (-28, 4, 0), "C4": (-33, 7, 90), "R3": (-33, 1, 90),  # 165 + avkoppl + onboard DATA-pullup (vänster-mitt)
+    "U1": (0, -20, 0), "L1": (7, -20, 0), "C1": (-6, -20, 0), "C2": (-6, -24, 0), "C3": (13, -20, 0),  # buck (nedre-centrum)
+    "R1": (-2, -24, 90), "R2": (2, -24, 90),         # FB-delare
+    "D5": (-4, 26, 0), "D6": (4, 26, 0), "R5": (-9, 26, 90), "R6": (9, 26, 90),  # topp-konst-LED (topp-centrum)
+    "Q1": (0, 22, 0), "R4": (5, 22, 90),             # topp-LED-driver
+    "J2": (-37, 15, 0), "J3": (-14, -29, 90),        # patch front (vä-kant) / bak (botten-vä)
+    "J4": (-37, -6, 0), "J5": (37, -8, 0),           # patch vänster / höger (kant-mitt)
+    "J8": (28, 9, 0),                                # 2S-batteri JST (höger)
+    "H1": (-37, 28, 0), "H2": (37, 28, 0), "H3": (-37, -28, 0), "H4": (37, -28, 0),
+}
+
 BOARDS = {
+    "helmet_mb": lambda: place("hardware/helmet-mb.net", "hardware/helmet-mb.kicad_pcb",
+                               helmet_mb_pos, ("rect", 40, 31), layers=4, free=(-3, 3, -3, 3)),
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
                           vest_pos, ("rect", 18, 16), layers=2, free=(-3, 3, -3, 3)),
     "vest_mb": lambda: place("hardware/vest-mb.net", "hardware/vest-mb.kicad_pcb",
                              vest_mb_pos, ("rect", 50, 30), layers=4, free=(-3, 3, -3, 3)),
-    "helmet": lambda: place("hardware/helmet-halo.net", "hardware/helmet-halo.kicad_pcb",
-                            helmet_pos, ("circle", 50), layers=4, free=(-3, 3, -3, 3)),
     # vapnet: alla delar placeras explicit -> tom fri-zon (säker, ingen krock med lins)
     "weapon": lambda: place("hardware/weapon-module.net", "hardware/weapon-module.kicad_pcb",
                             weapon_box, ("rect", 27, 37), layers=4, free=(26, 27, 36, 37), cutout=(0, -6, 8)),
