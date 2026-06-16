@@ -56,3 +56,16 @@ Nod-ESP bytt **XIAO-S3 → ESP32-C6-DevKitC-1** (samma som hjälm-mb → WiFi6 g
 C6:s 23 GPIO → **10 patch-DATA läses direkt** (74HC165 borttagna). TPIC6B595 ×2 (vibratorer) kvar.
 GPIO: 10 DATA + TPIC(SER/SRCK/RCK)3 + LED_EN1 = 14 av 23. Inget ljud (väst = vibratorer; ljud på hjälmen).
 100×60 4-lager, routat rent 0/0/0. C6 (2× 1x16-sockel) centrum, TPIC på sidorna, buck nedan, 10 zoner kant.
+
+## v3 (2026-06): ESP32-P4-WIFI6 — SAMMA kort överallt (ersätter C6-devkiten)
+Båda moderkorten kör nu **exakt samma ESP32-P4-WIFI6** som vapnet (en ESP-source, enkelt underhåll).
+
+**Väst-mb v3** (`hardware/vest_mb_netlist.py`, 100×60 mm 4-lager, routat rent 0/0/0):
+- **ESP32-P4-WIFI6**, 2× 1×20 kant-sockel (edge A=signaler, edge B=kraft-tapp). P4 självförsörjer via
+  VSYS=VBAT; carrier-buck (AP63203) ger 3,3 V (TPIC-logik + ERM-motorer + patch-rail).
+- 10 patch-DATA läses **direkt** på P4-GPIO. **2× TPIC6B595** (10 zon-vibratorer) kvar. LED_EN-broadcast.
+  Edge A: 10 DATA + TPIC(SER/SRCK/RCK) + LED_EN = 14 av 16 signalstift.
+- **Strömplan:** In1=GND, **In2=VBAT** (10 patchars konstellations-LED bär hög ström → plan för kapacitet),
+  F/B=GND-fyll. +3V3 routas som spår (routade rent utan delning här).
+- 10 zon-kontakter (1×6: VBAT·GND·DATA·LED_EN·3V3·VIB), 2S-batteri. Inget ljud (väst = vibratorer).
+- Deliverables: `hardware/vest-mb-gerbers.zip` + `.step`.

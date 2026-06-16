@@ -16,7 +16,7 @@ NextPCB min-order är oftast 5 st → 5 optik (1 behövs nu) + 5 väst-patchar =
 > Samma routade optikkort som produktion — bara IMU:n obestyckad. IMU-footprinten finns kvar
 > för framtida produktionsversion (då IMU sätts tillbaka på kortet, stelt mot optiska axeln).
 
-- **Optik:** 54×74 mm, **4-lager**. **Väst-patch:** **36×32 mm täcknings-nod** (4 ledade TSOP4856: 3 fläktade åt sidan + 1 rakt upp, ben böjs för att rikta domerna; lim/kardborre-fäst), **2-lager**. FR-4 1,6 mm, HASL/ENIG.
+- **Optik:** 54×74 mm, **4-lager**. **Väst-patch:** **32×32 mm täcknings-nod** (4 ledade TSOP4856 i fyrfaldigt symmetrisk DIAMANT, var och en böjd ~40° utåt → 99,5 % hemisfär-täckning, se `../ritningar/patch-sikte.md`; lim/kardborre-fäst), **2-lager**. FR-4 1,6 mm, HASL/ENIG.
 - Väst-patchen är **färdigroutad** (0 oroutade · 0 clearance · 0 oconnected). **Liten patch:** ingen LDO
   och inga skruvhål — **3,3 V kommer från väst-moderkortet** via 5-pol J1 (VBAT·GND·DATA·LED_EN·3V3,
   matchar moderkortets zon-kontakt). TSOP4856 (abs-max 6 V) matas alltså av moderkortets buck-3V3,
@@ -56,5 +56,5 @@ NextPCB min-order är oftast 5 st → 5 optik (1 behövs nu) + 5 väst-patchar =
 
 ## Noter
 - Väst-patch v1 = **utan vibrator** (haptiken läggs till i nästa rev; ej nödvändig för skjut-testet).
-- Väst-noden (ESP32-C5) behövs för full kedja, men för bänktestet räcker att läsa patchens
+- Väst-moderkortet (ESP32-P4-WIFI6, samma kort som vapnet) behövs för full kedja, men för bänktestet räcker att läsa patchens
   DATA-linje direkt (scope eller valfri MCU).

@@ -114,3 +114,20 @@ voice-codec skulle föredra S3). Mik+högtalare ENBART på hjälmen; västen = v
 - 4 egna TSOP4856 (ledade, diagonal-aim) → diod-OR. 4 patch-DATA. 2 topp-LED + driver.
 - **LJUD:** MAX98357A-amp-breakout (1x7 + högtalare) + I²S-MEMS-mik-breakout (1x6).
 - 4 patch-kontakter (1x5) + 2S-batteri. Deliverables: `nextpcb/helmet-mb-bom/centroid/gerbers/STEP`.
+
+## v4 (2026-06): ESP32-P4-WIFI6 — SAMMA kort överallt (ersätter C6-devkiten)
+Användaren: *"varför kan jag inte bara köra samma som på vapnet? p4 c6? … mycket lättare att
+underhålla med samma kort överallt."* → båda moderkorten kör nu **exakt samma ESP32-P4-WIFI6**
+(Waveshare) som vapnets optikmodul. En enda ESP-source genom hela systemet, WiFi6 genomgående.
+
+**Hjälm-mb v4** (`hardware/helmet_mb_netlist.py`, 96×76 mm 4-lager, routat rent 0/0/0):
+- **ESP32-P4-WIFI6**, 2× 1×20 kant-sockel (edge A=signaler, edge B=kraft-tapp). Pinout verifierad
+  mot Waveshares datablad. P4 självförsörjer via VSYS=VBAT; carrier-buck (AP63203) ger 3,3 V för
+  laster (sensorer/F9P/IMU/ljud/patch-rail). ~40 GPIO → gott om marginal.
+- Edge A: I²C (F9P+IMU) · UART (F9P) · IMU_INT · LED_EN · 5 DATA direkt · I²S (BCLK/LRCK/DOUT/DIN) ·
+  amp_SD = 14 av 16 signalstift.
+- Oförändrat i övrigt: ZED-F9P RTK-puck, IIM-42653 IMU, 4 egna TSOP4856 (diagonal-aim) → diod-OR,
+  2 topp-LED + driver, MAX98357A-amp + I²S-MEMS-mik, 4 patch-kontakter, 2S-batteri.
+- **Strömplan:** In1=GND, **In2=+3V3** (flest pads + måste korsa P4-sockel-"väggen"), F/B=GND-fyll.
+  VBAT routas som spår. (Tidigare delade +3V3-nätet löst genom att plana +3V3.)
+- Deliverables: `hardware/helmet-mb-gerbers.zip` + `.step`.
