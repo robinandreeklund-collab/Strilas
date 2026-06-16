@@ -98,7 +98,7 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
 vest_pos = {
     "U1": (-17, 4, 0), "U2": (0, 4, 0), "U3": (17, 4, 0),         # TSOP
     "D1": (-22, 15, 0), "D2": (22, -13, 0),                       # LED (konstellation) – obs: refs from netlist order
-    "J1": (14, -17, 0),
+    "J1": (14, -10, 0),   # flyttad in från kanten (-17 lät J1-pads hänga utanför board y-21)
 }
 # ---- hjälm-halo (Ø100) ----
 helmet_pos = {f"U{i+1}": (38*math.cos(math.radians(i*45)), 38*math.sin(math.radians(i*45)), i*45-90) for i in range(8)}

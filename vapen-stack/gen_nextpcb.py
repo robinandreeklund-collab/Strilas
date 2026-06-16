@@ -39,6 +39,13 @@ MPN = {
     "MAGWELL_SW":  ("B2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol header 2.0mm THT", "", "TH"),
     "recoil-styrning":("B3B-PH-K-S(LF)(SN)", "JST", "JST-PH 3-pol header 2.0mm THT", "", "TH"),
     "NFC PN532 (I²C)":("B4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol header 2.0mm THT", "", "TH"),
+    # --- väst-patch ---
+    "TSOP4856":    ("TSOP4856", "Vishay", "IR-mottagare 56 kHz (940 nm), MINIMOLD-3", "", "skott-RX"),
+    "BAT54":       ("BAT54-7-F", "Diodes Inc", "Schottky SOD-123 (OR av TSOP-utgångar)", "", ""),
+    "860nm":       ("SFH 4053-Z", "ams OSRAM", "IR-LED 860 nm 1206 (konstellation)", "", "VIKTIGT: 860 nm (matchar kamerans bandpass)"),
+    "100R":        ("RC0805FR-07100RL", "Yageo", "Res 100R 1% 0805", "", ""),
+    "10k":         ("RC0805FR-0710KL", "Yageo", "Res 10k 1% 0805", "", ""),
+    "VBAT·GND·DATA·LED_EN":("2.54-1x04-FH", "generisk", "Stiftlist 1x04 2.54 mm", "", "till väst-nod"),
 }
 
 def netvals(path):
@@ -116,3 +123,5 @@ if __name__ == "__main__":
     centroid("weapon-module.kicad_pcb", "nextpcb/optik-centroid.csv")
     print("FIRE-CONTROL:"); build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls")
     centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv")
+    print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls")
+    centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv")
