@@ -42,10 +42,11 @@ REC = mk("RECOIL_CTRL", "J", [(1, "PWM"), (2, "FAULT"), (3, "GND")],
          "Connector_JST:JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical", "recoil-styrning")
 NFC = mk("NFC_PN532", "J", [(1, "SDA"), (2, "SCL"), (3, "3V3"), (4, "GND")],
          "Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical", "NFC PN532 (I²C)")
-# EXTRA IMU — TDK ICM-45686 (LGA-14), samma som optiken men I²C. Pin-nr per TDK AN-000483:
-#   8=VDD 5=VDDIO 6=GND 13=SCLK(SCL) 14=SDI(SDA) 1=SDO(AD0) 12=CS 4=INT1
-IMU = mk("ICM-45686", "U", [(i, i) for i in range(1, 15)],
-         "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-45686")
+# EXTRA IMU — TDK ICM-42688-P (LGA-14), samma som optiken men I²C. Pin-nr per DS-000347 §4.1:
+#   8=VDD 5=VDDIO 6=GND 7=RESV(→GND) 13=SCLK(SCL) 14=SDI(SDA) 1=SDO(AD0) 12=CS(→VDDIO=I²C) 4=INT1
+# (pin-kompatibel med ICM-45686 → samma footprint; bytt för lägre brus + bättre utbud.)
+IMU = mk("ICM-42688-P", "U", [(i, i) for i in range(1, 15)],
+         "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-42688-P")
 RES_T = mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric")
 CAP_T = mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0402_1005Metric")
 RES = lambda v: RES_T(value=v)
@@ -94,9 +95,9 @@ Jnfc["SDA"] += SDA; Jnfc["SCL"] += SCL; Jnfc["3V3"] += P3V3; Jnfc["GND"] += GND
 # ---------- 2× extra IMU (I²C, delar NFC-bussen) ----------
 # U1 = adress 0x69 (AD0 hög), INT=GPIO50 ; U2 = adress 0x68 (AD0 låg), INT=GPIO49.
 # pin: 8=VDD 5=VDDIO 6=GND 12=CS(hög→I²C) 1=SDO/AD0(adress) 13=SCL 14=SDA 4=INT1
-U1[8] += P3V3; U1[5] += P3V3; U1[6] += GND; U1[12] += P3V3
+U1[8] += P3V3; U1[5] += P3V3; U1[6] += GND; U1[7] += GND; U1[12] += P3V3
 U1[1] += P3V3; U1[13] += SCL; U1[14] += SDA; U1[4] += IMU2_INT      # AD0 hög → 0x69
-U2[8] += P3V3; U2[5] += P3V3; U2[6] += GND; U2[12] += P3V3
+U2[8] += P3V3; U2[5] += P3V3; U2[6] += GND; U2[7] += GND; U2[12] += P3V3
 U2[1] += GND;  U2[13] += SCL; U2[14] += SDA; U2[4] += IMU3_INT      # AD0 låg → 0x68
 Ci1[1] += P3V3; Ci1[2] += GND; Ci2[1] += P3V3; Ci2[2] += GND
 Ci3[1] += P3V3; Ci3[2] += GND; Ci4[1] += P3V3; Ci4[2] += GND

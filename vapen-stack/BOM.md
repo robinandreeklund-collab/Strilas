@@ -16,7 +16,7 @@ Stack: **optik (weapon-module) → ESP32-P4 → fire-control**. 3V3 matas batter
 | 1 | R2 | 3R3_2W | `Resistor_SMD:R_2512_6332Metric` | elektrisk |
 | 1 | Q2 | AO3400 | `Package_TO_SOT_SMD:SOT-23` | elektrisk |
 | 1 | Q1 | AO3401 | `Package_TO_SOT_SMD:SOT-23` | elektrisk |
-| 1 | U1 | ICM-45686 | `strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx` | elektrisk |
+| 1 | U1 | ICM-42688-P | `strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx` | elektrisk |
 | 1 | J1 | P4-socket (edge B) | `Connector_PinSocket_2.54mm:PinSocket_1x14_P2.54mm_Vertical` | elektrisk |
 | 1 | F1 | PTC_1A | `Fuse:Fuse_1206_3216Metric` | elektrisk |
 | 2 | D2,D3 | SFH4725S_940nm | `strilas:IR_Emitter_OSRAM_OSLON_Black_SFH4725S` | elektrisk |
@@ -32,7 +32,7 @@ Stack: **optik (weapon-module) → ESP32-P4 → fire-control**. 3V3 matas batter
 | 5 | C1,C3,C4,C5,C6 | 100nF | `Capacitor_SMD:C_0402_1005Metric` | elektrisk |
 | 1 | C2 | 1uF | `Capacitor_SMD:C_0402_1005Metric` | elektrisk |
 | 2 | R1,R2 | 4k7 | `Resistor_SMD:R_0805_2012Metric` | elektrisk |
-| 2 | U1,U2 | ICM-45686 | `strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx` | elektrisk |
+| 2 | U1,U2 | ICM-42688-P | `strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx` | elektrisk |
 | 1 | J6 | MAGWELL_SW | `Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical` | elektrisk |
 | 1 | J5 | MAG_REL_SW | `Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical` | elektrisk |
 | 1 | J8 | NFC PN532 (I²C) | `Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical` | elektrisk |
