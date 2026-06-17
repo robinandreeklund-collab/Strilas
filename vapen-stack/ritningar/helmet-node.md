@@ -120,10 +120,11 @@ Användaren: *"varför kan jag inte bara köra samma som på vapnet? p4 c6? … 
 underhålla med samma kort överallt."* → båda moderkorten kör nu **exakt samma ESP32-P4-WIFI6**
 (Waveshare) som vapnets optikmodul. En enda ESP-source genom hela systemet, WiFi6 genomgående.
 
-**Hjälm-mb v4** (`hardware/helmet_mb_netlist.py`, **RUND Ø104 mm** 4-lager, routat rent 0/0/0):
+**Hjälm-mb v4** (`hardware/helmet_mb_netlist.py`, **RUND Ø97 mm** 4-lager, routat rent 0/0/0):
 - **Rund skiva** (önskemål): P4 central horisontell; 4 TSOP radiellt utåt på ringen (NÖ/NV/SV/SÖ,
-  360° huvudtäckning); 2 konstellations-LED N/S; 8 kontakter + 4 monteringshål jämnt runt kransen;
-  buck/IMU/LED-driver i crescents.
+  360° huvudtäckning); **6 sido-emitterande konstellations-LED på böjbara LED-tab-micro-PCB** (D5–D10,
+  fria azimut-gluggar i kransen); 8 kontakter + 4 monteringshål i de glesaste gluggarna runt kransen;
+  buck/IMU/LED-driver i crescents (serie-R R5–R7 SMD, R7 i den fria kanalen mellan P4-socklarna).
 - **F9P-puck monteras DIREKT på kortets centrum** (BDLX ZED-F9P, rund Ø55, höjd 55 mm, IST8310-kompass,
   inbyggd antenn). 4 puck-fästhål (H5–H8, M2.5) i puckens exakta mönster **20,80 × 33,90 mm rektangel**,
   centrerat → skruvas på korta standoffs ovanför P4-modulen. GH-kontakten (J1) sitter i SYD med
@@ -134,9 +135,9 @@ underhålla med samma kort överallt."* → båda moderkorten kör nu **exakt sa
 - Edge A: I²C (F9P+IMU) · UART (F9P) · IMU_INT · LED_EN · 5 DATA direkt · I²S (BCLK/LRCK/DOUT/DIN) ·
   amp_SD = 14 av 16 signalstift.
 - Oförändrat i övrigt: ZED-F9P RTK-puck, IIM-42653 IMU, 4 egna TSOP4856 (diagonal-aim) → diod-OR,
-  2 topp-LED + driver, MAX98357A-amp + I²S-MEMS-mik, 4 patch-kontakter, 2S-batteri.
-- **Strömplan:** In1=GND, **In2=+3V3** (flest pads + måste korsa P4-sockel-"väggen"), F/B=GND-fyll.
-  VBAT routas som spår. (Tidigare delade +3V3-nätet löst genom att plana +3V3.)
+  6 LED-tab-konstellation + driver, MAX98357A-amp + I²S-MEMS-mik, 4 patch-kontakter, 2S-batteri.
+- **Strömplan:** In1=GND, **In2=VBAT** (bär konstellations-LED-ström + patch-rail; korsar P4-sockel-
+  "väggen"), F/B=GND-fyll. +3V3 routas som spår. (Rim-LED-lasten flyttade höga strömmen till VBAT → planas.)
 - Deliverables: `hardware/helmet-mb-gerbers.zip` + `.step`.
 
 ## Konstellations-arkitektur (disc vs patch) — 2026-06

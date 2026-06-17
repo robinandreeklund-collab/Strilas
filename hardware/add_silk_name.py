@@ -23,7 +23,9 @@ def clear(x,y,w,h,pads,m=0.4):
     for px0,px1,py0,py1 in pads:
         if not(px1<x0 or px0>x1 or py1<y0 or py0>y1): return False
     return True
+only=sys.argv[1].replace("_","-") if len(sys.argv)>1 else None
 for name in CAND:
+    if only and name!=only: continue
     p=f"hardware/{name}.kicad_pcb"; b=pcbnew.LoadBoard(p)
     # ta bort ev. tidigare STRILAS-text
     for d in list(b.GetDrawings()):

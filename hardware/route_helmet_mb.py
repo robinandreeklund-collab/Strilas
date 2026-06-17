@@ -70,8 +70,8 @@ def finish(path):
         z.SetLocalClearance(MM(0.25)); z.SetMinThickness(MM(0.2)); z.SetIsFilled(False)
         ch = pcbnew.SHAPE_LINE_CHAIN()
         import math as _m
-        for k in range(72):                       # cirkulär gjutning (rund board Ø104, inset r=51.3)
-            a = _m.radians(k * 5); ch.Append(V(51.3 * _m.cos(a), 51.3 * _m.sin(a)))
+        for k in range(72):                       # cirkulär gjutning (rund board Ø97, inset r=47.5)
+            a = _m.radians(k * 5); ch.Append(V(47.5 * _m.cos(a), 47.5 * _m.sin(a)))
         ch.SetClosed(True); z.AddPolygon(ch); b.Add(z)
     add_zone(pcbnew.In1_Cu, "GND"); add_zone(pcbnew.In2_Cu, "VBAT")   # In2 = VBAT-plan (LED-konstellationsström + patchar)
     add_zone(pcbnew.B_Cu, "GND"); add_zone(pcbnew.F_Cu, "GND")

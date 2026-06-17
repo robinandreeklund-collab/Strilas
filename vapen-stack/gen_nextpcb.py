@@ -162,7 +162,8 @@ if __name__ == "__main__":
     centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"U1","C3","C4","C5","J1","J2"})
     # HJÄLM-MODERKORT (ESP32-P4-WIFI6, rund): TH-kontakter kund-lödda (P4-socklar/patch/amp/mik/batteri);
     # J1 = ZED-F9P GH (SMD → NextPCB monterar).
-    HMB_CUST = {"J2","J3","J4","J5","J6","J7","J8","J9","J10","U3","U4","U5","U6"}  # +4 ledade TSOP
+    HMB_CUST = {"J2","J3","J4","J5","J6","J7","J8","J9","J10","U3","U4","U5","U6",
+                "D5","D6","D7","D8","D9","D10"}  # TH-kontakter + 4 ledade TSOP + 6 LED-tab-socklar (kund löder micro-PCB)
     print("HJÄLM-MB:"); build("helmet-mb.kicad_pcb", "helmet-mb.net", "nextpcb/helmet-mb-bom.xls", cust_refs=HMB_CUST)
     centroid("helmet-mb.kicad_pcb", "nextpcb/helmet-mb-centroid.csv", exclude=HMB_CUST)
     # VÄST-MODERKORT (ESP32-P4-WIFI6): alla TH-kontakter (zon-headers/P4-socklar/batteri) kund-lödda.
