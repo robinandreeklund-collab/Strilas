@@ -83,7 +83,9 @@ for k, bx, gpio, net, wp in edgeB:
 # kant-rubriker
 ax.text(-22, 40, "◀  OPTIK  (kortet bakom)\nedge B – 14-stifts socket", color="#bfe6c9", ha="center", va="center", fontsize=11, fontweight="bold")
 ax.text(34, 40, "edge A – 12 stift  →  FC stackar här  ▶\n(de höga guld-stiften i din modell)", color="#bfe6c9", ha="center", va="center", fontsize=11, fontweight="bold")
-ax.text(0, 44.5, "STRILAS — P4 fysisk pin-karta (samma vy som din Fusion-modell)", color=TXT, ha="center", va="center", fontsize=15, fontweight="bold")
+ax.text(0, 45.5, "STRILAS — P4 fysisk pin-karta (samma vy som din Fusion-modell)", color=TXT, ha="center", va="center", fontsize=15, fontweight="bold")
+ax.text(0, 42.7, "Vy = P4:s KOMPONENTSIDA mot dig (USB-C/ESP/FC-stift på denna sida, vänd BORT från optik). Baksidan = edge B in i optikens socket.",
+        color="#9fb0bd", ha="center", va="center", fontsize=8.5)
 ax.text(0, -41.5, "pin 1 på varje kant = NÄRMAST USB-C (botten) · stigande stiftnr uppåt mot antennen · "
         "färg: signal / GND / kraft / NC", color="#9fb0bd", ha="center", va="center", fontsize=9.5)
 ax.text(0, -38.0, "P4-modulen har 20 stift/kant; vapen-carriern kontaktar bara dessa 14 (edge B) + 12 (edge A) — "
