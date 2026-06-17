@@ -158,8 +158,8 @@ if __name__ == "__main__":
     print("FIRE-CONTROL:"); build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls")
     centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv")
     print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls",
-          cust_refs={"J1","U1","U2","U3","U4"})                # J1 + 4 ledade TSOP kund-monterade
-    centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude={"J1","U1","U2","U3","U4"})
+          cust_refs={"J1","U1","U2","U3","U4","D7","D8","D9","D10"})  # J1 + 4 ledade TSOP + 4 LED-tab-socklar (kund)
+    centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude={"J1","U1","U2","U3","U4","D7","D8","D9","D10"})
     # Prototyp-optik: IMU DNP (breakout på P4) + J1/J2 kund-lödda (TH)
     print("OPTIK-PROTOTYP (IMU DNP, J1/J2 kund-lödd):"); build("weapon-module.kicad_pcb", "weapon-module.net",
           "nextpcb/optik-PROTOTYP-bom.xls", dnp_refs={"U1","C3","C4","C5"}, cust_refs={"J1","J2"})

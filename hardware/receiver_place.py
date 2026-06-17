@@ -112,17 +112,37 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
 # Refs: U1-4=TSOP · varje TSOP har egen OR-diod (D1-4) + avkoppl-C (C2-5) BREDVID sig (4 identiska kluster).
 #       D5,D6=OSLON 860nm konstellation (N/S, symmetriskt) · R3,R4=10R 2512 · delat: J1=1x5, Q1=FET,
 #       R1=DATA-pull, R2=gate, C1=bulk — centrerat. (konstellations-LED ≠ per-TSOP; de är kamera-markörer.)
-vest_pos = {   # ±18. KOMPAKT diamant-TSOP (kropp-radie 14, dom radiellt ut); D/C tangentiellt; LED nära kanten
-    "U3": (10.77, 7.17, 135), "D3": (7.95, 4.23, 45), "C4": (4.23, 7.95, 45),       # NÖ-kluster
-    "U2": (-7.17, 10.77, 225), "D2": (-4.23, 7.95, 135), "C3": (-7.95, 4.23, 135),  # NV-kluster
-    "U1": (-10.77, -7.17, 315), "D1": (-7.95, -4.23, 45), "C2": (-4.23, -7.95, 45), # SV-kluster
-    "U4": (7.17, -10.77, 45), "D4": (4.23, -7.95, 135), "C5": (7.95, -4.23, 135),   # SÖ-kluster
-    "D5": (0, 13.5, 0), "D6": (0, -13.5, 0),     # konstellations-LED på N/S (nära kanten)
-    "R3": (11.5, 0, 90), "R4": (-11.5, 0, 90),    # LED-serieR (2512) i Ö/V-zonerna (fria i diamant)
-    "J1": (-5.08, 0, 90),                          # 1x5 horisontellt centrerat (Ö–V-bandet)
-    "C1": (-2.6, 3.6, 0), "Q1": (2.6, 3.6, 0),     # bulk + FET strax ovan kontakten
-    "R1": (-2.6, -3.6, 0), "R2": (2.6, -3.6, 0),   # DATA-pullup + gate-R strax under
-    "H1": (16, 16, 0), "H2": (-16, 16, 0), "H3": (-16, -16, 0), "H4": (16, -16, 0),  # 4 monteringshål (hörn, utanför TSOP-domer)
+vest_pos = {
+    "U3": (12.39, 8.25, 135),
+    "D3": (9.14, 4.86, 45),
+    "C4": (4.86, 9.14, 45),
+    "U2": (-8.25, 12.39, 225),
+    "D2": (-4.86, 9.14, 135),
+    "C3": (-9.14, 4.86, 135),
+    "U1": (-12.39, -8.25, 315),
+    "D1": (-9.14, -4.86, 45),
+    "C2": (-4.86, -9.14, 45),
+    "U4": (8.25, -12.39, 45),
+    "D4": (4.86, -9.14, 135),
+    "C5": (9.14, -4.86, 135),
+    "J1": (-5.08, 0, 90),
+    "C1": (-2.6, 3.6, 0),
+    "Q1": (2.6, 3.6, 0),
+    "R1": (-2.6, -3.6, 0),
+    "R2": (2.6, -3.6, 0),
+    "D7": (-1.28, 20.0, 90),
+    "D8": (20.0, 1.28, 0),
+    "D9": (1.28, -20.0, 270),
+    "D10": (-20.0, -1.28, 180),
+    "H1": (19.1, 19.1, 0),
+    "H2": (-19.1, 19.1, 0),
+    "H3": (-19.1, -19.1, 0),
+    "H4": (19.1, -19.1, 0),
+    "D5": (0.5, 8.8, 90),
+    "D6": (-0.2, -9.2, 90),
+    "R3": (4.2, 16.2, 0),
+    "R4": (11.8, -0.2, 90),
+    "R5": (-12.2, -0.2, 90),
 }
 # sikt-etiketter på silkscreen: böj-instruktion (fria y-axel-slivrar mellan center och LED)
 vest_labels = [

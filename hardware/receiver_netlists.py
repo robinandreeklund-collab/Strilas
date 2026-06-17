@@ -25,6 +25,7 @@ def defs():
         # MOLD-footprint (rätt storlek). Benen BÖJS för att rikta domen (3 åt sidan + 1 rakt upp/patch).
         TSOP=mk("TSOP4856", "U", [(1, "OUT"), (2, "GND"), (3, "VS")], "OptoDevice:Vishay_MOLD-3Pin", "TSOP4856"),
         LED=mk("SFH4715AS", "D", [(1, "A"), (2, "K")], "strilas:IR_Emitter_OSRAM_OSLON_Black_SFH4725S", "SFH4715AS_860nm"),
+        LEDTAB=mk("LED_TAB", "D", [(1, "A"), (2, "K")], "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical", "LED-tab (OSLON-micro-PCB, ben böjs 40° UT som TSOP)"),
         ORD=mk("ORdiode", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SOD-123", "BAT54"),
         NFET=mk("AO3400", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3400"),
         # 3,3 V LDO för TSOP+logik. SOT-89 pin (Holtek HT73XX datablad): 1=GND 2=VIN(tab) 3=VOUT.
@@ -37,7 +38,7 @@ def defs():
     )
 
 
-def build(n_tsop, n_led, gnss, out_file):
+def build(n_tsop, n_led, gnss, out_file, n_tab=0):
     reset()
     P = defs()
     VBAT, GND, DATA, LED_EN, LEDC = Net("VBAT"), Net("GND"), Net("DATA"), Net("LED_EN"), Net("LED_CATH")
@@ -58,18 +59,31 @@ def build(n_tsop, n_led, gnss, out_file):
     # konstellation = högeffekt 860 nm OSLON SFH 4715AS (Ie 780 mW/sr @1A databl.) för 150 m dagsljus.
     # Serieresistor 10R 2512 → ~0,4–0,5 A/LED vid VBAT 2S. OBS blink-modulerad: max ~50 % duty
     # (annars 2,5 W topp i 2 W-motstånd). LED-näten breddas till 0,4 mm via dsn_power_class.
-    for i in range(n_led):
-        led = P["LED"](); rl = P["R"](value="10R", footprint="Resistor_SMD:R_2512_6332Metric")
-        a = Net(f"LED_A{i+1}")                                        # namngivet LED-anodnät (för power-klass)
-        rl[1] += VBAT; rl[2] += a; led["A"] += a; led["K"] += LEDC
+    # Konstellation: n_led fasta SMD-OSLON (centralt, inåt) + n_tab BÖJBARA LED-tabbar (kanter,
+    # böjs 40° UT som TSOP → matchande sido-täckning, allround). LED:erna kopplas i SERIE-PAR
+    # (2 LED/gren) → halverar antal 2512-motstånd (ryms på patchen). VBAT→10R→LED→LED→LED_CATH.
+    # 2 OSLON i serie (~2,6 V) + 10R @ VBAT 2S (7,4–8,4 V) → ~0,5 A/gren, blink-mod ≤50 % duty.
+    leds = [P["LED"]() for _ in range(n_led)] + [P["LEDTAB"]() for _ in range(n_tab)]
+    for i in range(0, len(leds) - 1, 2):
+        rl = P["R"](value="10R", footprint="Resistor_SMD:R_2512_6332Metric")
+        a = Net(f"LED_A{i//2+1}"); mid = Net(f"LED_M{i//2+1}")
+        rl[1] += VBAT; rl[2] += a
+        leds[i]["A"] += a;   leds[i]["K"] += mid
+        leds[i+1]["A"] += mid; leds[i+1]["K"] += LEDC
+    if len(leds) % 2:                                                # udda LED → egen gren
+        rl = P["R"](value="10R", footprint="Resistor_SMD:R_2512_6332Metric")
+        a = Net(f"LED_A{len(leds)//2+1}"); rl[1] += VBAT; rl[2] += a
+        leds[-1]["A"] += a; leds[-1]["K"] += LEDC
     # (Ingen LDO — 3,3 V från moderkortet.) 4 monteringshål (M2.5) i hörnen → skruv/standoff-fäste
     # som komplement till lim/kardborre (t.ex. patch skruvad mot hjälmskal/styv platta).
     for _ in range(4):
         P["MH"]()[1] += GND
     generate_netlist(file_=out_file)
-    print(f"  {out_file}: {n_tsop} TSOP, {n_led} LED, 4 monteringshål (3V3 från moderkort, ingen LDO)")
+    print(f"  {out_file}: {n_tsop} TSOP, {n_led} fasta LED + {n_tab} LED-tabbar, 4 monteringshål")
 
 
 if __name__ == "__main__":
-    build(4, 2, False, "hardware/vest-patch.net")     # väst-patch: 4 TSOP (3 sida-fläkt + 1 upp) + 2 LED
+    # väst-patch: 4 TSOP (hörn, 40° ut) + 2 fasta LED (centralt, inåt) + 4 böjbara LED-tabbar
+    # (kanter N/S/Ö/V, böjs 40° ut som TSOP) → allround konstellation från alla vinklar.
+    build(4, 2, False, "hardware/vest-patch.net", n_tab=4)
     # hjälm-noden byggs nu av hardware/helmet_netlist.py (komplett nod: buck+XIAO-S3+GNSS+audio)
