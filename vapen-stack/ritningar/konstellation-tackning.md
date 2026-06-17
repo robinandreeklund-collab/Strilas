@@ -29,13 +29,16 @@ En LED som lyser rakt upp ur den liggande discen syns knappt för en kamera i ö
 PnP. Därför görs discens 6 konstellations-LED **sido-emitterande, riktade RADIELLT UT mot horisonten**
 så de matchar de utåt-böjda TSOP-mottagarna och faktiskt syns för skytten.
 
-**Hur (fysik):** en platt SMD-LED på ett liggande kort lyser uppåt; inget rent-PCB-sätt ger horisontell
-stråle. Lösning utan att offra räckvidden: behåll **högeffekt-OSLON** (maskinplacerad vid kanten r48.5,
-radiellt orienterad) + en **45°-omriktningshållare/optik per LED** (köps separat, monteras manuellt —
-som Carclo-linshållaren på skott-emittern) som viker strålen 90° ut mot horisonten.
-- Fallback om 45°-IR-optik ej finns: vinklad hållare som lutar LED:n ut, eller **ledad IR-emitter böjd
-  utåt** som TSOP:erna (matchar mottagaren bokstavligt, enklare — men lägre effekt → verifiera 150 m).
-  OSLON-vägen bevarar dagsljus-budgeten; ledad-vägen måste bänk-verifieras.
+**Hur (fysik + vald lösning):** en platt SMD-LED på ett liggande kort lyser uppåt; inget rent-PCB-sätt
+ger horisontell stråle. Research visade dessutom: högeffekt-IR (krävs @150 m dagsljus) finns BARA som
+topp-emitterande (OSLON-dom/chip-on-star) — högeffekt SIDO-emit-SMD existerar inte (right-angle IR =
+20–50 mA, för svaga). **Lösning (`hardware/led_tab.py`): LED-TAB micro-PCB.** En liten egen PCB (~6×11 mm)
+med EN högeffekt-OSLON SFH4715AS + 2 ben-hål. NextPCB SMT-placerar OSLON:en (löser den svåra handlödningen),
+kund löder 2 wire-ben och **böjer taben radiellt ut mot horisonten** — precis som de ledade TSOP-mottagarna.
+→ Full OSLON-effekt (dagsljus-budgeten intakt) + valfri aim + ingen exotisk optik. Discen (D5–D10) har
+6 tab-socklar (2 hål) där benen löds in (3 serie-par via disc-spår + 3 serieR 2512 på discen).
+Konstellations-LED behöver ingen precis position (PnP kalibrerar grov vinkel) — bara optikens
+skott-emitter (under Carclo-linsen) kräver precisionsplacering.
 
 De **4 hjälm-patcharna** (skalet, utåtvända) bidrar fortsatt. Systemnivå: disc-LED (sido, horisont) +
 patchar → från vilken skyttvinkel som helst ser kameran flera face-on punkter → robust PnP.

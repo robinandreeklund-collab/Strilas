@@ -31,7 +31,7 @@ BUCK = mk("AP63203", "U", [(1, "FB"), (2, "EN"), (3, "VIN"), (4, "GND"), (5, "SW
 IND = mk("L", "L", [(1, "1"), (2, "2")], "Inductor_SMD:L_Changjiang_FNR5040S", "4.7uH")
 IMU = mk("IIM-42653", "U", [(i, i) for i in range(1, 15)], "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "IIM-42653")
 TSOP = mk("TSOP4856", "U", [(1, "OUT"), (2, "GND"), (3, "VS")], "OptoDevice:Vishay_MOLD-3Pin", "TSOP4856")
-LED = mk("SFH4715AS", "D", [(1, "A"), (2, "K")], "strilas:IR_Emitter_OSRAM_OSLON_Black_SFH4725S", "SFH4715AS_860nm")
+LED = mk("LED_TAB", "D", [(1, "A"), (2, "K")], "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical", "LED-tab (OSLON på micro-PCB med ben → böjs/vinklas; ledad)")
 ORD = mk("ORdiode", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SOD-123", "BAT54")
 NFET = mk("AO3400", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3400")
 F9P = mk("ZED-F9P", "J", [(1, "VCC"), (2, "GND"), (3, "TXD"), (4, "RXD"), (5, "SDA"), (6, "SCL"), (7, "PPS"), (8, "RSV")],
@@ -91,9 +91,10 @@ for i in range(4):
     d = ORD(); d["K"] += out; d["A"] += DATA_OB
     cd = CAP("100nF"); cd[1] += P3V3; cd[2] += GND
 
-# ---------- 6 konstellations-LED runt ringen (3 grenar × 2 LED i serie) + driver ----------
-# Serie-par halverar VBAT-strömmen (1,35 A topp istf 2,7 A) + bara 3 serieR (2512). Ingen kollimator
-# på konstellationen — bred lob så kameran ser den från många vinklar (till skillnad från skott-emittern).
+# ---------- 6 konstellations-LED via LEDADE TAB-MICRO-PCB (3 grenar × 2 i serie) + driver ----------
+# OSLON:en sitter på en egen micro-PCB (led-tab, hardware/led_tab.py) med 2 BEN (wire-legs) som löds in
+# i discens 2-håls tab-sockel (D5-D10) → böjs/vinklas RADIELLT UT mot horisonten (kameran i ögonhöjd
+# @150 m ser punkterna). Full OSLON-effekt behålls. Serie-par halverar VBAT-strömmen + 3 serieR (2512).
 Q = NFET(); Q["S"] += GND; Q["D"] += LEDC
 Rg = RES("220R"); Rg[1] += LED_EN; Rg[2] += Q["G"]
 for i in range(3):

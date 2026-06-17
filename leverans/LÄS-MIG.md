@@ -11,6 +11,7 @@ system-sim 28/28 PASS). Full rapport: [`FORSTA-BATCH.md`](FORSTA-BATCH.md).
 | `vest-patch/` | Väst-/hjälm-patch (×14) | 37×37 mm | 2 | 4 |
 | `helmet-mb/` | Hjälm-moderkort (rund) | Ø104 mm | 4 | 4 |
 | `vest-mb/` | Väst-moderkort | 100×60 mm | 4 | 4 |
+| `led-tab/` | Konstellations-LED på böjbar micro-PCB (6/hjälm) | 6×11 mm | 2 | — |
 
 Per mapp:
 - `<kort>-gerbers.zip` — RS-274X gerber + Excellon-borr (det NextPCB tillverkar från).
