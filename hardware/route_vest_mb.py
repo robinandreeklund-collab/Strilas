@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """STRILAS — route väst-moderkort (100×60, 4-lager): DSN → power-klass (0,4 mm) → freeroute (loop) →
-ses_apply → kopparplan (In1=GND, In2=VBAT, F/B=GND-fyll) → verifiera → Gerbers/STEP.
+ses_apply → kopparplan (In1=GND, In2=+3V3, F/B=GND-fyll; VBAT routat — breddat) → verifiera → Gerbers/STEP.
 Körs efter receiver_place.py vest_mb. (1-nods-NC/reserv-nät ignoreras i routnings-grinden.)"""
 import subprocess, sys, math, shutil, os, pcbnew
 PCB = "hardware/vest-mb.kicad_pcb"; DSN = "hardware/vest-mb.dsn"; SES = "hardware/vest-mb.ses"
@@ -8,7 +8,7 @@ MM = pcbnew.FromMM; OX, OY = 150.0, 120.0
 def V(x, y): return pcbnew.VECTOR2I(MM(OX + x), MM(OY - y))
 
 
-PLANE_NETS = ("GND", "VBAT")   # får kopparplan i finish() → behöver ej full spår-routning
+PLANE_NETS = ("GND", "+3V3")   # får kopparplan i finish() → behöver ej full spår-routning
 
 
 def unrouted(path):
@@ -70,7 +70,7 @@ def finish(path):
         ch = pcbnew.SHAPE_LINE_CHAIN()
         for x, y in [(-49.5, -29.5), (49.5, -29.5), (49.5, 29.5), (-49.5, 29.5)]: ch.Append(V(x, y))
         ch.SetClosed(True); z.AddPolygon(ch); b.Add(z)
-    add_zone(pcbnew.In1_Cu, "GND"); add_zone(pcbnew.In2_Cu, "VBAT")
+    add_zone(pcbnew.In1_Cu, "GND"); add_zone(pcbnew.In2_Cu, "+3V3")   # In2=+3V3-plan (20 pads, korsar 10 zonkontakter)
     add_zone(pcbnew.B_Cu, "GND"); add_zone(pcbnew.F_Cu, "GND")
     pcbnew.ZONE_FILLER(b).Fill(b.Zones()); pcbnew.SaveBoard(path, b)
 
