@@ -138,3 +138,10 @@ underhålla med samma kort överallt."* → båda moderkorten kör nu **exakt sa
 - **Strömplan:** In1=GND, **In2=+3V3** (flest pads + måste korsa P4-sockel-"väggen"), F/B=GND-fyll.
   VBAT routas som spår. (Tidigare delade +3V3-nätet löst genom att plana +3V3.)
 - Deliverables: `hardware/helmet-mb-gerbers.zip` + `.step`.
+
+## Konstellations-arkitektur (disc vs patch) — 2026-06
+Hjälm-discen ligger plant ovanpå hjälmen (F9P-puck uppåt) → dess **6 konstellations-LED lyser uppåt**
+(bonus för förhöjda/ovanifrån-vinklar). Den **horisontella** huvud-konstellationen kommer från de
+**4 hjälm-patcharna** på skalet (utåtvända, som kroppspatcharna). Kameran löser huvud-posen ur de
+patchar som är face-on. Konstellations-LED har ingen kollimator (bred lob). Se
+[`konstellation-tackning.md`](konstellation-tackning.md) + [`skott-flode.png`](skott-flode.png).

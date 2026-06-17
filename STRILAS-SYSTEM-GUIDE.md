@@ -50,6 +50,9 @@ och driver haptik/ljud lokalt. Detaljer: [`ritningar/system-struktur.md`](vapen-
 
 ## 3. Hur ett skott går till (end-to-end)
 
+> Flödesbild: [`vapen-stack/ritningar/skott-flode.png`](vapen-stack/ritningar/skott-flode.png).
+> Konstellations-täckning (LED-riktning vs mottagar-vinkel): [`konstellation-tackning.md`](vapen-stack/ritningar/konstellation-tackning.md).
+
 ```
 1. AVTRYCK → fire-control (edge A) signalerar P4. NFC-ammo > 0 + laddhandtag racked (make-ready).
 2. EMITTER fyrar: 2× 940 nm OSLON i serie, aktiv konstantströms-sänka (OPA171+pass-FET+0R2 sense),
