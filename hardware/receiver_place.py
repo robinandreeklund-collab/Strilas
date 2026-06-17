@@ -252,7 +252,7 @@ weapon_pos = {
 # 4 monteringshål i linje med P4-standoffsen (-34.10/+20.07, ±9.125, Ø1.7) → genomgående stack.
 # OBS: pinrader ±8.89 (DXF-exakt, spann 17.78=7×2.54) — INTE 9.28.
 firecontrol_pos = {
-    "J1": (-18.3, 8.89, 90),                                   # socket mot edge A (pin6..17)
+    "J1": (-18.31, 8.89, 90),                                  # socket mot edge A (pin6..17) — EXAKT på P4 J_A pad1 (-18.31)
     "J2": (-25.92, -8.89, 90),                                 # edge-B kraft-tapp (3V3+GND), bortre långsida
     "J3": (-15, -6, 0), "J4": (-8, -6, 0), "J5": (-1, -6, 0), "J6": (6, -6, 0),  # switchar (botten)
     "J7": (-27, 6, 0), "J8": (27, -6, 0),                      # J7 recoil (övre vänster), J8 NFC (höger om H4)

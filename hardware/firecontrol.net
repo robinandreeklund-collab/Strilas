@@ -2,7 +2,7 @@
   (version "D")
   (design
     (source "firecontrol_netlist.py")
-    (date "06/16/2026 09:34 AM")
+    (date "06/17/2026 04:39 PM")
     (tool "SKiDL (2.2.3)")
     (sheet
       (number 1)
@@ -55,7 +55,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "TiOgbzmpPL")
+          (name "SKiDL Tag") "5SU0xaJyUp")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:53"))
       (libsource
@@ -65,7 +65,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "4155c57a-b2d6-509f-93ce-01d80211112c"))
+      (tstamps "75226778-757e-58b9-85fa-cc70ab4e9658"))
     (comp
       (ref "C2")
       (value "1uF")
@@ -79,7 +79,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "a595NnGw78")
+          (name "SKiDL Tag") "KYcRs6dGyx")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:53"))
       (libsource
@@ -89,7 +89,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "85106594-1c32-535a-ab8d-0e11cfda5aa4"))
+      (tstamps "26afb2ab-1461-5036-ad38-beab04047431"))
     (comp
       (ref "C3")
       (value "100nF")
@@ -103,7 +103,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "IdE1iw8tIK")
+          (name "SKiDL Tag") "RnYoUCmrfi")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:53"))
       (libsource
@@ -113,7 +113,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "d38a776a-3ecd-5225-9c5a-0da9da8d9997"))
+      (tstamps "2d46bdb8-a74a-5241-9edf-19d9476c1450"))
     (comp
       (ref "C4")
       (value "100nF")
@@ -127,7 +127,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "sfnf4lE6A8")
+          (name "SKiDL Tag") "ZdwFyN7B9m")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:53"))
       (libsource
@@ -137,7 +137,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "cd81c735-fa62-5ab6-a2d9-7fca1035db07"))
+      (tstamps "31044783-5e99-5014-b9f8-bb482dc437cc"))
     (comp
       (ref "C5")
       (value "100nF")
@@ -151,7 +151,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "VDYw_Ury2Y")
+          (name "SKiDL Tag") "EO2cfBHfjM")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:53"))
       (libsource
@@ -161,7 +161,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "28c318d4-aeb3-54d9-9c24-77a21f5e56b2"))
+      (tstamps "b7b8c112-11ae-52b0-8211-e320e8d4d650"))
     (comp
       (ref "C6")
       (value "100nF")
@@ -175,7 +175,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "_0CWOYerMg")
+          (name "SKiDL Tag") "8hcaMLX1YJ")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:53"))
       (libsource
@@ -185,21 +185,21 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "b07c419c-e510-5cfd-a697-2ea432382a48"))
+      (tstamps "bb28003c-829a-5412-a6c7-1719f8e17c03"))
     (comp
       (ref "H1")
-      (value "M2")
+      (value "Ø1.7_P4_standoff")
       (description "")
-      (footprint "MountingHole:MountingHole_2.2mm_M2")
+      (footprint "strilas:MountingHole_1.7mm")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "MountingHole:MountingHole_2.2mm_M2")
+          (name "Footprint") "strilas:MountingHole_1.7mm")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "eO7yycWqkR")
+          (name "SKiDL Tag") "Scb3kqwGKT")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:72"))
       (libsource
@@ -209,21 +209,21 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "3451cb7d-4d44-540c-a1ed-7b3f3fa8244d"))
+      (tstamps "5bd3cf99-a754-5edf-8c22-2cd7bf669215"))
     (comp
       (ref "H2")
-      (value "M2")
+      (value "Ø1.7_P4_standoff")
       (description "")
-      (footprint "MountingHole:MountingHole_2.2mm_M2")
+      (footprint "strilas:MountingHole_1.7mm")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "MountingHole:MountingHole_2.2mm_M2")
+          (name "Footprint") "strilas:MountingHole_1.7mm")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "nJfr1nnoBL")
+          (name "SKiDL Tag") "vpnfCMYezd")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:72"))
       (libsource
@@ -233,21 +233,21 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "a7769cb2-044f-585d-9695-f9f1183dcdec"))
+      (tstamps "17d1b008-c423-5209-a849-5eaa182c2a89"))
     (comp
       (ref "H3")
-      (value "M2")
+      (value "Ø1.7_P4_standoff")
       (description "")
-      (footprint "MountingHole:MountingHole_2.2mm_M2")
+      (footprint "strilas:MountingHole_1.7mm")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "MountingHole:MountingHole_2.2mm_M2")
+          (name "Footprint") "strilas:MountingHole_1.7mm")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "_701h0yAyf")
+          (name "SKiDL Tag") "oWMGgLKUZf")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:72"))
       (libsource
@@ -257,21 +257,21 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "07fb591f-da33-50a5-8b0c-415f685f4507"))
+      (tstamps "c5a2d9bc-7948-5046-9d87-bae5b296fd65"))
     (comp
       (ref "H4")
-      (value "M2")
+      (value "Ø1.7_P4_standoff")
       (description "")
-      (footprint "MountingHole:MountingHole_2.2mm_M2")
+      (footprint "strilas:MountingHole_1.7mm")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "MountingHole:MountingHole_2.2mm_M2")
+          (name "Footprint") "strilas:MountingHole_1.7mm")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "WFGWx5ccAe")
+          (name "SKiDL Tag") "kRqkcr4hQy")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:72"))
       (libsource
@@ -281,7 +281,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "70feed89-d2f6-5876-9a40-a01ac2230026"))
+      (tstamps "669c9638-f2dd-56de-996f-47e0a0887944"))
     (comp
       (ref "J1")
       (value "P4-socket (edge A)")
@@ -295,7 +295,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "VbpAJ5_ULz")
+          (name "SKiDL Tag") "EDZ5nrdicj")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:64"))
       (libsource
@@ -305,7 +305,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "ffd815de-58a6-5027-a887-367d8f504488"))
+      (tstamps "bf18cfde-d822-572f-b569-e493aaa3ec51"))
     (comp
       (ref "J2")
       (value "edge-B kraft-tapp 3V3+GND")
@@ -319,7 +319,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "HHyfT12CeS")
+          (name "SKiDL Tag") "LXDjVtNlCJ")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:64"))
       (libsource
@@ -329,7 +329,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "ce138452-a29a-5dac-bde8-720e67d4149b"))
+      (tstamps "b584d799-6cf0-5891-b4bd-42f7aa0e3c12"))
     (comp
       (ref "J3")
       (value "TRIGGER")
@@ -343,7 +343,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "iaTtlU9rOs")
+          (name "SKiDL Tag") "u32FlPoA_H")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:65"))
       (libsource
@@ -353,7 +353,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "078e4a17-02b7-505d-97df-7b78c1bf8b7f"))
+      (tstamps "582abebb-5f89-5201-929f-aadcaf607cb5"))
     (comp
       (ref "J4")
       (value "RACK_SW")
@@ -367,7 +367,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "OfLG4KmPgz")
+          (name "SKiDL Tag") "QKL7PZb0ow")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:65"))
       (libsource
@@ -377,7 +377,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "e09c575f-2fdb-5a92-8faf-2295cb2f0b3f"))
+      (tstamps "b36b49ae-8e49-5e30-992f-dfed612d9f49"))
     (comp
       (ref "J5")
       (value "MAG_REL_SW")
@@ -391,7 +391,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "fl1lbuzTtg")
+          (name "SKiDL Tag") "qyt9bta4LG")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:66"))
       (libsource
@@ -401,7 +401,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "dab388f8-17a0-5ea6-af19-61740dbd82b0"))
+      (tstamps "70c4f07d-0924-5838-8273-8b76d6798639"))
     (comp
       (ref "J6")
       (value "MAGWELL_SW")
@@ -415,7 +415,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "GrLMgLBxn5")
+          (name "SKiDL Tag") "2uO0Xy83n7")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:66"))
       (libsource
@@ -425,7 +425,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "4937a4e8-1914-594b-98b3-632a6f4ee6a6"))
+      (tstamps "56d64cc2-51c9-5edc-85b2-b1d6ffc770dd"))
     (comp
       (ref "J7")
       (value "recoil-styrning")
@@ -439,7 +439,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "OlnZNyGxQw")
+          (name "SKiDL Tag") "av0wrbDUt2")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:67"))
       (libsource
@@ -449,7 +449,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "ef689068-d172-5e6c-9efc-fa8dca6ef99a"))
+      (tstamps "bebb085e-863c-5358-8bb3-fd0b7460121e"))
     (comp
       (ref "J8")
       (value "NFC PN532 (I²C)")
@@ -463,7 +463,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "oa0Vbk1r96")
+          (name "SKiDL Tag") "57lKarBYB9")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:67"))
       (libsource
@@ -473,7 +473,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "3860160f-7996-58e9-abef-e082dea2b713"))
+      (tstamps "06933730-91f2-5a0f-8ac9-de1c8bd30446"))
     (comp
       (ref "R1")
       (value "4k7")
@@ -487,7 +487,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "EZ5j9hckSa")
+          (name "SKiDL Tag") "A__AFJFrbr")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:52"))
       (libsource
@@ -497,7 +497,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "e4788f16-401b-5919-87c7-a9f12a470754"))
+      (tstamps "8fcaecad-1c41-5b63-a249-bcae8d7f4d3c"))
     (comp
       (ref "R2")
       (value "4k7")
@@ -511,7 +511,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "gsTgbtUTrG")
+          (name "SKiDL Tag") "Q25oSFlQ8B")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:52"))
       (libsource
@@ -521,7 +521,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "76b86143-5e26-54ae-9dd3-8dfa1a5bf71d"))
+      (tstamps "47f300d2-b3e3-5147-8836-6eafb6cd06ab"))
     (comp
       (ref "U1")
       (value "IIM-42653")
@@ -535,7 +535,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "rozWJWY0em")
+          (name "SKiDL Tag") "ProwVhzplJ")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:67"))
       (libsource
@@ -545,7 +545,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "db2d3810-fab0-5f9c-89df-64c5d4eaefee"))
+      (tstamps "3da3aec0-7bf9-53e0-af6c-923529cd2951"))
     (comp
       (ref "U2")
       (value "IIM-42653")
@@ -559,7 +559,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "DhflGzHmes")
+          (name "SKiDL Tag") "ues_LLKf7s")
         (field
           (name "SKiDL Line") "firecontrol_netlist.py:67"))
       (libsource
@@ -569,7 +569,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "576b5d9c-e407-582e-a1d3-a975eefc477b")))
+      (tstamps "2d1a8f5c-b526-55c8-9be3-bb3d4ed35371")))
   (nets
     (net
       (code 1)

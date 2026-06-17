@@ -51,7 +51,7 @@ RES_T = mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric")
 CAP_T = mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0402_1005Metric")
 RES = lambda v: RES_T(value=v)
 CAP = lambda v: CAP_T(value=v)
-MH = lambda n: mk(f"MH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2")
+MH = lambda n: mk(f"MH{n}", "H", [(1, "1")], "strilas:MountingHole_1.7mm", "Ø1.7_P4_standoff")
 
 # ---------- nät ----------
 GND, P3V3 = Net("GND"), Net("+3V3")
