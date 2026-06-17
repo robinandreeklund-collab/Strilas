@@ -24,12 +24,22 @@ bredare — men det är ofarligt eftersom posen kommer från **alla synliga patc
 - **Hjälm-DISCEN (plant ovanpå hjälmen, F9P-puck uppåt):** dess 6 LED pekar **uppåt** → bidrar mest
   för förhöjda/ovanifrån-vinklar, knappt horisontellt.
 
-## Beslutad arkitektur (rekommendation, vald)
-- **Horisontell huvud-konstellation = de 4 hjälm-PATCHARNA** (på skalet, utåtvända — som kroppspatcharna).
-- **Hjälm-discens 6 LED = bonus uppåt/förhöjt.**
-- 360°-täckning på systemnivå: distribuerade patchar (kropp fram/bak/sidor + hjälmsidor) → från
-  vilken skyttvinkel som helst är flera patchar face-on → tillräckligt med punkter för robust PnP.
+## Beslutad arkitektur — SIDO-EMITTERANDE disc-LED (uppdaterad)
+En LED som lyser rakt upp ur den liggande discen syns knappt för en kamera i ögonhöjd @150 m → dålig
+PnP. Därför görs discens 6 konstellations-LED **sido-emitterande, riktade RADIELLT UT mot horisonten**
+så de matchar de utåt-böjda TSOP-mottagarna och faktiskt syns för skytten.
+
+**Hur (fysik):** en platt SMD-LED på ett liggande kort lyser uppåt; inget rent-PCB-sätt ger horisontell
+stråle. Lösning utan att offra räckvidden: behåll **högeffekt-OSLON** (maskinplacerad vid kanten r48.5,
+radiellt orienterad) + en **45°-omriktningshållare/optik per LED** (köps separat, monteras manuellt —
+som Carclo-linshållaren på skott-emittern) som viker strålen 90° ut mot horisonten.
+- Fallback om 45°-IR-optik ej finns: vinklad hållare som lutar LED:n ut, eller **ledad IR-emitter böjd
+  utåt** som TSOP:erna (matchar mottagaren bokstavligt, enklare — men lägre effekt → verifiera 150 m).
+  OSLON-vägen bevarar dagsljus-budgeten; ledad-vägen måste bänk-verifieras.
+
+De **4 hjälm-patcharna** (skalet, utåtvända) bidrar fortsatt. Systemnivå: disc-LED (sido, horisont) +
+patchar → från vilken skyttvinkel som helst ser kameran flera face-on punkter → robust PnP.
 
 ## Att bekräfta på bänk
-Verklig blob-SNR vid sneda vinklar @150 m dagsljus (LED-lobens kant). Om sido-synlighet blir knapp:
-fler patchar hellre än smal lins; ev. sido-emitterande/vinklade LED på discen som senare steg.
+- Sourcing: 45° omriktnings-optik/hållare för 860 nm OSLON (köps separat, manuell montering).
+- Blob-SNR vid sneda vinklar @150 m dagsljus efter omriktning (LED-lobens kant).

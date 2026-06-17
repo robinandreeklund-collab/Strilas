@@ -140,8 +140,8 @@ underhålla med samma kort överallt."* → båda moderkorten kör nu **exakt sa
 - Deliverables: `hardware/helmet-mb-gerbers.zip` + `.step`.
 
 ## Konstellations-arkitektur (disc vs patch) — 2026-06
-Hjälm-discen ligger plant ovanpå hjälmen (F9P-puck uppåt) → dess **6 konstellations-LED lyser uppåt**
-(bonus för förhöjda/ovanifrån-vinklar). Den **horisontella** huvud-konstellationen kommer från de
-**4 hjälm-patcharna** på skalet (utåtvända, som kroppspatcharna). Kameran löser huvud-posen ur de
+Hjälm-discen ligger plant ovanpå hjälmen (F9P-puck uppåt) → dess 6 konstellations-LED görs **sido-emitterande, riktade RADIELLT UT mot horisonten** via en
+45°-omriktningshållare/optik per LED (köps separat, manuell montering — som Carclo-linsen på emittern),
+så de matchar de utåt-böjda TSOP-mottagarna. De **4 hjälm-patcharna** på skalet bidrar också (utåtvända, som kroppspatcharna). Kameran löser huvud-posen ur de
 patchar som är face-on. Konstellations-LED har ingen kollimator (bred lob). Se
 [`konstellation-tackning.md`](konstellation-tackning.md) + [`skott-flode.png`](skott-flode.png).

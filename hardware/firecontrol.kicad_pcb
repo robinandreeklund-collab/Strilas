@@ -1478,7 +1478,7 @@
     (stroke (width 0.15) (type default)) (layer "Edge.Cuts") (tstamp cdcf8e84-893b-495e-a573-71a0dacd59cd))
   (gr_line (start 185.525 130.5) (end 185.525 109.5)
     (stroke (width 0.15) (type default)) (layer "Edge.Cuts") (tstamp e747fd1f-a24a-45fd-b81b-9ba34b85b773))
-  (gr_text "STRILAS" (at 150 128.6) (layer "F.SilkS") (tstamp 13075b9e-cb1c-4d8d-9efc-6dd79f2ba84f)
+  (gr_text "STRILAS" (at 150 128.6) (layer "F.SilkS") (tstamp 416e3681-d7f9-4211-88a6-6531cf68a975)
     (effects (font (size 1 1) (thickness 0.15)))
   )
 
