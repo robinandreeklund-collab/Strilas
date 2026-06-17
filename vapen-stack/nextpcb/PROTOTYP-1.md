@@ -16,9 +16,9 @@ NextPCB min-order är oftast 5 st → 5 optik (1 behövs nu) + 5 väst-patchar =
 > Samma routade optikkort som produktion — bara IMU:n obestyckad. IMU-footprinten finns kvar
 > för framtida produktionsversion (då IMU sätts tillbaka på kortet, stelt mot optiska axeln).
 
-- **Optik:** 54×74 mm, **4-lager**. **Väst-patch:** **32×32 mm täcknings-nod** (4 ledade TSOP4856 i fyrfaldigt symmetrisk DIAMANT, var och en böjd ~40° utåt → 99,5 % hemisfär-täckning, se `../ritningar/patch-sikte.md`; lim/kardborre-fäst), **2-lager**. FR-4 1,6 mm, HASL/ENIG.
-- Väst-patchen är **färdigroutad** (0 oroutade · 0 clearance · 0 oconnected). **Liten patch:** ingen LDO
-  och inga skruvhål — **3,3 V kommer från väst-moderkortet** via 5-pol J1 (VBAT·GND·DATA·LED_EN·3V3,
+- **Optik:** 54×74 mm, **4-lager**. **Väst-patch:** **37×37 mm täcknings-nod (4 monteringshål)** (4 ledade TSOP4856 i fyrfaldigt symmetrisk DIAMANT, var och en böjd ~40° utåt → 99,5 % hemisfär-täckning, se `../ritningar/patch-sikte.md`; lim/kardborre-fäst), **2-lager**. FR-4 1,6 mm, HASL/ENIG.
+- Väst-patchen är **färdigroutad** (0 oroutade · 0 clearance · 0 oconnected). Ingen LDO och **4 monteringshål
+  (M2.5) i hörnen** (skruv/standoff utöver lim/kardborre) — **3,3 V kommer från väst-moderkortet** via 5-pol J1 (VBAT·GND·DATA·LED_EN·3V3,
   matchar moderkortets zon-kontakt). TSOP4856 (abs-max 6 V) matas alltså av moderkortets buck-3V3,
   inte VBAT(2S). LED-grenar på VBAT, LED-spår 0,4 mm. *(Bänktest av lös patch: mata 3,3 V på J1.5.)*
 - **Pre-produktionsgranskning gjord** (se `nextpcb/GRANSKNING.md`): P4-pinout 100 % verifierad mot

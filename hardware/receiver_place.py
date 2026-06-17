@@ -103,7 +103,7 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
     print(f"  {pcbfile}: {len(fps)} komponenter, {len(nets)} nät")
 
 
-# ---- väst-patch (täcknings-NOD 32×32, FYRFALDIGT SYMMETRISK, kompakt) — 4 ledade TSOP4856, kardborre/lim ----
+# ---- väst-patch (täcknings-NOD 37×37, FYRFALDIGT SYMMETRISK, 4 monteringshål) — 4 ledade TSOP4856, kardborre/lim ----
 # SIKTE (beräknat optimum, se vapen-stack/ritningar/patch-sikte.md): 4 mottagare jämnt 90° isär i
 # DIAMANT (NÖ/NV/SV/SÖ), var och en böjd ~40° UTÅT från kortets normal (ben böjs; silk-pil visar).
 # → 99,5 % av framåt-hemisfären, 100 % inom 60° zenit, ~2,3 mottagare ser ett frontalskott (redundans).
@@ -122,7 +122,8 @@ vest_pos = {   # ±18. KOMPAKT diamant-TSOP (kropp-radie 14, dom radiellt ut); D
     "J1": (-5.08, 0, 90),                          # 1x5 horisontellt centrerat (Ö–V-bandet)
     "C1": (-2.6, 3.6, 0), "Q1": (2.6, 3.6, 0),     # bulk + FET strax ovan kontakten
     "R1": (-2.6, -3.6, 0), "R2": (2.6, -3.6, 0),   # DATA-pullup + gate-R strax under
-}   # inga monteringshål — lim/kardborre-fäst patch
+    "H1": (16, 16, 0), "H2": (-16, 16, 0), "H3": (-16, -16, 0), "H4": (16, -16, 0),  # 4 monteringshål (hörn, utanför TSOP-domer)
+}
 # sikt-etiketter på silkscreen: böj-instruktion (fria y-axel-slivrar mellan center och LED)
 vest_labels = [
     (0, 6.8, "40 UT", 0.8), (0, -6.8, "40 UT", 0.8),   # böj alla TSOP-ben 40° UTÅT (radiellt)
@@ -314,7 +315,7 @@ BOARDS = {
     "helmet_mb": lambda: place("hardware/helmet-mb.net", "hardware/helmet-mb.kicad_pcb",
                                helmet_mb_pos, ("circle", 52), layers=4, free=(-3, 3, -3, 3)),
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
-                          vest_pos, ("rect", 16, 16), layers=2, free=(-2, 2, -2, 2), labels=vest_labels),
+                          vest_pos, ("rect", 18.5, 18.5), layers=2, free=(-2, 2, -2, 2), labels=vest_labels),
     "vest_mb": lambda: place("hardware/vest-mb.net", "hardware/vest-mb.kicad_pcb",
                              vest_mb_pos, ("rect", 50, 30), layers=4, free=(-3, 3, -3, 3)),
     # vapnet: alla delar placeras explicit -> tom fri-zon (säker, ingen krock med lins)

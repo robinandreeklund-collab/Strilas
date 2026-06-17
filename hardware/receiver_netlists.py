@@ -62,9 +62,12 @@ def build(n_tsop, n_led, gnss, out_file):
         led = P["LED"](); rl = P["R"](value="10R", footprint="Resistor_SMD:R_2512_6332Metric")
         a = Net(f"LED_A{i+1}")                                        # namngivet LED-anodnät (för power-klass)
         rl[1] += VBAT; rl[2] += a; led["A"] += a; led["K"] += LEDC
-    # (Ingen LDO — 3,3 V från moderkortet. Inga skruvhål — patchen lim/kardborre-fästs → minsta yta.)
+    # (Ingen LDO — 3,3 V från moderkortet.) 4 monteringshål (M2.5) i hörnen → skruv/standoff-fäste
+    # som komplement till lim/kardborre (t.ex. patch skruvad mot hjälmskal/styv platta).
+    for _ in range(4):
+        P["MH"]()[1] += GND
     generate_netlist(file_=out_file)
-    print(f"  {out_file}: {n_tsop} TSOP, {n_led} LED (3V3 från moderkort, ingen LDO, lim-fäst)")
+    print(f"  {out_file}: {n_tsop} TSOP, {n_led} LED, 4 monteringshål (3V3 från moderkort, ingen LDO)")
 
 
 if __name__ == "__main__":

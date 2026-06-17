@@ -9,7 +9,7 @@ Autonom genomgång kort-för-kort inför första beställning. Allt nedan är ma
 |---|---|---|---|---|---|
 | Optik/vapen (`optik`) | 54×74 mm | 4 | seed-ren | 0 oanslutna | 0 |
 | Fire-control (`firecontrol`) | 71×21 mm | 2 | ren | 0 | 0 |
-| Väst-patch (`vest-patch`) | **32×32 mm** | 2 | ren | 0 | 0 |
+| Väst-patch (`vest-patch`) | **37×37 mm** | 2 | ren | 0 | 0 |
 | Hjälm-mb (`helmet-mb`) | **RUND Ø104 mm** | 4 | ren | 0 | 0 |
 | Väst-mb (`vest-mb`) | 100×60 mm | 4 | ren | 0 | 0 |
 
