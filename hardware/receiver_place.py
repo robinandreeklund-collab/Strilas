@@ -345,7 +345,7 @@ BOARDS = {
     "helmet_mb": lambda: place("hardware/helmet-mb.net", "hardware/helmet-mb.kicad_pcb",
                                helmet_mb_pos, ("circle", 48.5), layers=4, free=(-3, 3, -3, 3)),
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
-                          vest_pos, ("rect", 18.5, 18.5), layers=2, free=(-2, 2, -2, 2), labels=vest_labels),
+                          vest_pos, ("rect", 22, 22), layers=2, free=(-2, 2, -2, 2), labels=vest_labels),
     "vest_mb": lambda: place("hardware/vest-mb.net", "hardware/vest-mb.kicad_pcb",
                              vest_mb_pos, ("rect", 50, 30), layers=4, free=(-3, 3, -3, 3)),
     # vapnet: alla delar placeras explicit -> tom fri-zon (säker, ingen krock med lins)
