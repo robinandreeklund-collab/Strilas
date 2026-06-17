@@ -31,7 +31,11 @@ LED-tab = konstellations-OSLON på böjbar micro-PCB (6/hjälm; ev. även för p
   hjälm-mb + väst-mb edge A+B): varje fysisk P4-pin → samma signal. Byte-för-byte identiska defs.
 - **Mot Waveshares officiella dok:** I²C-default SCL=GPIO8 / SDA=GPIO7 bekräftad (matchar edge A
   pin16/17). GPIO-uppsättningen (GPIO2-52) matchar P4:ans exponerade 2×20-stift.
-- Mekanik (71.05×21, pin1@4.52 mm, rader ±9.28, 4× M2-hål) uppmätt mot Waveshares måttritning.
+- **Mekanik EXAKT mot officiell DXF** (`hardware/P4/ESP32-P4-WIFI6_*-20260109.dxf`, cirkel-koordinater 1:1):
+  kort **71.00×21.00 mm**, pin1 @ 4.49 mm från vänsterkant, **pinrader ±8.89 mm** (radspann 17.78 = 7×2.54),
+  **4× Ø1.7 NPTH** monteringshål (hål-spann 54.2×18.25, vänster 1.40 mm från kant). KORRIGERAT från
+  tidigare okuläravläsning (±9.28/M2/71.05) → P4-socklarna på ALLA moderkort + fire-control flyttade till
+  ±8.89 så modulen faktiskt sitter; hål → Ø1.7 (M1.6). Stack-standoffs (fire-control H1–H4) matchar.
 
 ## Optik — samma leverantör (verifierat)
 - **Vapnets skott-emitter:** ams OSRAM **SFH 4725S** (940 nm, OSLON Black, 980 mW@1A). **UTGÅENDE/EOL**

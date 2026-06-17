@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
-"""STRILAS — monteringsmodell av ESP32-P4-WIFI6 (Waveshare, 71.05×21.00 mm).
-Geometrin är uppmätt ur Waveshares måttritning (ESP32-P4-WIFI6-details-size),
-eftersom ingen STEP-fil finns. Alla mått verifierade mot ritningens kotor:
+"""STRILAS — monteringsmodell av ESP32-P4-WIFI6 (Waveshare, 71.00×21.00 mm).
+Geometrin EXAKT avläst ur Waveshares OFFICIELLA DXF/STEP-måttritning
+(hardware/P4/ESP32-P4-WIFI6_*-20260109.dxf, cirkel-koordinater i mm @ 1:1):
 
-  • kort 71.05 × 21.00 mm, tjocklek 1.61 mm
-  • 2 castellerade pinrader (1×20, 2.54 mm), pin-1 = 4.52 mm från vänsterkant
-  • pinrader 9.28 mm från kortcentrum (≈1.22 mm från långsidorna)
-  • 4 monteringshål:
-      vänster par (USB-änden)  x = -34.06   (1.46 mm från vänsterkant)
-      höger  par (ESP-modulen) x = +19.73   (vid modulens vänsterkant)
-      bägge i y = ±9.15 mm (i linje med pinraderna)
-  • ESP32-P4-modul upptar höger 18.27 mm (efter sista pinnen → högerkant)
+  • kort 71.00 × 21.00 mm, tjocklek 1.6 mm
+  • 2 castellerade pinrader (1×20, 2.54 mm), pin-1 = 4.49 mm från vänsterkant
+  • pinrader ±8.89 mm från kortcentrum (radspann 17.78 = EXAKT 7×2.54; ≈1.61 mm från långsidorna)
+    [tidigare 9.28 var en okuläravläsning — DXF ger 8.89, korrigerat → matchande socklar]
+  • 4 monteringshål Ø1.7 (NPTH, för M1.6):
+      vänster par (USB-änden)  x = -34.10   (1.40 mm från vänsterkant)
+      höger  par (ESP-modulen) x = +20.07   (54.2 mm hål-hål-spann)
+      bägge i y = ±9.125 mm (hål-spann 18.25)
+  • ESP32-P4-modul upptar höger ~18 mm (efter sista pinnen → högerkant)
   • USB-C i vänster ände
 
 Inte ett tillverknings-kort — bara mekanik/montering för stacken mot optikkortet.
@@ -21,15 +22,15 @@ OX, OY = 150.0, 120.0
 MM = pcbnew.FromMM
 FPDIR = "/usr/share/kicad/footprints"
 
-# --- uppmätt geometri (mm, kortcentrum = origo) ---
-HW, HH = 35.525, 10.5            # halv 71.05 × 21.00
-PIN1_X = -31.005                 # 4.52 mm från vänsterkant (-35.525 + 4.52)
+# --- EXAKT geometri ur officiell DXF (mm, kortets geometriska centrum = origo) ---
+HW, HH = 35.5, 10.5              # halv 71.00 × 21.00
+PIN1_X = -31.01                  # pin-1 castellation (DXF: 4.49 mm från vänsterkant)
 PITCH = 2.54
 NPIN = 20
-ROW_Y = 9.28                     # pinradernas y-avstånd från centrum
-HOLE_Y = 9.15                    # monteringshålens y
-HOLE_XL = -34.06                 # vänster par (USB-hörnet)
-HOLE_XR = 19.73                  # höger par (ESP-modulens vänsterkant)
+ROW_Y = 8.89                     # pinradernas y från centrum (DXF: spann 17.78 = 7×2.54)
+HOLE_Y = 9.125                   # monteringshålens y (DXF: spann 18.25)
+HOLE_XL = -34.10                 # vänster par (USB-hörnet, 1.40 mm från vänsterkant)
+HOLE_XR = 20.07                  # höger par (54.2 mm hål-hål-spann)
 
 
 def V(x, y): return pcbnew.VECTOR2I(MM(OX + x), MM(OY - y))
@@ -46,12 +47,16 @@ def main():
         s.SetStart(V(*pts[i])); s.SetEnd(V(*pts[(i + 1) % 4]))
         s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(MM(0.15)); b.Add(s)
 
-    def hole(ref, x, y, fp="MountingHole:MountingHole_2.2mm_M2"):
-        lib, name = fp.split(":")
-        f = pcbnew.FootprintLoad(f"{FPDIR}/{lib}.pretty", name)
-        f.SetReference(ref); f.SetPosition(V(x, y)); b.Add(f)
+    def hole(ref, x, y):
+        # exakt Ø1.7 NPTH (officiell P4 → M1.6) som en fristående footprint med NPTH-pad
+        f = pcbnew.FOOTPRINT(b); f.SetReference(ref); f.SetPosition(V(x, y))
+        p = pcbnew.PAD(f); p.SetAttribute(pcbnew.PAD_ATTRIB_NPTH)
+        p.SetShape(pcbnew.PAD_SHAPE_CIRCLE); p.SetLayerSet(p.UnplatedHoleMask())
+        p.SetSize(pcbnew.VECTOR2I(MM(1.7), MM(1.7)))
+        p.SetDrillSize(pcbnew.VECTOR2I(MM(1.7), MM(1.7)))
+        p.SetPosition(V(x, y)); f.Add(p); b.Add(f)
 
-    # 4 monteringshål (M2) — uppmätta positioner
+    # 4 monteringshål (Ø1.7 NPTH) — EXAKTA DXF-positioner
     hole("MP1", HOLE_XL, HOLE_Y)    # topp-vänster (USB)
     hole("MP2", HOLE_XL, -HOLE_Y)   # botten-vänster (USB)
     hole("MP3", HOLE_XR, HOLE_Y)    # topp-höger (ESP-modul)
@@ -67,8 +72,8 @@ def main():
     # man löder endast nödvändiga header-stift). Mating-korten (optik/FC) får FEMALE socket.
     #   pin n castellation: x = PIN1_X + (n-1)*PITCH ; raden går +x vid rot90.
     # SANDWICH-STACK: optik UNDER, FC OVANPÅ → stiften pekar åt MOTSATTA håll:
-    #   Edge B (y=-9.28): pin 2..15 (VSYS..GPIO32) → optik UNDER → stift NEDÅT (B_Cu) → 1×14 @ pin2
-    #   Edge A (y=+9.28): pin 6..17 (GPIO29..GPIO7) → FC OVAN    → stift UPPÅT (F_Cu) → 1×12 @ pin6
+    #   Edge B (y=-8.89): pin 2..15 (VSYS..GPIO32) → optik UNDER → stift NEDÅT (B_Cu) → 1×14 @ pin2
+    #   Edge A (y=+8.89): pin 6..17 (GPIO29..GPIO7) → FC OVAN    → stift UPPÅT (F_Cu) → 1×12 @ pin6
     jb = place_fp("J_B", "Connector_PinHeader_2.54mm", "PinHeader_1x14_P2.54mm_Vertical",
                   PIN1_X + 1 * PITCH, -ROW_Y, 90)
     jb.Flip(jb.GetPosition(), False)                 # edge B nedåt (mot optiken)
@@ -103,7 +108,7 @@ def main():
     p1.SetLayer(pcbnew.F_SilkS); p1.SetWidth(MM(0.2)); b.Add(p1)
 
     pcbnew.SaveBoard("hardware/p4-board.kicad_pcb", b)
-    print("wrote hardware/p4-board.kicad_pcb (71.05×21.00; 4 M2-hål uppmätta; 2×1x20, pin1@4.52mm)")
+    print("wrote hardware/p4-board.kicad_pcb (71.00×21.00; 4×Ø1.7 NPTH DXF-exakta; 2×1x20 @ ±8.89, pin1@4.49mm)")
 
 
 if __name__ == "__main__":

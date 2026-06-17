@@ -227,12 +227,13 @@ weapon_pos = {
 
 # ---- fire-control-kort (71×21, STACKAS ovanpå P4, samma format) ----
 # FC-frame = P4-frame (lång axel = x). J1 = FEMALE socket mot P4 edge A pin6..17
-# @ (x=-18.3..+9.64, y=+9.28) — samma fysiska läge som P4-stiften (rak stack).
+# @ (x=-18.3..+9.64, y=+8.89) — samma fysiska läge som P4-stiften (rak stack).
 # Stående JST (kabel upp) längs nederhalvan; extra IMU + I²C-pullups i mittbandet;
-# 4 monteringshål i linje med P4-standoffsen (-34.06/+19.73, ±9.15) → genomgående stack.
+# 4 monteringshål i linje med P4-standoffsen (-34.10/+20.07, ±9.125, Ø1.7) → genomgående stack.
+# OBS: pinrader ±8.89 (DXF-exakt, spann 17.78=7×2.54) — INTE 9.28.
 firecontrol_pos = {
-    "J1": (-18.3, 9.28, 90),                                   # socket mot edge A (pin6..17)
-    "J2": (-25.92, -9.28, 90),                                 # edge-B kraft-tapp (3V3+GND), bortre långsida
+    "J1": (-18.3, 8.89, 90),                                   # socket mot edge A (pin6..17)
+    "J2": (-25.92, -8.89, 90),                                 # edge-B kraft-tapp (3V3+GND), bortre långsida
     "J3": (-15, -6, 0), "J4": (-8, -6, 0), "J5": (-1, -6, 0), "J6": (6, -6, 0),  # switchar (botten)
     "J7": (-27, 6, 0), "J8": (27, -6, 0),                      # J7 recoil (övre vänster), J8 NFC (höger om H4)
     "U1": (8, 0.5, 0), "U2": (21, 0.5, 0),                     # 2× extra IMU (I²C 0x69/0x68)
@@ -240,8 +241,8 @@ firecontrol_pos = {
     "C5": (17, 3.5, 0), "C6": (25, 3.5, 0),                    # U2-avkoppling
     "R1": (-1, 4, 0), "R2": (-5, 4, 0),                        # I²C-pullups
     "C1": (-9, 3.5, 0), "C2": (-13, 3.5, 0),                   # 3V3-rail/NFC-avkoppling
-    "H1": (-34.06, 9.15, 0), "H2": (-34.06, -9.15, 0),
-    "H3": (19.73, 9.15, 0), "H4": (19.73, -9.15, 0),
+    "H1": (-34.10, 9.125, 0), "H2": (-34.10, -9.125, 0),
+    "H3": (20.07, 9.125, 0), "H4": (20.07, -9.125, 0),
 }
 
 # ---- väst-moderkort v2 (100×60, väst-nod) — 10 zon-kontakter + ESP32-C6-devkit + 2×TPIC + buck ----
@@ -250,10 +251,10 @@ for i, xc in enumerate([-36, -18, 0, 18, 36]):  # xc = önskad mitt; origo = xc-
     vest_mb_pos[f"J{i+1}"] = (xc - 6.35, 24, 90)  # övre zon-rad J1-J5 (1x6, rot90, centrerad)
     vest_mb_pos[f"J{i+6}"] = (xc - 6.35, -24, 90)  # nedre zon-rad J6-J10
 vest_mb_pos.update({
-    "J11": (-25.4, 9.28, 90), "J12": (-25.4, -9.28, 90),  # ESP32-P4-WIFI6 (2× 1x20 kant-sockel; rader 18.56mm, origin -25.4 centrerar)
+    "J11": (-25.4, 8.89, 90), "J12": (-25.4, -8.89, 90),  # ESP32-P4-WIFI6 (2× 1x20 kant-sockel; rader 17.78mm=7×2.54 DXF-exakt, origin -25.4 centrerar)
     "U2": (-41, 11, 0), "C5": (-33, 11, 0),      # TPIC6B595 #1 (VIB-driver) + avkoppl (vänster)
     "U3": (41, 11, 0), "C6": (33, 11, 0),        # TPIC6B595 #2 + avkoppl (höger)
-    # buck-kluster i fria bandet y[-13..-21] (under P4 edge-A-raden @y-9.28, ovan nedre zon-rad @y-24)
+    # buck-kluster i fria bandet y[-13..-21] (under P4 edge-A-raden @y-8.89, ovan nedre zon-rad @y-24)
     "U1": (-10, -16, 0), "L1": (-3, -16, 0),     # buck + induktor (nedre-centrum)
     "C1": (-17, -16, 0), "C2": (-17, -13, 0), "C3": (4, -16, 0), "C4": (11, -16, 0),  # Cin/.. + Cbulk
     "R1": (-7, -13, 90), "R2": (1, -13, 90),     # FB-delare
@@ -266,8 +267,8 @@ vest_mb_pos.update({
 # (NÖ/NV/SV/SÖ, dom ut för 360° huvudtäckning); 2 konstellations-LED N/S; kringdelar i krans/crescents.
 # Genererad av cirkulär bbox-center-layout (se commit-historik). Domer riktas radiellt ut.
 helmet_mb_pos = {
-    "J8": (-25.4, 9.28, 90),
-    "J9": (-25.4, -9.28, 90),
+    "J8": (-25.4, 8.89, 90),
+    "J9": (-25.4, -8.89, 90),
     "U4": (29.86, 26.27, 135),
     "D2": (24.51, 20.57, 45),
     "C7": (19.51, 24.09, 45),
@@ -332,7 +333,7 @@ BOARDS = {
                             weapon_box, ("rect", 27, 37), layers=4, free=(26, 27, 36, 37), cutout=(0, -6, 8)),
     # fire-control breakout: matar P4 edge A stelt (1x12), fan-out till greppets I/O
     "firecontrol": lambda: place("hardware/firecontrol.net", "hardware/firecontrol.kicad_pcb",
-                                 firecontrol_pos, ("rect", 35.525, 10.5), layers=2, free=(33, 35, 9, 10)),
+                                 firecontrol_pos, ("rect", 35.5, 10.5), layers=2, free=(33, 35, 9, 10)),
 }
 
 if __name__ == "__main__":
