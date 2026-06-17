@@ -1372,6 +1372,9 @@
   (gr_text "40 UT" (at 150 113.2) (layer "F.SilkS") (tstamp c1df1d7b-3af2-452a-b3a3-b817e536e9a3)
     (effects (font (size 0.8 0.8) (thickness 0.12)))
   )
+  (gr_text "STRILAS" (at 150 109.2) (layer "F.SilkS") (tstamp f293b00f-8b9a-4621-9feb-12fa33e86ae7)
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
 
   (segment (start 139.2379 114.5597) (end 141.12 116.4418) (width 0.4) (layer "F.Cu") (net 1) (tstamp 0ecad84b-d530-4f64-a635-ce8daf5db87e))
   (segment (start 144.9624 128.6218) (end 142.8221 130.7621) (width 0.4) (layer "F.Cu") (net 1) (tstamp 1c68d5c5-8670-45a0-9123-fc1edbf89c91))
