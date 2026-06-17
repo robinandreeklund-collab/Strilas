@@ -87,58 +87,89 @@ def kind(net, gpio):
 for k, net, j, d, wp, gpio in edgeB + edgeA:
     assert d < 0.05, f"FYSISK MISS: pad {k} d={d}"
 
+# ---------- bygg FULLA 20-stifts-kanter (inkl P4-module-stift som carrier EJ kontaktar) ----------
+ojnet = {int(k): v[1] for k, v in OJ.items()}   # optik J1 pad k -> net
+fjnet = {int(k): v[1] for k, v in FJ.items()}   # FC   J1 pad k -> net
+# edge B: 20 stift. optik-kontakten täcker pin 2..15 (J1.k <-> pin 16-k, spegelvänd).
+fullB = []
+for r in range(20):
+    n = 20 - r; g = EDGE_B[n]
+    if 2 <= n <= 15: k = 16 - n; fullB.append((r, n, g, True, k, ojnet.get(k) or "—(NC)"))
+    else:            fullB.append((r, n, g, False, None, None))
+# edge A: 20 stift. FC-kontakten täcker pin 6..17 (J1.k <-> pin k+5, rak).
+fullA = []
+for r in range(20):
+    n = r + 1; g = EDGE_A[n]
+    if 6 <= n <= 17: k = n - 5; fullA.append((r, n, g, True, k, fjnet.get(k) or "—(NC)"))
+    else:            fullA.append((r, n, g, False, None, None))
+n_unp = sum(1 for e in fullB if not e[3]) + sum(1 for e in fullA if not e[3])
+
 # ---------- rita ----------
-BG="#2c3742"; GREEN="#1f6b4a"; GE="#15543a"; TXT="#e9eef2"; PIN="#d9b44a"
+BG="#2c3742"; GREEN="#1f6b4a"; GE="#15543a"; TXT="#e9eef2"; PIN="#d9b44a"; UNP="#74828e"
 COL={"gnd":"#9aa4ad","pwr":"#e0533d","nc":"#5c6b78","sig":"#39c6c0"}
-fig, ax = plt.subplots(figsize=(24, 13)); fig.patch.set_facecolor(BG); ax.set_facecolor(BG)
+fig, ax = plt.subplots(figsize=(25, 14)); fig.patch.set_facecolor(BG); ax.set_facecolor(BG)
 ax.set_xlim(0, 100); ax.set_ylim(0, 100); ax.axis("off")
 
 def board(x0, x1, y0, y1, title):
     ax.add_patch(FancyBboxPatch((x0, y0), x1-x0, y1-y0, boxstyle="round,pad=0.0,rounding_size=1.2",
                  fc=GREEN, ec=GE, lw=2, zorder=1))
-    ax.text((x0+x1)/2, y1+1.0, title, color=TXT, ha="center", va="bottom", fontsize=12.5, fontweight="bold")
+    ax.text((x0+x1)/2, y1+1.0, title, color=TXT, ha="center", va="bottom", fontsize=12, fontweight="bold")
 
-# smala kort, BREDA mellanrum → all pin-text ryms i gapen, P4:s insida hålls ren
-OB=(3,13,8,86); P4=(46.5,53.5,6,86); FB=(87,97,18,72)
+yrow = lambda r: 84 - r*(72/19)            # 20 rader: r0=84 ... r19=12
+OB=(3.5, 13.5, yrow(18)-2.5, yrow(5)+2.5)  # optik omsluter de 14 kontaktade (rad 5..18)
+P4=(47, 53, yrow(19)-3, yrow(0)+3)         # P4: alla 20 stift/kant
+FB=(86.5, 96.5, yrow(16)-2.5, yrow(5)+2.5) # FC omsluter de 12 kontaktade (rad 5..16)
 board(*OB, "OPTIK\n(weapon-module)\nJ1 → P4 edge B")
-board(*P4, "ESP32-P4-WIFI6 · edge B ◀ ▶ edge A")
+board(*P4, "ESP32-P4-WIFI6\nedge B ◀   ▶ edge A")
 board(*FB, "FIRE-CONTROL\nP4 edge A → J1")
 
-def rows(n, ytop, ybot): return [ytop - (ytop-ybot)*i/(n-1) for i in range(n)]
-yB = rows(14, 83, 11)   # optik J1 / P4 edge B
-yA = rows(12, 68, 22)   # P4 edge A / FC J1
+def stub(x, y, side, color=PIN):
+    ax.add_patch(Rectangle((x-0.5 if side=="R" else x, y-0.38), 0.5, 0.76, fc=color, ec="none", zorder=4))
 
-def stub(x, y, side):
-    ax.add_patch(Rectangle((x-0.5 if side=="R" else x, y-0.4), 0.5, 0.8, fc=PIN, ec="none", zorder=4))
-
-# --- vänster: optik J1.k ── P4 edge B pad k (text OVAN linjen, åtskild i sidled) ---
-for (k, net, j, d, wp, gpio), y in zip(edgeB, yB):
-    c = COL[kind(net, gpio)]; ls = "--" if kind(net,gpio)=="nc" else "-"
-    stub(OB[1], y, "R"); stub(P4[0], y, "L")
-    ax.plot([OB[1], P4[0]], [y, y], color=c, lw=1.6, ls=ls, zorder=2)
-    ax.text(OB[1]+0.6, y+0.45, f"J1.{k}  {net}", color=TXT, ha="left", va="bottom", fontsize=8.5)
-    ax.text(P4[0]-0.6, y+0.45, f"B{k} · pin{wp} · {gpio}", color="#cfe8ff", ha="right", va="bottom", fontsize=8.5)
-# --- höger: P4 edge A pad k ── FC J1.k ---
-for (k, net, j, d, wp, gpio), y in zip(edgeA, yA):
-    c = COL[kind(net, gpio)]; ls = "--" if kind(net,gpio)=="nc" else "-"
-    stub(P4[1], y, "R"); stub(FB[0], y, "L")
-    ax.plot([P4[1], FB[0]], [y, y], color=c, lw=1.6, ls=ls, zorder=2)
-    ax.text(P4[1]+0.6, y+0.45, f"A{k} · pin{wp} · {gpio}", color="#cfe8ff", ha="left", va="bottom", fontsize=8.5)
-    ax.text(FB[0]-0.6, y+0.45, f"J1.{k}  {net}", color=TXT, ha="right", va="bottom", fontsize=8.5)
+# --- edge B (vänster): optik J1 för kontaktade stift, grå-streckat för ej kontaktade ---
+for r, n, g, conn, k, net in fullB:
+    y = yrow(r)
+    if conn:
+        c = COL[kind(net, g)]; ls = "--" if kind(net, g)=="nc" else "-"
+        stub(OB[1], y, "R"); stub(P4[0], y, "L")
+        ax.plot([OB[1], P4[0]], [y, y], color=c, lw=1.5, ls=ls, zorder=2)
+        ax.text(OB[1]+0.6, y+0.42, f"J1.{k}  {net}", color=TXT, ha="left", va="bottom", fontsize=8)
+        ax.text(P4[0]-0.6, y+0.42, f"pin{n} · {g}", color="#cfe8ff", ha="right", va="bottom", fontsize=8)
+    else:
+        stub(P4[0], y, "L", UNP)
+        ax.plot([P4[0]-2.3, P4[0]], [y, y], color=UNP, lw=1.1, ls=":", zorder=2)
+        ax.text(P4[0]-2.9, y, f"pin{n} · {g} · ej kopplad", color=UNP, ha="right", va="center", fontsize=7.5, style="italic")
+# --- edge A (höger): FC J1 för kontaktade stift, grå-streckat för ej kontaktade ---
+for r, n, g, conn, k, net in fullA:
+    y = yrow(r)
+    if conn:
+        c = COL[kind(net, g)]; ls = "--" if kind(net, g)=="nc" else "-"
+        stub(P4[1], y, "R"); stub(FB[0], y, "L")
+        ax.plot([P4[1], FB[0]], [y, y], color=c, lw=1.5, ls=ls, zorder=2)
+        ax.text(P4[1]+0.6, y+0.42, f"pin{n} · {g}", color="#cfe8ff", ha="left", va="bottom", fontsize=8)
+        ax.text(FB[0]-0.6, y+0.42, f"J1.{k}  {net}", color=TXT, ha="right", va="bottom", fontsize=8)
+    else:
+        stub(P4[1], y, "R", UNP)
+        ax.plot([P4[1], P4[1]+2.3], [y, y], color=UNP, lw=1.1, ls=":", zorder=2)
+        ax.text(P4[1]+2.9, y, f"pin{n} · {g} · ej kopplad", color=UNP, ha="left", va="center", fontsize=7.5, style="italic")
 
 # titel + bevis-banner + legend
 ax.text(50, 99, "STRILAS — bevisad pin-mappning  optik ⟷ ESP32-P4-WIFI6 ⟷ fire-control",
         color=TXT, ha="center", va="top", fontsize=17, fontweight="bold")
-ax.text(50, 91.5, "(streck = fysiskt sammanfallande stift i stacken · text vid P4 = Waveshares officiella kant-pinout)",
-        color="#9fb0bd", ha="center", va="top", fontsize=10)
-ax.text(50, 3.4, f"FYSISKT VERIFIERAT ur .kicad_pcb:   edge B ↔ optik J1 = 14/14 stift @ max {maxB:.3f} mm    ·    "
-        f"edge A ↔ FC J1 = 12/12 stift @ max {maxA:.3f} mm    ·    alla nät landar på avsedd GPIO",
-        color="#bfe6c9", ha="center", va="center", fontsize=12, fontweight="bold")
-leg=[("signal",COL["sig"],"-"),("GND",COL["gnd"],"-"),("kraft (VSYS/3V3)",COL["pwr"],"-"),("ej kopplad (NC)",COL["nc"],"--")]
-for i,(lbl,c,ls) in enumerate(leg):
-    x=20+i*16; ax.plot([x,x+2.2],[0.9,0.9],color=c,lw=2.2,ls=ls); ax.text(x+2.6,0.9,lbl,color=TXT,va="center",fontsize=9.5)
+ax.text(50, 95, "alla 20 stift PER KANT visas · streck = fysiskt sammanfallande stift i stacken · "
+        "grå-prickat = P4-module-stift som carrier-kortet INTE kontaktar",
+        color="#9fb0bd", ha="center", va="top", fontsize=9.5)
+ax.text(50, 3.2, f"FYSISKT VERIFIERAT ur .kicad_pcb:   edge B ↔ optik J1 = 14/14 stift @ max {maxB:.3f} mm    ·    "
+        f"edge A ↔ FC J1 = 12/12 stift @ max {maxA:.3f} mm    ·    {n_unp} module-stift ej kontaktade (fria/NC)    ·    alla kopplade nät på avsedd GPIO",
+        color="#bfe6c9", ha="center", va="center", fontsize=11.5, fontweight="bold")
+leg=[("signal",COL["sig"],"-"),("GND",COL["gnd"],"-"),("kraft (VSYS/3V3)",COL["pwr"],"-"),
+     ("kontaktad men ej driven (NC-net)",COL["nc"],"--"),("ej kontaktad module-stift",UNP,":")]
+x=8
+for lbl,c,ls in leg:
+    ax.plot([x,x+2.2],[0.8,0.8],color=c,lw=2.2,ls=ls); ax.text(x+2.6,0.8,lbl,color=TXT,va="center",fontsize=9)
+    x += 4.0 + len(lbl)*0.72
 
 import os; os.makedirs("vapen-stack/ritningar", exist_ok=True)
 OUT="vapen-stack/ritningar/p4-pinmap-proof.png"
 fig.savefig(OUT, dpi=150, facecolor=BG, bbox_inches="tight")
-print(f"skrev {OUT}   (edgeB max {maxB:.3f}mm, edgeA max {maxA:.3f}mm)")
+print(f"skrev {OUT}   (edgeB {maxB:.3f}mm, edgeA {maxA:.3f}mm, {n_unp} ej-kontaktade module-stift)")
