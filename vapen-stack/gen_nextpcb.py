@@ -98,6 +98,8 @@ def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozens
         fp = str(f.GetFPID().GetLibItemName())
         if "MountingHole" in fp:        # kort-feature, ej placerad komponent
             continue
+        if f.Pads() and all(p.GetAttribute() == pcbnew.PAD_ATTRIB_NPTH for p in f.Pads()):
+            continue                    # mekaniskt hål (NPTH) — ej komponent
         val = vals.get(ref, f.GetValue())
         groups[(val, fp)].append(ref)
     wb = xlwt.Workbook(); ws = wb.add_sheet("BOM")
@@ -126,6 +128,8 @@ def centroid(board_pcb, out_csv, exclude=frozenset()):
     rows = []
     for f in b.GetFootprints():
         if "MountingHole" in str(f.GetFPID().GetLibItemName()): continue
+        # mekaniska hål (alla paddar NPTH / inga kopparpaddar) → ej en placerad komponent
+        if f.Pads() and all(p.GetAttribute() == pcbnew.PAD_ATTRIB_NPTH for p in f.Pads()): continue
         if f.GetReference() in exclude: continue   # DNP → ej i centroid
         p = f.GetPosition()
         x = (p.x - ox) / 1e6; y = -(p.y - oy) / 1e6   # mm, Y upp (EDA-konvention)
