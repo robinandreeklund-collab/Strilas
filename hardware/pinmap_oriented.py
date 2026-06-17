@@ -42,11 +42,11 @@ def kind(net, gpio):
     if net in ("—(NC)", "", None): return "nc"
     return "sig"
 
-# ---------- rita (board→skärm: screen=(by, bx) → lång axel lodrät, USB-C ner) ----------
+# ---------- rita (board→skärm: REN ROTATION 90° moturs = riktig framsidesvy, USB-C ner) ----------
 BG="#33404c"; GREEN="#1f6b4a"; GE="#123f2b"; TXT="#eef3f6"; PIN="#d9b44a"
 DARK="#20262d"; SILV="#c7ced4"; GP="#cfe8ff"
 COL={"gnd":"#9aa4ad","pwr":"#e0533d","nc":"#7d8a96","sig":"#39c6c0"}
-S = lambda bx, by: (by, bx)                      # board(x,y) -> screen(x,y)
+S = lambda bx, by: (-by, bx)                     # rotation (det=+1), EJ spegling → framsida
 fig, ax = plt.subplots(figsize=(15.5, 13)); fig.patch.set_facecolor(BG); ax.set_facecolor(BG)
 ax.set_aspect("equal"); ax.set_xlim(-60, 60); ax.set_ylim(-44, 46); ax.axis("off")
 
@@ -69,20 +69,19 @@ for (mx,my),lbl in [((-34.10,9.12),"MP1"),((-34.10,-9.12),"MP2"),((20.07,9.12),"
 def stub(bx, by, color):
     sx, sy = S(bx, by); ax.add_patch(Rectangle((sx-0.7, sy-0.7), 1.4, 1.4, fc=color, ec="none", zorder=4))
 
-# edge A (höger, y=+8.89) → FC ;  edge B (vänster, y=-8.89) → optik
-LX = 11.5    # board-y för kortkanten där stiften sitter (±8.89) → text utanför
-for k, bx, gpio, net, wp in edgeA:
+# framsidesvy: edge A (y=+8.89) hamnar till VÄNSTER → FC ;  edge B (y=-8.89) till HÖGER → optik
+for k, bx, gpio, net, wp in edgeA:                            # VÄNSTER (FC, 12 stift)
     c = COL[kind(net, gpio)]; sx, sy = S(bx, 8.89)
-    stub(bx, 8.89, PIN); ax.plot([sx, 22], [sy, sy], color=c, lw=1.6, zorder=2)
-    ax.text(22.6, sy, f"pin{wp} · {gpio}   →   FC  J1.{k}  · {net}", color=TXT, ha="left", va="center", fontsize=9)
-for k, bx, gpio, net, wp in edgeB:
+    stub(bx, 8.89, PIN); ax.plot([sx, -22], [sy, sy], color=c, lw=1.6, zorder=2)
+    ax.text(-22.6, sy, f"FC J1.{k} · {net}   ←   {gpio} · pin{wp}", color=TXT, ha="right", va="center", fontsize=9)
+for k, bx, gpio, net, wp in edgeB:                            # HÖGER (optik, 14 stift)
     c = COL[kind(net, gpio)]; sx, sy = S(bx, -8.89)
-    stub(bx, -8.89, PIN); ax.plot([sx, -22], [sy, sy], color=c, lw=1.6, zorder=2)
-    ax.text(-22.6, sy, f"{net} ·  optik J1.{k}   ←   {gpio} · pin{wp}", color=TXT, ha="right", va="center", fontsize=9)
+    stub(bx, -8.89, PIN); ax.plot([sx, 22], [sy, sy], color=c, lw=1.6, zorder=2)
+    ax.text(22.6, sy, f"pin{wp} · {gpio}   →   optik J1.{k} · {net}", color=TXT, ha="left", va="center", fontsize=9)
 
 # kant-rubriker
-ax.text(-22, 40, "◀  OPTIK  (kortet bakom)\nedge B – 14-stifts socket", color="#bfe6c9", ha="center", va="center", fontsize=11, fontweight="bold")
-ax.text(34, 40, "edge A – 12 stift  →  FC stackar här  ▶\n(de höga guld-stiften i din modell)", color="#bfe6c9", ha="center", va="center", fontsize=11, fontweight="bold")
+ax.text(-32, 40, "◀  edge A – 12 stift  →  FC\n(FC stackar här)", color="#bfe6c9", ha="center", va="center", fontsize=11, fontweight="bold")
+ax.text(30, 40, "edge B – 14-stift  →  OPTIK  ▶\n(in i optikens socket, kortet bakom)", color="#bfe6c9", ha="center", va="center", fontsize=11, fontweight="bold")
 ax.text(0, 45.5, "STRILAS — P4 fysisk pin-karta (samma vy som din Fusion-modell)", color=TXT, ha="center", va="center", fontsize=15, fontweight="bold")
 ax.text(0, 42.7, "Vy = P4:s KOMPONENTSIDA mot dig (USB-C/ESP/FC-stift på denna sida, vänd BORT från optik). Baksidan = edge B in i optikens socket.",
         color="#9fb0bd", ha="center", va="center", fontsize=8.5)
