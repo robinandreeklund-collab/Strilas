@@ -108,24 +108,24 @@ J2["VBAT"] += VBAT_IN; J2["GND"] += GND
 #   J1[5]  GPIO20                    IR_MOD (56 kHz till driver)
 #   J1[6]  GPIO21                    -- LEDIG GPIO (NC; reserv för Fas 2-hook)
 #   J1[7]  GND                       GND
-#   J1[8]  GPIO22                    SCK
-#   J1[9]  GPIO23                    MOSI
+#   J1[8]  GPIO22                    MISO
+#   J1[9]  GPIO23                    SCK
 #   J1[10] RUN      reset            -- NC (P4:ns pull-up; driv ej)
-#   J1[11] GPIO26                    MISO
+#   J1[11] GPIO26                    IMU_INT
 #   J1[12] GND                       GND
-#   J1[13] GPIO27                    nCS
-#   J1[14] GPIO32                    IMU_INT
+#   J1[13] GPIO27                    MOSI
+#   J1[14] GPIO32                    nCS
 # SPEGLAD pinout: P4 monteras STACKAD bakom optiken (kort-mot-kort, ansikte-mot-
-# ansikte) → pinouten speglas (pad k = forna pad 15-k) så stiften möts rätt fysiskt.
-# SIGNAL↔GPIO-PERMUTATION: de 5 IMU/SPI-näten (INT,nCS,MISO,MOSI,SCK) ligger på
-# J1-stift {1,2,4,6,7} = P4-GPIO {32,27,26,23,22} — alla generiska GPIO (SPI går via
-# P4:ans GPIO-matris, INT är valfri GPIO). Permuterad för PLANÄR (korsningsfri) escape
-# IMU→J1 på ett enda lager (F_Cu): annars tvingas ett via-byte (nCS/INT byter Y-ordning).
-#   nCS →J1.1(GPIO32) · MOSI→J1.2(GPIO27) · INT→J1.4(GPIO26) · SCK→J1.6(GPIO23) · MISO→J1.7(GPIO22)
-J1[1] += nCS; J1[2] += MOSI; J1[3] += GND; J1[4] += INT
-J1[6] += SCK; J1[7] += MISO; J1[8] += GND
-J1[10] += IR_MOD; J1[11] += P3V3; J1[13] += GND; J1[14] += VBAT
-# NC: J1[5]=RUN, J1[9]=GPIO21, J1[12]=EN (drivs ej från vårt kort).
+# ansikte) → pinouten MÅSTE speglas (pad k = forna pad 15-k) så att BÅDE kontaktstiften
+# OCH de 4 standoff-hålen (HP1-4) möts fysiskt. Näten tilldelas därför J1-paddarna i
+# spegelvänd ordning nedan; varje signal når SAMMA P4-GPIO som förr (GPIO32/27/26/23/22).
+# (Tidigare bug: speglingen var dokumenterad men EJ applicerad på nät-tilldelningen, så
+#  hålen passade bara i den orientering där kontakten gick baklänges — nCS→VSYS m.fl.)
+#   nCS→J1.14(GPIO32) · MOSI→J1.13(GPIO27) · INT→J1.11(GPIO26) · SCK→J1.9(GPIO23) · MISO→J1.8(GPIO22)
+J1[14] += nCS; J1[13] += MOSI; J1[12] += GND; J1[11] += INT
+J1[9]  += SCK; J1[8]  += MISO; J1[7]  += GND
+J1[5]  += IR_MOD; J1[4] += P3V3; J1[2] += GND; J1[1] += VBAT
+# NC: J1[10]=RUN, J1[6]=GPIO21, J1[3]=EN (drivs ej från vårt kort).
 
 # ---------- kraftinmatning + skydd ----------
 F1[1] += VBAT_IN; F1[2] += VBAT_F                 # PTC-säkring
