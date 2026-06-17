@@ -15,9 +15,10 @@ def main():
     # OSLON (emitterar ut tab-facet) nära toppen
     led = pcbnew.FootprintLoad(LOC, "IR_Emitter_OSRAM_OSLON_Black_SFH4725S")
     led.SetReference("D1"); led.SetValue("SFH4715AS_860nm"); led.SetPosition(V(0, 2.5)); b.Add(led)
-    # 2-håls fot (1x2, 2.54 mm) — SAMMA hålmönster för rak ELLER 90°-vinklad stiftlist.
-    # Kund löder en RIGHT-ANGLE (90°) stiftlist här → håller tab:en stelt lodrät utan handböjning.
-    hdr = pcbnew.FootprintLoad(f"{FPD}/Connector_PinHeader_2.54mm.pretty", "PinHeader_1x02_P2.54mm_Vertical")
+    # 2-håls fot (1x2, 2.54 mm) — RIGHT-ANGLE (horisontell) stiftlist: pinnarna går 90° UT från
+    # tab-kanten och rakt NER i moderkortets 2-hålssockel → tab:en står stelt LODRÄT (90°) UTAN
+    # handböjning, samma vinkel varje exemplar. Hålmönstret (2.54 mm) = identiskt mot moderkortets sockel.
+    hdr = pcbnew.FootprintLoad(f"{FPD}/Connector_PinHeader_2.54mm.pretty", "PinHeader_1x02_P2.54mm_Horizontal")
     hdr.SetReference("J1"); hdr.SetValue("right-angle 90° fot 1x2 → disc"); hdr.SetPosition(V(-1.27, -3.5)); hdr.SetOrientationDegrees(90); b.Add(hdr)
     # nät: A→ben1, K→ben2
     A = pcbnew.NETINFO_ITEM(b, "A"); b.Add(A); K = pcbnew.NETINFO_ITEM(b, "K"); b.Add(K)
