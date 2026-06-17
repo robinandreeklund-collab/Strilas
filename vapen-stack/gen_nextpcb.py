@@ -46,9 +46,9 @@ MPN = {
     "recoil-styrning":("B3B-PH-K-S(LF)(SN)", "JST", "JST-PH 3-pol header 2.0mm THT", "", "TH"),
     "NFC PN532 (I²C)":("B4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol header 2.0mm THT", "", "TH"),
     # --- väst-patch ---
-    "TSOP4856":    ("TSOP4856", "Vishay", "IR-mottagare 56 kHz (940 nm), MINIMOLD-3", "", "skott-RX"),
+    "TSOP4856":    ("TSOP4856", "Vishay", "IR-mottagare 56 kHz (940 nm), LEDAD MOLD-3 (genomplåt/THT)", "", "KUND monterar: böjs 40° för sikte + handlöds (THT, ej SMT) → ej i centroid"),
     "BAT54":       ("BAT54-7-F", "Diodes Inc", "Schottky SOD-123 (OR av TSOP-utgångar)", "", ""),
-    "SFH4715AS_860nm": ("SFH 4715AS", "ams OSRAM", "IR-LED 860 nm OSLON Black, Ie 780 mW/sr@1A (konstellation)", "", "MATCHA kamerans 860 nm IR-pass; högeffekt f. 150 m dagsljus"),
+    "SFH4715AS_860nm": ("SFH 4715AS", "ams OSRAM", "IR-LED 860 nm OSLON Black SMD, Ie 780 mW/sr@1A (konstellation)", "C", "NextPCB SMT-PLACERAR (precision); kund levererar LED:n. Matcha kamerans 860 nm IR-pass"),
     "10R":         ("CRCW251210R0FKEGHP", "Vishay", "Res 10R 1% 2W 2512 (HP) — LED-serieR konstellation", "", "OBS max ~50% duty (2,5W topp @0,5A)"),
     "HT7333-A":    ("HT7333-A", "Holtek", "LDO 3.3V 250mA SOT-89, Vin<=12V — matar TSOP+DATA (TSOP abs-max 6V)", "", ""),
     # --- hjälm-nod ---
@@ -72,7 +72,7 @@ MPN = {
     # --- P4-WIFI6 kant-socklar (moderkort: ESP32-P4-WIFI6 stackas i 2× 1x20 hona) ---
     "P4-WIFI6 edge B": ("2.54-1x20-FH", "generisk", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge B (kraft)", "", "TH; kund-lödd. ESP32-P4-WIFI6 köps separat (Waveshare)"),
     "P4-WIFI6 edge A": ("2.54-1x20-FH", "generisk", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge A (signaler)", "", "TH; kund-lödd. ESP32-P4-WIFI6 köps separat (Waveshare)"),
-    "SFH4725S_940nm": ("SFH 4725CS", "ams OSRAM", "IR-emitter 940nm OSLON Black (efterträder SFH 4725S) — SAMMA leverantör som patch-LED", "C", "Kund-levererad; OSLON Black-paket = samma footprint som SFH4715AS"),
+    "SFH4725S_940nm": ("SFH 4725CS", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD (efterträder SFH 4725S)", "C", "NextPCB SMT-PLACERAR (precision UNDER LINSEN); kund levererar emittern. Samma OSLON-footprint som SFH4715AS"),
 }
 
 def netvals(path):
@@ -154,15 +154,15 @@ if __name__ == "__main__":
     print("FIRE-CONTROL:"); build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls")
     centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv")
     print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls",
-          cust_refs={"J1"})                                   # J1 kund-lödd
-    centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude={"J1"})
+          cust_refs={"J1","U1","U2","U3","U4"})                # J1 + 4 ledade TSOP kund-monterade
+    centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude={"J1","U1","U2","U3","U4"})
     # Prototyp-optik: IMU DNP (breakout på P4) + J1/J2 kund-lödda (TH)
     print("OPTIK-PROTOTYP (IMU DNP, J1/J2 kund-lödd):"); build("weapon-module.kicad_pcb", "weapon-module.net",
           "nextpcb/optik-PROTOTYP-bom.xls", dnp_refs={"U1","C3","C4","C5"}, cust_refs={"J1","J2"})
     centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"U1","C3","C4","C5","J1","J2"})
     # HJÄLM-MODERKORT (ESP32-P4-WIFI6, rund): TH-kontakter kund-lödda (P4-socklar/patch/amp/mik/batteri);
     # J1 = ZED-F9P GH (SMD → NextPCB monterar).
-    HMB_CUST = {"J2","J3","J4","J5","J6","J7","J8","J9","J10"}
+    HMB_CUST = {"J2","J3","J4","J5","J6","J7","J8","J9","J10","U3","U4","U5","U6"}  # +4 ledade TSOP
     print("HJÄLM-MB:"); build("helmet-mb.kicad_pcb", "helmet-mb.net", "nextpcb/helmet-mb-bom.xls", cust_refs=HMB_CUST)
     centroid("helmet-mb.kicad_pcb", "nextpcb/helmet-mb-centroid.csv", exclude=HMB_CUST)
     # VÄST-MODERKORT (ESP32-P4-WIFI6): alla TH-kontakter (zon-headers/P4-socklar/batteri) kund-lödda.
