@@ -31,7 +31,7 @@ NextPCB min-order är oftast 5 st → 5 optik (1 behövs nu) + 5 väst-patchar =
   utesluter dessa kontakter.
 
 ## Våglängdsplan (måste matcha)
-- **Skott (optik D2/D3):** 940 nm — **SFH 4725CS** (efterträder discontinued SFH 4725S; samma OSLON Black-paket, kund-levererad). Drivs av **aktiv konstantströms-sänka** (OPA171 + DPAK-FET + 0R2 sense) → **stabil ~1 A oberoende av batterinivå** (HW-strömtak = eye-safety; 56 kHz-gatad).
+- **Skott (optik D2/D3):** 940 nm — **SFH 4725S** (OSLON Black, 980 mW@1A, kund-levererad). OBS **UTGÅENDE/EOL** (databl. 2023) men lagerförs ännu (last-time-buy) → OK för prototypen; verifiera aktuell 940 nm OSLON-ersättare inför produktion. Drivs av **aktiv konstantströms-sänka** (OPA171 + DPAK-FET + 0R2 sense) → **stabil ~1 A oberoende av batterinivå** (HW-strömtak = eye-safety; 56 kHz-gatad).
 - **Konstellation (väst D4/D5):** 860 nm — **SFH 4715AS** (OSLON Black, **Ie 780 mW/sr@1A** databl., högeffekt f. 150 m dagsljus). Kamerans IR-pass = **860 nm** → ser konstellationen, avvisar 940 nm-skottet. TSOP4856 tar emot 940 nm-skottet. Drivs ~0,4–0,5 A (max ~50 % duty — 2,5 W topp i 10R).
 - **TSOP-matning:** **3,3 V från väst-moderkortet** (ingen LDO på patchen — mindre patch). TSOP tål EJ VBAT 2S (abs-max 6 V) → matas av moderkortets buck-3V3 via J1.5.
 - **Dagsljus-SNR @150 m:** budget i `../ritningar/daylight-snr-budget.md` (SFH 4715AS @~0,4–0,5 A ≈ derat-SNR 7–35, marginal för verkliga förluster). Slutbekräftas på bänk.
@@ -45,7 +45,12 @@ NextPCB min-order är oftast 5 st → 5 optik (1 behövs nu) + 5 väst-patchar =
   `VCC=3V3 · GND · SCL=SCLK · SDA=SDI(MOSI) · SA0=SDO(MISO) · CS · INT` (3–5 V @8 mA).
   Ger IMU direkt utan att vänta på optik-IMU; rå SPI för hög ODR (recoil). *(Ej stel mot
   optiska axeln i prototypen — extrinsics blir grov; OK för skjut/spår-test.)*
-- Komponenter enligt respektive BOM (NextPCB bestyckar; väst-patch verifiera 860 nm-LED).
+- **Optik-lins + hållare (MONTERAS MANUELLT):** Carclo TIR-kollimatorlins för OSLON Black (t.ex.
+  Carclo 10003-serien — välj stråle/spridning för räckvidd) + Carclo-lenshållare per emitter.
+  Klistras/snäpps över D2/D3 efter SMT (fästben H12–H19 finns på kortet). Sätter strålvinkeln;
+  trimmas vid optik-bringup. Eye-safety (IEC 60825-1) ommäts med monterad lins.
+- **OSLON-emitter/LED kund-levererade** (ams OSRAM); NextPCB SMT-placerar dem (precision under linsen).
+  TSOP4856 (ledade) monteras/böjs av kund. Övrig SMD enligt BOM bestyckas av NextPCB.
 - Litet 2S-batteri för bänktest.
 
 ## Verifiera vid bringup (mätpunkter)

@@ -23,3 +23,8 @@ Per mapp:
 
 > FR-4 1,6 mm, HASL/ENIG. ESP32-P4-WIFI6, ZED-F9P-puck, OV9281+860 nm-filter, amp/mik, vibratorer,
 > batterier, TSOP4856 + ams OSRAM OSLON-emitter/LED köps separat (se BOM-noter + FORSTA-BATCH.md).
+>
+> **OSLON-LED:erna SMT-placeras av NextPCB** (precision, t.ex. emittern under linsen); de ledade
+> **TSOP4856 monteras/böjs av kund** (ej i centroid). **Optik-linser (Carclo TIR-kollimator) + hållare
+> köps separat och monteras manuellt** över emittrarna. OBS: 940 nm-emittern **SFH 4725S är utgående/EOL**
+> men lagerförs ännu — verifiera aktuell 940 nm OSLON-ersättare inför produktion. 860 nm SFH 4715AS = aktiv.

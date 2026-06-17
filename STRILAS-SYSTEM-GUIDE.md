@@ -72,8 +72,13 @@ och driver haptik/ljud lokalt. Detaljer: [`ritningar/system-struktur.md`](vapen-
 
 | Funktion | Våglängd | Komponent (ams OSRAM, **samma leverantör**) | Mottagare |
 |---|---|---|---|
-| **Skott** (LOS/ID/anti-fusk) | **940 nm** | SFH 4725S/4725CS OSLON Black, CC ~1 A, 56 kHz | TSOP4856 (56 kHz, ±45° lob) |
+| **Skott** (LOS/ID/anti-fusk) | **940 nm** | SFH 4725S OSLON Black (980 mW@1A), CC ~1 A, 56 kHz | TSOP4856 (56 kHz, ±45° lob) |
 | **Konstellation** (pose) | **860 nm** | SFH 4715AS OSLON Black, Ie 780 mW/sr@1A | Kamera m. 860 nm bandpass |
+
+> **Sourcing-status:** 940 nm-emittern **SFH 4725S är utgående/EOL** (databl. 2023) men lagerförs ännu
+> (last-time-buy) → OK för första batchen; verifiera aktuell 940 nm OSLON-ersättare inför produktion.
+> 860 nm **SFH 4715AS = aktiv/tillgänglig**. **OSLON-emittrarna sitter under Carclo TIR-kollimatorlinser
+> + hållare** som köps separat och monteras manuellt (sätter strålvinkeln; eye-safety ommäts med lins).
 
 Kameran ser **860 nm** (konstellation) och **avvisar egna 940 nm-strålen** → ingen självbländning.
 TSOP tar emot 940 nm-skottet. **Transparent IR-kupa** över korten: ser svart/mörkröd ut för ögat men
@@ -284,6 +289,10 @@ Order­paket: **`vapen-stack/nextpcb/`** — per kort `<kort>-gerbers.zip` + `-b
 - **Köps separat:** 3× ESP32-P4-WIFI6, ZED-F9P-puck, OV9281 + 860 nm IR-pass-filter, MAX98357A-amp +
   högtalare, MEMS-mik, 10× ERM-vibrator, 2S-batterier, TSOP4856 (ledade, böjs 40° ut), OSLON-emitter/LED
   (ams OSRAM, kund-levererade), IR-kupa (mörk-IR-akryl).
+- **Optik-linser + hållare (köps separat, MONTERAS MANUELLT):** Carclo TIR-kollimatorlins för OSLON Black
+  (Carclo 10003-serien — välj spridning för räckvidd) + Carclo-lenshållare per emitter, klistras/snäpps
+  över emittrarna efter SMT (fästben finns på optikkortet). NextPCB SMT-placerar OSLON-emittrarna med
+  precision; linsen monteras sen manuellt ovanpå.
 - FR-4 1,6 mm, HASL/ENIG. Alla MPN ifyllda (passiva = representativa, verifiera mot NextPCB-bibliotek).
 
 ---

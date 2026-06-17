@@ -31,7 +31,7 @@ MPN = {
     "AOD4184A":    ("AOD4184A", "Alpha & Omega", "N-MOSFET 40V logic-level DPAK (TO-252) — CC pass-FET (linjär)", "", ""),
     "OPA171":      ("OPA171AIDBVR", "Texas Instruments", "Op-amp 36V 3MHz SOT-23-5 — CC-sänkans regulator", "", ""),
     "SMBJ12A":     ("SMBJ12A", "Littelfuse", "TVS unidir 12V SMB", "", ""),
-    "SFH4725S_940nm":("SFH 4725CS", "ams OSRAM", "IR-emitter 940nm OSLON Black (efterträder SFH 4725S, discont.)", "C", "Kund-levererad; verifiera padstack mot 4725CS"),
+    "SFH4725S_940nm":("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black (980mW@1A)", "C", "UTGÅENDE/EOL (databl. 2023) men lagerförs ännu (RS/Farnell/DigiKey, last-time-buy). Verifiera aktuell 940nm OSLON-ersättare inför produktion. Kund levererar; NextPCB SMT-placerar"),
     "PTC_1A":      ("MF-MSMF075/16X-2", "Bourns", "PTC resättbar 0.75A-hold 16V 1206", "", "NOTE: verifiera hold-ström mot systemtopp"),
     "IIM-42653": ("IIM-42653", "TDK InvenSense", "6-axlig industri-IMU LGA-14, ±4000dps, -40..+105C", "", ""),
     # --- kontakter (genomplåt → selektiv/handlödning) ---
@@ -72,7 +72,7 @@ MPN = {
     # --- P4-WIFI6 kant-socklar (moderkort: ESP32-P4-WIFI6 stackas i 2× 1x20 hona) ---
     "P4-WIFI6 edge B": ("2.54-1x20-FH", "generisk", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge B (kraft)", "", "TH; kund-lödd. ESP32-P4-WIFI6 köps separat (Waveshare)"),
     "P4-WIFI6 edge A": ("2.54-1x20-FH", "generisk", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge A (signaler)", "", "TH; kund-lödd. ESP32-P4-WIFI6 köps separat (Waveshare)"),
-    "SFH4725S_940nm": ("SFH 4725CS", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD (efterträder SFH 4725S)", "C", "NextPCB SMT-PLACERAR (precision UNDER LINSEN); kund levererar emittern. Samma OSLON-footprint som SFH4715AS"),
+    "SFH4725S_940nm": ("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD (980mW@1A)", "C", "UTGÅENDE/EOL men lagerförs ännu (last-time-buy); verifiera aktuell 940nm OSLON-ersättare inför produktion. NextPCB SMT-PLACERAR (precision UNDER LINSEN); kund levererar emittern"),
 }
 
 def netvals(path):

@@ -32,8 +32,10 @@ Autonom genomgång kort-för-kort inför första beställning. Allt nedan är ma
 - Mekanik (71.05×21, pin1@4.52 mm, rader ±9.28, 4× M2-hål) uppmätt mot Waveshares måttritning.
 
 ## Optik — samma leverantör (verifierat)
-- **Vapnets skott-emitter:** ams OSRAM **SFH 4725S/4725CS** (940 nm, OSLON Black).
-- **Patchens/hjälmens konstellations-LED:** ams OSRAM **SFH 4715AS** (860 nm, OSLON Black).
+- **Vapnets skott-emitter:** ams OSRAM **SFH 4725S** (940 nm, OSLON Black, 980 mW@1A). **UTGÅENDE/EOL**
+  (databl. 2023) men lagerförs ännu (RS/Farnell/DigiKey, last-time-buy) → OK för första batchen;
+  **verifiera aktuell 940 nm OSLON-ersättare inför produktion** (tidigare angiven "SFH 4725CS" är ej bekräftad).
+- **Patchens/hjälmens konstellations-LED:** ams OSRAM **SFH 4715AS** (860 nm, OSLON Black) — **aktiv/tillgänglig**.
 - Samma leverantör (ams OSRAM) och **samma OSLON Black-paket/footprint** → enhetlig sourcing.
 
 ## System-simulering (signalflöde end-to-end) — 28/28 PASS
@@ -55,6 +57,10 @@ verifiera mot NextPCB:s basbibliotek.
 - Köps separat: ESP32-P4-WIFI6 (×3, en per moderkort + vapen), ZED-F9P-puck, OV9281-kamera +
   860 nm IR-pass, MAX98357A-amp + högtalare, MEMS-mik, ERM-vibratorer ×10, 2S-batterier, TSOP4856
   (ledade, böjs 40° utåt på patchen), OSLON-emitter/LED (ams OSRAM, kund-levererade).
+- **Optik-linser + hållare (köps separat, MONTERAS MANUELLT):** Carclo TIR-kollimatorlins för OSLON Black
+  (t.ex. Carclo 10003-serien, vald stråle/spridning för 150 m) + Carclo-lenshållare per emitter. Klistras/
+  snäpps över emittrarna efter SMT (kort-fästbenen H12–H19 finns). Sätter den faktiska strålvinkeln —
+  välj spridning vid optik-bringup. Eye-safety (IEC 60825-1) ommäts med vald lins monterad.
 
 ## Bänk-bekräftas (ej fångbart i layout-verifiering)
 - Dagsljus-SNR @150 m (LED-effekt/exponering, ≤50 % LED-duty) — `daylight-snr-budget.md`.
