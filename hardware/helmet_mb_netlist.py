@@ -91,13 +91,16 @@ for i in range(4):
     d = ORD(); d["K"] += out; d["A"] += DATA_OB
     cd = CAP("100nF"); cd[1] += P3V3; cd[2] += GND
 
-# ---------- 2 topp-konstellations-LED + driver ----------
+# ---------- 6 konstellations-LED runt ringen (3 grenar × 2 LED i serie) + driver ----------
+# Serie-par halverar VBAT-strömmen (1,35 A topp istf 2,7 A) + bara 3 serieR (2512). Ingen kollimator
+# på konstellationen — bred lob så kameran ser den från många vinklar (till skillnad från skott-emittern).
 Q = NFET(); Q["S"] += GND; Q["D"] += LEDC
 Rg = RES("220R"); Rg[1] += LED_EN; Rg[2] += Q["G"]
-for i in range(2):
-    led = LED(); rl = RES("10R", "Resistor_SMD:R_2512_6332Metric")
-    a = Net(f"LED_A{i+1}")
-    rl[1] += VBAT; rl[2] += a; led["A"] += a; led["K"] += LEDC
+for i in range(3):
+    rl = RES("10R", "Resistor_SMD:R_2512_6332Metric"); a = Net(f"LED_A{i+1}"); mid = Net(f"LED_M{i+1}")
+    rl[1] += VBAT; rl[2] += a
+    l1 = LED(); l1["A"] += a; l1["K"] += mid       # gren: VBAT→R→LED1→LED2→LED_CATH(FET)
+    l2 = LED(); l2["A"] += mid; l2["K"] += LEDC
 
 # ---------- ZED-F9P + 4 patch-kontakter ----------
 Jf = F9P()
