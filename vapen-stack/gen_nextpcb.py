@@ -86,6 +86,9 @@ def netvals(path):
 def refkey(r):
     m = re.match(r'([A-Za-z]+)(\d+)', r); return (m.group(1), int(m.group(2))) if m else (r, 0)
 
+def is_conn(pkg):   # ALLA stiftlistar/socklar/JST = kontakter som KUND handlöder (DNP, ej i centroid)
+    return any(s in pkg for s in ("PinHeader", "PinSocket", "JST"))
+
 HDR = ["Designator*", "Quantity*", "Manufacturer Part Number*", "Manufacturer",
        "Package/Footprint", "Description", "Procurement Type", "Customer Note"]
 
@@ -112,9 +115,9 @@ def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozens
         if val == "1uF" and "0402" in pkg: key = "1uF@0402"   # paket-specifik MPN
         mpn, mfr, desc, proc, note = MPN.get(key, ("", "", val, "", "SAKNAR MPN — fyll i"))
         if refs and all(r in dnp_refs for r in refs):
-            proc = "DNP"; note = "Prototyp: monteras EJ (IMU via GY-601N1-breakout på P4)"
-        elif refs and all(r in cust_refs for r in refs):
-            proc = "DNP"; note = "Kund sourcar + lödder själv (TH-kontakt)"
+            proc = "DNP"; note = "Prototyp: monteras EJ (körs på breakout först)"
+        elif is_conn(pkg) or (refs and all(r in cust_refs for r in refs)):
+            proc = "DNP"; note = "Kund lödder själv (alla kontakter/headers handlöds)"
         ws.write(row, 0, ",".join(refs)); ws.write(row, 1, len(refs))
         ws.write(row, 2, mpn); ws.write(row, 3, mfr); ws.write(row, 4, pkg)
         ws.write(row, 5, desc); ws.write(row, 6, proc); ws.write(row, 7, note)
@@ -127,7 +130,9 @@ def centroid(board_pcb, out_csv, exclude=frozenset()):
     ox, oy = b.GetDesignSettings().GetAuxOrigin()
     rows = []
     for f in b.GetFootprints():
-        if "MountingHole" in str(f.GetFPID().GetLibItemName()): continue
+        fp = str(f.GetFPID().GetLibItemName())
+        if "MountingHole" in fp: continue
+        if is_conn(fp): continue                   # kontakter/headers handlöds → ej i SMT-centroid
         # mekaniska hål (alla paddar NPTH / inga kopparpaddar) → ej en placerad komponent
         if f.Pads() and all(p.GetAttribute() == pcbnew.PAD_ATTRIB_NPTH for p in f.Pads()): continue
         if f.GetReference() in exclude: continue   # DNP → ej i centroid
@@ -153,8 +158,11 @@ def centroid(board_pcb, out_csv, exclude=frozenset()):
 
 if __name__ == "__main__":
     import os; os.makedirs("nextpcb", exist_ok=True)
-    print("OPTIK:"); build("weapon-module.kicad_pcb", "weapon-module.net", "nextpcb/optik-bom.xls")
-    centroid("weapon-module.kicad_pcb", "nextpcb/optik-centroid.csv")
+    # OPTIK: prototyp → IMU (U1) + dess avkoppling (C3/C4/C5) DNP (kör IMU på breakout först).
+    # Alla kontakter/headers auto-DNP (kund handlöder) via is_conn().
+    print("OPTIK:"); build("weapon-module.kicad_pcb", "weapon-module.net", "nextpcb/optik-bom.xls",
+          dnp_refs={"U1","C3","C4","C5"})
+    centroid("weapon-module.kicad_pcb", "nextpcb/optik-centroid.csv", exclude={"U1","C3","C4","C5"})
     print("FIRE-CONTROL:"); build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls")
     centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv")
     print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls",
