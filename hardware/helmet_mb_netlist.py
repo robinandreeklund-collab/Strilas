@@ -128,7 +128,9 @@ JA["GPIO28"] += BCLK; JA["GPIO50"] += LRCK; JA["GPIO49"] += I2S_DOUT; JA["GPIO24
 
 # ---------- batteri + monteringshål ----------
 Jb = BATT(); Jb["VBAT"] += VBAT; Jb["GND"] += GND
-for _ in range(4):
+# H1-H4 = kort-monteringshål (ring); H5-H8 = ZED-F9P-puckens fäste (M2.5, 20.80×33.90 mm rektangel,
+# centrerat) → pucken skruvas direkt på PCB:n med standoffs (puck-bas Ø55, höjd 55, kontakt i syd).
+for _ in range(8):
     MH()[1] += GND
 
 generate_netlist(file_="hardware/helmet-mb.net")

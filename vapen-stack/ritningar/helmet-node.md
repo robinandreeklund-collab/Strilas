@@ -123,7 +123,11 @@ underhålla med samma kort överallt."* → båda moderkorten kör nu **exakt sa
 **Hjälm-mb v4** (`hardware/helmet_mb_netlist.py`, **RUND Ø104 mm** 4-lager, routat rent 0/0/0):
 - **Rund skiva** (önskemål): P4 central horisontell; 4 TSOP radiellt utåt på ringen (NÖ/NV/SV/SÖ,
   360° huvudtäckning); 2 konstellations-LED N/S; 8 kontakter + 4 monteringshål jämnt runt kransen;
-  buck/IMU/LED-driver i crescents. F9P-puck monteras på centrum.
+  buck/IMU/LED-driver i crescents.
+- **F9P-puck monteras DIREKT på kortets centrum** (BDLX ZED-F9P, rund Ø55, höjd 55 mm, IST8310-kompass,
+  inbyggd antenn). 4 puck-fästhål (H5–H8, M2.5) i puckens exakta mönster **20,80 × 33,90 mm rektangel**,
+  centrerat → skruvas på korta standoffs ovanför P4-modulen. GH-kontakten (J1) sitter i SYD med
+  öppningen mot centrum (mot puckens syd-kontakt) — kort kabel rakt ner.
 - **ESP32-P4-WIFI6**, 2× 1×20 kant-sockel (edge A=signaler, edge B=kraft-tapp). Pinout verifierad
   mot Waveshares datablad. P4 självförsörjer via VSYS=VBAT; carrier-buck (AP63203) ger 3,3 V för
   laster (sensorer/F9P/IMU/ljud/patch-rail). ~40 GPIO → gott om marginal.

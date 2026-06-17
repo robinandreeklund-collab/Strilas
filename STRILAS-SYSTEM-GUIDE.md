@@ -194,8 +194,10 @@ Identisk patch på väst och hjälm — **fyrfaldigt symmetrisk 37×37 mm (4 mon
 
 ## 12. RTK-positionering & IMU (hjälm)
 
-- **ZED-F9P RTK-puck** monterad på hjälmens centrum (bäst sky-view): **cm-noggrann** position, inbyggd
-  **IST8310-kompass** + antenn, matas VBAT (3–9 V), UART + I²C till hjälm-P4.
+- **ZED-F9P RTK-puck** (BDLX, rund Ø55 mm × 55 mm, inbyggd antenn + **IST8310-kompass**) monterad
+  **direkt på hjälm-kortets centrum** via korta standoffs: 4 puck-fästhål (M2.5) i puckens exakta
+  mönster **20,80 × 33,90 mm**, centrerat, ovanför den stackade P4-modulen. GH-kontakt (8-pol, 1,25 mm)
+  i syd, öppning mot centrum. **cm-noggrann** position, matas VBAT (3–9 V), UART + I²C till hjälm-P4.
 - **IIM-42653 IMU** (I²C, delar F9P-bussen + INT) → **GNSS/INS-fusion**: överbryggar multipath/skugga,
   ger lokal huvud-attityd, förbättrar RTK-fix. Samma IMU som vapnet/fire-control.
 - Hjälm-noden skickar cm-position + huvud-pose i meshen → live-spårning + after-action.
