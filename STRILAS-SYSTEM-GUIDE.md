@@ -78,7 +78,7 @@ och driver haptik/ljud lokalt. Detaljer: [`ritningar/system-struktur.md`](vapen-
 | **Skott** (LOS/ID/anti-fusk) | **940 nm** | SFH 4725S OSLON Black (980 mW@1A), CC ~1 A, 56 kHz | TSOP4856 (56 kHz, ±45° lob) |
 | **Konstellation** (pose) | **860 nm** | SFH 4715AS OSLON Black, Ie 780 mW/sr@1A | Kamera m. 860 nm bandpass |
 
-> **Hjälm-konstellation:** OSLON på böjbar **LED-tab micro-PCB** (`led-tab`) — NextPCB placerar OSLON:en,
+> **Hjälm-konstellation:** OSLON på **LED-tab micro-PCB** (90°-vinklad right-angle fot) (`led-tab`) — NextPCB placerar OSLON:en,
 > kund böjer benen radiellt ut mot horisonten (full effekt, syns i ögonhöjd @150 m). Se `konstellation-tackning.md`.
 >
 > **Sourcing-status:** 940 nm-emittern **SFH 4725S är utgående/EOL** (databl. 2023) men lagerförs ännu

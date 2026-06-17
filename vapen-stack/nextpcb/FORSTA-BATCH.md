@@ -14,7 +14,7 @@ Autonom genomgång kort-för-kort inför första beställning. Allt nedan är ma
 | Väst-mb (`vest-mb`) | 100×60 mm | 4 | ren | 0 | 0 |
 | LED-tab (`led-tab`) | 6×11 mm | 2 | trivial | 0 | 0 |
 
-LED-tab = konstellations-OSLON på böjbar micro-PCB (6/hjälm; ev. även för patch-LED vid behov).
+LED-tab = konstellations-OSLON på 90°-vinklad (right-angle fot) micro-PCB (6/hjälm; ev. även för patch-LED vid behov).
 (Gammalt ring-hjälmkort `helmet`/`helmet-halo` är **utgånget** och borttaget ur order-paketet.)
 
 ## Verifiering (alla kort)
@@ -64,9 +64,11 @@ verifiera mot NextPCB:s basbibliotek.
   860 nm IR-pass, MAX98357A-amp + högtalare, MEMS-mik, ERM-vibratorer ×10, 2S-batterier, TSOP4856
   (ledade, böjs 40° utåt på patchen), OSLON-emitter/LED (ams OSRAM, kund-levererade).
 - **Hjälm-konstellation: LED-TAB micro-PCB (`led-tab`, 6 st/hjälm + extra):** egen liten PCB med
-  högeffekt-OSLON (NextPCB SMT-placerar) + 2 ben-hål. Kund löder 2 wire-ben (~0,6 mm) och **böjer taben
-  radiellt ut mot horisonten** (som de ledade TSOP:erna) → kameran ser punkterna i ögonhöjd @150 m, full
-  OSLON-effekt, ingen exotisk optik. Löds in i discens 6 tab-socklar (D5–D10). Egen gerber/BOM/centroid.
+  högeffekt-OSLON (NextPCB SMT-placerar) + 2-håls fot. Kund löder en **RIGHT-ANGLE (90°) stiftlist** i foten
+  (samma 2-håls mönster som rak list) → den håller taben **STELT LODRÄT** mot discen, **ingen handböjning**,
+  samma vinkel varje exemplar. OSLON:en strålar då vågrät radiellt ut mot horisonten → kameran ser punkterna
+  i ögonhöjd @150 m, full OSLON-effekt, ingen exotisk optik. Stiften löds rakt ner i discens 6 tab-socklar
+  (D5–D10). Egen gerber/BOM/centroid (clearance 0/oanslutna 0).
 - **Optik-linser + hållare (köps separat, MONTERAS MANUELLT):** Carclo TIR-kollimatorlins för OSLON Black
   (t.ex. Carclo 10003-serien, vald stråle/spridning för 150 m) + Carclo-lenshållare per emitter. Klistras/
   snäpps över emittrarna efter SMT (kort-fästbenen H12–H19 finns). Sätter den faktiska strålvinkeln —

@@ -33,10 +33,12 @@ så de matchar de utåt-böjda TSOP-mottagarna och faktiskt syns för skytten.
 ger horisontell stråle. Research visade dessutom: högeffekt-IR (krävs @150 m dagsljus) finns BARA som
 topp-emitterande (OSLON-dom/chip-on-star) — högeffekt SIDO-emit-SMD existerar inte (right-angle IR =
 20–50 mA, för svaga). **Lösning (`hardware/led_tab.py`): LED-TAB micro-PCB.** En liten egen PCB (~6×11 mm)
-med EN högeffekt-OSLON SFH4715AS + 2 ben-hål. NextPCB SMT-placerar OSLON:en (löser den svåra handlödningen),
-kund löder 2 wire-ben och **böjer taben radiellt ut mot horisonten** — precis som de ledade TSOP-mottagarna.
-→ Full OSLON-effekt (dagsljus-budgeten intakt) + valfri aim + ingen exotisk optik. Discen (D5–D10) har
-6 tab-socklar (2 hål) där benen löds in (3 serie-par via disc-spår + 3 serieR 2512 på discen).
+med EN högeffekt-OSLON SFH4715AS + 2-håls fot. NextPCB SMT-placerar OSLON:en (löser den svåra handlödningen),
+kund löder en **RIGHT-ANGLE (90°) stiftlist** i foten (samma 2-håls mönster som en rak list) → den håller taben
+**STELT LODRÄT** mot discen — ingen handböjning, samma vinkel varje exemplar. OSLON:en strålar då vågrät radiellt
+ut mot horisonten, precis som de utåt-böjda TSOP-mottagarna.
+→ Full OSLON-effekt (dagsljus-budgeten intakt) + rätt aim utan handarbete + ingen exotisk optik. Discen (D5–D10) har
+6 tab-socklar (2 hål) där den vinklade fotens stift löds in (3 serie-par via disc-spår + 3 serieR 2512 på discen).
 Konstellations-LED behöver ingen precis position (PnP kalibrerar grov vinkel) — bara optikens
 skott-emitter (under Carclo-linsen) kräver precisionsplacering.
 
@@ -44,5 +46,5 @@ De **4 hjälm-patcharna** (skalet, utåtvända) bidrar fortsatt. Systemnivå: di
 patchar → från vilken skyttvinkel som helst ser kameran flera face-on punkter → robust PnP.
 
 ## Att bekräfta på bänk
-- Sourcing: 45° omriktnings-optik/hållare för 860 nm OSLON (köps separat, manuell montering).
-- Blob-SNR vid sneda vinklar @150 m dagsljus efter omriktning (LED-lobens kant).
+- Sourcing: right-angle (90°) 1×2 2.54 mm stiftlist (standarddel) som tab-fot — håller OSLON:en lodrät.
+- Blob-SNR vid sneda vinklar @150 m dagsljus (OSLON-lobens kant; ingen omriktningsoptik behövs — vågrät stråle direkt).

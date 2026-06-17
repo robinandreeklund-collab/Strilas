@@ -122,7 +122,7 @@ underhålla med samma kort överallt."* → båda moderkorten kör nu **exakt sa
 
 **Hjälm-mb v4** (`hardware/helmet_mb_netlist.py`, **RUND Ø97 mm** 4-lager, routat rent 0/0/0):
 - **Rund skiva** (önskemål): P4 central horisontell; 4 TSOP radiellt utåt på ringen (NÖ/NV/SV/SÖ,
-  360° huvudtäckning); **6 sido-emitterande konstellations-LED på böjbara LED-tab-micro-PCB** (D5–D10,
+  360° huvudtäckning); **6 sido-emitterande konstellations-LED på 90°-vinklade LED-tab-micro-PCB (right-angle fot)** (D5–D10,
   fria azimut-gluggar i kransen); 8 kontakter + 4 monteringshål i de glesaste gluggarna runt kransen;
   buck/IMU/LED-driver i crescents (serie-R R5–R7 SMD, R7 i den fria kanalen mellan P4-socklarna).
 - **F9P-puck monteras DIREKT på kortets centrum** (BDLX ZED-F9P, rund Ø55, höjd 55 mm, IST8310-kompass,
