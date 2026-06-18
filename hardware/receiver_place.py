@@ -284,7 +284,7 @@ vest_mb_pos.update({
     "U1": (-10, -16, 0), "L1": (-3, -16, 0),     # buck + induktor (nedre-centrum)
     "C1": (-17, -16, 0), "C2": (-17, -13, 0), "C3": (4, -16, 0), "C4": (11, -16, 0),  # Cin/.. + Cbulk
     "R1": (-7, -13, 90), "R2": (1, -13, 90),     # FB-delare
-    "J13": (40, -12, 90),                        # 2S-batteri JST (höger kant, öppning +x rakt ut över kanten)
+    "J13": (40, -12, 90),                        # 2S-batteri XT30PW (höger kant; ≥15A för LED-toppen, öppning ut över kanten)
     "H1": (-48, 28, 0), "H2": (48, 28, 0), "H3": (-48, -28, 0), "H4": (48, -28, 0),
 })
 

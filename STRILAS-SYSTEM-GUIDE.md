@@ -179,14 +179,15 @@ Två zonsystem som gör olika saker:
 
 ## 10. Patch-design (täcknings-nod)
 
-Identisk patch på väst och hjälm — **fyrfaldigt symmetrisk 37×37 mm (4 monteringshål)**, lim/kardborre-fäst:
+Identisk patch på väst och hjälm — **fyrfaldigt symmetrisk 44×44 mm (4 monteringshål)**, lim/kardborre-fäst:
 
 - **4× TSOP4856** (ledade) i **diamant**, var och en böjd **~40° utåt** från kortets normal.
   Beräknat optimum: **99,5 % av framåt-hemisfären** täckt, **100 % inom 60° zenit**, ~2,3 mottagare
   ser ett frontalskott (redundans). Full symmetri → funkar i **valfri vridning** på kroppen.
-- Varje TSOP: egen OR-diod + avkopplings-C → 4 identiska kluster; alla OR:as till **1 DATA-linje**.
-- **2× 860 nm OSLON** konstellation (N/S) + 10R serieR; N-FET (LED_EN) modulerar.
-- TSOP matas **3,3 V från moderkortet** (abs-max 6 V → tål ej 2S direkt); LED på VBAT.
+- Varje TSOP: egen OR-diod (BAT54) + avkopplings-C → 4 identiska kluster; alla OR:as till **1 DATA-linje**.
+- **Konstellation: 2 fasta 860 nm OSLON + 4 böjbara LED-tabbar = 6 LED**, kopplade i **3 seriepar-grenar**
+  (2 LED + 10R 2512/gren); N-FET (AO3400, LED_EN) modulerar. ~0,2–0,28 A/gren → ~0,5–0,8 A/patch på VBAT.
+- TSOP matas **3,3 V från moderkortet** (abs-max 6 V → tål ej 2S direkt); LED-konstellationen på **VBAT**.
 - Baksida (mot kroppen): **ERM-vibrator** för lokal träff-känsla.
 - Beräkning: [`ritningar/patch-sikte.md`](vapen-stack/ritningar/patch-sikte.md).
 
@@ -225,9 +226,9 @@ okontrollerade serier vandrar av målet). IIM-42653: ±4000 dps, RNSD 0,005 °/s
 |---|---|---|---|---|
 | **Optik/vapen** | 54×74 mm | 4 | P4-stack, OV9281-USB, 940 nm-emitter + CC-driver, IMU, lins-hål Ø16 | 0/0/0 |
 | **Fire-control** | 71×21 mm | 2 | Stackas på P4 edge A; avtryck/laddhandtag/mag-switchar, recoil-ctrl, NFC, 2× extra IMU | 0/0/0 |
-| **Väst-patch** | 37×37 mm | 2 | 4 TSOP diamant + 2 LED + FET + 1×5-kontakt (×10 på västen) | 0/0/0 |
+| **Väst-patch** | 44×44 mm | 2 | 4 TSOP diamant + 6 LED (2 fasta + 4 tab) i 3 grenar + FET + 1×5-kontakt (×10 på västen) | 0/0/0 |
 | **Hjälm-mb** | **rund Ø97 mm** | 4 | P4, F9P-puck (centrum), IMU, 4 TSOP + 6 LED-tab, ljud (amp+mik), 4 patch-kontakter | 0/0/0 |
-| **Väst-mb** | 100×60 mm | 4 | P4, 10 zon-kontakter (patch+vibrator), 2× TPIC6B595, buck | 0/0/0 |
+| **Väst-mb** | 100×60 mm | 4 | P4, 10 zon-kontakter (patch+vibrator), 2× TPIC6B595, buck, **XT30-batteri** (In2=VBAT-plan) | 0/0/0 |
 
 **Strömplan:** alla 4-lagerskort In1=GND, F/B=GND-fyll. In2 = **+3V3** (hjälm-mb, flest pads) resp.
 **VBAT** (väst-mb, hög LED-ström). P4-pinout **byte-identisk** över alla kort, verifierad mot Waveshares
@@ -252,17 +253,23 @@ Grov medeleffekt per nod (aktivt spel):
 | Konstellation 860 nm (se duty) | — | **se nedan** | ~0,3 W (2 LED) |
 | Haptik/ljud (pulsad) | — | ~0,1 W | ~0,3 W |
 
-**Konstellations-LED, väst (20 st @ ~0,45 A på VBAT):**
+**Konstellations-LED, väst (10 patchar × 6 LED = 60 LED i 30 seriepar-grenar, drivs på VBAT):**
+
+Topp (alla patchar blinkar synkront) ≈ **0,2–0,28 A/gren × 30 = 5–8 A** på VBAT (8,3 A @ fulladdat 8,4 V).
+LED:erna går **direkt på batteriet via In2=VBAT-plan** (INTE bucken) → batteri + **XT30-kontakt (≥15 A)** +
+VBAT-plan bär toppen med marginal. Medelströmmen sätts av blink-duty:
 
 | Medel-duty | I_LED medel | Effekt | + P4 ⇒ nod-medel | Drifttid 2S 2200 mAh (16,3 Wh) |
 |---|---|---|---|---|
-| 2 % (synkad/optimerad) | ~0,18 A | ~1,3 W | ~3 W | **~5,4 h** |
-| 5 % | ~0,45 A | ~3,3 W | ~5 W | **~3,3 h** |
-| 10 % | ~0,9 A | ~6,7 W | ~8,5 W | **~1,9 h** |
+| 2 % (synkad/optimerad) | ~0,15 A | ~1,1 W | ~2,8 W | **~5,8 h** |
+| 5 % | ~0,35 A | ~2,7 W | ~4,5 W | **~3,6 h** |
+| 10 % | ~0,7 A | ~5,3 W | ~7 W | **~2,3 h** |
 
-→ **Rekommendation:** håll konstellations-duty lågt (≤5 %) via blink-synk → 3–5 h speltid på en 2S
-2200 mAh. Vapen-noden (ingen konstellation) ≈ 0,4 A → **~5 h** på samma pack. Hjälm ≈ 0,5–0,7 A →
-**~3–4 h**. *(Estimat — mät faktisk P4-vision-effekt + vald LED-duty på bänk; ladd-dock balanserar alla pack.)*
+→ **Rekommendation:** håll konstellations-duty lågt (≤5 %) via blink-synk → 3–6 h speltid på en 2S
+2200 mAh. (Vill man ändå ha hög samtidig ljusstyrka klarar VBAT-planet + XT30 toppen; det är
+**batteritiden**, inte kopparen/kontakten, som då blir gränsen.) Vapen-noden (ingen konstellation)
+≈ 0,4 A → **~5 h**; hjälm ≈ 0,5–0,7 A → **~3–4 h**. *(Estimat — mät faktisk P4-vision-effekt + vald
+LED-duty på bänk; ladd-dock balanserar alla pack.)*
 
 ---
 

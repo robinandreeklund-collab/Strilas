@@ -7,14 +7,19 @@ Player-sidan. **Ingen kamera** (det är skytten som ser dig). Varje kort gör tv
 
 Genereras av [`receiver_boards_layout.py`](receiver_boards_layout.py). Två kort:
 
-## 1. Väst-detektor-patch (placera flera → zoner)
+## 1. Väst-detektor-patch (placera 10 → zoner)
 
 ![Väst-patch](vest-detector-patch.png)
 
-- **58×42 mm**, 4 sy-/skruvhål. **S1–S3 TSOP4856** framåtriktade + **L1/L2 860 nm**-konstellation (känd diagonal).
-- S1–S3 **OR:as** (D1–D3) → **1 DATA-linje per patch** till väst-MCU (ESP32-C5). Zon = vilken patch som fyrar.
-- **J1 4-pol:** `VBAT · GND · DATA · LED_EN`. LED_EN delad buss; MCU modulerar konstellationens blink-ID.
-- **Placera ~4–6 runt torso** (bröst / rygg / vä / hö) → 360° + zoner.
+- **44×44 mm** (fyrfaldigt symmetrisk), 4 skruvhål. **U1–U4 TSOP4856** i diamant, var böjd ~40° utåt
+  (99,5 % framåt-hemisfär, funkar i valfri vridning) + **konstellation: 2 fasta 860 nm OSLON (D8/D9)
+  + 4 böjbara LED-tabbar (D1–D4)** = **6 LED** i känd geometri.
+- U1–U4 **OR:as** (BAT54-dioder D5–D7 + en till) → **1 DATA-linje per patch** till väst-noden (ESP32-P4).
+  Zon = vilken patch som fyrar.
+- **J1 5-pol:** `VBAT · GND · DATA · LED_EN · +3V3`. +3V3 kommer FRÅN moderkortet (matar TSOP, abs-max
+  6 V → tål ej 2S direkt); LED-konstellationen drivs på **VBAT** via N-FET (AO3400, LED_EN-grind), i
+  **3 seriepar-grenar** (2 LED + 10R 2512/gren). LED_EN delad buss; noden modulerar blink-ID.
+- **10 patchar runt torso** (bröst / rygg / vä / hö) → 360° + zoner. (Vibratorn matas separat via zon-kontaktens VIB-stift.)
 
 ## 2. Hjälm-halo (360° + huvud-zon + GNSS)
 
@@ -38,9 +43,10 @@ Genereras av [`receiver_boards_layout.py`](receiver_boards_layout.py). Två kort
 
 ## Inkoppling (samma för båda)
 
-Varje kort → 4-pol kabel till **väst-noden (ESP32-C5)**: `VBAT · GND · DATA · LED_EN`.
-DATA = patchens OR:ade TSOP-utgång (MCU avkodar MilesTag + vet vilken patch = zon).
-LED_EN = delad; MCU blinkar konstellationen (frame-synk för skyttens kamera + ID).
+Varje patch → **5-pol** kabel till **väst-noden (ESP32-P4)**: `VBAT · GND · DATA · LED_EN · +3V3`
+(zon-kontakten på moderkortet är 6-pol, med extra **VIB**-stift för zonvibratorn). DATA = patchens
+OR:ade TSOP-utgång (noden avkodar MilesTag + vet vilken patch = zon). LED_EN = delad; noden blinkar
+konstellationen (frame-synk för skyttens kamera + ID).
 
 ## Användning i testet (v1)
 
