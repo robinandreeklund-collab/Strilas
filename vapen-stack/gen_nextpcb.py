@@ -92,7 +92,7 @@ def is_conn(pkg):   # ALLA stiftlistar/socklar/JST = kontakter som KUND handlöd
 HDR = ["Designator*", "Quantity*", "Manufacturer Part Number*", "Manufacturer",
        "Package/Footprint", "Description", "Procurement Type", "Customer Note"]
 
-def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozenset()):
+def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozenset(), ovr_refs=frozenset()):
     vals = netvals(board_net)
     b = pcbnew.LoadBoard(board_pcb)
     groups = defaultdict(list)   # (value, footprint) -> [ref]  (gruppera på BÅDE värde och paket)
@@ -114,7 +114,10 @@ def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozens
         key = val
         if val == "1uF" and "0402" in pkg: key = "1uF@0402"   # paket-specifik MPN
         mpn, mfr, desc, proc, note = MPN.get(key, ("", "", val, "", "SAKNAR MPN — fyll i"))
-        if refs and all(r in dnp_refs for r in refs):
+        if refs and all(r in ovr_refs for r in refs):
+            proc = "DNP"; note = ("3A-override (Rp): DNP = säker 1A fail-safe default; "
+                                  "montera för 3A (medvetet labbeslut, kräver förnyad ögonsäkerhetsmätning)")
+        elif refs and all(r in dnp_refs for r in refs):
             proc = "DNP"; note = "Prototyp: monteras EJ (körs på breakout först)"
         elif is_conn(pkg) or (refs and all(r in cust_refs for r in refs)):
             proc = "DNP"; note = "Kund lödder själv (alla kontakter/headers handlöds)"
@@ -161,8 +164,8 @@ if __name__ == "__main__":
     # OPTIK: prototyp → IMU (U1) + dess avkoppling (C3/C4/C5) DNP (kör IMU på breakout först).
     # Alla kontakter/headers auto-DNP (kund handlöder) via is_conn().
     print("OPTIK:"); build("weapon-module.kicad_pcb", "weapon-module.net", "nextpcb/optik-bom.xls",
-          dnp_refs={"U1","C3","C4","C5"})
-    centroid("weapon-module.kicad_pcb", "nextpcb/optik-centroid.csv", exclude={"U1","C3","C4","C5"})
+          dnp_refs={"U1","C3","C4","C5"}, ovr_refs={"R3"})
+    centroid("weapon-module.kicad_pcb", "nextpcb/optik-centroid.csv", exclude={"U1","C3","C4","C5","R3"})
     print("FIRE-CONTROL:"); build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls")
     centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv")
     print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls",
@@ -170,8 +173,8 @@ if __name__ == "__main__":
     centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude={"J1","U1","U2","U3","U4","D7","D8","D9","D10"})
     # Prototyp-optik: IMU DNP (breakout på P4) + J1/J2 kund-lödda (TH)
     print("OPTIK-PROTOTYP (IMU DNP, J1/J2 kund-lödd):"); build("weapon-module.kicad_pcb", "weapon-module.net",
-          "nextpcb/optik-PROTOTYP-bom.xls", dnp_refs={"U1","C3","C4","C5"}, cust_refs={"J1","J2"})
-    centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"U1","C3","C4","C5","J1","J2"})
+          "nextpcb/optik-PROTOTYP-bom.xls", dnp_refs={"U1","C3","C4","C5"}, cust_refs={"J1","J2"}, ovr_refs={"R3"})
+    centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"U1","C3","C4","C5","J1","J2","R3"})
     # HJÄLM-MODERKORT (ESP32-P4-WIFI6, rund): TH-kontakter kund-lödda (P4-socklar/patch/amp/mik/batteri);
     # J1 = ZED-F9P GH (SMD → NextPCB monterar).
     HMB_CUST = {"J2","J3","J4","J5","J6","J7","J8","J9","J10","U3","U4","U5","U6",

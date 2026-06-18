@@ -37,9 +37,11 @@ utsträckt källa**. Om den uppmätta **skenbara källan ≥ α_max (100 mrad)**
 1. **HW-strömtak** via sense-resistor (firmware kan bara gå lägre) — "ögonsäkerhet i hårdvara".
    **REALISERAT** (2026-06): aktiv CC-sänka (U2=OPA171 + DPAK-FET + R2=0R2 sense) i optik-netlistan.
    Hård gräns I = Vref/Rsense; Vref ≤ 0,206 V (3,3 V-delaren 15k/1k) → **default I_max ≈ 1,0 A** (R2=0R2).
-   **3A-OVERRIDE (2026-06):** låg solder-jumper JP1 (default OPEN = säker) bryggas → parallellkopplar
-   Rp=0R1 över R2 → Rsense 0,2→0,067 Ω → I_max ≈ **3,0 A**. Kraft-HW (Rp, F1=PTC_3A, spår) 3A-klassad;
-   jumpern **fail-safe** (obryggad/tappad = 1 A). 3 A kräver **medveten bryggning + förnyad mätning**.
+   **3A-OVERRIDE (2026-06):** montera-för-3A-motstånd **R3 (Rp=0R1, 0805, DNP)** parallellt direkt
+   över R2 (sense) → Rsense 0,2→0,067 Ω → I_max ≈ **3,0 A**. Kraft-HW (Rp, F1=PTC_3A, spår) 3A-klassad;
+   default **DNP/obestyckat = 1 A** (säker fail-safe — kortet levereras som 1 A). 3 A kräver **medveten
+   montering av R3 + förnyad mätning**. (Optikkortet är för tätt för en separat bygel vid sense-noden;
+   ett DNP-motstånd är platsfritt, ligger >4,6 mm från linshålskanten och täcker inte kamera-aperturen.)
    - **Headroom (2S, 2 emittrar i SERIE):** 3 A behöver VBAT > 2·Vf(3A)+Vsense ≈ 7,1 V → håller bara i
      övre 2S-delen; firmware-LV-spärr ~7,5 V @3 A (~6,9 V @1 A).
    - **Emitter:** SFH 4725S utgången → **SFH 4725AS** (samma paket/footprint/optik, drop-in; puls-max

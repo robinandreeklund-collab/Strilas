@@ -28,4 +28,9 @@ Per mapp:
 > **OSLON-LED:erna SMT-placeras av NextPCB** (precision, t.ex. emittern under linsen); de ledade
 > **TSOP4856 monteras/böjs av kund** (ej i centroid). **Optik-linser (Carclo TIR-kollimator) + hållare
 > köps separat och monteras manuellt** över emittrarna. OBS: 940 nm-emittern **SFH 4725S är utgående/EOL**
-> men lagerförs ännu — verifiera aktuell 940 nm OSLON-ersättare inför produktion. 860 nm SFH 4715AS = aktiv.
+> → **ersatt med aktiva SFH 4725AS** (samma paket C63062-A4141/footprint/dome/optik = drop-in; bin 13 = 940 nm).
+>
+> **3A-OVERRIDE:** optik-IR-drivaren är 3A-klassad men levereras **säker på ~1 A** — override-motståndet
+> **R3 (Rp 0R1) är DNP/obestyckat** i BOM:en. 3 A fås genom att medvetet montera R3 (parallellt över sense-
+> motståndet R2); kräver **förnyad ögonsäkerhetsmätning** innan modulen riktas mot människor (se
+> `hardware/eye-safety-budget.md`).
