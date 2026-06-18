@@ -3,12 +3,14 @@
 Rutnät 0.2 mm, 2 lager (F/B), via-kostnad, hinder = andra näts spår/paddar (klarans 0.2 mm).
 Användning: python3 hardware/maze_route.py <board.kicad_pcb> NET1 [NET2 ...]
 Lägger spår (0.2 mm) + ev. via (0.6/0.3) och sparar. Verifierar global klarans efteråt."""
-import sys, heapq, math, pcbnew
+import sys, os, heapq, math, pcbnew
 PCB = sys.argv[1]; NETS = sys.argv[2:]
 MM = pcbnew.FromMM; OX, OY = 150.0, 120.0
 F, B = pcbnew.F_Cu, pcbnew.B_Cu
 STEP = 0.1; CLR = 0.2; HALF = 0.1            # rutnät / klarans / halv spårbredd
-KEEP = CLR + HALF + 0.1                       # spårcentrum ≥0.4 mm från hinder-yta (marginal mot rutnät)
+# KEEP = spårcentrum-avstånd till hinder-yta. Default 0.4 mm (marginal mot rutnät). Trånga
+# hörn (t.ex. FC U2-LGA) kan kräva DRC-minimum 0.3 mm: sätt env MAZE_KEEP=0.3 (+ MAZE_VIAKEEP).
+KEEP = float(os.environ.get("MAZE_KEEP", CLR + HALF + 0.1))
 b = pcbnew.LoadBoard(PCB)
 def V(x, y): return pcbnew.VECTOR2I(MM(OX + x), MM(OY - y))
 def xy(p): return (p.x / 1e6 - OX, OY - p.y / 1e6)
@@ -27,7 +29,7 @@ def probe(x, y):
     s = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_SEGMENT); s.SetStart(V(x, y)); s.SetEnd(V(x+0.001, y)); s.SetWidth(MM(0.01))
     return s.GetEffectiveShape()
 
-VIAKEEP = 0.3 + CLR + 0.25                     # via-radie 0.3 + klarans 0.2 + marginal
+VIAKEEP = float(os.environ.get("MAZE_VIAKEEP", 0.3 + CLR + 0.25))  # via-radie 0.3 + klarans 0.2 + marginal
 def blocked_grid(exclude_net):
     blk = {F: [[False]*NR for _ in range(NC)], B: [[False]*NR for _ in range(NC)]}
     via = [[False]*NR for _ in range(NC)]     # via tillåts bara där BÅDA lagren är fria m. större keepout

@@ -246,20 +246,26 @@ weapon_pos = {
 }
 
 # ---- fire-control-kort (71×21, STACKAS ovanpå P4, samma format) ----
-# FC-frame = P4-frame (lång axel = x). J1 = FEMALE socket mot P4 edge A pin6..17
-# @ (x=-18.3..+9.64, y=+8.89) — samma fysiska läge som P4-stiften (rak stack).
-# Stående JST (kabel upp) längs nederhalvan; extra IMU + I²C-pullups i mittbandet;
+# FC-frame = P4-frame (lång axel = x). J1 = FEMALE socket mot P4 edge A pin6..20 (15-pin)
+# @ (x=-18.3..+17.25, y=+8.89) — samma fysiska läge som P4-stiften (rak stack).
+# Stående JST (kabel upp) längs undervaktsiden; extra IMU + I²C-pullups i mittbandet;
 # 4 monteringshål i linje med P4-standoffsen (-34.10/+20.07, ±9.125, Ø1.7) → genomgående stack.
 # OBS: pinrader ±8.89 (DXF-exakt, spann 17.78=7×2.54) — INTE 9.28.
+# OBS: koordinater är PRE-MIRROR (receiver_place.py-frame). Verkliga board-koords efter spegling:
+#   board_x = 150 + x_pm,  board_y = 120 + y_pm
+# Speglingen utförs separat (fc_add_ports_v2.py / fc_mirror.py) efter placering + flip.
 firecontrol_pos = {
-    "J1": (-18.31, 8.89, 90),                                  # socket mot edge A (pin6..17) — EXAKT på P4 J_A pad1 (-18.31)
+    "J1": (-18.31, 8.89, 90),                                  # socket mot edge A (pin6..20, 15-pin) — EXAKT på P4 J_A pad1
     "J2": (-25.92, -8.89, 90),                                 # edge-B kraft-tapp (3V3+GND), bortre långsida
-    "J3": (-15, -6, 0), "J4": (-8, -6, 0), "J5": (-1, -6, 0), "J6": (6, -6, 0),  # switchar (botten)
+    "J3": (-16, -6, 0), "J4": (-9, -6, 0), "J5": (-2, -6, 0), "J6": (5, -6, 0),  # switchar (botten), -1mm v. för J10-luckan
     "J7": (-27, 6, 0), "J8": (27, -6, 0),                      # J7 recoil (övre vänster), J8 NFC (höger om H4)
+    "J9": (26.5, 7, 0),                                        # OLED I²C JST-PH 4-pin [GND/3V3/SCL/SDA] — nedre h. hörnet
+    "J10": (12.2, -6, 0),                                      # lägesväljare JST-PH 3-pin [MODE_A/MODE_B/GND] — luckan J6→H4
     "U1": (8, 0.5, 0), "U2": (21, 0.5, 0),                     # 2× extra IMU (I²C 0x69/0x68)
     "C3": (4, 3.5, 0), "C4": (12, 3.5, 0),                     # U1-avkoppling
     "C5": (17, 3.5, 0), "C6": (25, 3.5, 0),                    # U2-avkoppling
-    "R1": (-1, 4, 0), "R2": (-5, 4, 0),                        # I²C-pullups
+    "R1": (-1, 4, 0), "R2": (-5, 4, 0),                        # I²C-pullups (SDA/SCL)
+    "R3": (8, 3.5, 0), "R4": (21, 3.5, 0),                     # MODE_A/MODE_B pull-ups 4k7 (cap-radens luckor C3-C4 / C5-C6)
     "C1": (-9, 3.5, 0), "C2": (-13, 3.5, 0),                   # 3V3-rail/NFC-avkoppling
     "H1": (-34.10, 9.125, 0), "H2": (-34.10, -9.125, 0),
     "H3": (20.07, 9.125, 0), "H4": (20.07, -9.125, 0),
