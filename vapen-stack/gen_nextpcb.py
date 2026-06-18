@@ -73,7 +73,18 @@ MPN = {
     "P4-WIFI6 edge B": ("2.54-1x20-FH", "generisk", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge B (kraft)", "", "TH; kund-lödd. ESP32-P4-WIFI6 köps separat (Waveshare)"),
     "P4-WIFI6 edge A": ("2.54-1x20-FH", "generisk", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge A (signaler)", "", "TH; kund-lödd. ESP32-P4-WIFI6 köps separat (Waveshare)"),
     "SFH4725S_940nm": ("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD (980mW@1A)", "C", "UTGÅENDE/EOL men lagerförs ännu (last-time-buy); verifiera aktuell 940nm OSLON-ersättare inför produktion. NextPCB SMT-PLACERAR (precision UNDER LINSEN); kund levererar emittern"),
+    "SFH4725AS_940nm_bin13": ("SFH 4725AS", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD, bin 13 (aktiv drop-in för utgångna 4725S; samma paket C63062-A4141/footprint/optik)", "C", "NextPCB SMT-PLACERAR (precision UNDER LINSEN); kund levererar emittern"),
 }
+
+# Inköpta optik-delar UTAN PCB-footprint (köps separat, monteras manuellt över emittrarna).
+# Tas med i BOM:en som DNP-referens (NextPCB monterar EJ) — designator/antal/MPN dokumenteras.
+OPTIK_EXTRA = [
+    # (designator, antal, MPN, tillverkare, paket, beskrivning, not)
+    ("LENS1,LENS2", 2, "10195", "Carclo", "Ø20 TIR-kollimator",
+     "IR-kollimatorlins (medium TIR ≤±7,5°) över varje emitter", "Köps separat, monteras manuellt — ej PCB-monterad"),
+    ("LHOLD1,LHOLD2", 2, "10734", "Carclo", "20mm-hållare (ritn. 60575)",
+     "Lins-hållare (4 ben/lins) för Carclo 10195 över emittern", "Köps separat, monteras manuellt — ej PCB-monterad"),
+]
 
 def netvals(path):
     t = open(path).read(); seg = t[t.find("(components"):t.find("(libparts")]
@@ -92,7 +103,7 @@ def is_conn(pkg):   # ALLA stiftlistar/socklar/JST = kontakter som KUND handlöd
 HDR = ["Designator*", "Quantity*", "Manufacturer Part Number*", "Manufacturer",
        "Package/Footprint", "Description", "Procurement Type", "Customer Note"]
 
-def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozenset(), ovr_refs=frozenset()):
+def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozenset(), ovr_refs=frozenset(), extra=()):
     vals = netvals(board_net)
     b = pcbnew.LoadBoard(board_pcb)
     groups = defaultdict(list)   # (value, footprint) -> [ref]  (gruppera på BÅDE värde och paket)
@@ -124,6 +135,12 @@ def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozens
         ws.write(row, 0, ",".join(refs)); ws.write(row, 1, len(refs))
         ws.write(row, 2, mpn); ws.write(row, 3, mfr); ws.write(row, 4, pkg)
         ws.write(row, 5, desc); ws.write(row, 6, proc); ws.write(row, 7, note)
+        row += 1
+    # inköpta delar utan PCB-footprint (lins/hållare) — alltid DNP (monteras manuellt)
+    for desig, qty, mpn, mfr, pkg, desc, note in extra:
+        ws.write(row, 0, desig); ws.write(row, 1, qty)
+        ws.write(row, 2, mpn); ws.write(row, 3, mfr); ws.write(row, 4, pkg)
+        ws.write(row, 5, desc); ws.write(row, 6, "DNP"); ws.write(row, 7, note)
         row += 1
     wb.save(out_xls)
     print(f"  {out_xls}: {row-1} BOM-rader ({sum(len(v) for v in groups.values())} komponenter)")
@@ -164,7 +181,7 @@ if __name__ == "__main__":
     # OPTIK: prototyp → IMU (U1) + dess avkoppling (C3/C4/C5) DNP (kör IMU på breakout först).
     # Alla kontakter/headers auto-DNP (kund handlöder) via is_conn().
     print("OPTIK:"); build("weapon-module.kicad_pcb", "weapon-module.net", "nextpcb/optik-bom.xls",
-          dnp_refs={"U1","C3","C4","C5"}, ovr_refs={"R3"})
+          dnp_refs={"U1","C3","C4","C5"}, ovr_refs={"R3"}, extra=OPTIK_EXTRA)
     centroid("weapon-module.kicad_pcb", "nextpcb/optik-centroid.csv", exclude={"U1","C3","C4","C5","R3"})
     print("FIRE-CONTROL:"); build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls")
     centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv")
@@ -173,7 +190,7 @@ if __name__ == "__main__":
     centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude={"J1","U1","U2","U3","U4","D7","D8","D9","D10"})
     # Prototyp-optik: IMU DNP (breakout på P4) + J1/J2 kund-lödda (TH)
     print("OPTIK-PROTOTYP (IMU DNP, J1/J2 kund-lödd):"); build("weapon-module.kicad_pcb", "weapon-module.net",
-          "nextpcb/optik-PROTOTYP-bom.xls", dnp_refs={"U1","C3","C4","C5"}, cust_refs={"J1","J2"}, ovr_refs={"R3"})
+          "nextpcb/optik-PROTOTYP-bom.xls", dnp_refs={"U1","C3","C4","C5"}, cust_refs={"J1","J2"}, ovr_refs={"R3"}, extra=OPTIK_EXTRA)
     centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"U1","C3","C4","C5","J1","J2","R3"})
     # HJÄLM-MODERKORT (ESP32-P4-WIFI6, rund): TH-kontakter kund-lödda (P4-socklar/patch/amp/mik/batteri);
     # J1 = ZED-F9P GH (SMD → NextPCB monterar).

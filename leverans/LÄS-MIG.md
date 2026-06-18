@@ -26,8 +26,9 @@ Per mapp:
 > batterier, TSOP4856 + ams OSRAM OSLON-emitter/LED köps separat (se BOM-noter + FORSTA-BATCH.md).
 >
 > **OSLON-LED:erna SMT-placeras av NextPCB** (precision, t.ex. emittern under linsen); de ledade
-> **TSOP4856 monteras/böjs av kund** (ej i centroid). **Optik-linser (Carclo TIR-kollimator) + hållare
-> köps separat och monteras manuellt** över emittrarna. OBS: 940 nm-emittern **SFH 4725S är utgående/EOL**
+> **TSOP4856 monteras/böjs av kund** (ej i centroid). **Optik-linser (Carclo 10195 TIR-kollimator) +
+> hållare (Carclo 10734)** finns med i BOM:en som **DNP** (LENS1-2/LHOLD1-2) — **köps separat och monteras
+> manuellt** över emittrarna (ej PCB-monterade, ej i centroid). OBS: 940 nm-emittern **SFH 4725S är utgående/EOL**
 > → **ersatt med aktiva SFH 4725AS** (samma paket C63062-A4141/footprint/dome/optik = drop-in; bin 13 = 940 nm).
 >
 > **3A-OVERRIDE:** optik-IR-drivaren är 3A-klassad men levereras **säker på ~1 A** — override-motståndet
