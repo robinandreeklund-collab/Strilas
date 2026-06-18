@@ -11,9 +11,11 @@ Genereras av [`receiver_boards_layout.py`](receiver_boards_layout.py). Två kort
 
 ![Väst-patch](vest-detector-patch.png)
 
-- **44×44 mm** (fyrfaldigt symmetrisk), 4 skruvhål. **U1–U4 TSOP4856** i diamant, var böjd ~40° utåt
-  (99,5 % framåt-hemisfär, funkar i valfri vridning) + **konstellation: 2 fasta 860 nm OSLON (D8/D9)
-  + 4 böjbara LED-tabbar (D1–D4)** = **6 LED** i känd geometri.
+- **RUND Ø43 mm** (4-falds symmetrisk, för skydds-/dom-kåpa), 4× M2-skruvhål. **U1–U4 TSOP4856** i
+  diamant på kanten, var böjd ~40° utåt (99,5 % framåt-hemisfär, funkar i valfri vridning) +
+  **konstellation: 2 fasta 860 nm OSLON (centrum) + 4 böjbara LED-tabbar (kant N/Ö/S/V)** = **6 LED**.
+  Rund form → optiken aim:ar radiellt ut utan att en platt frontkant skuggar synvinkeln; ryms i en
+  rökfärgad polykarbonat-dom (Ø46,5 inner) som skyddar de böjda benen.
 - U1–U4 **OR:as** (BAT54-dioder D5–D7 + en till) → **1 DATA-linje per patch** till väst-noden (ESP32-P4).
   Zon = vilken patch som fyrar.
 - **J1 5-pol:** `VBAT · GND · DATA · LED_EN · +3V3`. +3V3 kommer FRÅN moderkortet (matar TSOP, abs-max

@@ -179,7 +179,8 @@ Två zonsystem som gör olika saker:
 
 ## 10. Patch-design (täcknings-nod)
 
-Identisk patch på väst och hjälm — **fyrfaldigt symmetrisk 44×44 mm (4 monteringshål)**, lim/kardborre-fäst:
+Identisk patch på väst och hjälm — **rund Ø43 mm, 4-falds symmetrisk (4× M2-hål)**, lim/kardborre +
+ev. rökfärgad polykarbonat-dom (Ø46,5 inner) som skydd över de böjda benen:
 
 - **4× TSOP4856** (ledade) i **diamant**, var och en böjd **~40° utåt** från kortets normal.
   Beräknat optimum: **99,5 % av framåt-hemisfären** täckt, **100 % inom 60° zenit**, ~2,3 mottagare
@@ -226,7 +227,7 @@ okontrollerade serier vandrar av målet). IIM-42653: ±4000 dps, RNSD 0,005 °/s
 |---|---|---|---|---|
 | **Optik/vapen** | 54×74 mm | 4 | P4-stack, OV9281-USB, 940 nm-emitter + CC-driver, IMU, lins-hål Ø16 | 0/0/0 |
 | **Fire-control** | 71×21 mm | 2 | Stackas på P4 edge A; avtryck/laddhandtag/mag-switchar, recoil-ctrl, NFC, 2× extra IMU | 0/0/0 |
-| **Väst-patch** | 44×44 mm | 2 | 4 TSOP diamant + 6 LED (2 fasta + 4 tab) i 3 grenar + FET + 1×5-kontakt (×10 på västen) | 0/0/0 |
+| **Väst-patch** | **rund Ø43 mm** | 2 | 4 TSOP diamant + 6 LED (2 fasta + 4 tab) i 3 grenar + FET + 1×5-kontakt (×10 på västen) | 0/0/0 |
 | **Hjälm-mb** | **rund Ø97 mm** | 4 | P4, F9P-puck (centrum), IMU, 4 TSOP + 6 LED-tab, ljud (amp+mik), 4 patch-kontakter | 0/0/0 |
 | **Väst-mb** | 100×60 mm | 4 | P4, 10 zon-kontakter (patch+vibrator), 2× TPIC6B595, buck, **XT30-batteri** (In2=VBAT-plan) | 0/0/0 |
 

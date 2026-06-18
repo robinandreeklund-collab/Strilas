@@ -34,7 +34,7 @@ def defs():
         C=mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0805_2012Metric", "100nF"),
         J=mk("Conn_1x05", "J", [(i, i) for i in range(1, 6)], "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical", "VBAT·GND·DATA·LED_EN·3V3"),
         UFL=mk("U.FL", "J", [(1, "S"), (2, "G")], "Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical", "GNSS"),
-        MH=mk("MH", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", "M2.5"),
+        MH=mk("MH", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2"),
     )
 
 

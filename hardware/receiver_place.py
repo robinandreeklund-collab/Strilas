@@ -112,42 +112,51 @@ def place(netfile, pcbfile, positions, outline, layers=2, center_hole=None, free
 # Refs: U1-4=TSOP · varje TSOP har egen OR-diod (D1-4) + avkoppl-C (C2-5) BREDVID sig (4 identiska kluster).
 #       D5,D6=OSLON 860nm konstellation (N/S, symmetriskt) · R3,R4=10R 2512 · delat: J1=1x5, Q1=FET,
 #       R1=DATA-pull, R2=gate, C1=bulk — centrerat. (konstellations-LED ≠ per-TSOP; de är kamera-markörer.)
-vest_pos = {
-    "U3": (12.39, 8.25, 135),
-    "D3": (9.14, 4.86, 45),
-    "C4": (4.86, 9.14, 45),
-    "U2": (-8.25, 12.39, 225),
-    "D2": (-4.86, 9.14, 135),
-    "C3": (-9.14, 4.86, 135),
-    "U1": (-12.39, -8.25, 315),
-    "D1": (-9.14, -4.86, 45),
-    "C2": (-4.86, -9.14, 45),
-    "U4": (8.25, -12.39, 45),
-    "D4": (4.86, -9.14, 135),
-    "C5": (9.14, -4.86, 135),
-    "J1": (-5.08, 0, 90),
-    "C1": (-2.6, 3.6, 0),
-    "Q1": (2.6, 3.6, 0),
-    "R1": (-2.6, -3.6, 0),
-    "R2": (2.6, -3.6, 0),
-    "D7": (-1.28, 20.0, 90),
-    "D8": (20.0, 1.28, 0),
-    "D9": (1.28, -20.0, 270),
-    "D10": (-20.0, -1.28, 180),
-    "H1": (19.1, 19.1, 0),
-    "H2": (-19.1, 19.1, 0),
-    "H3": (-19.1, -19.1, 0),
-    "H4": (19.1, -19.1, 0),
-    "D5": (0.5, 8.8, 90),
-    "D6": (-0.2, -9.2, 90),
-    "R3": (4.2, 16.2, 0),
-    "R4": (11.8, -0.2, 90),
-    "R5": (-12.2, -0.2, 90),
-}
-# sikt-etiketter på silkscreen: böj-instruktion (fria y-axel-slivrar mellan center och LED)
-vest_labels = [
-    (0, 6.8, "40 UT", 0.8), (0, -6.8, "40 UT", 0.8),   # böj alla TSOP-ben 40° UTÅT (radiellt)
-]
+import math as _math
+def _ring2(r, deg): return (round(r*_math.cos(_math.radians(deg)), 2), round(r*_math.sin(_math.radians(deg)), 2))
+# RUND väst-patch (kompakt, för skydds-/dom-kåpa). Optiken på kanten, aim radiellt UT (TSOP-ben +
+# LED-tabbar böjs 40° ut → ingen platt frontruta skuggar synvinkeln, funkar i valfri vridning).
+# Centrum = driver + kontakt + 2 fasta OSLON. Speglar hjälm-halons verifierade ring-mönster, nedskalat
+# till minsta Ø utan courtyard-krock (de 4 LEDADE TSOP-benens svep sätter undre gränsen).
+# courtyard-mittpunkt ≠ origo för TSOP (2.54,1.31) & 1x5-header (0,5.07) → kompensera så att KROPPEN
+# (ej origo) hamnar centrerad på ringen/positionen. _comp = origo som ger önskad courtyard-mitt.
+def _comp(cx, cy, rot, off):
+    rad = _math.radians(rot); ox, oy = off          # KiCad roterar medurs i sitt Y-ned-system
+    rx = ox*_math.cos(rad) + oy*_math.sin(rad); ry = -ox*_math.sin(rad) + oy*_math.cos(rad)
+    return (round(cx - rx, 2), round(cy - ry, 2))
+_OFF_TSOP, _OFF_J1 = (2.54, 1.31), (0.0, 5.07)
+_PT, _PD, _PC = 16.3, 11.0, 8.4          # TSOP-kropp-ring / OR-diod / TSOP-avkoppling (tangentiella, innanför TSOP)
+_PL, _PR, _PH = 16.0, 15.0, 18.7         # LED-tab-ring / 10R-serieR (radiell i luckor) / monteringshål
+_VEST_R = 21.5                            # kort-radie (Ø43) — rund, ryms i Ø46,5-dom
+vest_pos = {}
+for i, a in enumerate((45, 135, 225, 315)):       # U1-U4 TSOP (kropp centrerad på ring); OR + avkoppl
+    rot = (a + 90) % 360                          #   sida-vid-sida innanför TSOP (i dess vida vinkelspann)
+    cx, cy = _ring2(_PT, a)
+    vest_pos[f"U{i+1}"] = (*_comp(cx, cy, rot, _OFF_TSOP), rot)
+    vest_pos[f"D{i+1}"] = (*_ring2(_PD, a + 11), rot)       # OR-diod innanför TSOP, +11° (fri J1-lucka)
+    vest_pos[f"C{i+2}"] = (*_ring2(_PC, a + 11), rot)        # avkoppling stackad innanför OR
+for i, a in enumerate((0, 90, 180, 270)):         # D7-D10 LED-tabbar (aim ut, 45° från TSOP)
+    vest_pos[f"D{i+7}"] = (*_ring2(_PL, a), (a + 90) % 360)
+for i, a in enumerate((22.5, 112.5, 202.5)):      # R3-R5 = 3× 10R 2512 (RADIELLA i luckor → smal tangentdim)
+    vest_pos[f"R{i+3}"] = (*_ring2(_PR, a), a % 360)
+# J1 som radiell EKER i luckan @290° (mellan tab@270 och TSOP@315): kropp-mitt r=10,5, pins ut → kabel
+# över kanten. body_angle=(270+rot)%360 ⇒ rot=20 ger pins @290°; origo = kropp-mitt − 5,08·(cos290,sin290).
+_J1A = 288                                        # J1-eker mitt i luckan @288° (mellan tab@270 och TSOP@315)
+_J1bc = _ring2(10.5, _J1A)
+_J1o = (round(_J1bc[0] - 5.08*_math.cos(_math.radians(_J1A)), 2),
+        round(_J1bc[1] - 5.08*_math.sin(_math.radians(_J1A)), 2))
+vest_pos.update({                                 # centrum-disk (r<6) — fri från J1 nu
+    "D5": (-2.5, 4.5, 90), "D6": (2.5, 4.5, 90),  # 2 fasta OSLON-konstellation (aim upp), topp-center
+    "J1": (_J1o[0], _J1o[1], (_J1A - 270) % 360), # 5-pol kontakt radiell eker (pins ut @296°)
+    "Q1": (0.0, 0.0, 0),                          # LED-driver FET (mitt)
+    "C1": (-2.7, -3.0, 0),                        # 10µF bulk (VBAT), nedre vänster (J1-ekern går lägre-höger)
+    "R1": (5.0, 1.0, 90), "R2": (-5.0, 1.0, 90),  # 10k DATA-pullup + 220R gate (center-sidor, upp)
+})
+for i, a in enumerate((78, 168, 258, 348)):       # H1-H4 monteringshål (mitt i TSOP→tab-luckorna)
+    vest_pos[f"H{i+1}"] = (*_ring2(_PH, a), 0)
+# sikt-etikett på silkscreen: böj-instruktion (centrum-fri yta)
+vest_labels = [(0.0, 6.4, "BOJ TSOP+TAB 40 UT", 0.7)]
+
 # ---- hjälm-NOD (Ø100, komplett: buck+XIAO-S3+8TSOP+4LED+GNSS+I2S-audio) ----
 # Ring (r=42) = 8× TSOP utåtriktade (360° huvud) + diod-OR + avkoppling strax innanför.
 # 4× LED-konstellation (r=45) mellan TSOP-paren. Centrum = stackad XIAO + buck + modul-headers.
@@ -351,7 +360,7 @@ BOARDS = {
     "helmet_mb": lambda: place("hardware/helmet-mb.net", "hardware/helmet-mb.kicad_pcb",
                                helmet_mb_pos, ("circle", 48.5), layers=4, free=(-3, 3, -3, 3)),
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
-                          vest_pos, ("rect", 22, 22), layers=2, free=(-2, 2, -2, 2), labels=vest_labels),
+                          vest_pos, ("circle", _VEST_R), layers=2, free=(-2, 2, -2, 2), labels=vest_labels),
     "vest_mb": lambda: place("hardware/vest-mb.net", "hardware/vest-mb.kicad_pcb",
                              vest_mb_pos, ("rect", 50, 30), layers=4, free=(-3, 3, -3, 3)),
     # vapnet: alla delar placeras explicit -> tom fri-zon (säker, ingen krock med lins)
