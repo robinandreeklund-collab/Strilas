@@ -72,20 +72,20 @@ Ci3 = CAP("100nF"); Ci4 = CAP("100nF")          # IMU U2 VDD/VDDIO
 H1, H2, H3, H4 = MH(1)(), MH(2)(), MH(3)(), MH(4)()
 
 # ---------- J1 = P4 edge A pin 6..17 ----------
-# OBS: FC speglad om långaxeln (y=120) så J1+J2 byter långsida (J1→edge A, J2→edge B-tapp)
-# enligt FYSISK montering mot RIKTIGA P4-modellen. Headern hamnar då på motsatt sida →
-# pin-ordningen mot edge A SPEGELVÄNDS: fysisk J1.k möter edge A pin (18-k). Näten behåller
-# sin avsedda GPIO (MAGWELL→GPIO29 osv.), men sitter på spegelvänd padd.
-#   J1.1  pin17 GPIO7  NFC_SDA          J1.7  pin11 GPIO5  RACK
-#   J1.2  pin16 GPIO8  NFC_SCL          J1.8  pin10 GPIO49 IMU3_INT
-#   J1.3  pin15 GPIO2  RECOIL_PWM       J1.9  pin9  GPIO50 IMU2_INT
-#   J1.4  pin14 GPIO3  MAG_REL          J1.10 pin8  GND
-#   J1.5  pin13 GND                     J1.11 pin7  GPIO28 RECOIL_FAULT
-#   J1.6  pin12 GPIO4  TRIG             J1.12 pin6  GPIO29 MAGWELL
-J1[1] += SDA; J1[2] += SCL; J1[3] += REC_PWM; J1[4] += MAG_REL
-J1[5] += GND
-J1[6] += TRIG; J1[7] += RACK; J1[8] += IMU3_INT     # GPIO49 → andra IMU:ns INT
-J1[9] += IMU2_INT; J1[10] += GND; J1[11] += REC_FLT; J1[12] += MAGWELL
+# FC speglad om långaxeln (y=120) så J1+J2 byter långsida → J1 dockar edge A på RIKTIGA P4.
+# OBS pin-ORDNINGEN är OFÖRÄNDRAD (original): FC J1 (B.Cu) möter edge A (P4 F.Cu) = MOTSATT
+# lager → speglingen + ansikts-flippen tar ut varandra så fysisk J1.k möter edge A pin (k+5).
+# (Verifierat mot riktig P4-geometri + kalibrerat mot optik↔edge B = 8/8.)
+#   J1.1  pin6  GPIO29  MAGWELL          J1.7  pin12 GPIO4  TRIG
+#   J1.2  pin7  GPIO28  RECOIL_FAULT     J1.8  pin13 GND
+#   J1.3  pin8  GND                      J1.9  pin14 GPIO3  MAG_REL
+#   J1.4  pin9  GPIO50  IMU2_INT         J1.10 pin15 GPIO2  RECOIL_PWM
+#   J1.5  pin10 GPIO49  IMU3_INT         J1.11 pin16 GPIO8  NFC_SCL
+#   J1.6  pin11 GPIO5   RACK             J1.12 pin17 GPIO7  NFC_SDA
+J1[1] += MAGWELL; J1[2] += REC_FLT; J1[3] += GND; J1[4] += IMU2_INT
+J1[5] += IMU3_INT
+J1[6] += RACK; J1[7] += TRIG; J1[8] += GND
+J1[9] += MAG_REL; J1[10] += REC_PWM; J1[11] += SCL; J1[12] += SDA
 
 # ---------- edge-B kraft-tapp (3V3+GND direkt från P4 edge B) + fan-out ----------
 Jpwr["P3V3"] += P3V3; Jpwr["GND"] += GND      # pin2 (ENnc) lämnas NC
