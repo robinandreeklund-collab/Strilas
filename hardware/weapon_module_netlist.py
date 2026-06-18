@@ -48,10 +48,17 @@ DFET = mk("AOD4184A", "Q", [(1, "G"), (2, "D"), (3, "S")], "Package_TO_SOT_SMD:T
 # 2,7–36 V matning (drivs från VBAT), in-CM inkl. V- (kan känna 0,2 V shunt), RR-utgång (gate-drive).
 OPAMP = mk("OPA171", "U", [(1, "OUT"), (2, "V-"), (3, "IN+"), (4, "IN-"), (5, "V+")],
            "Package_TO_SOT_SMD:SOT-23-5", "OPA171")
-PTC = mk("PTC", "F", [(1, "~"), (2, "~")], "Fuse:Fuse_1206_3216Metric", "PTC_1A")
+PTC = mk("PTC", "F", [(1, "~"), (2, "~")], "Fuse:Fuse_1206_3216Metric", "PTC_3A")  # 3A-hold f. 3A-skala
 TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
-LED = mk("SFH4725S", "D", [(1, "A"), (2, "K")],
-         "strilas:IR_Emitter_OSRAM_OSLON_Black_SFH4725S", "SFH4725S_940nm")
+# IR-emitter: SFH 4725AS (aktiv efterföljare till utgångna 4725S). Paket C63062-A4141 IDENTISKT
+# (samma footprint/dome/80°/1x1-chip) → strilas-footprinten oförändrad. Bin 13 = 940 nm (930-950).
+LED = mk("SFH4725AS", "D", [(1, "A"), (2, "K")],
+         "strilas:IR_Emitter_OSRAM_OSLON_Black_SFH4725S", "SFH4725AS_940nm_bin13")
+# 3A-override-jumper: LÅG solder-jumper (platt — får ej vara hög stiftlist på optiksidan nära linsen).
+# Bryggas (löd) för att PARALLELLA Rp(0R1) över Rsense(R2,0R2) → Rsense 0,2→0,067Ω → I 1A→3A.
+# Fail-safe: OPEN (default) = 1A säker; BRYGGAD = 3A (lab/medvetet). Bär ~2A (Rp-grenen). Silk: "IR 3A".
+OVR = mk("OVR", "JP", [(1, "1"), (2, "2")],
+         "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm", "3A-OVERRIDE")
 # IIM-42653 LGA-14 — pin-nr enligt TDK DS-000529 (industri-IMU, verifierad mot databladet):
 # 1 SDO  2 AUX1_SDIO  3 AUX1_SCLK  4 INT1  5 VDDIO  6 GND  7 RESV(→GND)
 # 8 VDD  9 INT2/FSYNC  10 AUX1_CS  11 AUX1_SDO  12 CS  13 SCLK 14 SDI
@@ -86,7 +93,9 @@ Cd2 = CAP("100nF", "Capacitor_SMD:C_0402_1005Metric"); Cd3 = CAP("1uF")
 # ---- aktiv konstantströms-sänka (ersätter passiv Rset) — instansieras EFTER IMU så IMU=U1 ----
 Uop = OPAMP()                                              # U2 = OPA171
 Qd = DFET()                                                # Q2 = DPAK pass-FET
-Rsense = RES("0R2", "Resistor_SMD:R_2512_6332Metric")      # sätter I = Vref/Rsense
+Rsense = RES("0R2", "Resistor_SMD:R_2512_6332Metric")      # I=Vref/Rsense; 0,2Ω → 1A (säker default)
+Rp_ovr = RES("0R1", "Resistor_SMD:R_1206_3216Metric")      # override-parallell: 0,2||0,1=0,067Ω → 3A
+JP_ovr = OVR()                                             # 3A-override-bygel (kortar in Rp_ovr)
 Rdiv_a = RES("15k"); Rdiv_b = RES("1k")                    # IR_MOD → ~0,206 V referens (3,3/16)
 Rgate = RES("100R")                                        # gate-isolering (pol m. FET Ciss)
 Cop = CAP("100nF"); Ccomp = CAP("100pF")                   # op-amp-avkoppling + slingkompensering
@@ -142,6 +151,9 @@ Cbulk[1] += VBAT; Cbulk[2] += GND                 # reservoar för pulsen
 D1["A"] += VBAT; D1["K"] += STR1; D2["A"] += STR1; D2["K"] += LEDC   # 2× 940 nm i serie, anod på VBAT
 Qd["D"] += LEDC; Qd["S"] += SENSE; Qd["G"] += GATE                   # pass-FET (DPAK)
 Rsense[1] += SENSE; Rsense[2] += GND                                 # ström-sense 0,2 Ω → 1 A @0,206 V
+# 3A-override: Rp_ovr (0,1 Ω) i serie med bygeln, parallellt över Rsense. Bygel OPEN=1A, BYGLAD=3A.
+NOVR = Net("N_OVR")
+Rp_ovr[1] += SENSE; Rp_ovr[2] += NOVR; JP_ovr[1] += NOVR; JP_ovr[2] += GND
 Uop["V+"] += VBAT; Uop["V-"] += GND                                  # op-amp matas från VBAT
 Uop["IN+"] += VREF; Uop["IN-"] += SENSE; Uop["OUT"] += Rgate[1]; Rgate[2] += GATE
 Rdiv_a[1] += IR_MOD; Rdiv_a[2] += VREF; Rdiv_b[1] += VREF; Rdiv_b[2] += GND   # 15k/1k → 0,206 V

@@ -36,8 +36,14 @@ utsträckt källa**. Om den uppmätta **skenbara källan ≥ α_max (100 mrad)**
 
 1. **HW-strömtak** via sense-resistor (firmware kan bara gå lägre) — "ögonsäkerhet i hårdvara".
    **REALISERAT** (2026-06): aktiv CC-sänka (U2=OPA171 + DPAK-FET + R2=0R2 sense) i optik-netlistan.
-   Hård gräns I = Vref/Rsense; Vref ≤ 0,206 V (3,3 V-delaren 15k/1k) → I_max ≈ **1,0 A i HW**.
-   Högre ström (mot 3 A) kräver avsiktligt mindre Rsense + förnyad mätning enligt nedan.
+   Hård gräns I = Vref/Rsense; Vref ≤ 0,206 V (3,3 V-delaren 15k/1k) → **default I_max ≈ 1,0 A** (R2=0R2).
+   **3A-OVERRIDE (2026-06):** låg solder-jumper JP1 (default OPEN = säker) bryggas → parallellkopplar
+   Rp=0R1 över R2 → Rsense 0,2→0,067 Ω → I_max ≈ **3,0 A**. Kraft-HW (Rp, F1=PTC_3A, spår) 3A-klassad;
+   jumpern **fail-safe** (obryggad/tappad = 1 A). 3 A kräver **medveten bryggning + förnyad mätning**.
+   - **Headroom (2S, 2 emittrar i SERIE):** 3 A behöver VBAT > 2·Vf(3A)+Vsense ≈ 7,1 V → håller bara i
+     övre 2S-delen; firmware-LV-spärr ~7,5 V @3 A (~6,9 V @1 A).
+   - **Emitter:** SFH 4725S utgången → **SFH 4725AS** (samma paket/footprint/optik, drop-in; puls-max
+     3 A @ tp≤800µs; vårt ~9µs/≤9,1% duty ligger inom kurvan, men 3 A = emitterns abs-tak).
 2. **Börja på 0,5–1 A** vid bringup.
 3. **Cap full-auto-duty** i firmware (semi är ~6–7× snällare).
 4. **2 separata emittrar** = 2 skenbara källor → var och en lägre exponering.
