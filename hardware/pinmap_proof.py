@@ -40,19 +40,28 @@ def xform(b, ang, center, off):
     for it in items(b): it.Rotate(center, ea)
     for it in items(b): it.Move(off)
 
-def fit(src, ref, d1, d2):
-    """Stel 2-punkts fit: src.ref pad1→d1, padN→d2 (auto-tecken)."""
+def _holepos(b, ref):
+    return [g for g in b.GetFootprints() if g.GetReference() == ref][0].GetPosition()
+
+def fit(src, ref, d1, d2, hole_refs=None, hole_dst=None):
+    """Stel 2-punkts fit: src.ref pad1→d1, padN→d2 (auto-tecken). En LINJÄR kontakt är
+    symmetrisk → båda ändpunkts-korrespondenserna ger ~0 mm; monteringshålen (hole_refs/hole_dst)
+    avgör den fysiskt korrekta (annars kan man låsa på fel av två lösningar → standoff 10-20 mm fel)."""
     b = pcbnew.LoadBoard(src); pads = allpads(b, ref); nB = str(len(pads))
     p1, p2 = pads["1"][0], pads[nB][0]
-    ang = math.degrees(math.atan2(d2.y - d1.y, d2.x - d1.x) - math.atan2(p2.y - p1.y, p2.x - p1.x))
     best = None
-    for tr in (ang, -ang, ang + 180, ang - 180):
-        b2 = pcbnew.LoadBoard(src); c = allpads(b2, ref)["1"][0]
-        xform(b2, tr, pcbnew.VECTOR2I(c.x, c.y), pcbnew.VECTOR2I(0, 0))
-        q1 = allpads(b2, ref)["1"][0]
-        xform(b2, 0, pcbnew.VECTOR2I(0, 0), pcbnew.VECTOR2I(d1.x - q1.x, d1.y - q1.y))
-        e = (allpads(b2, ref)[nB][0] - d2).EuclideanNorm() / 1e6
-        if best is None or e < best[0]: best = (e, b2)
+    for e1, e2 in ((d1, d2), (d2, d1)):
+        ang = math.degrees(math.atan2(e2.y - e1.y, e2.x - e1.x) - math.atan2(p2.y - p1.y, p2.x - p1.x))
+        for tr in (ang, -ang, ang + 180, ang - 180):
+            b2 = pcbnew.LoadBoard(src); c = allpads(b2, ref)["1"][0]
+            xform(b2, tr, pcbnew.VECTOR2I(c.x, c.y), pcbnew.VECTOR2I(0, 0))
+            q1 = allpads(b2, ref)["1"][0]
+            xform(b2, 0, pcbnew.VECTOR2I(0, 0), pcbnew.VECTOR2I(e1.x - q1.x, e1.y - q1.y))
+            cerr = (allpads(b2, ref)[nB][0] - e2).EuclideanNorm() / 1e6
+            herr = 0.0
+            if hole_refs and hole_dst:
+                herr = max(min((_holepos(b2, r) - h).EuclideanNorm() / 1e6 for h in hole_dst) for r in hole_refs)
+            if best is None or (cerr + herr) < best[0]: best = (cerr + herr, b2)
     return best[1]
 
 def nearest(pos, pads):
@@ -62,7 +71,9 @@ def nearest(pos, pads):
 op = pcbnew.LoadBoard("hardware/weapon-module.kicad_pcb"); OJ = allpads(op, "J1")
 p4 = pcbnew.LoadBoard("hardware/p4-board.kicad_pcb"); JA = allpads(p4, "J_A")
 fc = pcbnew.LoadBoard("hardware/firecontrol.kicad_pcb"); FJ = allpads(fc, "J1")
-p4b = fit("hardware/p4-board.kicad_pcb", "J_B", OJ["1"][0], OJ["14"][0]); JB = allpads(p4b, "J_B")
+_OHOLES = [_holepos(op, r) for r in ("HP1", "HP2", "HP3", "HP4")]   # hål-konsistent P4-placering
+p4b = fit("hardware/p4-board.kicad_pcb", "J_B", OJ["1"][0], OJ["14"][0],
+          hole_refs=("MP1", "MP2", "MP3", "MP4"), hole_dst=_OHOLES); JB = allpads(p4b, "J_B")
 
 # optik J1.k  ↔  P4 J_B  (transformerad till optikens frame)
 edgeB = []   # (k, net, p4pad, dist, waveshare_pin, gpio)

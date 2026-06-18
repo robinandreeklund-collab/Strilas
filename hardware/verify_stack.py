@@ -25,14 +25,22 @@ def xform(b,a,c,o):
     ea=pcbnew.EDA_ANGLE(a,pcbnew.DEGREES_T)
     for it in items(b): it.Rotate(c,ea)
     for it in items(b): it.Move(o)
-def fit(src,ref,d1,d2):
-    b=pcbnew.LoadBoard(src); P=pads(b,ref); nB=str(len(P)); p1,p2=P['1'],P[nB]
-    ang=math.degrees(math.atan2(d2.y-d1.y,d2.x-d1.x)-math.atan2(p2.y-p1.y,p2.x-p1.x)); best=None
-    for tr in (ang,-ang,ang+180,ang-180):
-        b2=pcbnew.LoadBoard(src); c=pads(b2,ref)['1']; xform(b2,tr,pcbnew.VECTOR2I(c.x,c.y),pcbnew.VECTOR2I(0,0))
-        q1=pads(b2,ref)['1']; xform(b2,0,pcbnew.VECTOR2I(0,0),pcbnew.VECTOR2I(d1.x-q1.x,d1.y-q1.y))
-        e=(pads(b2,ref)[nB]-d2).EuclideanNorm()/1e6
-        if best is None or e<best[0]: best=(e,b2)
+def fit(src,ref,d1,d2,hole_refs=None,hole_dst=None):
+    """Stel transform: src_ref:s ändstift -> (d1,d2). En LINJÄR kontakt är symmetrisk, så
+    BÅDA ändpunkts-korrespondenserna ger ~0 mm kontaktfel — monteringshålen (hole_refs på
+    src, hole_dst-positioner på målet) avgör vilken som är den FYSISKT korrekta (annars
+    kan man låsa på fel av två lösningar: kontakt mötande men standoff-hål 10-20 mm fel)."""
+    b=pcbnew.LoadBoard(src); P=pads(b,ref); nB=str(len(P)); p1,p2=P['1'],P[nB]; best=None
+    for (e1,e2) in ((d1,d2),(d2,d1)):          # prova BÅDA ändpunkts-korrespondenserna
+        ang=math.degrees(math.atan2(e2.y-e1.y,e2.x-e1.x)-math.atan2(p2.y-p1.y,p2.x-p1.x))
+        for tr in (ang,-ang,ang+180,ang-180):
+            b2=pcbnew.LoadBoard(src); c=pads(b2,ref)['1']; xform(b2,tr,pcbnew.VECTOR2I(c.x,c.y),pcbnew.VECTOR2I(0,0))
+            q1=pads(b2,ref)['1']; xform(b2,0,pcbnew.VECTOR2I(0,0),pcbnew.VECTOR2I(e1.x-q1.x,e1.y-q1.y))
+            cerr=(pads(b2,ref)[nB]-e2).EuclideanNorm()/1e6
+            herr=0.0
+            if hole_refs and hole_dst:         # max avstånd src-hål -> närmaste mål-hål
+                herr=max(min((fpt(b2,r).GetPosition()-h).EuclideanNorm()/1e6 for h in hole_dst) for r in hole_refs)
+            if best is None or (cerr+herr)<best[0]: best=(cerr+herr,b2)
     return best[1]
 def near(P, pts):  # P:VECTOR2I, pts:{name:VECTOR2I} -> (name,dist_mm)
     return min(((n,(p-P).EuclideanNorm()/1e6) for n,p in pts.items()),key=lambda t:t[1])
@@ -48,7 +56,10 @@ chk("PinHeader" in fpname(p4,"J_A") and "PinHeader" in fpname(p4,"J_B"), "P4 J_A
 
 print("\n=== 2. optik J1 ↔ P4 edge B : LÄGE (per stift) + NÄT→GPIO ===")
 OJ=pads(op,"J1"); ON=netmap(op,"J1")
-p4b=fit("hardware/p4-board.kicad_pcb","J_B",OJ["1"],OJ["14"]); JB=pads(p4b,"J_B")
+# optikens 4 P4-standoff-hål (mål för P4:s MP-hål) → tvinga hål-KONSISTENT P4-placering
+OHOLES=[fpt(op,r).GetPosition() for r in ("HP1","HP2","HP3","HP4")]
+p4b=fit("hardware/p4-board.kicad_pcb","J_B",OJ["1"],OJ["14"],
+        hole_refs=("MP1","MP2","MP3","MP4"),hole_dst=OHOLES); JB=pads(p4b,"J_B")
 maxB=0
 for k in range(1,15):
     j,d=near(OJ[str(k)],JB); maxB=max(maxB,d); n=ON[str(k)] or "(NC)"; gpio=EDGE_B[16-int(j)]
