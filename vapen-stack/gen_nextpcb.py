@@ -132,7 +132,11 @@ def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozens
         elif refs and all(r in dnp_refs for r in refs):
             proc = "DNP"; note = "Prototyp: monteras EJ (körs på breakout först)"
         elif is_conn(pkg) or (refs and all(r in cust_refs for r in refs)):
-            proc = "DNP"; note = "Kund lödder själv (alla kontakter/headers handlöds)"
+            # THT/handlödda delar (kontakter, headers, ledade TSOP, LED-tab-socklar): SKA finnas i
+            # BOM:en som beställbara rader — kund löder själv hemma. Markeras därför EJ "DNP".
+            # Hålls dock ute ur CENTROID (NextPCB pick-and-place klarar ej genomplåt) → maskin-placeras ej.
+            if proc == "DNP": proc = ""
+            note = note or "Handlöds av kund hemma (THT/ledad) — med i BOM för beställning, ej maskin-placerad (ej i centroid)"
         ws.write(row, 0, ",".join(refs)); ws.write(row, 1, len(refs))
         ws.write(row, 2, mpn); ws.write(row, 3, mfr); ws.write(row, 4, pkg)
         ws.write(row, 5, desc); ws.write(row, 6, proc); ws.write(row, 7, note)
