@@ -48,7 +48,7 @@ DFET = mk("AOD4184A", "Q", [(1, "G"), (2, "D"), (3, "S")], "Package_TO_SOT_SMD:T
 # 2,7–36 V matning (drivs från VBAT), in-CM inkl. V- (kan känna 0,2 V shunt), RR-utgång (gate-drive).
 OPAMP = mk("OPA171", "U", [(1, "OUT"), (2, "V-"), (3, "IN+"), (4, "IN-"), (5, "V+")],
            "Package_TO_SOT_SMD:SOT-23-5", "OPA171")
-PTC = mk("PTC", "F", [(1, "~"), (2, "~")], "Fuse:Fuse_1206_3216Metric", "PTC_3A")  # 3A-hold f. 3A-skala
+PTC = mk("PTC", "F", [(1, "~"), (2, "~")], "Fuse:Fuse_1812_4532Metric", "PTC_3A")  # 3A-hold 1812 f. 3A-skala (matar P4+IR)
 TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
 # IR-emitter: SFH 4725AS (aktiv efterföljare till utgångna 4725S). Paket C63062-A4141 IDENTISKT
 # (samma footprint/dome/80°/1x1-chip) → strilas-footprinten oförändrad. Bin 13 = 940 nm (930-950).
