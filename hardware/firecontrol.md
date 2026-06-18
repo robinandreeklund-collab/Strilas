@@ -17,28 +17,31 @@ Bär även en **extra IMU** (I²C). Optikmodulen (edge B, under P4) förblir ren
    IR + lins + kamera (under)
 ```
 
-- **P4 orienteras USB-C uppåt** (verifierat: overlay J1↔edge B = 0 felmatchningar).
-- FC-frame = P4-frame (lång axel = x). FC ligger rakt ovanför P4 i samma orientering →
-  socket-paddarna hamnar i exakt samma (x,y) som P4:ans edge-A-stift (rak stack, ingen
-  spegelvändning). **Mate-overlay verifierad: 0 felmatchningar.**
+- **P4 orienteras USB-C uppåt.**
+- **KANTBYTE (2026-06):** mot den RIKTIGA P4-modellen (Fusion) hamnade J1 fel — den dockade
+  edge B i stället för edge A. FC-kortet är därför **speglat om långaxeln (y=120)** så att
+  J1 (→ edge A) och J2 (3V3-tapp → edge B) byter långsida och dockar rätt. Speglingen behåller
+  hålbilden (symmetrisk) → samma genomgående M2-standoff. När headern flyttar till motsatt
+  långsida **spegelvänds även pin-ordningen**: fysisk J1.k möter edge A pin (18-k). Näten
+  behåller sin avsedda GPIO (MAGWELL→GPIO29 osv.) men sitter på spegelvänd padd (se tabell).
 - Edge A saknar kraftskena → **3V3 matas via egen stående JST (J2)** från optikens +3V3-rail.
 
-## J1 — FEMALE socket mot P4 edge A (pin 6–17)
+## J1 — FEMALE socket mot P4 edge A (pin 6–17), SPEGELVÄND ordning
 
 | J1 | P4-pin | GPIO | Funktion |
 |---|---|---|---|
-| 1 | 6 | GPIO29 | MAGWELL (magasin-närvaro) |
-| 2 | 7 | GPIO28 | RECOIL_FAULT (eFuse fault-in) |
-| 3 | 8 | GND | |
-| 4 | 9 | GPIO50 | **IMU_INT** (IMU U1, 0x69) |
-| 5 | 10 | GPIO49 | **IMU_INT** (IMU U2, 0x68) |
-| 6 | 11 | GPIO5 | RACK |
-| 7 | 12 | GPIO4 | TRIG |
-| 8 | 13 | GND | |
-| 9 | 14 | GPIO3 | MAG_REL |
-| 10 | 15 | GPIO2 | RECOIL_PWM (→ eFuse EN/gate) |
-| 11 | 16 | GPIO8 | NFC_SCL (I²C) |
-| 12 | 17 | GPIO7 | NFC_SDA (I²C) |
+| 1 | 17 | GPIO7 | NFC_SDA (I²C) |
+| 2 | 16 | GPIO8 | NFC_SCL (I²C) |
+| 3 | 15 | GPIO2 | RECOIL_PWM (→ eFuse EN/gate) |
+| 4 | 14 | GPIO3 | MAG_REL |
+| 5 | 13 | GND | |
+| 6 | 12 | GPIO4 | TRIG |
+| 7 | 11 | GPIO5 | RACK |
+| 8 | 10 | GPIO49 | **IMU_INT** (IMU U2, 0x68) |
+| 9 | 9 | GPIO50 | **IMU_INT** (IMU U1, 0x69) |
+| 10 | 8 | GND | |
+| 11 | 7 | GPIO28 | RECOIL_FAULT (eFuse fault-in) |
+| 12 | 6 | GPIO29 | MAGWELL (magasin-närvaro) |
 
 ## Komponenter
 
