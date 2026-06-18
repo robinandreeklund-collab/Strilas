@@ -41,7 +41,7 @@ varje kort har dessutom en **carrier-buck (AP63203)** som ger 3,3 V till sensore
 |---|---|---|---|
 | **Vapen** | optik + fire-control | "Sikte + domare" | OV9281-kamera (860 nm-pass) → PnP-pose; 940 nm-emitter (eye-safe CC); IMU; recoil; NFC-ammo; avtryck/laddhandtag |
 | **Väst** | väst-mb + 10 patchar | Träff-RX torso 360° | 10 patch-DATA (skott-LOS); 20 konstellations-LED (pose); 10 zon-vibratorer (haptik) |
-| **Hjälm** | hjälm-mb (rund) + 4 patchar | Huvud-RX + **RTK-position** + ljud | 360° huvud-TSOP; konstellation; **ZED-F9P RTK** + IMU (cm-position); högtalare+mik (spelljud/röst) |
+| **Hjälm** | hjälm-mb (rund Ø108) + 4 patchar | Huvud-RX + **RTK-position** + headset | 360° huvud-TSOP; konstellation; **RTK-puck (baksida): ZED-F9P el. alt Ø86** + IMU (cm-position); **ES8388-headset** (mik/högt/PTT) |
 
 Mesh: vapnets P4 löser posen och adjudikerar; väst/hjälm-noderna rapporterar DATA-träffar, RTK-position
 och driver haptik/ljud lokalt. Detaljer: [`ritningar/system-struktur.md`](vapen-stack/ritningar/system-struktur.md).
@@ -209,10 +209,14 @@ Fronten = ren optik (4 identiska TSOP-kluster + 4 LED-tabbar i kardinalriktning 
 
 ## 12. RTK-positionering & IMU (hjälm)
 
-- **ZED-F9P RTK-puck** (BDLX, rund Ø55 mm × 55 mm, inbyggd antenn + **IST8310-kompass**) monterad
-  **direkt på hjälm-kortets centrum** via korta standoffs: 4 puck-fästhål (M2.5) i puckens exakta
-  mönster **20,80 × 33,90 mm**, centrerat, ovanför den stackade P4-modulen. GH-kontakt (8-pol, 1,25 mm)
-  i syd, öppning mot centrum. **cm-noggrann** position, matas VBAT (3–9 V), UART + I²C till hjälm-P4.
+- **RTK-puck monteras på hjälm-kortets BAKSIDA** (sky-sidan, antennen uppåt mot himlen); fronten med
+  P4 + optik vänds mot hjälmskalet. Två puck-alternativ stöds (montera ENDERA):
+  - **ZED-F9P-puck** (inbyggd antenn + **IST8310-kompass**) — 8-pol GH-kontakt (1,25 mm). Fästmönster 20,80×33,90 mm.
+  - **Alt all-in-one UM980/F9P Ø86 mm, låg profil** (inbyggd antenn + IST8310) — 6-pol GH (VCC·RX·TX·SCL·SDA·GND).
+    Fästmönster ~20,0×34,1 mm. Mönster-skillnaden ~0,8 mm → fästhålen satta till medel (±10,2×±17,0), passar båda.
+  Båda GH-kontakterna (J1 8-pol, J12 6-pol) sitter på baksidan UNDER pucken (parallella UART/I²C/kraft-nät).
+  **cm-noggrann** position, matas VBAT (3–9 V), UART + I²C till hjälm-P4. (Ø86-pucken kräver Ø108-kort: optik-
+  ringen ligger utanför puckens r43 så konstellations-LED syns + TSOP ej skuggade.)
 - **IIM-42653 IMU** (I²C, delar F9P-bussen + INT) → **GNSS/INS-fusion**: överbryggar multipath/skugga,
   ger lokal huvud-attityd, förbättrar RTK-fix. Samma IMU som vapnet/fire-control.
 - Hjälm-noden skickar cm-position + huvud-pose i meshen → live-spårning + after-action.
@@ -230,7 +234,7 @@ okontrollerade serier vandrar av målet). IIM-42653: ±4000 dps, RNSD 0,005 °/s
 | **Optik/vapen** | 54×74 mm | 4 | P4-stack, OV9281-USB, 940 nm-emitter + CC-driver, IMU, lins-hål Ø16 | 0/0/0 |
 | **Fire-control** | 71×21 mm | 2 | Stackas på P4 edge A; avtryck/laddhandtag/mag-switchar, recoil-ctrl, NFC, 2× extra IMU | 0/0/0 |
 | **Väst-patch** | **rund Ø45 mm** | 2 | 4 TSOP diamant + 6 LED (2 fasta + 4 tab) i 3 grenar + FET + JST-PH 5-pol side-entry (baksida) | 0/0/0 |
-| **Hjälm-mb** | **rund Ø97 mm** | 4 | P4, F9P-puck (centrum), IMU, 4 TSOP + 6 LED-tab, ljud (amp+mik), 4 patch-kontakter | 0/0/0 |
+| **Hjälm-mb** | **rund Ø108 mm** | 4 | Front: P4 + optik-ring (4 TSOP + 6 LED-tab) + ES8388-headset-codec + batteri. Bak: RTK-puck (Ø86, centrum) + 7 side-entry-kontakter (4 patch + mik/högt/PTT) på yttre ring + 2 puck-GH | 0/0/0 |
 | **Väst-mb** | 100×60 mm | 4 | P4, 10 zon-kontakter JST-PH 6-pol side-entry (patch+vibrator), 2× TPIC6B595, buck, **XT30-batteri** (In2=VBAT-plan) | 0/0/0 |
 
 **Strömplan:** alla 4-lagerskort In1=GND, F/B=GND-fyll. In2 = **VBAT** (väst-mb + hjälm-mb + optik —
@@ -355,4 +359,4 @@ STRILAS-SYSTEM-GUIDE.md                 — DETTA dokument (master-referens)
 
 **Centrala designval (låsta):** P4-WIFI6 överallt · 940 nm skott / 860 nm konstellation (ams OSRAM OSLON) ·
 kamera = sikte (PnP, ej stadiametri) · 16 mm-lins · deferred hit · eye-safety i HW · 4-TSOP-diamant 40° patch ·
-rund hjälm med F9P-puck i centrum · haptik på adjudikerad träff.
+rund hjälm (Ø108) med RTK-puck på baksidan · haptik på adjudikerad träff.

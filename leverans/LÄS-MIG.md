@@ -8,8 +8,8 @@ system-sim 28/28 PASS). Full rapport: [`FORSTA-BATCH.md`](FORSTA-BATCH.md).
 |---|---|---|---|---|
 | `optik/` | Vapen-optikmodul | 54×74 mm | 4 | 4 + 4 P4-standoff |
 | `firecontrol/` | Fire-control (stack på P4) | 71×21 mm | 2 | 4 |
-| `vest-patch/` | Väst-/hjälm-patch (×14) | 44×44 mm | 2 | 4 |
-| `helmet-mb/` | Hjälm-moderkort (rund) | Ø97 mm | 4 | 4 |
+| `vest-patch/` | Väst-/hjälm-patch (×14) | rund Ø45 mm | 2 | 4 |
+| `helmet-mb/` | Hjälm-moderkort (rund) | Ø108 mm | 4 | 4 + 4 puck |
 | `vest-mb/` | Väst-moderkort | 100×60 mm | 4 | 4 |
 | `led-tab/` | Konstellations-LED på 90°-vinklad micro-PCB (right-angle fot) (6/hjälm) | 6×11 mm | 2 | — |
 

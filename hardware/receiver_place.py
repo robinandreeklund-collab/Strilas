@@ -153,9 +153,10 @@ for i, a in enumerate((45, 135, 225, 315)):
     vest_pos[f"U{i+1}"] = (*_comp(cx, cy, rot, _OFF_TSOP), rot)   # TSOP-kropp centrerad på ringen
     vest_pos[f"D{i+1}"] = (*_ring2(_PD, a), rot)                  # OR-diod på ekern (radiellt inåt)
     vest_pos[f"C{i+2}"] = (*_ring2(_PC, a), rot)                  # avkoppling stackad innanför OR
-# 4 LED-tabbar @ KARDINALER (0/90/180/270) — aim radiellt UT (böjs 40°), 45° från TSOP
+# 4 LED-tabbar @ KARDINALER (0/90/180/270) — pad-rad TANGENTIELL (precis som TSOP) så tabben viks
+# radiellt UT (böjs 40°, LED mot horisonten). rot=(a+180) → pad-axel tangentiell (a+90).
 for i, a in enumerate((0, 90, 180, 270)):
-    vest_pos[f"D{i+7}"] = (*_ring2(_PL, a), (a + 90) % 360)
+    vest_pos[f"D{i+7}"] = (*_ring2(_PL, a), (a + 180) % 360)
 # 4 monteringshål MITT i TSOP→tab-luckorna (67.5/157.5/247.5/337.5) → symmetriskt, EJ snett mot tab/TSOP
 for i, a in enumerate((67.5, 157.5, 247.5, 337.5)):
     vest_pos[f"H{i+1}"] = (*_ring2(_PH, a), 0)
@@ -389,9 +390,31 @@ helmet_mb_pos = {
     "H4": (39.73, -21.13, 0),
 }
 
+# ===== Ø108-OMLÄGGNING (max Ø108) — RTK-puck Ø86 monteras på BAKSIDAN (sky-side); P4/optik på FRONTEN
+#   (mot hjälmen). Front-optiken (TSOP/OR-diod/LED/avkoppl) skalas UT till kanten (+7 mm radie; rotation =
+#   aim radiellt ut, behålls). ALLA kabel-kontakter → BAKSIDANS yttre ring (utanför Ø86-puck r43, innanför
+#   kort-r54), öppning radiellt UT. Centrum-el (P4/codec U7/amp U8/buck/IMU/const-R) stannar på fronten. =====
+for _ref in ("U3", "U4", "U5", "U6", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "C6", "C7", "C8", "C9"):
+    _x, _y, _rt = helmet_mb_pos[_ref][:3]; _r = _math.hypot(_x, _y)
+    _sc = (_r + 7.0) / _r
+    helmet_mb_pos[_ref] = (round(_x * _sc, 2), round(_y * _sc, 2), _rt)
+def _ghr(theta, r):                                  # GH-kontakt (SM0xB-GHS) på baksidan: öppning radiellt UT
+    th = _math.radians(theta)                        # (GH-footprint-ram ≈ +90° vs PH → rot=(180-theta))
+    return (round(r * _math.cos(th), 2), round(r * _math.sin(th), 2), (180 - theta) % 360, "B")
+helmet_mb_pos.update({
+    "J2": _se(35, 46, 5, "out", flip=True), "J3": _se(145, 46, 5, "out", flip=True),    # 4 patch-portar (S5B)
+    "J4": _se(220, 46, 5, "out", flip=True), "J5": _se(325, 46, 5, "out", flip=True),
+    "J6": _se(85, 47, 2, "out", flip=True), "J7": _se(105, 47, 2, "out", flip=True),    # headset mik/högt
+    "J11": _se(175, 47, 2, "out", flip=True),                                           # PTT
+    "J1": (-9.0, -30.0, 0, "B"), "J12": (9.0, -30.0, 0, "B"),                            # RTK-puck-GH 8+6-pol → BAK INRE (under Ø86-pucken, nära puckens pigtail; GH för bulkig f. yttre ringen)
+    "J10": (0.0, -44.0, 0),                                                             # 2S-batteri XH → FRONT botten (XH för bulkig f. bak-ringen; öppning ut nedkant)
+    "H1": (*_ring2(51, 15), 0), "H2": (*_ring2(51, 165), 0),                             # kort-fästhål i bak-ring-luckor
+    "H3": (*_ring2(51, 237), 0), "H4": (*_ring2(51, 340), 0),
+})
+
 BOARDS = {
     "helmet_mb": lambda: place("hardware/helmet-mb.net", "hardware/helmet-mb.kicad_pcb",
-                               helmet_mb_pos, ("circle", 48.5), layers=4, free=(-3, 3, -3, 3)),
+                               helmet_mb_pos, ("circle", 54.0), layers=4, free=(-3, 3, -3, 3)),
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
                           vest_pos, ("circle", _VEST_R), layers=2, free=(-2, 2, -2, 2), labels=vest_labels),
     "vest_mb": lambda: place("hardware/vest-mb.net", "hardware/vest-mb.kicad_pcb",

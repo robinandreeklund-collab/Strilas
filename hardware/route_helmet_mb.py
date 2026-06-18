@@ -70,8 +70,8 @@ def finish(path):
         z.SetLocalClearance(MM(0.25)); z.SetMinThickness(MM(0.2)); z.SetIsFilled(False)
         ch = pcbnew.SHAPE_LINE_CHAIN()
         import math as _m
-        for k in range(72):                       # cirkulär gjutning (rund board Ø97, inset r=47.5)
-            a = _m.radians(k * 5); ch.Append(V(47.5 * _m.cos(a), 47.5 * _m.sin(a)))
+        for k in range(72):                       # cirkulär gjutning (rund board Ø108, inset r=53)
+            a = _m.radians(k * 5); ch.Append(V(53.0 * _m.cos(a), 53.0 * _m.sin(a)))
         ch.SetClosed(True); z.AddPolygon(ch); b.Add(z)
     add_zone(pcbnew.In1_Cu, "GND"); add_zone(pcbnew.In2_Cu, "VBAT")   # In2 = VBAT-plan (LED-konstellationsström + patchar)
     add_zone(pcbnew.B_Cu, "GND"); add_zone(pcbnew.F_Cu, "GND")
@@ -105,7 +105,7 @@ clean = False
 for seed in range(1, 13):
     if os.path.exists(SES): os.remove(SES)   # tvinga ny SES → ingen stale-återanvändning
     # hård per-seed-timeout: headless-freerouting hänger ibland @1% CPU → döda + nästa seed
-    subprocess.run(["timeout", "-k", "5", "240", "xvfb-run", "-a",
+    subprocess.run(["timeout", "-k", "5", "450", "xvfb-run", "-a",
                     "java", "-jar", "/opt/freerouting.jar", "-de", DSN, "-do", SES, "-mp", "100"],
                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     subprocess.run(["bash", "-c", "pkill -9 -f freerouting.jar 2>/dev/null; pkill -9 Xvfb 2>/dev/null; true"])

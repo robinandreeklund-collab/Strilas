@@ -105,7 +105,7 @@ for i in range(3):
     l2 = LED(); l2["A"] += mid; l2["K"] += LEDC
 
 # ---------- RTK-puck (8-pol ZED-F9P + 6-pol alt-puck, parallellt) + 4 patch-kontakter ----------
-Jf = F9P()
+Jf = F9P(); Jf.ref = "J1"            # 8-pol ZED-F9P (explicit ref → undvik auto-kollision)
 Jf["VCC"] += VBAT; Jf["GND"] += GND; Jf["TXD"] += GNSS_TX; Jf["RXD"] += GNSS_RX
 Jf["SDA"] += I2C_SDA; Jf["SCL"] += I2C_SCL; Jf["PPS"] += Net("GNSS_PPS"); Jf["RSV"] += Net("F9P_RSV")
 # Alt-puck 6-pol GH PARALLELLT (samma UART/I²C/kraft → montera ENDERA pucken; delar fästhålen H5-H8).
@@ -113,7 +113,7 @@ Jf6 = F9P6(); Jf6.ref = "J12"
 Jf6["VCC"] += VBAT; Jf6["RX"] += GNSS_RX; Jf6["TX"] += GNSS_TX
 Jf6["SCL"] += I2C_SCL; Jf6["SDA"] += I2C_SDA; Jf6["GND"] += GND
 for i in range(4):
-    jp = PATCH()
+    jp = PATCH(); jp.ref = f"J{i+2}"  # patch-portar J2-J5 (explicit ref → undvik auto-kollision med J6 mik)
     jp["VBAT"] += VBAT; jp["GND"] += GND; jp["DATA"] += DP[i]; jp["LED_EN"] += LED_EN; jp["P3V3"] += P3V3
 
 # ---------- LJUD/KOMM: ES8388-codec (U7) + PAM8302A klass-D-amp (U8) → riktigt headset ----------
