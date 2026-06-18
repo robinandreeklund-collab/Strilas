@@ -32,7 +32,7 @@ def defs():
         LDO=mk("HT7333-A", "U", [(1, "GND"), (2, "VIN"), (3, "VOUT")], "Package_TO_SOT_SMD:SOT-89-3", "HT7333-A"),
         R=mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric"),
         C=mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0805_2012Metric", "100nF"),
-        J=mk("Conn_1x05", "J", [(i, i) for i in range(1, 6)], "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical", "VBAT·GND·DATA·LED_EN·3V3"),
+        J=mk("Conn_1x05", "J", [(i, i) for i in range(1, 6)], "Connector_JST:JST_PH_S5B-PH-K_1x05_P2.00mm_Horizontal", "VBAT·GND·DATA·LED_EN·3V3"),
         UFL=mk("U.FL", "J", [(1, "S"), (2, "G")], "Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical", "GNSS"),
         MH=mk("MH", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2"),
     )

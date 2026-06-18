@@ -121,41 +121,56 @@ def _ring2(r, deg): return (round(r*_math.cos(_math.radians(deg)), 2), round(r*_
 # courtyard-mittpunkt ≠ origo för TSOP (2.54,1.31) & 1x5-header (0,5.07) → kompensera så att KROPPEN
 # (ej origo) hamnar centrerad på ringen/positionen. _comp = origo som ger önskad courtyard-mitt.
 def _comp(cx, cy, rot, off):
-    rad = _math.radians(rot); ox, oy = off          # KiCad roterar medurs i sitt Y-ned-system
-    rx = ox*_math.cos(rad) + oy*_math.sin(rad); ry = -ox*_math.sin(rad) + oy*_math.cos(rad)
-    return (round(cx - rx, 2), round(cy - ry, 2))
-_OFF_TSOP, _OFF_J1 = (2.54, 1.31), (0.0, 5.07)
-_PT, _PD, _PC = 16.3, 11.0, 8.4          # TSOP-kropp-ring / OR-diod / TSOP-avkoppling (tangentiella, innanför TSOP)
-_PL, _PR, _PH = 16.0, 15.0, 18.7         # LED-tab-ring / 10R-serieR (radiell i luckor) / monteringshål
-_VEST_R = 21.5                            # kort-radie (Ø43) — rund, ryms i Ø46,5-dom
+    # origo som ger courtyard-CENTRUM på (cx,cy) efter SetOrientationDegrees(rot). off = courtyard-mitt-
+    # offset frå origo @rot0 i KiCad-footprint-koord (Y-ned). Board-offset (Y-upp) = standardrot(rot)·(ox,-oy).
+    # (KALIBRERAT mot faktisk placerad board — tidigare formel hade Y-teckenfel → asymmetriska TSOP.)
+    rad = _math.radians(rot); ox, oy = off
+    dx = ox*_math.cos(rad) + oy*_math.sin(rad)
+    dy = ox*_math.sin(rad) - oy*_math.cos(rad)
+    return (round(cx - dx, 2), round(cy - dy, 2))
+def _se(theta, r_pad, npin, opening="out", flip=False):
+    """Side-entry JST (S-typ): pad-rad TANGENTIELLT centrerad @ (r_pad, theta), kropp/kabel-öppning
+    RADIELLT. opening='out' → kabel ut mot kanten; 'in' → mot centrum. Kalibrerat: front opening=(rot+270)%360,
+    flip opening=(90-rot)%360; padrow front=rot, flip=(-rot). Returnerar (origin_x, origin_y, rot[, 'B'])."""
+    th = _math.radians(theta)
+    pcx, pcy = r_pad*_math.cos(th), r_pad*_math.sin(th)     # pad-rad-centrum (board y-up)
+    odir = theta % 360 if opening == "out" else (theta + 180) % 360
+    rot = ((90 - odir) % 360) if flip else ((odir + 90) % 360)
+    prang = (-rot) % 360 if flip else rot                  # pad-rad-riktning
+    half = (npin - 1) * 2 / 2.0
+    ox = pcx - half*_math.cos(_math.radians(prang)); oy = pcy - half*_math.sin(_math.radians(prang))
+    return (round(ox, 2), round(oy, 2), rot) + (("B",) if flip else ())
+_OFF_TSOP = (2.54, 1.31)                 # TSOP-courtyard-mitt-offset (courtyard centreras på ringen)
+_PT, _PD, _PC = 16.0, 11.0, 8.5          # TSOP-courtyard / OR-diod / avkoppling — ALLA på TSOP-ekern (radiellt)
+_PL, _PH = 16.0, 20.0                    # LED-tab-ring (kardinal) / monteringshål (yttre annulus, i luckorna)
+_VEST_R = 22.5                            # kort-radie (Ø45) — rund, ryms i Ø46,5-dom (ren symmetri kräver annulus)
 vest_pos = {}
-for i, a in enumerate((45, 135, 225, 315)):       # U1-U4 TSOP (kropp centrerad på ring); OR + avkoppl
-    rot = (a + 90) % 360                          #   sida-vid-sida innanför TSOP (i dess vida vinkelspann)
+# 4 TSOP @ DIAGONALER (45/135/225/315) — OR-diod (D1-4) + avkoppling (C2-5) RADIELLT INÅT på SAMMA
+# eker (4 IDENTISKA kluster → full symmetri; ingen +11°-lutning längre).
+for i, a in enumerate((45, 135, 225, 315)):
+    rot = (a + 90) % 360
     cx, cy = _ring2(_PT, a)
-    vest_pos[f"U{i+1}"] = (*_comp(cx, cy, rot, _OFF_TSOP), rot)
-    vest_pos[f"D{i+1}"] = (*_ring2(_PD, a + 11), rot)       # OR-diod innanför TSOP, +11° (fri J1-lucka)
-    vest_pos[f"C{i+2}"] = (*_ring2(_PC, a + 11), rot)        # avkoppling stackad innanför OR
-for i, a in enumerate((0, 90, 180, 270)):         # D7-D10 LED-tabbar (aim ut, 45° från TSOP)
+    vest_pos[f"U{i+1}"] = (*_comp(cx, cy, rot, _OFF_TSOP), rot)   # TSOP-kropp centrerad på ringen
+    vest_pos[f"D{i+1}"] = (*_ring2(_PD, a), rot)                  # OR-diod på ekern (radiellt inåt)
+    vest_pos[f"C{i+2}"] = (*_ring2(_PC, a), rot)                  # avkoppling stackad innanför OR
+# 4 LED-tabbar @ KARDINALER (0/90/180/270) — aim radiellt UT (böjs 40°), 45° från TSOP
+for i, a in enumerate((0, 90, 180, 270)):
     vest_pos[f"D{i+7}"] = (*_ring2(_PL, a), (a + 90) % 360)
-for i, a in enumerate((22.5, 112.5, 202.5)):      # R3-R5 = 3× 10R 2512 (RADIELLA i luckor → smal tangentdim)
-    vest_pos[f"R{i+3}"] = (*_ring2(_PR, a), a % 360)
-# J1 som radiell EKER i luckan @290° (mellan tab@270 och TSOP@315): kropp-mitt r=10,5, pins ut → kabel
-# över kanten. body_angle=(270+rot)%360 ⇒ rot=20 ger pins @290°; origo = kropp-mitt − 5,08·(cos290,sin290).
-_J1A = 288                                        # J1-eker mitt i luckan @288° (mellan tab@270 och TSOP@315)
-_J1bc = _ring2(10.5, _J1A)
-_J1o = (round(_J1bc[0] - 5.08*_math.cos(_math.radians(_J1A)), 2),
-        round(_J1bc[1] - 5.08*_math.sin(_math.radians(_J1A)), 2))
-vest_pos.update({                                 # centrum-disk (r<6) — fri från J1 nu
-    "D5": (-2.5, 4.5, 90), "D6": (2.5, 4.5, 90),  # 2 fasta OSLON-konstellation (aim upp), topp-center
-    "J1": (_J1o[0], _J1o[1], (_J1A - 270) % 360), # 5-pol kontakt radiell eker (pins ut @296°)
-    "Q1": (0.0, 0.0, 0),                          # LED-driver FET (mitt)
-    "C1": (-2.7, -3.0, 0),                        # 10µF bulk (VBAT), nedre vänster (J1-ekern går lägre-höger)
-    "R1": (5.0, 1.0, 90), "R2": (-5.0, 1.0, 90),  # 10k DATA-pullup + 220R gate (center-sidor, upp)
-})
-for i, a in enumerate((78, 168, 258, 348)):       # H1-H4 monteringshål (mitt i TSOP→tab-luckorna)
+# 4 monteringshål MITT i TSOP→tab-luckorna (67.5/157.5/247.5/337.5) → symmetriskt, EJ snett mot tab/TSOP
+for i, a in enumerate((67.5, 157.5, 247.5, 337.5)):
     vest_pos[f"H{i+1}"] = (*_ring2(_PH, a), 0)
-# sikt-etikett på silkscreen: böj-instruktion (centrum-fri yta)
-vest_labels = [(0.0, 6.4, "BOJ TSOP+TAB 40 UT", 0.7)]
+# CENTRUM (spegelsymmetriskt vänster/höger): 2 fasta OSLON + driver + 3× 10R-grenR + DATA-pull/gate + bulk.
+# J1 (5-pol JST-PH) är SIDOMONTERAD på BAKSIDAN (S-typ, låg bygghöjd, kabel ut i kant) → fronten helt fri.
+vest_pos.update({
+    "D5": (-2.4, 1.5, 0), "D6": (2.4, 1.5, 0),       # 2 fasta OSLON-konstellation (aim upp), center-par
+    "Q1": (0.0, -3.0, 0),                            # LED-driver FET, center
+    "R1": (-4.2, -3.0, 90), "R2": (4.2, -3.0, 90),   # DATA-pull 10k + gate 220R, flankerar FET (spegel)
+    "R3": (0.0, 9.0, 0),                             # 10R gren-1 — N-kanal (radiellt, mellan center o tab)
+    "R4": (9.0, 0.0, 90), "R5": (-9.0, 0.0, 90),     # 10R gren-2/3 — Ö/V-kanal (spegel)
+    "C1": (0.0, -9.0, 90),                           # 10µF bulk (VBAT) — S-kanal
+    "J1": _se(270, 14.0, 5, "out", flip=True),       # 5-pol JST-PH SIDOMONT. på BAKSIDAN, kabel ut nedkant
+})
+vest_labels = [(0.0, 5.5, "BOJ 40 UT", 0.5)]         # böj-instruktion (kort, center-fri yta)
 
 # ---- hjälm-NOD (Ø100, komplett: buck+XIAO-S3+8TSOP+4LED+GNSS+I2S-audio) ----
 # Ring (r=42) = 8× TSOP utåtriktade (360° huvud) + diod-OR + avkoppling strax innanför.
@@ -282,9 +297,11 @@ firecontrol_pos = {
 
 # ---- väst-moderkort v2 (100×60, väst-nod) — 10 zon-kontakter + ESP32-C6-devkit + 2×TPIC + buck ----
 vest_mb_pos = {}
-for i, xc in enumerate([-36, -18, 0, 18, 36]):  # xc = önskad mitt; origo = xc-6.35 (1x6 sträcker +x vid rot90)
-    vest_mb_pos[f"J{i+1}"] = (xc - 6.35, 24, 90)  # övre zon-rad J1-J5 (1x6, rot90, centrerad)
-    vest_mb_pos[f"J{i+6}"] = (xc - 6.35, -24, 90)  # nedre zon-rad J6-J10
+# 10 zon-kontakter = S6B JST-PH SIDE-ENTRY. Övre rad: öppning UPP (kabel ut toppkant); nedre: öppning NED.
+# rot180→öppning=90 (upp), pad-rad längs -x → origo = mitt+(5,0). rot0→öppning=270 (ned), origo = mitt-(5,0).
+for i, xc in enumerate([-36, -18, 0, 18, 36]):
+    vest_mb_pos[f"J{i+1}"] = (xc + 5.0, 21.0, 180)   # övre zon-rad J1-J5 (öppning upp, kabel ut toppkant)
+    vest_mb_pos[f"J{i+6}"] = (xc - 5.0, -21.0, 0)    # nedre zon-rad J6-J10 (öppning ned, kabel ut nederkant)
 vest_mb_pos.update({
     "J11": (-25.4, 8.89, 90), "J12": (-25.4, -8.89, 90),  # ESP32-P4-WIFI6 (2× 1x20 kant-sockel; rader 17.78mm=7×2.54 DXF-exakt, origin -25.4 centrerar)
     "U2": (-41, 11, 0), "C5": (-33, 11, 0),      # TPIC6B595 #1 (VIB-driver) + avkoppl (vänster)
@@ -293,7 +310,7 @@ vest_mb_pos.update({
     "U1": (-10, -16, 0), "L1": (-3, -16, 0),     # buck + induktor (nedre-centrum)
     "C1": (-17, -16, 0), "C2": (-17, -13, 0), "C3": (4, -16, 0), "C4": (11, -16, 0),  # Cin/.. + Cbulk
     "R1": (-7, -13, 90), "R2": (1, -13, 90),     # FB-delare
-    "J13": (40, -12, 90),                        # 2S-batteri XT30PW (höger kant; ≥15A för LED-toppen, öppning ut över kanten)
+    "J13": (42, -5, 90),                         # 2S-batteri XT30PW (höger kant, mellan TPIC o nedre zon-rad; ≥15A)
     "H1": (-48, 28, 0), "H2": (48, 28, 0), "H3": (-48, -28, 0), "H4": (48, -28, 0),
 })
 
@@ -325,14 +342,27 @@ helmet_mb_pos = {
     "R5": (11.29, 31.01, 70),
     "R6": (-11.29, 31.01, 20),
     "R7": (10.0, -2.0, 0),
+    # RTK-puck-kontakter (GH, horisontella SMD): J1=8-pol ZED-F9P, J12=6-pol alt-puck — botten, kabel mot puck (centrum)
     "J1": (-0.0, -39.0, 0),
-    "J10": (-15.73, -30.78, 335),
-    "J2": (32.61, 9.35, 106),
-    "J3": (32.61, -9.35, 74),
-    "J4": (-42.37, 12.15, 74),
-    "J5": (-42.37, -12.15, 106),
-    "J6": (30.36, 1.06, 92),
-    "J7": (-44.35, 0.0, 90),
+    "J10": (-22.0, -34.0, 0),                        # 2S-batteri (XH), nedre vänster
+    # 4 patch-portar = S5B side-entry på BAKSIDAN (fronten = optik-ring, för trång) — öppning radiellt UT,
+    # spridda runt bak-kanten, kabel ut. (Front-kanten reserverad för obligatorisk TSOP/LED-optik.)
+    "J2": _se(0, 41, 5, "out", flip=True), "J3": _se(52, 41, 5, "out", flip=True),
+    "J4": _se(108, 41, 5, "out", flip=True), "J5": _se(150, 41, 5, "out", flip=True),
+    # --- ES8388 headset-kluster: codec (U7) VÄNSTER om P4 (korta I²S/I²C/mik-nät) m. fanout-halo;
+    #     PAM8302A-amp (U8) i HÖGER korridor (mellan patch-J2/J3). ---
+    "U7": (-31.0, 0.0, 0),                          # ES8388 codec (QFN-28 0,5mm) — fri halo runt
+    "C10": (-35.0, 5.5, 0), "C11": (-31.0, 6.0, 0), "C12": (-27.0, 5.5, 0),   # codec-avkoppl (N)
+    "C13": (-35.0, -5.5, 0), "C14": (-31.0, -6.0, 0), "C15": (-27.0, -5.5, 0),# codec-ref/avkoppl (S)
+    "C16": (-38.0, 2.5, 0), "C17": (-38.0, -2.5, 0),                          # VREF/VMID-filter (W)
+    "C18": (-41.5, 4.0, 90), "C19": (-41.5, 0.0, 90),                          # mik AC-koppl (Cmic/Crin)
+    "R8": (-41.5, -4.0, 90),                        # mik-bias 2k2
+    "J6": _se(205, 42, 2, "out", flip=True),        # MIC_BOOM (S2B side-entry, BAKSIDAN)
+    "U8": (40.0, 0.0, 0),                           # PAM8302A amp (SOIC-8) — höger korridor
+    "C20": (33.0, 3.0, 0), "C21": (33.0, -3.0, 0),                            # amp ingång/VDD (klar U8-courtyard 7,4 mm)
+    "R9": (45.0, 3.0, 90), "R10": (45.0, -3.0, 90),                           # I²C-pullups 4k7
+    "J7": _se(240, 42, 2, "out", flip=True),        # SPEAKER (S2B side-entry, BAKSIDAN)
+    "J11": _se(295, 42, 2, "out", flip=True),       # PTT-knapp (S2B side-entry, BAKSIDAN)
     "U2": (0.16, 13.5, 0),
     "C4": (-3.7, 13.5, 90),
     "C5": (3.7, 13.5, 90),
@@ -346,10 +376,13 @@ helmet_mb_pos = {
     "R1": (14.5, -14.0, 90),
     "R2": (14.5, -17.5, 90),
     "R3": (14.5, -21.0, 90),
-    "H5": (10.4, 16.95, 0),
-    "H6": (-10.4, 16.95, 0),
-    "H7": (-10.4, -16.95, 0),
-    "H8": (10.4, -16.95, 0),
+    # puck-fästhål: MEDELMÖNSTER (±10.2 × ±17.0) → passar BÅDE ZED-F9P (20.80×33.90) och
+    # alt-puck (~20.0×34.1). Skillnad ~0,2 mm/håll absorberas av M2.5-hål (verifiera mot fysisk puck).
+    "H5": (10.2, 17.0, 0),
+    "H6": (-10.2, 17.0, 0),
+    "H7": (-10.2, -17.0, 0),
+    "H8": (10.2, -17.0, 0),
+    "J12": (13.0, -34.0, 0),                         # alt-puck 6-pol GH (nära 8-pol J1 + puck, samma nät)
     "H1": (39.73, 21.13, 0),
     "H2": (6.26, 44.56, 0),
     "H3": (-10.89, -43.66, 0),

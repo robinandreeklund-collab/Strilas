@@ -179,8 +179,10 @@ Två zonsystem som gör olika saker:
 
 ## 10. Patch-design (täcknings-nod)
 
-Identisk patch på väst och hjälm — **rund Ø43 mm, 4-falds symmetrisk (4× M2-hål)**, lim/kardborre +
-ev. rökfärgad polykarbonat-dom (Ø46,5 inner) som skydd över de böjda benen:
+Identisk patch på väst och hjälm — **rund Ø45 mm, 4-falds symmetrisk (4× M2-hål)**, lim/kardborre +
+ev. rökfärgad polykarbonat-dom (Ø46,5 inner) som skydd över de böjda benen. **Kontakt = JST-PH 5-pol
+SIDE-ENTRY (S-typ) på BAKSIDAN** → låg bygghöjd, kabel ut i kant, domen täcker fronten obehindrat.
+Fronten = ren optik (4 identiska TSOP-kluster + 4 LED-tabbar i kardinalriktning + 2 fasta LED), driver/kraft i centrum:
 
 - **4× TSOP4856** (ledade) i **diamant**, var och en böjd **~40° utåt** från kortets normal.
   Beräknat optimum: **99,5 % av framåt-hemisfären** täckt, **100 % inom 60° zenit**, ~2,3 mottagare
@@ -227,12 +229,12 @@ okontrollerade serier vandrar av målet). IIM-42653: ±4000 dps, RNSD 0,005 °/s
 |---|---|---|---|---|
 | **Optik/vapen** | 54×74 mm | 4 | P4-stack, OV9281-USB, 940 nm-emitter + CC-driver, IMU, lins-hål Ø16 | 0/0/0 |
 | **Fire-control** | 71×21 mm | 2 | Stackas på P4 edge A; avtryck/laddhandtag/mag-switchar, recoil-ctrl, NFC, 2× extra IMU | 0/0/0 |
-| **Väst-patch** | **rund Ø43 mm** | 2 | 4 TSOP diamant + 6 LED (2 fasta + 4 tab) i 3 grenar + FET + 1×5-kontakt (×10 på västen) | 0/0/0 |
+| **Väst-patch** | **rund Ø45 mm** | 2 | 4 TSOP diamant + 6 LED (2 fasta + 4 tab) i 3 grenar + FET + JST-PH 5-pol side-entry (baksida) | 0/0/0 |
 | **Hjälm-mb** | **rund Ø97 mm** | 4 | P4, F9P-puck (centrum), IMU, 4 TSOP + 6 LED-tab, ljud (amp+mik), 4 patch-kontakter | 0/0/0 |
-| **Väst-mb** | 100×60 mm | 4 | P4, 10 zon-kontakter (patch+vibrator), 2× TPIC6B595, buck, **XT30-batteri** (In2=VBAT-plan) | 0/0/0 |
+| **Väst-mb** | 100×60 mm | 4 | P4, 10 zon-kontakter JST-PH 6-pol side-entry (patch+vibrator), 2× TPIC6B595, buck, **XT30-batteri** (In2=VBAT-plan) | 0/0/0 |
 
-**Strömplan:** alla 4-lagerskort In1=GND, F/B=GND-fyll. In2 = **+3V3** (hjälm-mb, flest pads) resp.
-**VBAT** (väst-mb, hög LED-ström). P4-pinout **byte-identisk** över alla kort, verifierad mot Waveshares
+**Strömplan:** alla 4-lagerskort In1=GND, F/B=GND-fyll. In2 = **VBAT** (väst-mb + hjälm-mb + optik —
+bär LED-konstellationsström + patchar). P4-pinout **byte-identisk** över alla kort, verifierad mot Waveshares
 dok (I²C SCL=GPIO8/SDA=GPIO7). Carrier-buck matar 3,3 V-last; P4 självförsörjer via VSYS=VBAT.
 
 ---
@@ -298,11 +300,13 @@ adjudikerar; väst/hjälm rapporterar DATA-träffar + RTK-position; allt loggas 
 Order­paket: **`vapen-stack/nextpcb/`** — per kort `<kort>-gerbers.zip` + `-bom.xls` + `-centroid.csv/.xls`.
 3D: `hardware/<kort>.step`. Beredskaps­rapport: **`nextpcb/FORSTA-BATCH.md`**.
 
-- **NextPCB monterar endast SMT.** Alla 2,54 mm TH-kontakter (P4-socklar, patch-/zon-/ljud-headers,
-  batteri-JST) **kund-löds** (DNP i BOM, ute ur centroid). ZED-F9P GH (SMD) monteras av NextPCB.
-- **Köps separat:** 3× ESP32-P4-WIFI6, ZED-F9P-puck, OV9281 + 860 nm IR-pass-filter, MAX98357A-amp +
-  högtalare, MEMS-mik, 10× ERM-vibrator, 2S-batterier, TSOP4856 (ledade, böjs 40° ut), OSLON-emitter/LED
-  (ams OSRAM, kund-levererade), IR-kupa (mörk-IR-akryl).
+- **NextPCB monterar endast SMT.** P4-socklar samt alla JST-PH-kontakter (patch/zon/headset, nu **side-entry**)
+  + batteri-JST/XT30 **kund-löds** — markerade **DNP i BOM** (NextPCB monterar EJ) men kvar som beställnings-
+  rader, ute ur centroid. ZED-F9P GH (SMD) monteras av NextPCB. FC:s 2 extra IMU = **prototyp-DNP** (breakout först).
+- **OSLON-emittrar/LED (ams OSRAM) sourcas + placeras nu av NextPCB** (ej längre consignment "C" — verifiera
+  lager/EOL inför produktion, t.ex. 940 nm SFH4725AS bin13). Matcha kamerans 860/940 nm IR-pass.
+- **Köps separat:** 3× ESP32-P4-WIFI6, RTK-puck (ZED-F9P 8-pol GH **eller** alt all-in-one UM980/F9P Ø86 6-pol GH),
+  OV9281 + IR-pass-filter, headset (mik/högtalare/PTT), 10× ERM-vibrator, 2S-batterier, IR-kupa (mörk-IR-akryl).
 - **Optik-linser + hållare (köps separat, MONTERAS MANUELLT):** Carclo TIR-kollimatorlins för OSLON Black
   (Carclo 10003-serien — välj spridning för räckvidd) + Carclo-lenshållare per emitter, klistras/snäpps
   över emittrarna efter SMT (fästben finns på optikkortet). NextPCB SMT-placerar OSLON-emittrarna med

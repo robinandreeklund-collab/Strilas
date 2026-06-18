@@ -31,7 +31,7 @@ MPN = {
     "AOD4184A":    ("AOD4184A", "Alpha & Omega", "N-MOSFET 40V logic-level DPAK (TO-252) — CC pass-FET (linjär)", "", ""),
     "OPA171":      ("OPA171AIDBVR", "Texas Instruments", "Op-amp 36V 3MHz SOT-23-5 — CC-sänkans regulator", "", ""),
     "SMBJ12A":     ("SMBJ12A", "Littelfuse", "TVS unidir 12V SMB", "", ""),
-    "SFH4725S_940nm":("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black (980mW@1A)", "C", "UTGÅENDE/EOL (databl. 2023) men lagerförs ännu (RS/Farnell/DigiKey, last-time-buy). Verifiera aktuell 940nm OSLON-ersättare inför produktion. Kund levererar; NextPCB SMT-placerar"),
+    "SFH4725S_940nm":("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black (980mW@1A)", "", "UTGÅENDE/EOL (databl. 2023) men lagerförs ännu (RS/Farnell/DigiKey, last-time-buy). NextPCB sourcar + SMT-placerar (verifiera lager/aktuell 940nm OSLON-ersättare inför produktion, t.ex. SFH4725AS bin13)"),
     "PTC_1A":      ("MF-MSMF075/16X-2", "Bourns", "PTC resättbar 0.75A-hold 16V 1206", "", "NOTE: verifiera hold-ström mot systemtopp"),
     "PTC_3A":      ("MF-MSMF300/16-2", "Bourns", "PTC resättbar 3A-hold 16V 1812 — matningsskydd (matar P4+IR, 3A-skala)", "", "alltid-i-lager jellybean; 2S 8.4V kräver 1812 f. 3A@16V"),
     "IIM-42653": ("IIM-42653", "TDK InvenSense", "6-axlig industri-IMU LGA-14, ±4000dps, -40..+105C", "", ""),
@@ -49,11 +49,18 @@ MPN = {
     # --- väst-patch ---
     "TSOP4856":    ("TSOP4856", "Vishay", "IR-mottagare 56 kHz (940 nm), LEDAD MOLD-3 (genomplåt/THT)", "", "KUND monterar: böjs 40° för sikte + handlöds (THT, ej SMT) → ej i centroid"),
     "BAT54":       ("BAT54-7-F", "Diodes Inc", "Schottky SOD-123 (OR av TSOP-utgångar)", "", ""),
-    "SFH4715AS_860nm": ("SFH 4715AS", "ams OSRAM", "IR-LED 860 nm OSLON Black SMD, Ie 780 mW/sr@1A (konstellation)", "C", "NextPCB SMT-PLACERAR (precision); kund levererar LED:n. Matcha kamerans 860 nm IR-pass"),
+    "SFH4715AS_860nm": ("SFH 4715AS", "ams OSRAM", "IR-LED 860 nm OSLON Black SMD, Ie 780 mW/sr@1A (konstellation)", "", "NextPCB sourcar + SMT-placerar (precision). Matcha kamerans 860 nm IR-pass (verifiera lager)"),
     "10R":         ("CRCW251210R0FKEGHP", "Vishay", "Res 10R 1% 2W 2512 (HP) — LED-serieR konstellation", "", "OBS max ~50% duty (2,5W topp @0,5A)"),
     "HT7333-A":    ("HT7333-A", "Holtek", "LDO 3.3V 250mA SOT-89, Vin<=12V — matar TSOP+DATA (TSOP abs-max 6V)", "", ""),
     # --- hjälm-nod ---
     "AP63203":     ("AP63203WU-7", "Diodes Inc", "Synk-buck 3.8-32Vin 2A TSOT23-6 — 2S→3V3 @1A", "", ""),
+    # --- hjälm-headset: ES8388-codec + PAM8302A-amp (analog bom-mik + I²S + I²C, 3,3V) ---
+    "ES8388":      ("ES8388", "Everest Semiconductor", "Stereo audio-codec QFN-28 (analog mik-preamp + I²S DAC/ADC, I²C 0x10) — 3,3V", "", "NextPCB SMT-placerar; pinout verifierad mot Everest ES8388-UG"),
+    "PAM8302A":    ("PAM8302AASCR", "Diodes Inc", "2,5W mono klass-D-amp (öronhögtalare) — SO-8", "", "verifiera SO-8-SKU mot footprint"),
+    "2.2k":        ("RC0805FR-072K2L", "Yageo", "Res 2.2k 1% 0805 — electret-mik-bias", "", ""),
+    "MIC_BOOM":    ("S2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol header 2.0mm THT SIDOMONTERAD (S-typ, låg bygghöjd) — analog bom-electret-mik", "", "TH; headset-element kund-kablas"),
+    "SPEAKER":     ("S2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol header 2.0mm THT SIDOMONTERAD (S-typ) — öronhögtalare (mono)", "", "TH; headset-element kund-kablas"),
+    "PTT_BTN":     ("S2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol header 2.0mm THT SIDOMONTERAD (S-typ) — PTT-knapp", "", "TH; knapp kund-kablas"),
     "4.7uH":       ("FNR5040320R47M", "Changjiang", "Effektinduktor 4.7uH 5x5mm (buck)", "", "verifiera mättnadsström >2A"),
     "31.6k":       ("RC0805FR-0731K6L", "Yageo", "Res 31.6k 1% 0805 — buck FB (övre, 3.33V)", "", ""),
     "22uF":        ("CL31A226KAHNNNE", "Samsung", "MLCC 22uF 25V X5R 1206 — buck-utgång", "", ""),
@@ -65,16 +72,16 @@ MPN = {
     # --- väst-moderkort ---
     "74HC165":     ("SN74HC165DR", "Texas Instruments", "8-bit PISO shift-register SOIC-16 (läs 10 DATA via SPI)", "", ""),
     "TPIC6B595":   ("TPIC6B595DWR", "Texas Instruments", "Power 8-bit shift-register SOIC-20W, 150mA/kanal open-drain (vibrator-driver)", "", ""),
-    "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB": ("2.54-1x06", "generisk", "Header 1x06 → väst-patch + zon-vibrator", "", "TH; patch (pin1-4) + ERM-motor (pin5-6) kund-kablas"),
-    "Patch: VBAT·GND·DATA·LED_EN·3V3": ("2.54-1x05", "generisk", "Header 1x05 → dubbel-aim-patch (hjälm-moderkort)", "", "TH; kund-lödd"),
+    "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB": ("S6B-PH-K-S(LF)(SN)", "JST", "JST-PH 6-pol header 2.0mm THT SIDOMONTERAD (S-typ, låg bygghöjd) → väst-patch (pin1-5) + zon-vibrator (pin6)", "", "TH; patch-kabel + ERM-motor kund-kablas"),
+    "Patch: VBAT·GND·DATA·LED_EN·3V3": ("S5B-PH-K-S(LF)(SN)", "JST", "JST-PH 5-pol header 2.0mm THT SIDOMONTERAD (S-typ) → dubbel-aim-patch (hjälm-moderkort)", "", "TH; kund-lödd. Matchar patchens JST-PH-kontakt"),
     "100R":        ("RC0805FR-07100RL", "Yageo", "Res 100R 1% 0805", "", ""),
     "10k":         ("RC0805FR-0710KL", "Yageo", "Res 10k 1% 0805", "", ""),
-    "VBAT·GND·DATA·LED_EN·3V3":("2.54-1x05", "generisk", "Stiftlist 1x05 2.54 mm → väst-moderkortets zon-kontakt", "", "TH; 3V3 från moderkortet (ingen LDO på patchen)"),
+    "VBAT·GND·DATA·LED_EN·3V3":("S5B-PH-K-S(LF)(SN)", "JST", "JST-PH 5-pol header 2.0mm THT SIDOMONTERAD (S-typ, horisontell, låg bygghöjd) på patchens BAKSIDA → kabel ut i kant", "", "TH; kund-lödd. Side-entry (bygger ej på höjden under domen)"),
     # --- P4-WIFI6 kant-socklar (moderkort: ESP32-P4-WIFI6 stackas i 2× 1x20 hona) ---
     "P4-WIFI6 edge B": ("2.54-1x20-FH", "generisk", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge B (kraft)", "", "TH; kund-lödd. ESP32-P4-WIFI6 köps separat (Waveshare)"),
     "P4-WIFI6 edge A": ("2.54-1x20-FH", "generisk", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge A (signaler)", "", "TH; kund-lödd. ESP32-P4-WIFI6 köps separat (Waveshare)"),
-    "SFH4725S_940nm": ("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD (980mW@1A)", "C", "UTGÅENDE/EOL men lagerförs ännu (last-time-buy); verifiera aktuell 940nm OSLON-ersättare inför produktion. NextPCB SMT-PLACERAR (precision UNDER LINSEN); kund levererar emittern"),
-    "SFH4725AS_940nm_bin13": ("SFH 4725AS", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD, bin 13 (aktiv drop-in för utgångna 4725S; samma paket C63062-A4141/footprint/optik)", "C", "NextPCB SMT-PLACERAR (precision UNDER LINSEN); kund levererar emittern"),
+    "SFH4725S_940nm": ("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD (980mW@1A)", "", "UTGÅENDE/EOL men lagerförs ännu (last-time-buy); NextPCB sourcar + SMT-placerar (precision UNDER LINSEN). Verifiera lager/ersättare SFH4725AS bin13 inför produktion"),
+    "SFH4725AS_940nm_bin13": ("SFH 4725AS", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD, bin 13 (aktiv drop-in för utgångna 4725S; samma paket C63062-A4141/footprint/optik)", "", "NextPCB sourcar + SMT-placerar (precision UNDER LINSEN)"),
 }
 
 # Inköpta optik-delar UTAN PCB-footprint (köps separat, monteras manuellt över emittrarna).
@@ -132,11 +139,11 @@ def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozens
         elif refs and all(r in dnp_refs for r in refs):
             proc = "DNP"; note = "Prototyp: monteras EJ (körs på breakout först)"
         elif is_conn(pkg) or (refs and all(r in cust_refs for r in refs)):
-            # THT/handlödda delar (kontakter, headers, ledade TSOP, LED-tab-socklar): SKA finnas i
-            # BOM:en som beställbara rader — kund löder själv hemma. Markeras därför EJ "DNP".
-            # Hålls dock ute ur CENTROID (NextPCB pick-and-place klarar ej genomplåt) → maskin-placeras ej.
-            if proc == "DNP": proc = ""
-            note = note or "Handlöds av kund hemma (THT/ledad) — med i BOM för beställning, ej maskin-placerad (ej i centroid)"
+            # THT/handlödda delar (kontakter, headers, ledade TSOP, LED-tab-socklar): kund köper +
+            # löder själv hemma. Markeras DNP → NextPCB monterar EJ. Står ändå kvar som BOM-rad
+            # (designator/antal/MPN) = beställningsreferens. Hålls ute ur CENTROID (ej maskin-placerad).
+            proc = "DNP"
+            note = "Kund handlöder själv (THT/ledad) — DNP: NextPCB monterar EJ, ej i centroid. Med i BOM som beställningsreferens."
         ws.write(row, 0, ",".join(refs)); ws.write(row, 1, len(refs))
         ws.write(row, 2, mpn); ws.write(row, 3, mfr); ws.write(row, 4, pkg)
         ws.write(row, 5, desc); ws.write(row, 6, proc); ws.write(row, 7, note)
@@ -188,8 +195,12 @@ if __name__ == "__main__":
     print("OPTIK:"); build("weapon-module.kicad_pcb", "weapon-module.net", "nextpcb/optik-bom.xls",
           dnp_refs={"U1","C3","C4","C5"}, ovr_refs={"R3"}, extra=OPTIK_EXTRA)
     centroid("weapon-module.kicad_pcb", "nextpcb/optik-centroid.csv", exclude={"U1","C3","C4","C5","R3"})
-    print("FIRE-CONTROL:"); build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls")
-    centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv")
+    # FIRE-CONTROL: 2 extra IMU (U1,U2 = IIM-42653) PROTOTYP-DNP → körs på breakout (ev. inga i början).
+    # Står kvar i BOM som referens men monteras EJ av NextPCB → ej i centroid. Avkopplingen lämnas
+    # bestyckad (billig, redo om IMU handlöds på senare). Kontakter auto-DNP via is_conn().
+    print("FIRE-CONTROL (2× IMU U1/U2 prototyp-DNP):")
+    build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls", dnp_refs={"U1", "U2"})
+    centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv", exclude={"U1", "U2"})
     print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls",
           cust_refs={"J1","U1","U2","U3","U4","D7","D8","D9","D10"})  # J1 + 4 ledade TSOP + 4 LED-tab-socklar (kund)
     centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude={"J1","U1","U2","U3","U4","D7","D8","D9","D10"})
