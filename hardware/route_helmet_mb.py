@@ -45,7 +45,7 @@ def unrouted(path):
         par.setdefault(x, x)
         while par[x] != x: par[x] = par[par[x]]; x = par[x]
         return x
-    bad = 0
+    bad = 0; names = []
     for net, pads in netpads.items():
         if net in PLANE_NETS or len(pads) < 2:
             continue
@@ -58,8 +58,8 @@ def unrouted(path):
                             for xa, ya, la in pa for xb, yb, lb in pb)
                 if touch: par[find(ka)] = find(kb)
         if len({find(k) for k in pads}) > 1:
-            bad += 1
-    return bad
+            bad += 1; names.append(net)
+    return bad, names
 
 
 def finish(path):
@@ -105,16 +105,24 @@ clean = False
 for seed in range(1, 13):
     if os.path.exists(SES): os.remove(SES)   # tvinga ny SES → ingen stale-återanvändning
     # hård per-seed-timeout: headless-freerouting hänger ibland @1% CPU → döda + nästa seed
-    subprocess.run(["timeout", "-k", "5", "450", "xvfb-run", "-a",
-                    "java", "-jar", "/opt/freerouting.jar", "-de", DSN, "-do", SES, "-mp", "100"],
+    subprocess.run(["timeout", "-k", "5", "300", "xvfb-run", "-a",
+                    "java", "-jar", "/opt/freerouting.jar", "-de", DSN, "-do", SES, "-mp", "8"],
                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     subprocess.run(["bash", "-c", "pkill -9 -f freerouting.jar 2>/dev/null; pkill -9 Xvfb 2>/dev/null; true"])
     if not os.path.exists(SES) or os.path.getsize(SES) < 1000:
         print(f"  seed {seed}: freerouting timeout/ingen SES — nästa seed"); continue
     shutil.copy("/tmp/_hmb_placed.kicad_pcb", PCB)
     subprocess.run(["python3", "hardware/ses_apply.py", PCB, SES], stdout=subprocess.DEVNULL)
-    u = unrouted(PCB); print(f"  seed {seed}: signal-oroutade = {u}")
+    u, names = unrouted(PCB); print(f"  seed {seed}: signal-oroutade = {u} {names}")
     if u == 0: clean = True; break
+    if u <= 4:   # freerouting tog det mesta → stäng resterande få nät med A*-maze (per-net via)
+        for kp in ("0.4", "0.3"):    # försök normal klarans, sen DRC-minimum
+            env = dict(os.environ, MAZE_KEEP=kp, MAZE_VIAKEEP=kp)
+            subprocess.run(["python3", "hardware/maze_route.py", PCB] + names, env=env, stdout=subprocess.DEVNULL)
+            u, names = unrouted(PCB)
+            if u == 0: break
+        print(f"  seed {seed}: efter maze = {u} {names}")
+        if u == 0: clean = True; break
 if not clean: print("!! ingen ren routning"); sys.exit(1)
 finish(PCB)
 v, un = verify(PCB); print(f"clearance@0.2mm = {v}   oconnected = {un}")
