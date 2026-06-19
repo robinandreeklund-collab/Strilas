@@ -117,7 +117,7 @@ for seed in range(1, 13):
     if 0 < u <= 4:   # freerouting tog det mesta → stäng resterande få nät med A*-maze (per-net via)
         for kp in ("0.4", "0.3"):    # försök normal klarans, sen DRC-minimum
             env = dict(os.environ, MAZE_KEEP=kp, MAZE_VIAKEEP=kp)
-            subprocess.run(["python3", "hardware/maze_route.py", PCB] + names, env=env, stdout=subprocess.DEVNULL)
+            subprocess.run(["timeout", "120", "python3", "hardware/maze_route.py", PCB] + names, env=env, stdout=subprocess.DEVNULL)
             u, names = unrouted(PCB)
             if u == 0: break
         print(f"  seed {seed}: efter maze = {u} {names}")
