@@ -6,6 +6,16 @@ import subprocess, sys, math, shutil, pcbnew
 PCB="hardware/vest-patch.kicad_pcb"; DSN="hardware/vest-patch.dsn"; SES="hardware/vest-patch.ses"
 MM=pcbnew.FromMM
 
+def _typed_load(path, tries=40):
+    """pcbnew-SWIG ger ibland otypat board → ladda om tills Footprints/Tracks/Zones funkar."""
+    for _ in range(tries):
+        b = pcbnew.LoadBoard(path)
+        try:
+            list(b.GetFootprints()); list(b.GetTracks()); list(b.Zones()); return b
+        except TypeError:
+            continue
+    raise RuntimeError("kunde ej få typat board")
+
 def gnd_code(b):
     for f in b.GetFootprints():
         for pd in f.Pads():
@@ -13,7 +23,7 @@ def gnd_code(b):
     return None
 
 def pour_gnd(path, stitch=True):
-    b=pcbnew.LoadBoard(path)
+    b=_typed_load(path)
     for z in [x for x in b.Zones()]: b.Remove(z)
     bb=b.GetBoardEdgesBoundingBox(); gnd=gnd_code(b); m=MM(0.4)
     for layer in (pcbnew.F_Cu, pcbnew.B_Cu):
@@ -32,14 +42,14 @@ def pour_gnd(path, stitch=True):
     pcbnew.ZONE_FILLER(b).Fill(b.Zones()); pcbnew.SaveBoard(path,b)
 
 def unrouted(path):
-    b=pcbnew.LoadBoard(path); tr={}
+    b=_typed_load(path); tr={}
     for t in b.GetTracks(): tr.setdefault(t.GetNetCode(),[]).extend(
         [(t.GetStart().x/1e6,t.GetStart().y/1e6),(t.GetEnd().x/1e6,t.GetEnd().y/1e6)])
     return sum(1 for f in b.GetFootprints() for p in f.Pads() if p.GetNetname() not in ("","GND")
         and not any(math.hypot(p.GetPosition().x/1e6-ex,p.GetPosition().y/1e6-ey)<0.4 for ex,ey in tr.get(p.GetNetCode(),[])))
 
 def verify(path):
-    b=pcbnew.LoadBoard(path); CU=[pcbnew.F_Cu,pcbnew.B_Cu]; items=[]
+    b=_typed_load(path); CU=[pcbnew.F_Cu,pcbnew.B_Cu]; items=[]
     for t in b.GetTracks():
         lays=CU if t.Type()==pcbnew.PCB_VIA_T else [t.GetLayer()]
         items.append((t.GetNetCode(),set(lays),t.GetEffectiveShape()))
@@ -53,8 +63,7 @@ def verify(path):
     return v,un
 
 # 1) route ALLA nät (inkl GND som spår) — freerouting kopplar varje GND-nod → inga öar
-b=pcbnew.LoadBoard(PCB)
-_ = list(b.GetFootprints())                      # första board-access (undvik pcbnew-SWIG-otypning)
+b=_typed_load(PCB)
 for t in list(b.GetTracks()): b.Remove(t)        # rensa ev. spår/via från tidigare routning
 for z in list(b.Zones()): b.Remove(z)            # ren DSN (inga "multiple vias skipped" → ingen modal-dialog-hängning)
 pcbnew.SaveBoard(PCB,b)
