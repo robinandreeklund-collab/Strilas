@@ -71,7 +71,7 @@ def finish(path):
         ch = pcbnew.SHAPE_LINE_CHAIN()
         import math as _m
         for k in range(72):                       # cirkulär gjutning (rund board Ø108, inset r=53)
-            a = _m.radians(k * 5); ch.Append(V(53.0 * _m.cos(a), 53.0 * _m.sin(a)))
+            a = _m.radians(k * 5); ch.Append(V(44.0 * _m.cos(a), 44.0 * _m.sin(a)))
         ch.SetClosed(True); z.AddPolygon(ch); b.Add(z)
     add_zone(pcbnew.In1_Cu, "GND"); add_zone(pcbnew.In2_Cu, "VBAT")   # In2 = VBAT-plan (LED-konstellationsström + patchar)
     add_zone(pcbnew.B_Cu, "GND"); add_zone(pcbnew.F_Cu, "GND")
