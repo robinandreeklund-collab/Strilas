@@ -127,12 +127,6 @@ def islands(net, pads):
     return list(grp.values())
 
 def lay_path(net, axy, al, bxy, bl):
-    # begränsa rutnätet till ett FÖNSTER runt de två paddarna (+25mm omvägs-marginal) → snabb blocked_grid+A*
-    global X0, X1, Y0, Y1, NC, NR
-    M = 25.0
-    X0 = max(EX0, min(axy[0], bxy[0]) - M); X1 = min(EX1, max(axy[0], bxy[0]) + M)
-    Y0 = max(EY0, min(axy[1], bxy[1]) - M); Y1 = min(EY1, max(axy[1], bxy[1]) + M)
-    NC = int((X1-X0)/STEP)+1; NR = int((Y1-Y0)/STEP)+1
     blk, via = blocked_grid(net)
     sc = [(*cell(*axy), L) for L in al]
     gc = [(*cell(*bxy), L) for L in bl]
