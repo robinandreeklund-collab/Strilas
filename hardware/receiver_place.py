@@ -365,7 +365,10 @@ helmet_mb_pos = {
     "J6": _se(205, 42, 2, "out", flip=True),        # MIC_BOOM (S2B side-entry, BAKSIDAN)
     "U8": (40.0, 0.0, 0),                           # PAM8302A amp (SOIC-8) — höger korridor
     "C20": (33.0, 3.0, 0), "C21": (33.0, -3.0, 0),                            # amp ingång/VDD (klar U8-courtyard 7,4 mm)
-    "R9": (45.0, 3.0, 90), "R10": (45.0, -3.0, 90),                           # I²C-pullups 4k7
+    # I²C-pullups 4k7 — DIREKT över P4:s I²C-pinnar (U2.13 SCL / U2.14 SDA @ y≈14.9). Bussen
+    # spände annars hela kortet (codec x=-31 ↔ pull-ups x=+45) → freerouting strandade pull-up-
+    # paddarna i höger-korridoren (amp U8); nära mastern blir anslutningen en ~2 mm-stubbe.
+    "R10": (2.5, 16.6, 0), "R9": (-2.5, 16.6, 0),                             # R10=SCL-pull, R9=SDA-pull
     "J7": _se(240, 42, 2, "out", flip=True),        # SPEAKER (S2B side-entry, BAKSIDAN)
     "J11": _se(295, 42, 2, "out", flip=True),       # PTT-knapp (S2B side-entry, BAKSIDAN)
     "U2": (0.16, 13.5, 0),
