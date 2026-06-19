@@ -114,19 +114,23 @@ for seed in range(1, 13):
     shutil.copy("/tmp/_hmb_placed.kicad_pcb", PCB)
     subprocess.run(["python3", "hardware/ses_apply.py", PCB, SES], stdout=subprocess.DEVNULL)
     u, names = unrouted(PCB); print(f"  seed {seed}: signal-oroutade = {u} {names}")
-    if u == 0: clean = True; break
-    if u <= 4:   # freerouting tog det mesta → stäng resterande få nät med A*-maze (per-net via)
+    if 0 < u <= 4:   # freerouting tog det mesta → stäng resterande få nät med A*-maze (per-net via)
         for kp in ("0.4", "0.3"):    # försök normal klarans, sen DRC-minimum
             env = dict(os.environ, MAZE_KEEP=kp, MAZE_VIAKEEP=kp)
             subprocess.run(["python3", "hardware/maze_route.py", PCB] + names, env=env, stdout=subprocess.DEVNULL)
             u, names = unrouted(PCB)
             if u == 0: break
         print(f"  seed {seed}: efter maze = {u} {names}")
-        if u == 0: clean = True; break
-if not clean: print("!! ingen ren routning"); sys.exit(1)
-finish(PCB)
-v, un = verify(PCB); print(f"clearance@0.2mm = {v}   oconnected = {un}")
-if v or un: print("!! DRC ej ren"); sys.exit(1)
+    if u != 0:
+        continue   # ej fullt sammankopplad → nästa seed
+    # u==0: fyll plan + VERIFIERA clearance/oanslutet → acceptera bara en seed som är HELT DRC-ren
+    finish(PCB)
+    v, un = verify(PCB)
+    if v == 0 and un == 0:
+        print(f"  seed {seed}: REN (clearance 0, oanslutet 0)"); clean = True; break
+    print(f"  seed {seed}: u=0 men clearance={v} oanslutet={un} — nästa seed")
+    shutil.copy("/tmp/_hmb_placed.kicad_pcb", PCB)   # reset (finish la till zoner) inför nästa seed
+if not clean: print("!! ingen ren routning (clearance/oanslutet kvar på alla seeds)"); sys.exit(1)
 print("REN board.")
 os.system("rm -rf /tmp/gbhmb && mkdir -p /tmp/gbhmb")
 subprocess.run(["kicad-cli", "pcb", "export", "gerbers", "-o", "/tmp/gbhmb/", PCB], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
