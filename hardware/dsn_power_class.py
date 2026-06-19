@@ -31,11 +31,11 @@ def main(dsn):
     circuit = f'\n      (circuit\n        (use_via {vm.group(1)})\n      )' if vm else ''
     pclass = (
         '\n    (class power "" ' + " ".join(pwr) + circuit + '\n'
-        '      (rule\n        (width 400)\n        (clearance 200.1)\n      )\n    )'
+        '      (rule\n        (width 500)\n        (clearance 200.1)\n      )\n    )'
     )
     t = t[:kc.end()] + pclass + t[kc.end():]
     open(dsn, "w").write(t)
-    print(f"  flyttade {len(pwr)} nät till klass 'power' (width 400): {pwr}")
+    print(f"  flyttade {len(pwr)} nät till klass 'power' (width 500): {pwr}")
 
 
 if __name__ == "__main__":

@@ -8,8 +8,8 @@ MM = pcbnew.FromMM; OX, OY = 150.0, 120.0
 def V(x, y): return pcbnew.VECTOR2I(MM(OX + x), MM(OY - y))
 
 
-PLANE_NETS = ("GND", "VBAT")   # får kopparplan i finish() → behöver ej full spår-routning
-# OBS: VBAT planas (bär LED-konstellationsström + patchar); +3V3 routas som spår.
+PLANE_NETS = ("GND", "+3V3")   # +3V3 = kopparplan (ES8388-codec 4 kraft-pinnar + P4 + patchar tätt) → behöver ej spår
+# OBS: In2 = +3V3-PLAN (löser codec-+3V3-tätheten → inga långa +3V3-spår, ingen maze-grind). VBAT routas som breda spår (power-klass 0.5mm).
 
 
 def unrouted(path):
@@ -73,7 +73,7 @@ def finish(path):
         for k in range(72):                       # cirkulär gjutning (rund board Ø108, inset r=53)
             a = _m.radians(k * 5); ch.Append(V(53.0 * _m.cos(a), 53.0 * _m.sin(a)))
         ch.SetClosed(True); z.AddPolygon(ch); b.Add(z)
-    add_zone(pcbnew.In1_Cu, "GND"); add_zone(pcbnew.In2_Cu, "VBAT")   # In2 = VBAT-plan (LED-konstellationsström + patchar)
+    add_zone(pcbnew.In1_Cu, "GND"); add_zone(pcbnew.In2_Cu, "+3V3")   # In2 = +3V3-plan (codec/P4/patch-fanout via plan-vior)
     add_zone(pcbnew.B_Cu, "GND"); add_zone(pcbnew.F_Cu, "GND")
     pcbnew.ZONE_FILLER(b).Fill(b.Zones()); pcbnew.SaveBoard(path, b)
 
