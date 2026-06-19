@@ -71,7 +71,7 @@ def finish(path):
         ch = pcbnew.SHAPE_LINE_CHAIN()
         import math as _m
         for k in range(72):                       # cirkulär gjutning (rund board Ø108, inset r=53)
-            a = _m.radians(k * 5); ch.Append(V(47.0 * _m.cos(a), 47.0 * _m.sin(a)))
+            a = _m.radians(k * 5); ch.Append(V(49.0 * _m.cos(a), 49.0 * _m.sin(a)))
         ch.SetClosed(True); z.AddPolygon(ch); b.Add(z)
     add_zone(pcbnew.In1_Cu, "GND"); add_zone(pcbnew.In2_Cu, "VBAT")   # In2 = VBAT-plan (LED-konstellationsström + patchar)
     add_zone(pcbnew.B_Cu, "GND"); add_zone(pcbnew.F_Cu, "GND")
@@ -117,7 +117,7 @@ for seed in range(1, 13):
     if 0 < u <= 4:   # freerouting tog det mesta → stäng resterande få nät med A*-maze (per-net via)
         for kp in ("0.45", "0.4"):    # försök normal klarans, sen DRC-minimum
             env = dict(os.environ, MAZE_KEEP=kp, MAZE_VIAKEEP=kp)
-            subprocess.run(["timeout", "120", "python3", "hardware/maze_route.py", PCB] + names, env=env, stdout=subprocess.DEVNULL)
+            subprocess.run(["timeout", "120", "python3", "hardware/maze_route.py", PCB] + [n for n in names if n not in ("+3V3","VBAT","GND","N$2")], env=env, stdout=subprocess.DEVNULL)
             u, names = unrouted(PCB)
             if u == 0: break
         print(f"  seed {seed}: efter maze = {u} {names}")
