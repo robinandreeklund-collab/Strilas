@@ -54,6 +54,7 @@ def verify(path):
 
 # 1) route ALLA nät (inkl GND som spår) — freerouting kopplar varje GND-nod → inga öar
 b=pcbnew.LoadBoard(PCB)
+_ = list(b.GetFootprints())                      # första board-access (undvik pcbnew-SWIG-otypning)
 for t in list(b.GetTracks()): b.Remove(t)        # rensa ev. spår/via från tidigare routning
 for z in list(b.Zones()): b.Remove(z)            # ren DSN (inga "multiple vias skipped" → ingen modal-dialog-hängning)
 pcbnew.SaveBoard(PCB,b)
