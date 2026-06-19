@@ -116,7 +116,7 @@ for seed in range(1, 13):
     u, names = unrouted(PCB); print(f"  seed {seed}: signal-oroutade = {u} {names}")
     if 0 < u <= 6:   # freerouting lämnar codec-nät (+3V3/I2C) → stäng med A*-maze (ren 0.4mm-keep)
         for kp in ("0.3",):
-            subprocess.run(["timeout", "600", "python3", "hardware/maze_route.py", PCB] + names,
+            subprocess.run(["timeout", "1800", "python3", "hardware/maze_route.py", PCB] + names,
                            env=dict(os.environ, MAZE_KEEP=kp, MAZE_VIAKEEP=kp), stdout=subprocess.DEVNULL)
             u, names = unrouted(PCB)
             if u == 0: break
