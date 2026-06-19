@@ -26,32 +26,34 @@
 > | IMU INT | GPIO32 | | nCS | GPIO27 |
 > *(Batteri matas in på optikkortet J2 → VSYS till P4 + emitter-rail; trigger → egen P4-GPIO på greppet.)*
 
-> ## ✅ KÖP-KLARA MODULER (verifierat på nätet, juni 2026) — vad som FAKTISKT passar P4
-> **P4 = LÅST: Waveshare ESP32-P4-WIFI6** (kortet ALLA carrier-PCB:er byggts runt via edge A/B).
-> Inget nytt dev board behövs — **kameran kopplas på SJÄLVA P4-kortet** (carriern bär ej kamerasignal).
-> Det kortet har: **USB Type-A = USB-OTG 2.0 HS *host*** (för USB-kamera) **och 2-lane MIPI-CSI**
-> (samma kontakt som tar OV5647). Båda kamera-vägarna finns alltså redan på brädan vi har.
+> ## ✅ KAMERA-BESLUT (juni 2026) — B0332 NU, AR0234-USB som framtida uppgrade
+> **P4 = LÅST: Waveshare ESP32-P4-WIFI6.** Kameran kopplas på P4-kortets **4-pin MX1.25 USB-OTG**.
+> Verifierat ur Waveshare-schemat: stiften = **USB0_5V (5 V/VBUS, TVS-skyddad), USBD_P (D+),
+> USBD_N (D−), GND** — kortet kan **källa 5 V i host-läge** (DCDC + switch). Carriern bär ej
+> kamerasignal → **kameran = mekanik + USB-kabel, NOLL PCB-ändring.** (Verifiera pin-ordning mot silk +
+> aktivera host-mode VBUS i firmware. Kamera drar ~150–250 mA @5 V → inom VBUS-budget.)
 >
-> **A) PASSAR DIREKT på nuvarande optik-PCB (USB-väg, ingen drivrutin) — LÅST val ovan:**
-> **Arducam B0332** = OV9281 1 MP mono global shutter **USB-UVC**, M12 (~$30) + **16 mm M12-lins** (~$8) +
-> **850/860 nm IR-pass** (~$8). Sätts i P4-kortets **USB-A (OTG-HS host)** → UVC, ingen MIPI-driver.
-> Optik-kortet är redan ritat för USB-kamera → **noll PCB-ändring**.
+> **NU (vald): Arducam B0332** = OV9281 1 MP mono global shutter **USB-UVC**, M12 (~$30) +
+> **16 mm M12-lins** (13,7° → 150 m) + **850/860 nm bandpass** (~$16). UVC → ingen drivrutin.
+> Kabel: kamera-USB → P4 MX1.25 (5V/D+/D−/GND). **Räcker för 150 m** (verifierat, ~24 px konstellation).
 >
-> **B) MIPI-CSI rakt i P4-kortets kamera-kontakt (högre integration, ingen USB-kabel):**
-> **Arducam B0224** = OV9281 1 MP mono GS **NoIR, M12-fäste** (~$42). **Native `ov9281`-drivrutin i
-> Espressifs `esp_cam_sensor`** (EJ Pivariety), sitter på **15-pin RPi-CSI = Waveshare-kortets 2-lane
-> MIPI-CSI** → kopplar direkt på P4-brädan. + smal M12-lins + 850 nm-filter. (Kameran sitter på P4-
-> kortet, ej på vår carrier — så optik-PCB:t ändras ej; bara mekaniken/kabeln till P4-kortets CSI.)
+> **FRAMTID (drop-in-uppgrade): DECXIN AR0234 1/2.6″ mono GS USB-UVC** (2,3 MP, ~$78) + **25 mm M12**
+> (13° på större sensor) + 850 nm. **Mekanisk + elektrisk drop-in:** 38×38 mm kort med **28 mm fäst-hål
+> = samma som B0332**, M12-fäste, USB (5-pin-1.25 → P4 MX1.25). 2,3× upplösning → mer 150 m-marginal.
+> Bänk-verifiera UVC-enum + 860 nm-känslighet vid leverans. (AR0234:s NIR-QE < OV9281 → bandpass +
+> LED-modulering bär; B0332 = fallback om NIR/UVC sviktar.)
 >
-> **C) UPPGRADERING för mer upplösning @150 m (bäst NIR, men EJ turnkey):** ams **Mira220 mono**
-> 2,2 MP NIR-enhanced GS — har officiellt **ESP32-P4-exempel** (ams-OSRAM GitHub) men **ingen lättköpt
-> rå-MIPI-modul**: Arducams Mira220 är **Pivariety (Pi-låst, $110)**, annars Mira220-**USB3-eval**. Väg =
-> ams eval-/sensormodul + porta P4-exemplet. Spar till senare.
+> **⚠ VIKTIG distinktion AR0234:** funkar **bara via USB-UVC** (DECXIN ovan — egen ISP, syns som webbkamera).
+> AR0234 via **MIPI** funkar EJ på P4 (ingen `esp_cam_sensor`-driver), och **Pivariety/Jetson-AR0234**
+> (Arducam B0353, Camemake) är Pi-/Jetson-låsta → köp INTE dem.
 >
-> **❌ UTESLUTNA (köp INTE):** **AR0234** – ingen P4-drivrutin (Camemake-rå kräver egen driver + Jetson-
-> kontakt; Arducam B0353 = Pivariety/Pi). Alla **"Pivariety"** och Sony **IMX** = Raspberry-Pi-låsta,
-> fungerar ej på P4. Tumregel: står det *"Pivariety / for Raspberry Pi / libcamera"* → nej; *"raw MIPI /
-> bare sensor"* med en sensor som finns i `esp_cam_sensor` (ov9281, sc2336, mira220, ov5647…) → ja.
+> **Max-NIR-alternativ (ej planerat): ams Mira220 mono** (`MIRA220MINI-SENSOR-BOARD-MONO`, ~$92, 2,2 MP
+> NIR-*enhanced*) via MIPI-CSI — bäst 860 nm, har officiellt P4-exempel (ams-OSRAM), men kräver MIPI-
+> adapter till P4:ans CSI + firmware-port. Bara om USB-AR0234 inte räcker.
+>
+> **❌ Köp INTE:** AR0234-**MIPI**/Pivariety (B0353), allt *"Pivariety / for Raspberry Pi / libcamera"*,
+> Sony **IMX** = Raspberry-Pi-låsta. Tumregel: "raw MIPI/bare sensor" i `esp_cam_sensor` (ov9281, sc2336,
+> mira220, ov5647) → ja; "Pivariety/Pi/libcamera" → nej; **USB-UVC (webbkamera) → ja oavsett sensor.**
 
 > ## (Bakgrund) Två nivåer (custom PCB → tänk långsiktigt)
 > - **v1-bänk / snabbstart: Arducam 5MP OV5647 NoIR, M12** (B012S6WJOS, ~$15) — drop-in i kit:et,
