@@ -429,9 +429,56 @@ helmet_mb_pos.update({
     "H3": (*_ring2(51, 250), 0), "H4": (*_ring2(51, 345), 0),
 })
 
+# ===== KRYMPNING till minsta fysiska diameter (HELMET_R = kort-radie; default 48 = Ø96, det
+#   verifierade minsta som får plats med nuvarande kant-ring; sätt HELMET_R=54 → Ø108). Ø108-
+#   blocket ovan bygger nominal-layouten; här dras den ihop: rigida kluster (4 optik-block, codec,
+#   amp) translateras radiellt inåt (intern geometri bevaras), kant-ringen (tabbar/kontakter/hål)
+#   räknas OM via samma hjälpare på skalade radier. Verifierat 0 courtyard-krock vid Ø96. =====
+_HR = float(os.environ.get("HELMET_R", "48.0"))
+if abs(_HR - 54.0) > 0.05:
+    _R0, _RC = 54.0, 30.0
+    _kk = (_HR - _RC) / (_R0 - _RC)
+    def _shrink_r(r): return _RC + (r - _RC) * _kk if r > _RC else r
+    for _blk in (("U3", "D1", "C6"), ("U4", "D2", "C7"), ("U5", "D3", "C8"), ("U6", "D4", "C9")):
+        _om = max(_math.hypot(*helmet_mb_pos[r][:2]) for r in _blk) + 3.6   # optik-block ytterkant
+        _cx = sum(helmet_mb_pos[r][0] for r in _blk) / 3.0; _cy = sum(helmet_mb_pos[r][1] for r in _blk) / 3.0
+        _cr = _math.hypot(_cx, _cy); _s = (_cr - (_om - (_HR - 0.6))) / _cr
+        _dx, _dy = _cx * _s - _cx, _cy * _s - _cy                          # RIGID translation (ej skalning)
+        for r in _blk:
+            _p = helmet_mb_pos[r]; helmet_mb_pos[r] = (round(_p[0] + _dx, 2), round(_p[1] + _dy, 2), _p[2])
+    for _blk in (("U7", "C10", "C11", "C12", "C13", "C14", "C15", "C16", "C17", "C18", "C19", "R8"),
+                 ("U8", "C20", "C21")):
+        _cx = sum(helmet_mb_pos[r][0] for r in _blk) / len(_blk); _cy = sum(helmet_mb_pos[r][1] for r in _blk) / len(_blk)
+        _cr = _math.hypot(_cx, _cy); _s = _shrink_r(_cr) / _cr
+        _dx, _dy = _cx * _s - _cx, _cy * _s - _cy                          # RIGID translation
+        for r in _blk:
+            _p = helmet_mb_pos[r]; helmet_mb_pos[r] = (round(_p[0] + _dx, 2), round(_p[1] + _dy, 2), _p[2])
+    for _i, _a in enumerate((30, 90, 150, 210, 270, 330)):       # 6 LED-tabbar (pad-mitt centrerad)
+        _rot = (_a + 180) % 360; _cx, _cy = _ring2(_HR - 1.8, _a)
+        helmet_mb_pos[f"D{_i+5}"] = (*_comp(_cx, _cy, _rot, (0.0, 1.27)), _rot)
+    _rc = _HR - 5.8                                              # kontakt-pad-radie (kropp/öppning når kanten)
+    helmet_mb_pos["J6"] = _se(75, _rc, 2, "out", flip=True); helmet_mb_pos["J7"] = _se(90, _rc, 2, "out", flip=True)
+    helmet_mb_pos["J11"] = _se(105, _rc, 2, "out", flip=True)
+    helmet_mb_pos["J2"] = _se(0, _rc, 5, "out", flip=True); helmet_mb_pos["J3"] = _se(180, _rc, 5, "out", flip=True)
+    # J4/J5 i de fria luckorna (ej 230/310 — krockar med botten-optiken U5@225/U6@315 på det täta Ø96)
+    helmet_mb_pos["J4"] = _se(196, _rc, 5, "out", flip=True); helmet_mb_pos["J5"] = _se(290, _rc, 5, "out", flip=True)
+    for _h, _a in zip(("H1", "H2", "H3", "H4"), (58, 165, 250, 345)):
+        helmet_mb_pos[_h] = (*_ring2(_HR - 2.6, _a), 0)
+    for _r in ("J1", "J12", "J10"):                             # inre bak-kontakter + batteri
+        _p = helmet_mb_pos[_r]; _rr = _math.hypot(_p[0], _p[1]); _s = _shrink_r(_rr) / _rr if _rr else 1
+        _side = (_p[3],) if len(_p) > 3 else ()
+        helmet_mb_pos[_r] = (round(_p[0] * _s, 2), round(_p[1] * _s, 2), _p[2]) + _side
+    helmet_mb_pos["J10"] = (-0.7, -30.8, 0)                     # batteri centrerat i luckan mellan puck-GH J1/J12 (TH-padd fri från J12-MP)
+    # AMP intill HÖGTALAR-kontakten: PAM8302A (U8) matar J7 (högtalare, topp). På Ø108 fick SPK_P/N
+    # plats trots amp@höger, men på det täta Ø96 spänner de halva kortet → orienterbart. Flytta amp +
+    # in/avkoppl-C till den fria top-center-luckan (mellan R5@x≥8 och R6@x≤-7), direkt under J7 →
+    # SPK blir korta genomborrade stubbar (high-current/EMI-kritiska nätet kort; codec-line-in får vara längre).
+    helmet_mb_pos["U8"] = (0.0, 33.0, 0)
+    helmet_mb_pos["C20"] = (-2.5, 28.5, 0); helmet_mb_pos["C21"] = (2.5, 28.5, 0)  # under U8 (7,4 mm-courtyard ryms ej flankerat)
+
 BOARDS = {
     "helmet_mb": lambda: place("hardware/helmet-mb.net", "hardware/helmet-mb.kicad_pcb",
-                               helmet_mb_pos, ("circle", 54.0), layers=4, free=(-3, 3, -3, 3)),
+                               helmet_mb_pos, ("circle", _HR), layers=4, free=(-3, 3, -3, 3)),
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
                           vest_pos, ("circle", _VEST_R), layers=2, free=(-2, 2, -2, 2), labels=vest_labels),
     "vest_mb": lambda: place("hardware/vest-mb.net", "hardware/vest-mb.kicad_pcb",

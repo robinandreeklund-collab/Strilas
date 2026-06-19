@@ -65,13 +65,18 @@ def unrouted(path):
 def finish(path):
     b = pcbnew.LoadBoard(path)
     for z in list(b.Zones()): b.Remove(z)
+    import math as _m
+    _er = 0.0                                     # board-radie ur Edge.Cuts (diameter-agnostisk Ø96/Ø108…)
+    for d in b.GetDrawings():
+        if d.GetLayer() == pcbnew.Edge_Cuts:
+            bb = d.GetBoundingBox(); _er = max(_er, (bb.GetRight() - bb.GetLeft()) / 2e6)
+    _zr = _er - 1.0
     def add_zone(layer, net):
         z = pcbnew.ZONE(b); z.SetLayer(layer); z.SetNetCode(b.FindNet(net).GetNetCode())
         z.SetLocalClearance(MM(0.25)); z.SetMinThickness(MM(0.2)); z.SetIsFilled(False)
         ch = pcbnew.SHAPE_LINE_CHAIN()
-        import math as _m
-        for k in range(72):                       # cirkulär gjutning (rund board Ø108, inset r=53)
-            a = _m.radians(k * 5); ch.Append(V(53.0 * _m.cos(a), 53.0 * _m.sin(a)))
+        for k in range(72):                       # cirkulär gjutning (rund board, inset r=R-1)
+            a = _m.radians(k * 5); ch.Append(V(_zr * _m.cos(a), _zr * _m.sin(a)))
         ch.SetClosed(True); z.AddPolygon(ch); b.Add(z)
     add_zone(pcbnew.In1_Cu, "GND"); add_zone(pcbnew.In2_Cu, "+3V3")   # In2 = +3V3-plan (codec/P4/patch-fanout via plan-vior)
     add_zone(pcbnew.B_Cu, "GND"); add_zone(pcbnew.F_Cu, "GND")
