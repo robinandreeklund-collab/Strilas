@@ -26,14 +26,41 @@
 > | IMU INT | GPIO32 | | nCS | GPIO27 |
 > *(Batteri matas in på optikkortet J2 → VSYS till P4 + emitter-rail; trigger → egen P4-GPIO på greppet.)*
 
+> ## ✅ KÖP-KLARA MODULER (verifierat på nätet, juni 2026) — vad som FAKTISKT passar P4
+> **Dev board att utveckla på:** Espressif **ESP32-P4-Function-EV-Board** (DigiKey/Mouser ~$57,50) —
+> har både 15-pin MIPI-CSI **och** USB-OTG 2.0 HS. (Kamera-fokuserat alt: Espressif **ESP32-P4-EYE**;
+> eller Waveshare ESP32-P4-Nano.)
+>
+> **A) PASSAR DIREKT på nuvarande optik-PCB (USB-väg, ingen drivrutin) — LÅST val ovan:**
+> **Arducam B0332** = OV9281 1 MP mono global shutter **USB-UVC**, M12 (~$30) + **16 mm M12-lins** (~$8) +
+> **850/860 nm IR-pass** (~$8). UVC → P4:ans USB-host (plug-and-play, ingen MIPI-driver). Kortet är redan
+> ritat för USB-kamera → **noll PCB-ändring**.
+>
+> **B) MIPI-CSI rakt på P4 (kräver att optik-PCB:t drar CSI till P4-modulen — redesign):**
+> **Arducam B0224** = OV9281 1 MP mono GS **NoIR, M12-fäste** (~$42). **Native `ov9281`-drivrutin finns i
+> Espressifs `esp_cam_sensor`** (EJ Pivariety) och modulen sitter på **15-pin RPi-CSI = EV-boardens
+> kontakt** → kopplar direkt på dev-boarden. + smal M12-lins + 850 nm-filter.
+>
+> **C) UPPGRADERING för mer upplösning @150 m (bäst NIR, men EJ turnkey):** ams **Mira220 mono**
+> 2,2 MP NIR-enhanced GS — har officiellt **ESP32-P4-exempel** (ams-OSRAM GitHub) men **ingen lättköpt
+> rå-MIPI-modul**: Arducams Mira220 är **Pivariety (Pi-låst, $110)**, annars Mira220-**USB3-eval**. Väg =
+> ams eval-/sensormodul + porta P4-exemplet. Spar till senare.
+>
+> **❌ UTESLUTNA (köp INTE):** **AR0234** – ingen P4-drivrutin (Camemake-rå kräver egen driver + Jetson-
+> kontakt; Arducam B0353 = Pivariety/Pi). Alla **"Pivariety"** och Sony **IMX** = Raspberry-Pi-låsta,
+> fungerar ej på P4. Tumregel: står det *"Pivariety / for Raspberry Pi / libcamera"* → nej; *"raw MIPI /
+> bare sensor"* med en sensor som finns i `esp_cam_sensor` (ov9281, sc2336, mira220, ov5647…) → ja.
+
 > ## (Bakgrund) Två nivåer (custom PCB → tänk långsiktigt)
 > - **v1-bänk / snabbstart: Arducam 5MP OV5647 NoIR, M12** (B012S6WJOS, ~$15) — drop-in i kit:et,
 >   börja CV-utvecklingen direkt.
 > - **Custom-PCB (långsiktigt optimalt): SC2336** (2MP MIPI) — **NIR-native** (ser 860 nm utan
 >   filter-pyssel), **större 1/3″-pixlar → bäst IR-SNR** av de billiga, **P4-stödd** (esp_cam_sensor
 >   + jeff-cn-exempel), ~$5–10. Designa kortets kamera-urtag/kontakt för SC2336-modulen.
-> - **Global shutter** (ideal mot pan-smet) skjuts på: ingen *billig* GS-sensor har P4-drivrutin
->   (OV9281/OV2311/AR0234 = egen drivrutin krävs; Mira220 = dyr eval). Rolling shutter + fast-pan-grind räcker.
+> - **Global shutter** (ideal mot pan-smet): **OV9281 HAR P4-drivrutin** (`esp_cam_sensor`, MIPI) +
+>   fungerar via **USB-UVC** (B0332, ingen driver) → GS är fullt möjligt. (AR0234 saknar P4-driver;
+>   Mira220 har P4-exempel men dyr/eval.) Se KÖP-KLARA MODULER ovan. *(Äldre not: trodde fel att ingen
+>   billig GS hade P4-stöd — OV9281 finns i esp_cam_sensor.)*
 
 ### USB-vägen (P4 har USB OTG 2.0 HS) — enda billiga global-shutter-vägen
 
