@@ -21,6 +21,7 @@ for d in b.GetDrawings():
     if d.GetLayer() == pcbnew.Edge_Cuts:
         bb = d.GetBoundingBox(); exs += [bb.GetLeft()/1e6-OX, bb.GetRight()/1e6-OX]; eys += [OY-bb.GetTop()/1e6, OY-bb.GetBottom()/1e6]
 X0, X1, Y0, Y1 = min(exs)+0.4, max(exs)-0.4, min(eys)+0.4, max(eys)-0.4
+EX0, EX1, EY0, EY1 = X0, X1, Y0, Y1     # kort-kant-gränser (lay_path begränsar rutnätet till ett fönster runt nätet)
 NC = int((X1-X0)/STEP)+1; NR = int((Y1-Y0)/STEP)+1
 def cell(x, y): return (max(0, min(NC-1, round((x-X0)/STEP))), max(0, min(NR-1, round((y-Y0)/STEP))))
 def cxy(c): return (X0+c[0]*STEP, Y0+c[1]*STEP)
@@ -126,6 +127,12 @@ def islands(net, pads):
     return list(grp.values())
 
 def lay_path(net, axy, al, bxy, bl):
+    # begränsa rutnätet till ett FÖNSTER runt de två paddarna (+25mm omvägs-marginal) → snabb blocked_grid+A*
+    global X0, X1, Y0, Y1, NC, NR
+    M = 25.0
+    X0 = max(EX0, min(axy[0], bxy[0]) - M); X1 = min(EX1, max(axy[0], bxy[0]) + M)
+    Y0 = max(EY0, min(axy[1], bxy[1]) - M); Y1 = min(EY1, max(axy[1], bxy[1]) + M)
+    NC = int((X1-X0)/STEP)+1; NR = int((Y1-Y0)/STEP)+1
     blk, via = blocked_grid(net)
     sc = [(*cell(*axy), L) for L in al]
     gc = [(*cell(*bxy), L) for L in bl]
