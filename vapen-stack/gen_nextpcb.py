@@ -105,8 +105,9 @@ def netvals(path):
 def refkey(r):
     m = re.match(r'([A-Za-z]+)(\d+)', r); return (m.group(1), int(m.group(2))) if m else (r, 0)
 
-def is_conn(pkg):   # ALLA stiftlistar/socklar/JST = kontakter som KUND handlöder (DNP, ej i centroid)
-    return any(s in pkg for s in ("PinHeader", "PinSocket", "JST"))
+def is_conn(pkg):   # THT-stiftlistar/socklar/JST-PH/XH = kund handlöder (DNP, ej i centroid).
+    # OBS: JST-GH (1.25 mm SMD, finpitch) är EJ handlödbar → NextPCB SMT-placerar (ej DNP, med i centroid).
+    return any(s in pkg for s in ("PinHeader", "PinSocket", "JST_PH", "JST_XH", "JST_EH"))
 
 HDR = ["Designator*", "Quantity*", "Manufacturer Part Number*", "Manufacturer",
        "Package/Footprint", "Description", "Procurement Type", "Customer Note"]
@@ -208,10 +209,10 @@ if __name__ == "__main__":
     print("OPTIK-PROTOTYP (IMU DNP, J1/J2 kund-lödd):"); build("weapon-module.kicad_pcb", "weapon-module.net",
           "nextpcb/optik-PROTOTYP-bom.xls", dnp_refs={"U1","C3","C4","C5"}, cust_refs={"J1","J2"}, ovr_refs={"R3"}, extra=OPTIK_EXTRA)
     centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"U1","C3","C4","C5","J1","J2","R3"})
-    # HJÄLM-MODERKORT (ESP32-P4-WIFI6, rund): TH-kontakter kund-lödda (P4-socklar/patch/amp/mik/batteri);
-    # J1 = ZED-F9P GH (SMD → NextPCB monterar).
-    HMB_CUST = {"J2","J3","J4","J5","J6","J7","J8","J9","J10","U3","U4","U5","U6",
-                "D5","D6","D7","D8","D9","D10"}  # TH-kontakter + 4 ledade TSOP + 6 LED-tab-socklar (kund löder micro-PCB)
+    # HJÄLM-MODERKORT (ESP32-P4-WIFI6, Ø108 rund): TH-kontakter (P4-socklar/patch/headset/batteri JST-PH/XH)
+    # auto-DNP via is_conn(). J1/J12 = RTK-puck GH (SMD) → NextPCB SMT-placerar. ES8388/PAM8302A SMD-placeras.
+    # cust = enbart de ledade optik-delarna (4 TSOP + 6 LED-tab-micro-PCB) som kund handlöder.
+    HMB_CUST = {"U3","U4","U5","U6","D5","D6","D7","D8","D9","D10"}
     print("HJÄLM-MB:"); build("helmet-mb.kicad_pcb", "helmet-mb.net", "nextpcb/helmet-mb-bom.xls", cust_refs=HMB_CUST)
     centroid("helmet-mb.kicad_pcb", "nextpcb/helmet-mb-centroid.csv", exclude=HMB_CUST)
     # VÄST-MODERKORT (ESP32-P4-WIFI6): alla TH-kontakter (zon-headers/P4-socklar/batteri) kund-lödda.
