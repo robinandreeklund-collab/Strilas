@@ -11,12 +11,16 @@ from collections import defaultdict
 
 # (value) -> (MPN, Manufacturer, Description, ProcurementType, CustomerNote)
 MPN = {
-    # --- passiva (representativa; verifiera basbibliotek) ---
-    "100nF": ("CL05B104KO5NNNC", "Samsung", "MLCC 100nF 50V X7R", "", ""),
-    "1uF":   ("CL21A105KAFNNNG", "Samsung", "MLCC 1uF 25V X5R 0805 (high-runner)", "", ""),
-    "1uF@0402":("CL05A105KP5NNNC", "Samsung", "MLCC 1uF 10V X5R 0402", "", ""),
-    "10uF":  ("CL31A106KBHNNNE", "Samsung", "MLCC 10uF 25V X5R 1206", "", ""),
-    "100uF": ("GRM32ER61E107ME20L", "Murata", "MLCC 100uF 25V X5R 1210", "", ""),
+    # --- passiva: MPN bekräftade mot NextPCB lager-koll (common-sampler). Paket-specifika nycklar
+    #     val@<paketstorlek> (0402/0805/1206/1210); build() väljer rätt. IN STOCK där ej annat anges. ---
+    "100nF@0805": ("CL21B104KBCNNNC", "Samsung", "MLCC 100nF 50V X7R 0805 — IN STOCK", "", ""),
+    "100nF@0402": ("CL05B104KO5NNNC", "Samsung", "MLCC 100nF 50V X7R 0402 (4-7 d lager)", "", ""),
+    "100nF": ("CL21B104KBCNNNC", "Samsung", "MLCC 100nF 50V X7R 0805 — IN STOCK (default)", "", ""),
+    "1uF@0805": ("GRM21BR61E105KA99L", "Murata", "MLCC 1uF 25V X5R 0805 (high-runner, byt fr utgången CL21A105KAFNNNG)", "", ""),
+    "1uF@0402": ("CL05A105KP5NNNC", "Samsung", "MLCC 1uF 10V X5R 0402 — IN STOCK", "", ""),
+    "1uF":   ("GRM21BR61E105KA99L", "Murata", "MLCC 1uF 25V X5R 0805 (default)", "", ""),
+    "10uF":  ("CL31A106KBHNNNE", "Samsung", "MLCC 10uF 25V X5R 1206 — IN STOCK", "", ""),
+    "100uF": ("CL32A107MQVNNNE", "Samsung", "MLCC 100uF 25V X5R 1210 (byt fr ej-matchad GRM32ER61E107ME20L)", "", "verifiera vid manuell offert"),
     "100k":  ("RC0805FR-07100KL", "Yageo", "Res 100k 1% 1/8W 0805", "", ""),
     "220R":  ("RC0805FR-07220RL", "Yageo", "Res 220R 1% 1/8W 0805", "", ""),
     "4k7":   ("RC0805FR-074K7L", "Yageo", "Res 4.7k 1% 1/8W 0805", "", ""),
@@ -132,8 +136,9 @@ def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozens
     row = 1
     for (val, pkg) in sorted(groups):
         refs = sorted(groups[(val, pkg)], key=refkey)
-        key = val
-        if val == "1uF" and "0402" in pkg: key = "1uF@0402"   # paket-specifik MPN
+        m = re.search(r'_(\d{4})_', pkg)                      # paket-storlek (0402/0805/1206/1210/2512)
+        size = m.group(1) if m else ""
+        key = f"{val}@{size}" if f"{val}@{size}" in MPN else val   # paket-specifik MPN om sådan finns
         mpn, mfr, desc, proc, note = MPN.get(key, ("", "", val, "", "SAKNAR MPN — fyll i"))
         if refs and all(r in ovr_refs for r in refs):
             proc = "DNP"; note = ("3A-override (Rp): DNP = säker 1A fail-safe default; "

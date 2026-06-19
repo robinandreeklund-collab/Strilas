@@ -41,11 +41,11 @@ CANDS = [
     ("C1", "100nF", "0402", C04, "CL05B104KO5NNNC", "Samsung", "MLCC 100nF 50V X7R 0402 ★ (vs 0805 -> VÄLJ ETT)"),
     ("C2", "100nF", "0805", C08, "CL21B104KBCNNNC", "Samsung", "MLCC 100nF 50V X7R 0805 ★ (vs 0402 -> VÄLJ ETT)"),
     ("C3", "1uF", "0402", C04, "CL05A105KP5NNNC", "Samsung", "MLCC 1uF 10V X5R 0402 (vs 0805 -> VÄLJ ETT)"),
-    ("C4", "1uF", "0805", C08, "CL21A105KAFNNNG", "Samsung", "MLCC 1uF 25V X5R 0805 (vs 0402 -> VÄLJ ETT)"),
+    ("C4", "1uF", "0805", C08, "GRM21BR61E105KA99L", "Murata", "MLCC 1uF 25V X5R 0805 (high-runner, in-stock-alt)"),
     ("C5", "100pF", "0805", C08, "CL21C101JBANNNC", "Samsung", "MLCC 100pF 50V C0G 0805 (slingkomp)"),
     ("C6", "10uF", "1206", C12, "CL31A106KBHNNNE", "Samsung", "MLCC 10uF 25V X5R 1206 ★gemensam"),
     ("C7", "22uF", "1206", C12, "CL31A226KAHNNNE", "Samsung", "MLCC 22uF 25V X5R 1206 (buck-ut)"),
-    ("C8", "100uF", "1210", C13, "GRM32ER61E107ME20L", "Murata", "MLCC 100uF 25V X5R 1210 (bulk)"),
+    ("C8", "100uF", "1210", C13, "CL32A107MQVNNNE", "Samsung", "MLCC 100uF 25V X5R 1210 (bulk, in-stock-alt)"),
     # --- DISKRETA / JELLYBEAN ---
     ("D1", "BAT54", "SOD-123", F("Diode_SMD", "D_SOD-123"), "BAT54-7-F", "Diodes", "Schottky (diod-OR TSOP)"),
     ("D2", "SMBJ12A", "SMB", F("Diode_SMD", "D_SMB"), "SMBJ12A", "Littelfuse", "TVS 12V (matningsskydd)"),
