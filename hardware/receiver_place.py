@@ -398,24 +398,30 @@ helmet_mb_pos = {
 #   (mot hjälmen). Front-optiken (TSOP/OR-diod/LED/avkoppl) skalas UT till kanten (+7 mm radie; rotation =
 #   aim radiellt ut, behålls). ALLA kabel-kontakter → BAKSIDANS yttre ring (utanför Ø86-puck r43, innanför
 #   kort-r54), öppning radiellt UT. Centrum-el (P4/codec U7/amp U8/buck/IMU/const-R) stannar på fronten. =====
-for _ref in ("U3", "U4", "U5", "U6", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "C6", "C7", "C8", "C9"):
+for _ref in ("U3", "U4", "U5", "U6", "D1", "D2", "D3", "D4", "C6", "C7", "C8", "C9"):
     _x, _y, _rt = helmet_mb_pos[_ref][:3]; _r = _math.hypot(_x, _y)
     _sc = (_r + 7.0) / _r
     helmet_mb_pos[_ref] = (round(_x * _sc, 2), round(_y * _sc, 2), _rt)
+# 6 LED-tabbar (D5-D10) JÄMNT runt om (60° isär, mirror-symmetriskt: 30/90/.../330) på r=49, pad-rad
+# TANGENTIELL (viks radiellt ut) + pad-mittpunkt/3D-modell CENTRERAD på ringpunkten (som patchen).
+for _i, _a in enumerate((30, 90, 150, 210, 270, 330)):
+    _rot = (_a + 180) % 360
+    _cx, _cy = _ring2(49.0, _a)
+    helmet_mb_pos[f"D{_i+5}"] = (*_comp(_cx, _cy, _rot, (0.0, 1.27)), _rot)
 def _ghr(theta, r):                                  # GH-kontakt (SM0xB-GHS) på baksidan: öppning radiellt UT
     th = _math.radians(theta)                        # (GH-footprint-ram ≈ +90° vs PH → rot=(180-theta))
     return (round(r * _math.cos(th), 2), round(r * _math.sin(th), 2), (180 - theta) % 360, "B")
 helmet_mb_pos.update({
-    # 7 side-entry-kontakter på bak-ringen — placerade i LUCKORNA mellan front-optiken (TSOP/LED @
-    # 41/72/92/112/131/154/207/221/292/311) så via-fanouten EJ krockar med optikens front-fanout.
-    "J2": _se(12, 46, 5, "out", flip=True), "J3": _se(170, 46, 5, "out", flip=True),    # 4 patch-portar (S5B)
-    "J4": _se(245, 46, 5, "out", flip=True), "J5": _se(340, 46, 5, "out", flip=True),
-    "J6": _se(28, 47, 2, "out", flip=True), "J7": _se(270, 47, 2, "out", flip=True),    # headset mik/högt
-    "J11": _se(190, 47, 2, "out", flip=True),                                           # PTT
+    # Bak-ring (r46-47): HEADSET (mik J6/högt J7/PTT J11) GRUPPERADE i toppen (samma headset → en
+    # kabelknippa, sitter ihop). 4 patch-portar (S5B) spridda runt om. Allt side-entry, öppning radiellt ut.
+    "J6": _se(75, 47, 2, "out", flip=True), "J7": _se(90, 47, 2, "out", flip=True),     # headset mik + högtalare
+    "J11": _se(105, 47, 2, "out", flip=True),                                           #   + PTT (grupperade, topp)
+    "J2": _se(0, 46, 5, "out", flip=True), "J3": _se(180, 46, 5, "out", flip=True),     # 4 patch-portar (S5B)
+    "J4": _se(230, 46, 5, "out", flip=True), "J5": _se(310, 46, 5, "out", flip=True),
     "J1": (-9.0, -30.0, 0, "B"), "J12": (9.0, -30.0, 0, "B"),                            # RTK-puck-GH 8+6-pol → BAK INRE (under Ø86-pucken)
-    "J10": (0.0, -44.0, 0),                                                             # 2S-batteri XH → FRONT botten (öppning ut nedkant)
-    "H1": (*_ring2(51, 55), 0), "H2": (*_ring2(51, 125), 0),                             # kort-fästhål i bak-ring-luckor
-    "H3": (*_ring2(51, 300), 0), "H4": (*_ring2(51, 350), 0),
+    "J10": (0.0, -31.0, 0),                                                             # 2S-batteri XH → FRONT (innanför tab-ringen; öppning ut nedkant)
+    "H1": (*_ring2(51, 58), 0), "H2": (*_ring2(51, 165), 0),                             # kort-fästhål i fria vinklar (mellan tab/TSOP/kontakt)
+    "H3": (*_ring2(51, 250), 0), "H4": (*_ring2(51, 345), 0),
 })
 
 BOARDS = {
