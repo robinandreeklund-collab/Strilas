@@ -41,7 +41,7 @@ varje kort har dessutom en **carrier-buck (AP63203)** som ger 3,3 V till sensore
 |---|---|---|---|
 | **Vapen** | optik + fire-control | "Sikte + domare" | OV9281-kamera (860 nm-pass) → PnP-pose; 940 nm-emitter (eye-safe CC); IMU; recoil; NFC-ammo; avtryck/laddhandtag |
 | **Väst** | väst-mb + 10 patchar | Träff-RX torso 360° | 10 patch-DATA (skott-LOS); 20 konstellations-LED (pose); 10 zon-vibratorer (haptik) |
-| **Hjälm** | hjälm-mb (rund Ø96) + 4 patchar | Huvud-RX + **RTK-position** + headset | 360° huvud-TSOP; konstellation; **RTK-puck (baksida): ZED-F9P el. alt Ø86** + IMU (cm-position); **ES8388-headset** (mik/högt/PTT) |
+| **Hjälm** | hjälm-mb (rund Ø100) + 4 patchar | Huvud-RX + **RTK-position** + headset | 360° huvud-TSOP; konstellation; **RTK-puck (baksida): ZED-F9P el. alt Ø86** + IMU (cm-position); **ES8388-headset** (mik/högt/PTT) |
 
 Mesh: vapnets P4 löser posen och adjudikerar; väst/hjälm-noderna rapporterar DATA-träffar, RTK-position
 och driver haptik/ljud lokalt. Detaljer: [`ritningar/system-struktur.md`](vapen-stack/ritningar/system-struktur.md).
@@ -216,11 +216,12 @@ Fronten = ren optik (4 identiska TSOP-kluster + 4 LED-tabbar i kardinalriktning 
     Fästmönster ~20,0×34,1 mm. Mönster-skillnaden ~0,8 mm → fästhålen satta till medel (±10,2×±17,0), passar båda.
   Båda GH-kontakterna (J1 8-pol, J12 6-pol) sitter på baksidan UNDER pucken (parallella UART/I²C/kraft-nät).
   **cm-noggrann** position, matas VBAT (3–9 V), UART + I²C till hjälm-P4. Pucken sitter UPPHÖJD på standoffs
-  → ALLA kontakter får ligga under den på baksidan; kort-storleken sätts av FRONTENS kant-ring, ej av
-  kontakterna. **Ø96 är verifierat routbara minimumet** (0/0): +3V3 ligger som kopparPLAN på In2 (codec-
-  tätheten löses utan långa spår) och ampen (U8) sitter intill högtalar-kontakten (kort SPK). Under Ø96
-  börjar kant-ringen krocka fysiskt — optik-blocken (45/135/225/315°) mot patch-kontakter och LED-tabbar
-  (15° bredvid). (Det gamla "Ø108-minimumet" gällde innan +3V3-planet/amp-flytten — aldrig ett verkligt golv.)
+  → puck-GH J1/J12 ligger inne på baksidan; kant-ringens kontakter (4 patch + headset) sitter i LUCKORNA
+  mellan LED-tabbarna. **Ø100** är vald storlek (0/0): routbart minimum är Ø96 (+3V3 som kopparPLAN på In2,
+  amp intill högtalaren), men Ø100 ger luft för SYMMETRISKA patch-kontakter (två motstående par 120/183/
+  300/3°), 11°-pitch på headset-klustret fritt från tab/optik, och puck-JST + batteri utan trängsel. LED-
+  tabbarna är fixa var 60° (28/88/148/208/268/328°); alla kant-kontakter placeras i gluggarna däremellan,
+  fria från optiken (41/131/221/311°). (Ø96 fungerar men packar kant-ringen för tätt för ren symmetri.)
 - **IIM-42653 IMU** (I²C, delar F9P-bussen + INT) → **GNSS/INS-fusion**: överbryggar multipath/skugga,
   ger lokal huvud-attityd, förbättrar RTK-fix. Samma IMU som vapnet/fire-control.
 - Hjälm-noden skickar cm-position + huvud-pose i meshen → live-spårning + after-action.
@@ -238,7 +239,7 @@ okontrollerade serier vandrar av målet). IIM-42653: ±4000 dps, RNSD 0,005 °/s
 | **Optik/vapen** | 54×74 mm | 4 | P4-stack, OV9281-USB, 940 nm-emitter + CC-driver, IMU, lins-hål Ø16 | 0/0/0 |
 | **Fire-control** | 71×21 mm | 2 | Stackas på P4 edge A; avtryck/laddhandtag/mag-switchar, recoil-ctrl, NFC, 2× extra IMU | 0/0/0 |
 | **Väst-patch** | **rund Ø45 mm** | 2 | 4 TSOP diamant + 6 LED (2 fasta + 4 tab) i 3 grenar + FET + JST-PH 5-pol side-entry (baksida) | 0/0/0 |
-| **Hjälm-mb** | **rund Ø96 mm** | 4 | Front: P4 + optik-ring (4 TSOP + 6 LED-tab jämnt) + ES8388-headset-codec + batteri. Bak: RTK-puck (Ø86, centrum, upphöjd) + alla kontakter UNDER pucken (4 patch + mik/högt/PTT grupperat + 2 puck-GH) | 0/0/0 |
+| **Hjälm-mb** | **rund Ø100 mm** | 4 | Front: P4 + optik-ring (4 TSOP + 6 LED-tab jämnt) + ES8388-headset-codec + batteri. Bak: RTK-puck (Ø86, centrum, upphöjd) + puck-GH inne; kant-kontakter i tab-gluggarna (4 patch SYMMETRISKT + mik/högt/PTT-kluster + batteri) | 0/0/0 |
 | **Väst-mb** | 100×60 mm | 4 | P4, 10 zon-kontakter JST-PH 6-pol side-entry (patch+vibrator), 2× TPIC6B595, buck, **XT30-batteri** (In2=VBAT-plan) | 0/0/0 |
 
 **Strömplan:** alla 4-lagerskort In1=GND, F/B=GND-fyll. In2 = **VBAT** (väst-mb + hjälm-mb + optik —
@@ -363,4 +364,4 @@ STRILAS-SYSTEM-GUIDE.md                 — DETTA dokument (master-referens)
 
 **Centrala designval (låsta):** P4-WIFI6 överallt · 940 nm skott / 860 nm konstellation (ams OSRAM OSLON) ·
 kamera = sikte (PnP, ej stadiametri) · 16 mm-lins · deferred hit · eye-safety i HW · 4-TSOP-diamant 40° patch ·
-rund hjälm (Ø96) med RTK-puck på baksidan · haptik på adjudikerad träff.
+rund hjälm (Ø100) med RTK-puck på baksidan · haptik på adjudikerad träff.

@@ -10,7 +10,7 @@
 |---|---|---|---|---|
 | **weapon-module (optik)** | ✓ 0 fel | ✓ PASS | 0/0 | ✓ |
 | **firecontrol** | ✓ 0 fel | ✓ PASS | 0/0 | ✓ |
-| **helmet-mb (Ø96)** | ✓ 0 fel | ✓ PASS | 0/0 | ✓ |
+| **helmet-mb (Ø100)** | ✓ 0 fel | ✓ PASS | 0/0 | ✓ |
 | **vest-mb** | ✓ 0 fel | ✓ PASS | 0/0 | ✓ |
 | **vest-patch** | — (ingen P4) | ✓ PASS | 0/0 | ✓ |
 | **led-tab** | — (passiv micro-PCB) | — | 0/0 | ✓ |

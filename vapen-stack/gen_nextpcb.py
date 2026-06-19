@@ -209,12 +209,15 @@ if __name__ == "__main__":
     print("OPTIK-PROTOTYP (IMU DNP, J1/J2 kund-lödd):"); build("weapon-module.kicad_pcb", "weapon-module.net",
           "nextpcb/optik-PROTOTYP-bom.xls", dnp_refs={"U1","C3","C4","C5"}, cust_refs={"J1","J2"}, ovr_refs={"R3"}, extra=OPTIK_EXTRA)
     centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"U1","C3","C4","C5","J1","J2","R3"})
-    # HJÄLM-MODERKORT (ESP32-P4-WIFI6, Ø108 rund): TH-kontakter (P4-socklar/patch/headset/batteri JST-PH/XH)
+    # HJÄLM-MODERKORT (ESP32-P4-WIFI6, Ø100 rund): TH-kontakter (P4-socklar/patch/headset/batteri JST-PH/XH)
     # auto-DNP via is_conn(). J1/J12 = RTK-puck GH (SMD) → NextPCB SMT-placerar. ES8388/PAM8302A SMD-placeras.
     # cust = enbart de ledade optik-delarna (4 TSOP + 6 LED-tab-micro-PCB) som kund handlöder.
+    # PROTOTYP: IMU U2 (IIM-42653) DNP → lång lead-time, körs på breakout först (avkoppling Ci1/Ci2
+    #   lämnas bestyckad, billig + redo om IMU handlöds senare). Står kvar i BOM som referens.
     HMB_CUST = {"U3","U4","U5","U6","D5","D6","D7","D8","D9","D10"}
-    print("HJÄLM-MB:"); build("helmet-mb.kicad_pcb", "helmet-mb.net", "nextpcb/helmet-mb-bom.xls", cust_refs=HMB_CUST)
-    centroid("helmet-mb.kicad_pcb", "nextpcb/helmet-mb-centroid.csv", exclude=HMB_CUST)
+    print("HJÄLM-MB (IMU U2 prototyp-DNP):")
+    build("helmet-mb.kicad_pcb", "helmet-mb.net", "nextpcb/helmet-mb-bom.xls", cust_refs=HMB_CUST, dnp_refs={"U2"})
+    centroid("helmet-mb.kicad_pcb", "nextpcb/helmet-mb-centroid.csv", exclude=HMB_CUST | {"U2"})
     # VÄST-MODERKORT (ESP32-P4-WIFI6): alla TH-kontakter (zon-headers/P4-socklar/batteri) kund-lödda.
     VMB_CUST = {f"J{i}" for i in range(1, 14)}
     print("VÄST-MB:"); build("vest-mb.kicad_pcb", "vest-mb.net", "nextpcb/vest-mb-bom.xls", cust_refs=VMB_CUST)

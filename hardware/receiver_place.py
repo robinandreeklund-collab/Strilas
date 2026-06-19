@@ -429,12 +429,13 @@ helmet_mb_pos.update({
     "H3": (*_ring2(51, 250), 0), "H4": (*_ring2(51, 345), 0),
 })
 
-# ===== KRYMPNING till minsta fysiska diameter (HELMET_R = kort-radie; default 48 = Ø96, det
-#   verifierade minsta som får plats med nuvarande kant-ring; sätt HELMET_R=54 → Ø108). Ø108-
-#   blocket ovan bygger nominal-layouten; här dras den ihop: rigida kluster (4 optik-block, codec,
-#   amp) translateras radiellt inåt (intern geometri bevaras), kant-ringen (tabbar/kontakter/hål)
-#   räknas OM via samma hjälpare på skalade radier. Verifierat 0 courtyard-krock vid Ø96. =====
-_HR = float(os.environ.get("HELMET_R", "48.0"))
+# ===== KRYMPNING till vald diameter (HELMET_R = kort-radie; default 50 = Ø100, kompromiss med
+#   luft för symmetriska patch-kontakter + puck/batteri-clearance; 48 = Ø96 (maxpackat), 54 = Ø108).
+#   Ø108-blocket ovan bygger nominal-layouten; här dras den ihop: rigida kluster (4 optik-block,
+#   codec, amp) translateras radiellt inåt (intern geometri bevaras), kant-ringen (tabbar/kontakter/
+#   hål) räknas OM via samma hjälpare på skalade radier. Kant-kontakterna sitter i tab-LUCKORNA
+#   (LED-tabbar fixa var 60° @28/88/148/208/268/328°), patchar symmetriskt. =====
+_HR = float(os.environ.get("HELMET_R", "50.0"))
 if abs(_HR - 54.0) > 0.05:
     _R0, _RC = 54.0, 30.0
     _kk = (_HR - _RC) / (_R0 - _RC)
@@ -457,18 +458,20 @@ if abs(_HR - 54.0) > 0.05:
         _rot = (_a + 180) % 360; _cx, _cy = _ring2(_HR - 1.8, _a)
         helmet_mb_pos[f"D{_i+5}"] = (*_comp(_cx, _cy, _rot, (0.0, 1.27)), _rot)
     _rc = _HR - 5.8                                              # kontakt-pad-radie (kropp/öppning når kanten)
-    helmet_mb_pos["J6"] = _se(75, _rc, 2, "out", flip=True); helmet_mb_pos["J7"] = _se(90, _rc, 2, "out", flip=True)
-    helmet_mb_pos["J11"] = _se(105, _rc, 2, "out", flip=True)
-    helmet_mb_pos["J2"] = _se(0, _rc, 5, "out", flip=True); helmet_mb_pos["J3"] = _se(180, _rc, 5, "out", flip=True)
-    # J4/J5 i de fria luckorna (ej 230/310 — krockar med botten-optiken U5@225/U6@315 på det täta Ø96)
-    helmet_mb_pos["J4"] = _se(196, _rc, 5, "out", flip=True); helmet_mb_pos["J5"] = _se(290, _rc, 5, "out", flip=True)
-    for _h, _a in zip(("H1", "H2", "H3", "H4"), (58, 165, 250, 345)):
+    # ALLA kant-kontakter i tab-LUCKORNA (mellan LED-tabbarna @28/88/148/208/268/328°), fria från
+    # optik (41/131/221/311°). 4 patchar SYMMETRISKT: två motstående par (118↔298, 178↔358).
+    helmet_mb_pos["J2"] = _se(115, _rc, 5, "out", flip=True); helmet_mb_pos["J3"] = _se(178, _rc, 5, "out", flip=True)
+    helmet_mb_pos["J4"] = _se(295, _rc, 5, "out", flip=True); helmet_mb_pos["J5"] = _se(358, _rc, 5, "out", flip=True)
+    # headset (mik/högt/PTT) GRUPPERAT i luckan 49-85° (bort från tab D6@88° + optik U4@41°; 11°-pitch)
+    helmet_mb_pos["J6"] = _se(55, _rc, 2, "out", flip=True); helmet_mb_pos["J7"] = _se(66, _rc, 2, "out", flip=True)
+    helmet_mb_pos["J11"] = _se(77, _rc, 2, "out", flip=True)
+    for _h, _a in zip(("H1", "H2", "H3", "H4"), (100, 195, 255, 342)):  # kort-fästhål i fria vinkel-luckor
         helmet_mb_pos[_h] = (*_ring2(_HR - 2.6, _a), 0)
-    for _r in ("J1", "J12", "J10"):                             # inre bak-kontakter + batteri
+    for _r in ("J1", "J12"):                                     # inre bak puck-GH (ZED-F9P 8-pol / alt 6-pol)
         _p = helmet_mb_pos[_r]; _rr = _math.hypot(_p[0], _p[1]); _s = _shrink_r(_rr) / _rr if _rr else 1
         _side = (_p[3],) if len(_p) > 3 else ()
         helmet_mb_pos[_r] = (round(_p[0] * _s, 2), round(_p[1] * _s, 2), _p[2]) + _side
-    helmet_mb_pos["J10"] = (-0.7, -30.8, 0)                     # batteri centrerat i luckan mellan puck-GH J1/J12 (TH-padd fri från J12-MP)
+    helmet_mb_pos["J10"] = (*_ring2(_HR - 4.0, 238), 0)          # batteri ut i kant-luckan 238° (FRI från puck-GH inne)
     # AMP intill HÖGTALAR-kontakten: PAM8302A (U8) matar J7 (högtalare, topp). På Ø108 fick SPK_P/N
     # plats trots amp@höger, men på det täta Ø96 spänner de halva kortet → orienterbart. Flytta amp +
     # in/avkoppl-C till den fria top-center-luckan (mellan R5@x≥8 och R6@x≤-7), direkt under J7 →
