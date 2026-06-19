@@ -402,14 +402,16 @@ def _ghr(theta, r):                                  # GH-kontakt (SM0xB-GHS) p�
     th = _math.radians(theta)                        # (GH-footprint-ram ≈ +90° vs PH → rot=(180-theta))
     return (round(r * _math.cos(th), 2), round(r * _math.sin(th), 2), (180 - theta) % 360, "B")
 helmet_mb_pos.update({
-    "J2": _se(35, 46, 5, "out", flip=True), "J3": _se(145, 46, 5, "out", flip=True),    # 4 patch-portar (S5B)
-    "J4": _se(220, 46, 5, "out", flip=True), "J5": _se(325, 46, 5, "out", flip=True),
-    "J6": _se(85, 47, 2, "out", flip=True), "J7": _se(105, 47, 2, "out", flip=True),    # headset mik/högt
-    "J11": _se(175, 47, 2, "out", flip=True),                                           # PTT
-    "J1": (-9.0, -30.0, 0, "B"), "J12": (9.0, -30.0, 0, "B"),                            # RTK-puck-GH 8+6-pol → BAK INRE (under Ø86-pucken, nära puckens pigtail; GH för bulkig f. yttre ringen)
-    "J10": (0.0, -44.0, 0),                                                             # 2S-batteri XH → FRONT botten (XH för bulkig f. bak-ringen; öppning ut nedkant)
-    "H1": (*_ring2(51, 15), 0), "H2": (*_ring2(51, 165), 0),                             # kort-fästhål i bak-ring-luckor
-    "H3": (*_ring2(51, 237), 0), "H4": (*_ring2(51, 340), 0),
+    # 7 side-entry-kontakter på bak-ringen — placerade i LUCKORNA mellan front-optiken (TSOP/LED @
+    # 41/72/92/112/131/154/207/221/292/311) så via-fanouten EJ krockar med optikens front-fanout.
+    "J2": _se(12, 46, 5, "out", flip=True), "J3": _se(170, 46, 5, "out", flip=True),    # 4 patch-portar (S5B)
+    "J4": _se(245, 46, 5, "out", flip=True), "J5": _se(340, 46, 5, "out", flip=True),
+    "J6": _se(28, 47, 2, "out", flip=True), "J7": _se(270, 47, 2, "out", flip=True),    # headset mik/högt
+    "J11": _se(190, 47, 2, "out", flip=True),                                           # PTT
+    "J1": (-9.0, -30.0, 0, "B"), "J12": (9.0, -30.0, 0, "B"),                            # RTK-puck-GH 8+6-pol → BAK INRE (under Ø86-pucken)
+    "J10": (0.0, -44.0, 0),                                                             # 2S-batteri XH → FRONT botten (öppning ut nedkant)
+    "H1": (*_ring2(51, 55), 0), "H2": (*_ring2(51, 125), 0),                             # kort-fästhål i bak-ring-luckor
+    "H3": (*_ring2(51, 300), 0), "H4": (*_ring2(51, 350), 0),
 })
 
 BOARDS = {
