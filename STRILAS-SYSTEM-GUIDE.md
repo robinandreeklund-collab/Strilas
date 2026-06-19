@@ -361,4 +361,4 @@ STRILAS-SYSTEM-GUIDE.md                 — DETTA dokument (master-referens)
 
 **Centrala designval (låsta):** P4-WIFI6 överallt · 940 nm skott / 860 nm konstellation (ams OSRAM OSLON) ·
 kamera = sikte (PnP, ej stadiametri) · 16 mm-lins · deferred hit · eye-safety i HW · 4-TSOP-diamant 40° patch ·
-rund hjälm (Ø96) med RTK-puck på baksidan · haptik på adjudikerad träff.
+rund hjälm (Ø100) med RTK-puck på baksidan · haptik på adjudikerad träff.
