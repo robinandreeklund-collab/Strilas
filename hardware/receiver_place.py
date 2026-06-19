@@ -471,7 +471,7 @@ if abs(_HR - 54.0) > 0.05:
         _p = helmet_mb_pos[_r]; _rr = _math.hypot(_p[0], _p[1]); _s = _shrink_r(_rr) / _rr if _rr else 1
         _side = (_p[3],) if len(_p) > 3 else ()
         helmet_mb_pos[_r] = (round(_p[0] * _s, 2), round(_p[1] * _s, 2), _p[2]) + _side
-    helmet_mb_pos["J10"] = (*_ring2(_HR - 4.0, 238), 0)          # batteri ut i kant-luckan 238° (FRI från puck-GH inne)
+    helmet_mb_pos["J10"] = _se(244, _HR - 8.8, 2, "out", flip=False)  # batteri side-entry @244° (FRONT, tangentiell, insatt så courtyard≈patcharna 51 → kroppen PÅ kortet; fri lucka mellan optik U5@221 + tab D9@268)
     # AMP intill HÖGTALAR-kontakten: PAM8302A (U8) matar J7 (högtalare, topp). På Ø108 fick SPK_P/N
     # plats trots amp@höger, men på det täta Ø96 spänner de halva kortet → orienterbart. Flytta amp +
     # in/avkoppl-C till den fria top-center-luckan (mellan R5@x≥8 och R6@x≤-7), direkt under J7 →
