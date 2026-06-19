@@ -400,13 +400,13 @@ helmet_mb_pos = {
 #   kort-r54), öppning radiellt UT. Centrum-el (P4/codec U7/amp U8/buck/IMU/const-R) stannar på fronten. =====
 for _ref in ("U3", "U4", "U5", "U6", "D1", "D2", "D3", "D4", "C6", "C7", "C8", "C9"):
     _x, _y, _rt = helmet_mb_pos[_ref][:3]; _r = _math.hypot(_x, _y)
-    _sc = (_r + 6.0) / _r
+    _sc = (_r + 8.0) / _r
     helmet_mb_pos[_ref] = (round(_x * _sc, 2), round(_y * _sc, 2), _rt)
 # 6 LED-tabbar (D5-D10) JÄMNT runt om (60° isär, mirror-symmetriskt: 30/90/.../330) på r=49, pad-rad
 # TANGENTIELL (viks radiellt ut) + pad-mittpunkt/3D-modell CENTRERAD på ringpunkten (som patchen).
 for _i, _a in enumerate((30, 90, 150, 210, 270, 330)):
     _rot = (_a + 180) % 360
-    _cx, _cy = _ring2(47.0, _a)
+    _cx, _cy = _ring2(49.0, _a)
     helmet_mb_pos[f"D{_i+5}"] = (*_comp(_cx, _cy, _rot, (0.0, 1.27)), _rot)
 def _ghr(theta, r):                                  # GH-kontakt (SM0xB-GHS) på baksidan: öppning radiellt UT
     th = _math.radians(theta)                        # (GH-footprint-ram ≈ +90° vs PH → rot=(180-theta))
@@ -414,19 +414,19 @@ def _ghr(theta, r):                                  # GH-kontakt (SM0xB-GHS) p�
 helmet_mb_pos.update({
     # Bak-ring (r46-47): HEADSET (mik J6/högt J7/PTT J11) GRUPPERADE i toppen (samma headset → en
     # kabelknippa, sitter ihop). 4 patch-portar (S5B) spridda runt om. Allt side-entry, öppning radiellt ut.
-    "J6": _se(75, 42, 2, "out", flip=True), "J7": _se(90, 42, 2, "out", flip=True),     # headset mik + högtalare
-    "J11": _se(105, 42, 2, "out", flip=True),                                           #   + PTT (grupperade, topp)
-    "J2": _se(0, 42, 5, "out", flip=True), "J3": _se(180, 42, 5, "out", flip=True),     # 4 patch-portar (S5B)
-    "J4": _se(230, 42, 5, "out", flip=True), "J5": _se(310, 42, 5, "out", flip=True),
+    "J6": _se(75, 44, 2, "out", flip=True), "J7": _se(90, 44, 2, "out", flip=True),     # headset mik + högtalare
+    "J11": _se(105, 44, 2, "out", flip=True),                                           #   + PTT (grupperade, topp)
+    "J2": _se(0, 44, 5, "out", flip=True), "J3": _se(180, 44, 5, "out", flip=True),     # 4 patch-portar (S5B)
+    "J4": _se(230, 44, 5, "out", flip=True), "J5": _se(310, 44, 5, "out", flip=True),
     "J1": (-9.0, -30.0, 0, "B"), "J12": (9.0, -30.0, 0, "B"),                            # RTK-puck-GH 8+6-pol → BAK INRE (under Ø86-pucken)
     "J10": (0.0, -31.0, 0),                                                             # 2S-batteri XH → FRONT (innanför tab-ringen; öppning ut nedkant)
-    "H1": (*_ring2(47, 58), 0), "H2": (*_ring2(47, 165), 0),                             # kort-fästhål i fria vinklar (mellan tab/TSOP/kontakt)
-    "H3": (*_ring2(47, 250), 0), "H4": (*_ring2(47, 345), 0),
+    "H1": (*_ring2(49, 58), 0), "H2": (*_ring2(49, 165), 0),                             # kort-fästhål i fria vinklar (mellan tab/TSOP/kontakt)
+    "H3": (*_ring2(49, 250), 0), "H4": (*_ring2(49, 345), 0),
 })
 
 BOARDS = {
     "helmet_mb": lambda: place("hardware/helmet-mb.net", "hardware/helmet-mb.kicad_pcb",
-                               helmet_mb_pos, ("circle", 50.0), layers=4, free=(-3, 3, -3, 3)),
+                               helmet_mb_pos, ("circle", 52.0), layers=4, free=(-3, 3, -3, 3)),
     "vest": lambda: place("hardware/vest-patch.net", "hardware/vest-patch.kicad_pcb",
                           vest_pos, ("circle", _VEST_R), layers=2, free=(-2, 2, -2, 2), labels=vest_labels),
     "vest_mb": lambda: place("hardware/vest-mb.net", "hardware/vest-mb.kicad_pcb",
