@@ -27,19 +27,21 @@
 > *(Batteri matas in på optikkortet J2 → VSYS till P4 + emitter-rail; trigger → egen P4-GPIO på greppet.)*
 
 > ## ✅ KÖP-KLARA MODULER (verifierat på nätet, juni 2026) — vad som FAKTISKT passar P4
-> **Dev board att utveckla på:** Espressif **ESP32-P4-Function-EV-Board** (DigiKey/Mouser ~$57,50) —
-> har både 15-pin MIPI-CSI **och** USB-OTG 2.0 HS. (Kamera-fokuserat alt: Espressif **ESP32-P4-EYE**;
-> eller Waveshare ESP32-P4-Nano.)
+> **P4 = LÅST: Waveshare ESP32-P4-WIFI6** (kortet ALLA carrier-PCB:er byggts runt via edge A/B).
+> Inget nytt dev board behövs — **kameran kopplas på SJÄLVA P4-kortet** (carriern bär ej kamerasignal).
+> Det kortet har: **USB Type-A = USB-OTG 2.0 HS *host*** (för USB-kamera) **och 2-lane MIPI-CSI**
+> (samma kontakt som tar OV5647). Båda kamera-vägarna finns alltså redan på brädan vi har.
 >
 > **A) PASSAR DIREKT på nuvarande optik-PCB (USB-väg, ingen drivrutin) — LÅST val ovan:**
 > **Arducam B0332** = OV9281 1 MP mono global shutter **USB-UVC**, M12 (~$30) + **16 mm M12-lins** (~$8) +
-> **850/860 nm IR-pass** (~$8). UVC → P4:ans USB-host (plug-and-play, ingen MIPI-driver). Kortet är redan
-> ritat för USB-kamera → **noll PCB-ändring**.
+> **850/860 nm IR-pass** (~$8). Sätts i P4-kortets **USB-A (OTG-HS host)** → UVC, ingen MIPI-driver.
+> Optik-kortet är redan ritat för USB-kamera → **noll PCB-ändring**.
 >
-> **B) MIPI-CSI rakt på P4 (kräver att optik-PCB:t drar CSI till P4-modulen — redesign):**
-> **Arducam B0224** = OV9281 1 MP mono GS **NoIR, M12-fäste** (~$42). **Native `ov9281`-drivrutin finns i
-> Espressifs `esp_cam_sensor`** (EJ Pivariety) och modulen sitter på **15-pin RPi-CSI = EV-boardens
-> kontakt** → kopplar direkt på dev-boarden. + smal M12-lins + 850 nm-filter.
+> **B) MIPI-CSI rakt i P4-kortets kamera-kontakt (högre integration, ingen USB-kabel):**
+> **Arducam B0224** = OV9281 1 MP mono GS **NoIR, M12-fäste** (~$42). **Native `ov9281`-drivrutin i
+> Espressifs `esp_cam_sensor`** (EJ Pivariety), sitter på **15-pin RPi-CSI = Waveshare-kortets 2-lane
+> MIPI-CSI** → kopplar direkt på P4-brädan. + smal M12-lins + 850 nm-filter. (Kameran sitter på P4-
+> kortet, ej på vår carrier — så optik-PCB:t ändras ej; bara mekaniken/kabeln till P4-kortets CSI.)
 >
 > **C) UPPGRADERING för mer upplösning @150 m (bäst NIR, men EJ turnkey):** ams **Mira220 mono**
 > 2,2 MP NIR-enhanced GS — har officiellt **ESP32-P4-exempel** (ams-OSRAM GitHub) men **ingen lättköpt
