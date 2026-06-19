@@ -1742,7 +1742,7 @@
       (net 21 "VBAT") (tstamp 46725277-0daf-413a-a3dd-9527dd83749f))
     (pad "2" thru_hole circle (at -5 0 90) (size 3.5 3.5) (drill 1.9) (layers "*.Cu" "*.Mask")
       (net 14 "GND") (tstamp be157244-267d-479f-a314-16e94c1735e2))
-    (model "${KICAD6_3DMODEL_DIR}/Connector_AMASS.3dshapes/AMASS_XT30PW-M_1x02_P2.50mm_Horizontal.wrl"
+    (model "${KIPRJMOD}/strilas-3d/AMASS_XT30PW-M_1x02_P2.50mm_Horizontal.step"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2367,7 +2367,7 @@
       (net 16 "SW") (tstamp 40da8df7-73d0-415f-a10d-65b9e5b6afda))
     (pad "2" smd rect (at 1.85 0) (size 1.4 4.2) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 1 "+3V3") (tstamp 4fc418e3-7cbc-48d9-b381-304c0229d250))
-    (model "${KICAD7_3DMODEL_DIR}/Inductor_SMD.3dshapes/L_Changjiang_FNR5040S.wrl"
+    (model "${KIPRJMOD}/strilas-3d/L_Changjiang_FNR5040S.step"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))

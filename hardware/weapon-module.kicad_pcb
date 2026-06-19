@@ -1623,7 +1623,7 @@
       (net 17 "VBAT_IN") (tstamp b7e15bda-2661-4985-ad98-009f080c1c6d))
     (pad "2" smd roundrect (at 2.1375 0 90) (size 1.125 3.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.222222)
       (net 16 "VBAT_F") (tstamp 72eb041e-e637-408a-9d86-f6e1a9c1b201))
-    (model "${KICAD6_3DMODEL_DIR}/Fuse.3dshapes/Fuse_1812_4532Metric.wrl"
+    (model "${KIPRJMOD}/strilas-3d/Fuse_1812_4532Metric.step"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))

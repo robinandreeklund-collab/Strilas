@@ -155,8 +155,12 @@ for i, a in enumerate((45, 135, 225, 315)):
     vest_pos[f"C{i+2}"] = (*_ring2(_PC, a), rot)                  # avkoppling stackad innanför OR
 # 4 LED-tabbar @ KARDINALER (0/90/180/270) — pad-rad TANGENTIELL (precis som TSOP) så tabben viks
 # radiellt UT (böjs 40°, LED mot horisonten). rot=(a+180) → pad-axel tangentiell (a+90).
+# _comp m. off=(0,1.27): centrera pad-MITTPUNKTEN (mellan de 2 hålen) + 3D-modellen på ring-punkten
+# (footprint-origo=pad1 → annars hamnar de 2 hålen osymmetriskt utåt). → hål straddlar kardinalen symmetriskt.
 for i, a in enumerate((0, 90, 180, 270)):
-    vest_pos[f"D{i+7}"] = (*_ring2(_PL, a), (a + 180) % 360)
+    rot = (a + 180) % 360
+    cx, cy = _ring2(_PL, a)
+    vest_pos[f"D{i+7}"] = (*_comp(cx, cy, rot, (0.0, 1.27)), rot)
 # 4 monteringshål MITT i TSOP→tab-luckorna (67.5/157.5/247.5/337.5) → symmetriskt, EJ snett mot tab/TSOP
 for i, a in enumerate((67.5, 157.5, 247.5, 337.5)):
     vest_pos[f"H{i+1}"] = (*_ring2(_PH, a), 0)

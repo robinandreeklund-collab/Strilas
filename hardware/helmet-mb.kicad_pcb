@@ -3213,7 +3213,7 @@
       (net 47 "SW") (tstamp f4e53195-9067-4920-83b7-585f64eab511))
     (pad "2" smd rect (at 1.85 0) (size 1.4 4.2) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 1 "+3V3") (tstamp 8c509d36-7e79-474c-8df6-5232df959f43))
-    (model "${KICAD7_3DMODEL_DIR}/Inductor_SMD.3dshapes/L_Changjiang_FNR5040S.wrl"
+    (model "${KIPRJMOD}/strilas-3d/L_Changjiang_FNR5040S.step"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
