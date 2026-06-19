@@ -620,7 +620,7 @@
       (tstamps "e557120e-2519-573a-bc83-c7eef148d108"))
     (comp
       (ref "U1")
-      (value "IIM-42653")
+      (value "ICM-42688-P")
       (description "")
       (footprint "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx")
       (fields
@@ -644,7 +644,7 @@
       (tstamps "e6a2eb0d-ed48-59da-8b5f-32540a3b45ec"))
     (comp
       (ref "U2")
-      (value "IIM-42653")
+      (value "ICM-42688-P")
       (description "")
       (footprint "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx")
       (fields

@@ -35,6 +35,7 @@ MPN = {
     "PTC_1A":      ("MF-MSMF075/16X-2", "Bourns", "PTC resättbar 0.75A-hold 16V 1206", "", "NOTE: verifiera hold-ström mot systemtopp"),
     "PTC_3A":      ("MF-MSMF300/16-2", "Bourns", "PTC resättbar 3A-hold 16V 1812 — matningsskydd (matar P4+IR, 3A-skala)", "", "alltid-i-lager jellybean; 2S 8.4V kräver 1812 f. 3A@16V"),
     "IIM-42653": ("IIM-42653", "TDK InvenSense", "6-axlig industri-IMU LGA-14, ±4000dps, -40..+105C", "", ""),
+    "ICM-42688-P": ("ICM-42688-P", "TDK InvenSense", "6-axlig hög-precisions-IMU LGA-14 2.5×3mm — ultralågt gyro-brus ~2.8 mdps/√Hz, ±2000dps/±16g; pin-kompatibel drop-in mot IIM-42653", "", "Vald för prototyp (i lager hos NextPCB, lägst brus → bäst INS-fusion)"),
     # --- kontakter (genomplåt → selektiv/handlödning) ---
     "P4-socket (edge B)":      ("2.54-1x14-FH", "generisk", "Stiftsockel 1x14 2.54mm THT (hona)", "", "TH; valfri likvärdig IN-STOCK 2.54 hona OK"),
     "P4-socket (edge A)":      ("2.54-1x12-FH", "generisk", "Stiftsockel 1x12 2.54mm THT (hona)", "", "TH; valfri likvärdig IN-STOCK 2.54 hona OK"),
@@ -191,33 +192,32 @@ def centroid(board_pcb, out_csv, exclude=frozenset()):
 
 if __name__ == "__main__":
     import os; os.makedirs("nextpcb", exist_ok=True)
-    # OPTIK: prototyp → IMU (U1) + dess avkoppling (C3/C4/C5) DNP (kör IMU på breakout först).
-    # Alla kontakter/headers auto-DNP (kund handlöder) via is_conn().
-    print("OPTIK:"); build("weapon-module.kicad_pcb", "weapon-module.net", "nextpcb/optik-bom.xls",
-          dnp_refs={"U1","C3","C4","C5"}, ovr_refs={"R3"}, extra=OPTIK_EXTRA)
-    centroid("weapon-module.kicad_pcb", "nextpcb/optik-centroid.csv", exclude={"U1","C3","C4","C5","R3"})
+    # OPTIK: IMU (U1=ICM-42688-P) NU BESTYCKAD (i lager) — avkoppling C3/C4/C5 med. Bara R3 = DNP
+    # (3A-override, ögonsäkerhets-default 1A). Kontakter/headers auto-DNP via is_conn().
+    print("OPTIK (IMU ICM-42688-P bestyckad):"); build("weapon-module.kicad_pcb", "weapon-module.net", "nextpcb/optik-bom.xls",
+          ovr_refs={"R3"}, extra=OPTIK_EXTRA)
+    centroid("weapon-module.kicad_pcb", "nextpcb/optik-centroid.csv", exclude={"R3"})
     # FIRE-CONTROL: 2 extra IMU (U1,U2 = IIM-42653) PROTOTYP-DNP → körs på breakout (ev. inga i början).
     # Står kvar i BOM som referens men monteras EJ av NextPCB → ej i centroid. Avkopplingen lämnas
     # bestyckad (billig, redo om IMU handlöds på senare). Kontakter auto-DNP via is_conn().
-    print("FIRE-CONTROL (2× IMU U1/U2 prototyp-DNP):")
-    build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls", dnp_refs={"U1", "U2"})
-    centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv", exclude={"U1", "U2"})
+    print("FIRE-CONTROL (2× IMU U1/U2 = ICM-42688-P bestyckade):")
+    build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls")
+    centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv")
     print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls",
           cust_refs={"J1","U1","U2","U3","U4","D7","D8","D9","D10"})  # J1 + 4 ledade TSOP + 4 LED-tab-socklar (kund)
     centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude={"J1","U1","U2","U3","U4","D7","D8","D9","D10"})
     # Prototyp-optik: IMU DNP (breakout på P4) + J1/J2 kund-lödda (TH)
-    print("OPTIK-PROTOTYP (IMU DNP, J1/J2 kund-lödd):"); build("weapon-module.kicad_pcb", "weapon-module.net",
-          "nextpcb/optik-PROTOTYP-bom.xls", dnp_refs={"U1","C3","C4","C5"}, cust_refs={"J1","J2"}, ovr_refs={"R3"}, extra=OPTIK_EXTRA)
-    centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"U1","C3","C4","C5","J1","J2","R3"})
+    print("OPTIK-PROTOTYP (IMU bestyckad, J1/J2 kund-lödd):"); build("weapon-module.kicad_pcb", "weapon-module.net",
+          "nextpcb/optik-PROTOTYP-bom.xls", cust_refs={"J1","J2"}, ovr_refs={"R3"}, extra=OPTIK_EXTRA)
+    centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"J1","J2","R3"})
     # HJÄLM-MODERKORT (ESP32-P4-WIFI6, Ø100 rund): TH-kontakter (P4-socklar/patch/headset/batteri JST-PH/XH)
     # auto-DNP via is_conn(). J1/J12 = RTK-puck GH (SMD) → NextPCB SMT-placerar. ES8388/PAM8302A SMD-placeras.
     # cust = enbart de ledade optik-delarna (4 TSOP + 6 LED-tab-micro-PCB) som kund handlöder.
-    # PROTOTYP: IMU U2 (IIM-42653) DNP → lång lead-time, körs på breakout först (avkoppling Ci1/Ci2
-    #   lämnas bestyckad, billig + redo om IMU handlöds senare). Står kvar i BOM som referens.
+    # IMU U2 = ICM-42688-P NU BESTYCKAD (i lager, drop-in mot IIM-42653). cust = ledade optik-delar.
     HMB_CUST = {"U3","U4","U5","U6","D5","D6","D7","D8","D9","D10"}
-    print("HJÄLM-MB (IMU U2 prototyp-DNP):")
-    build("helmet-mb.kicad_pcb", "helmet-mb.net", "nextpcb/helmet-mb-bom.xls", cust_refs=HMB_CUST, dnp_refs={"U2"})
-    centroid("helmet-mb.kicad_pcb", "nextpcb/helmet-mb-centroid.csv", exclude=HMB_CUST | {"U2"})
+    print("HJÄLM-MB (IMU U2 ICM-42688-P bestyckad):")
+    build("helmet-mb.kicad_pcb", "helmet-mb.net", "nextpcb/helmet-mb-bom.xls", cust_refs=HMB_CUST)
+    centroid("helmet-mb.kicad_pcb", "nextpcb/helmet-mb-centroid.csv", exclude=HMB_CUST)
     # VÄST-MODERKORT (ESP32-P4-WIFI6): alla TH-kontakter (zon-headers/P4-socklar/batteri) kund-lödda.
     VMB_CUST = {f"J{i}" for i in range(1, 14)}
     print("VÄST-MB:"); build("vest-mb.kicad_pcb", "vest-mb.net", "nextpcb/vest-mb-bom.xls", cust_refs=VMB_CUST)

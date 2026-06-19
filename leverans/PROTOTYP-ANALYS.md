@@ -101,11 +101,13 @@ under topp; budgeten räknar värsta fall.)
 batteri-kontakter, knappar — sätts **DNP** (står kvar i BOM som beställningsreferens men
 NextPCB placerar **inte**, och de utesluts ur centroid). Du beställer och löder dem själv.
 Finpitch-SMD (JST-GH 1,25 mm puck-kontakt, ES8388-codec, PAM8302A-amp, IMU) **placeras av NextPCB**.
+**IMU = ICM-42688-P** (vald, i lager hos NextPCB; pin-kompatibel drop-in mot IIM-42653, ultralågt brus)
+— bestyckad på alla tre korten (optik U1, firecontrol U1/U2, helmet U2), ej längre DNP.
 
 | Kort | NextPCB placerar (SMT) | DU beställer + handlöder (DNP) |
 |---|---|---|
-| **weapon-module** | 16 delar | J1 (P4-sockel edge B), J2 (batteri-XH). *Prototyp:* U1+C3/C4/C5 (IMU på breakout), R3 (1A fail-safe) |
-| **firecontrol** | 10 delar | J1 (P4-sockel A), J2 (kraft-tapp), J3 TRIG, J4 RACK, J5 MAG_REL, J6 MAGWELL, J7 recoil, J8 NFC, J9 OLED, J10 läges-ratt. *Prototyp:* U1/U2 (IMU) |
+| **weapon-module** | 20 delar (inkl IMU U1 = ICM-42688-P + avkoppling) | J1 (P4-sockel edge B), J2 (batteri-XH). *DNP:* R3 (3A-override; default = 1A ögonsäker fail-safe) |
+| **firecontrol** | 12 delar (inkl 2× IMU U1/U2 = ICM-42688-P) | J1 (P4-sockel A), J2 (kraft-tapp), J3 TRIG, J4 RACK, J5 MAG_REL, J6 MAGWELL, J7 recoil, J8 NFC, J9 OLED, J10 läges-ratt |
 | **helmet-mb** | 43 delar (inkl F9P-GH-puck J1/J12, ES8388, PAM8302A, IMU) | J8/J9 (P4-socklar), J2–J5 (patch-PH), J6/J7/J11 (mik/högt/PTT-PH), J10 (batteri-XH), U3–U6 (4 ledade TSOP), D5–D10 (6 LED-tab) |
 | **vest-mb** | 12 delar (TPIC ×2 m.m.) | J11/J12 (P4-socklar), J1–J10 (zon-PH-headers), J13 (XT30-batteri) |
 | **vest-patch** | 17 delar (860 nm-LED, BAT54, HT7333) | J1 (patch-PH), U1–U4 (4 ledade TSOP), D7–D10 (4 LED-tab) |

@@ -79,8 +79,8 @@ verifiera mot NextPCB:s basbibliotek.
 - TSOP-vinkellob vs cos²-modell (justera 40°-lutning om verklig lob avviker) — `patch-sikte.md`.
 - Buck 3,33 V innan P4 pluggas; CC-sänkans ~1 A skott-ström (eye-safety HW-tak).
 - Induktor-mättnadsström >2 A; 2512 LED-serieR ≤50 % duty (2,5 W topp).
-- **IMU-footprint:** LGA-14 2.5×3 mm-mönstret är namngivet `ICM-456xx` men används för IIM-42653
-  (net→pad-mappning enligt IIM-42653 DS-000529). Båda är TDK 14-pin LGA 2.5×3 mm; bekräfta att
-  pad-layouten är identisk mot IIM-42653-paketritningen innan produktionsbestyckning av hjälm-mb.
+- **IMU = ICM-42688-P** (vald för prototyp, i lager hos NextPCB; bestyckad på optik/firecontrol/helmet).
+  Pin-kompatibel drop-in mot IIM-42653 på samma TDK LGA-14 2.5×3 mm-footprint (`ICM-456xx`-mönstret).
+  Bekräfta pad-layout mot ICM-42688-P-paketritningen (DS-000347) innan produktion.
 - **NC-stift (avsiktligt):** IMU AUX1-SPI (pin 2/3/9/10/11), P4 edge-B oanvända GPIO + VBUS/EN/RUN/
   3V3-ut (vi matar laster från egen carrier-buck, ej P4:ans 3V3-ut). P4 GND+VSYS+signaler anslutna.

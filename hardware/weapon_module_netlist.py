@@ -62,8 +62,8 @@ LED = mk("SFH4725AS", "D", [(1, "A"), (2, "K")],
 # 8 VDD  9 INT2/FSYNC  10 AUX1_CS  11 AUX1_SDO  12 CS  13 SCLK 14 SDI
 # (de 8 stift vi använder: 1/4/5/6/8/12/13/14 = identiska med 426xx-footprinten → DROP-IN.
 #  AUX1 (2/3/10/11) = oanvänd sekundär-SPI → NC. ±4000 dps, ±0,5% SF, -40..+105°C, 20000g.)
-IMU = mk("IIM-42653", "U", [(i, i) for i in range(1, 15)],
-         "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "IIM-42653")
+IMU = mk("ICM-42688-P", "U", [(i, i) for i in range(1, 15)],
+         "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-42688-P")
 MH = lambda n: mk(f"MH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", "M2.5")
 # kamera-monteringshål (M2) — matchar Arducam B0332 28×28 mm-mönster
 CMH = lambda n: mk(f"CMH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2_kamera")

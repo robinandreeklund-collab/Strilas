@@ -51,8 +51,8 @@ MODE = mk("MODE_SEL", "J", [(1, "MODE_A"), (2, "MODE_B"), (3, "GND")],
 # EXTRA IMU — TDK IIM-42653 (LGA-14), samma som optiken men I²C. Pin-nr per DS-000529:
 #   8=VDD 5=VDDIO 6=GND 7=RESV(→GND) 13=SCLK(SCL) 14=SDI(SDA) 1=SDO(AD0) 12=CS(→VDDIO=I²C) 4=INT1
 # (drop-in: 8 signalstift identiska med 426xx; AUX1 2/3/10/11 = NC. I²C 0x68/0x69 via AD0.)
-IMU = mk("IIM-42653", "U", [(i, i) for i in range(1, 15)],
-         "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "IIM-42653")
+IMU = mk("ICM-42688-P", "U", [(i, i) for i in range(1, 15)],
+         "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-42688-P")
 RES_T = mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric")
 CAP_T = mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0402_1005Metric")
 RES = lambda v: RES_T(value=v)

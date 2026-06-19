@@ -16,7 +16,8 @@ from p4_pinmap import parse_net, net_to_gpio
 COMP = {
     "AP63203":  dict(role="buck", vin="VBAT", vout="+3V3", iout_max=2000, iq=0.022),
     "HT7333-A": dict(role="ldo",  vin="VBAT", vout="+3V3", iout_max=250,  iq=0.004),
-    "IIM-42653":dict(role="ic", i_ma=0.9),                 # 6-ax IMU
+    "IIM-42653":dict(role="ic", i_ma=0.9),                 # 6-ax IMU (industri)
+    "ICM-42688-P":dict(role="ic", i_ma=0.9),               # 6-ax IMU (vald, låg-brus) — pin-kompat.
     "ICM-42670":dict(role="ic", i_ma=0.55),
     "TSOP4856": dict(role="ic", i_ma=1.0),                 # IR-mottagare
     "ES8388":   dict(role="ic", i_ma=12.0),                # audio-codec

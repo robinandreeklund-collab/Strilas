@@ -140,7 +140,7 @@ Algoritm-roller: konstellations-centroider = "beräkningspunkterna" (ger bäring
 
 ## 8. Precision (felbudget @150 m)
 
-RSS av oberoende felkällor (IIM-42653 + 120 fps + low-distortion-lins):
+RSS av oberoende felkällor (ICM-42688-P + 120 fps + low-distortion-lins):
 
 | Felkälla | 1σ @150 m |
 |---|---|
@@ -222,13 +222,15 @@ Fronten = ren optik (4 identiska TSOP-kluster + 4 LED-tabbar i kardinalriktning 
   300/3°), 11°-pitch på headset-klustret fritt från tab/optik, och puck-JST + batteri utan trängsel. LED-
   tabbarna är fixa var 60° (28/88/148/208/268/328°); alla kant-kontakter placeras i gluggarna däremellan,
   fria från optiken (41/131/221/311°). (Ø96 fungerar men packar kant-ringen för tätt för ren symmetri.)
-- **IIM-42653 IMU** (I²C, delar F9P-bussen + INT) → **GNSS/INS-fusion**: överbryggar multipath/skugga,
+- **ICM-42688-P IMU** (I²C, delar F9P-bussen + INT) → **GNSS/INS-fusion**: överbryggar multipath/skugga,
   ger lokal huvud-attityd, förbättrar RTK-fix. Samma IMU som vapnet/fire-control.
 - Hjälm-noden skickar cm-position + huvud-pose i meshen → live-spårning + after-action.
 - Kompletterar (ute) den optiska posen; ger absolut världsposition som vapnets relativa pose saknar.
 
 IMU används även i vapnet för **recoil→sikte-loopen** (mynningsklättring matas in i nästa skotts bana;
-okontrollerade serier vandrar av målet). IIM-42653: ±4000 dps, RNSD 0,005 °/s/√Hz, ZRO ±0,04 °/s/°C.
+okontrollerade serier vandrar av målet). **ICM-42688-P** (vald, i lager): ±2000 dps, RNSD **0,0028 °/s/√Hz**
+(≈2× lägre gyro-brus än ICM-42688-P → stabilare attityd mellan kameraramar), låg ZRO-drift. Pin-kompatibel
+drop-in mot ICM-42688-P på samma LGA-14-footprint (±4000 dps/±32 g/IND behövs ej för axelburet bruk).
 
 ---
 
@@ -334,7 +336,7 @@ Order­paket: **`vapen-stack/nextpcb/`** — per kort `<kort>-gerbers.zip` + `-b
   IC-kraftintegritet) — allt flödar end-to-end.
 
 **Bänk-bekräftas (ej fångbart i layout):** dagsljus-SNR @150 m (störst), kontinuerlig spårning +
-latenskompensation i 167 ms, recoil-hantering, TSOP-räckvidd @150 m, buck-3,3 V, IMU LGA-pad mot IIM-42653.
+latenskompensation i 167 ms, recoil-hantering, TSOP-räckvidd @150 m, buck-3,3 V, IMU LGA-pad mot ICM-42688-P.
 
 ---
 
