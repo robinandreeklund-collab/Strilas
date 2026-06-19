@@ -368,7 +368,9 @@ helmet_mb_pos = {
     # I²C-pullups 4k7 — DIREKT över P4:s I²C-pinnar (U2.13 SCL / U2.14 SDA @ y≈14.9). Bussen
     # spände annars hela kortet (codec x=-31 ↔ pull-ups x=+45) → freerouting strandade pull-up-
     # paddarna i höger-korridoren (amp U8); nära mastern blir anslutningen en ~2 mm-stubbe.
-    "R10": (2.5, 16.6, 0), "R9": (-2.5, 16.6, 0),                             # R10=SCL-pull, R9=SDA-pull
+    # Orientering: I²C-padden mot bussen (rot vald) → spåret korsar ej egna +3V3-padden.
+    # (Slutförs deterministiskt av finish_helmet_pullups.py — INTE freerouting-roulette.)
+    "R10": (2.2, 16.7, 180), "R9": (-2.2, 16.7, 0),                          # R10=SCL-pull, R9=SDA-pull
     "J7": _se(240, 42, 2, "out", flip=True),        # SPEAKER (S2B side-entry, BAKSIDAN)
     "J11": _se(295, 42, 2, "out", flip=True),       # PTT-knapp (S2B side-entry, BAKSIDAN)
     "U2": (0.16, 13.5, 0),
