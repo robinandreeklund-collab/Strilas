@@ -35,6 +35,9 @@ MPN = {
     "AOD4184A":    ("AOD4184A", "Alpha & Omega", "N-MOSFET 40V logic-level DPAK (TO-252) — CC pass-FET (linjär)", "", ""),
     "OPA171":      ("OPA171AIDBVR", "Texas Instruments", "Op-amp 36V 3MHz SOT-23-5 — CC-sänkans regulator", "", ""),
     "SMBJ12A":     ("SMBJ12A", "Littelfuse", "TVS unidir 12V SMB", "", ""),
+    "AOD4185A":    ("AOD4185A", "Alpha & Omega", "P-MOSFET -40V DPAK (TO-252) — rev-pol-skydd + lastbrytare (gate-styrd av/på)", "", ""),
+    "47k":         ("RC0805FR-0747KL", "Yageo", "Res 47k 1% 0805 — batteri-sense-delare (undre)", "", ""),
+    "Strombrytare (extern SPST -> gate)": ("B2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol vertikal — extern strömbrytare (SPST → P-FET-gate)", "", "TH; brytare köps separat"),
     "SFH4725S_940nm":("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black (980mW@1A)", "", "UTGÅENDE/EOL (databl. 2023) men lagerförs ännu (RS/Farnell/DigiKey, last-time-buy). NextPCB sourcar + SMT-placerar (verifiera lager/aktuell 940nm OSLON-ersättare inför produktion, t.ex. SFH4725AS bin13)"),
     "PTC_1A":      ("MF-MSMF075/16X-2", "Bourns", "PTC resättbar 0.75A-hold 16V 1206", "", "NOTE: verifiera hold-ström mot systemtopp"),
     "PTC_3A":      ("MF-MSMF300/16-2", "Bourns", "PTC resättbar 3A-hold 16V 1812 — matningsskydd (matar P4+IR, 3A-skala)", "", "alltid-i-lager jellybean; 2S 8.4V kräver 1812 f. 3A@16V"),
@@ -155,7 +158,7 @@ def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozens
     for f in b.GetFootprints():
         ref = f.GetReference()
         fp = str(f.GetFPID().GetLibItemName())
-        if "MountingHole" in fp:        # kort-feature, ej placerad komponent
+        if any(k in fp for k in ("MountingHole","Fiducial","TestPoint")):  # kort-feature, ej placerad komponent
             continue
         if f.Pads() and all(p.GetAttribute() == pcbnew.PAD_ATTRIB_NPTH for p in f.Pads()):
             continue                    # mekaniskt hål (NPTH) — ej komponent
@@ -204,7 +207,7 @@ def centroid(board_pcb, out_csv, exclude=frozenset(), mount_refs=frozenset()):
     rows = []
     for f in b.GetFootprints():
         fp = str(f.GetFPID().GetLibItemName())
-        if "MountingHole" in fp: continue
+        if any(k in fp for k in ("MountingHole","Fiducial","TestPoint")): continue
         if is_conn(fp) and f.GetReference() not in mount_refs: continue   # handlödda kontakter → ej i SMT-centroid (mount_refs = NextPCB-monterade → med)
         # mekaniska hål (alla paddar NPTH / inga kopparpaddar) → ej en placerad komponent
         if f.Pads() and all(p.GetAttribute() == pcbnew.PAD_ATTRIB_NPTH for p in f.Pads()): continue

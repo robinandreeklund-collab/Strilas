@@ -316,6 +316,11 @@ vest_mb_pos.update({
     "C1": (-17, -16, 0), "C2": (-17, -13, 0), "C3": (4, -16, 0), "C4": (11, -16, 0),  # Cin/.. + Cbulk
     "R1": (-7, -13, 90), "R2": (1, -13, 90),     # FB-delare
     "J13": (35.4, -5, 270),                      # 2S-batteri XT30PW — öppning UT mot höger kant (orient270), origo inåt så kropp+stift ryms; ≥15A
+    # --- skydd: Q1 (DPAK) nedre-höger nära J13 (kort VBAT_RAW); TVS+gate-R+sense i center-bandet (SMD, under P4) ---
+    "Q1": (27, -15, 0), "D1": (10, 1, 0), "R3": (15, 1, 90),
+    "J14": (0, 14, 90),                                            # strömbrytare i fria bandet ovanför J11 (ej under P4)
+    "R4": (-3, 1, 90), "R5": (-8, 1, 90), "C7": (-13, 1, 0),         # batteri-sense
+    "TP1": (-3, -3, 0), "TP2": (-8, -3, 0), "TP3": (-13, -3, 0), "TP4": (-18, -3, 0),  # test points
     "H1": (-48, 28, 0), "H2": (48, 28, 0), "H3": (-48, -28, 0), "H4": (48, -28, 0),
 })
 

@@ -18,7 +18,7 @@ NET = f"hardware/{board}.net"
 
 # polariserade kontakter: footprint-nyckel → {pinnamn: förväntad polaritet}
 POLARIZED_CONN = {
-    "AMASS_XT30PW-M": {"1": "GND(−)", "2": "VBAT(+)"},   # silk: pin1=−, pin2=+
+    "AMASS_XT30PW-M": {"1": "GND(−)", "2": "VBAT(+)"},  # pin2 = VBAT eller VBAT_RAW (om skydds-FET insatt)   # silk: pin1=−, pin2=+
 }
 
 # per-footprint anod-pad (resten = katod). Källa: SKiDL-part-templates + make_footprints.py.
@@ -81,7 +81,7 @@ for f in b.GetFootprints():
                 pin = pd.GetName()
                 if pin in exp:
                     want = exp[pin]; got = pd.GetNetname()
-                    ok = (("GND" in want and got == "GND") or ("VBAT" in want and got == "VBAT"))
+                    ok = (("GND" in want and got == "GND") or ("VBAT" in want and got.startswith("VBAT")))
                     print(f"    {f.GetReference()} {fpn.split('_')[1]} pin{pin}: nät='{got}'  förväntat={want}  {'OK' if ok else '!!! POLARITET FEL'}")
 if not found_pol:
     print("    (inga inneboende-polariserade kontakter)")

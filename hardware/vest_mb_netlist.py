@@ -52,6 +52,10 @@ CAP_T = mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0805_2012Metric")
 RES = lambda v: RES_T(value=v)
 CAP = lambda v, fp="Capacitor_SMD:C_0805_2012Metric": CAP_T(value=v, footprint=fp)
 MH = mk("MH", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", "M2.5")
+PFET = mk("AOD4185", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:TO-252-2", "AOD4185A")
+TVS  = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
+PWRSW = mk("PWR_SW", "J", [(1, "GATE"), (2, "GND")], "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical", "Strombrytare (extern SPST)")
+TP   = mk("TestPoint", "TP", [(1, "1")], "TestPoint:TestPoint_Pad_D1.5mm", "TP")
 
 # ---------- nät ----------
 VBAT, GND, P3V3 = Net("VBAT"), Net("GND"), Net("+3V3")
@@ -60,6 +64,7 @@ TSER, TSRCK, TRCK, LED_EN = Net("TPIC_SER"), Net("TPIC_SRCK"), Net("TPIC_RCK"), 
 DATA = [Net(f"DATA{i+1}") for i in range(10)]
 VIB = [Net(f"VIB{i+1}") for i in range(10)]
 CHAINTPIC = Net("TPIC_CHAIN")
+VBAT_RAW, PGATE, VBAT_SENSE = Net("VBAT_RAW"), Net("PGATE"), Net("VBAT_SENSE")
 
 # ---------- carrier-buck 2S → 3,3 V (TPIC/ERM/patch-rail; P4 självförsörjer via VSYS) ----------
 Ubk = BUCK()
@@ -93,6 +98,7 @@ for i in range(10):
 # Edge B = kraft-tapp: VSYS=VBAT (P4:ans buck självförsörjer), GND. Övriga edge-B-stift NC.
 JB = P4B()
 JB["VSYS"] += VBAT; JB["GND"] += GND; JB["GNDb"] += GND; JB["GNDc"] += GND; JB["GNDd"] += GND
+JB["GPIO20"] += VBAT_SENSE
 # Edge A = alla signaler (14 av 16): 10 DATA direkt + 3 TPIC-ctrl + LED_EN broadcast.
 JA = P4A()
 JA["GND"] += GND; JA["GNDb"] += GND; JA["GNDc"] += GND; JA["GNDd"] += GND
@@ -103,8 +109,19 @@ JA["GPIO3"] += TSER; JA["GPIO2"] += TSRCK; JA["GPIO8"] += TRCK       # TPIC SER/
 JA["GPIO7"] += LED_EN                                                # konstellation broadcast
 # (GPIO24/GPIO25 reserv)
 
-# ---------- batteri + monteringshål ----------
-Jb = BATT(); Jb["VBAT"] += VBAT; Jb["GND"] += GND
+# ---------- batteri-in + ingangsskydd + strombrytare ----------
+Jb = BATT(); Jb["GND"] += GND; Jb["VBAT"] += VBAT_RAW
+Qp = PFET(); Qp["D"] += VBAT_RAW; Qp["S"] += VBAT; Qp["G"] += PGATE
+Rgate = RES("100k"); Rgate[1] += PGATE; Rgate[2] += VBAT_RAW
+Jsw = PWRSW(); Jsw["GATE"] += PGATE; Jsw["GND"] += GND
+Dtvs = TVS(); Dtvs["K"] += VBAT; Dtvs["A"] += GND
+# ---------- batteri-sense (8.4V -> 100k/47k -> 2.69V pa GPIO20/ADC1) ----------
+Rst = RES("100k"); Rsb = RES("47k"); Csns = CAP("100nF")
+Rst[1] += VBAT; Rst[2] += VBAT_SENSE; Rsb[1] += VBAT_SENSE; Rsb[2] += GND
+Csns[1] += VBAT_SENSE; Csns[2] += GND
+# ---------- test points ----------
+for _net in (VBAT, P3V3, GND, DATA[0]):
+    TP()[1] += _net
 for _ in range(4):
     MH()[1] += GND
 

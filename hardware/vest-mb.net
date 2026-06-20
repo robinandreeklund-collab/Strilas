@@ -2,7 +2,7 @@
   (version "D")
   (design
     (source "vest_mb_netlist.py")
-    (date "06/20/2026 11:11 AM")
+    (date "06/20/2026 03:50 PM")
     (tool "SKiDL (2.2.3)")
     (sheet
       (number 1)
@@ -55,7 +55,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "SamdHQmT_Z")
+          (name "SKiDL Tag") "zdt79M22WA")
         (field
           (name "SKiDL Line") "vest_mb_netlist.py:53"))
       (libsource
@@ -65,7 +65,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "5c738bc9-57b6-53e3-80a1-ad3f8c5a6fdb"))
+      (tstamps "6bdc59ae-cfec-5beb-90fd-18dbeb1f892e"))
     (comp
       (ref "C2")
       (value "10uF")
@@ -79,7 +79,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "S7xyKcBIVY")
+          (name "SKiDL Tag") "f9kPHT0eZg")
         (field
           (name "SKiDL Line") "vest_mb_netlist.py:53"))
       (libsource
@@ -89,7 +89,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "bc88d9d7-49a8-579f-bbab-a003cf3bc6de"))
+      (tstamps "04f9c0a1-ad97-55e5-823d-6a307716642e"))
     (comp
       (ref "C3")
       (value "22uF")
@@ -103,7 +103,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "whA9Yofylk")
+          (name "SKiDL Tag") "SORrYOk422")
         (field
           (name "SKiDL Line") "vest_mb_netlist.py:53"))
       (libsource
@@ -113,7 +113,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "80fae94e-5dda-5d07-aac2-147817245af2"))
+      (tstamps "8bddff13-4809-507e-95a4-6ee7c57555d7"))
     (comp
       (ref "C4")
       (value "100uF")
@@ -127,7 +127,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "0D22HxKlV7")
+          (name "SKiDL Tag") "C0oQdyzc6h")
         (field
           (name "SKiDL Line") "vest_mb_netlist.py:53"))
       (libsource
@@ -137,7 +137,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "92d5fd9b-47b5-5ab9-b427-8ea9ac442979"))
+      (tstamps "104c8a88-f0c6-59a8-8fa4-1ecc7859a177"))
     (comp
       (ref "C5")
       (value "100nF")
@@ -151,7 +151,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "pBpwubISX_")
+          (name "SKiDL Tag") "YbKklUk50L")
         (field
           (name "SKiDL Line") "vest_mb_netlist.py:53"))
       (libsource
@@ -161,7 +161,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "5183a0e0-7276-56f9-9f5b-131f2b40cded"))
+      (tstamps "e82a14f4-dda6-5582-a426-926cc57a6851"))
     (comp
       (ref "C6")
       (value "100nF")
@@ -175,7 +175,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "gYvnWWFdr1")
+          (name "SKiDL Tag") "u3i4uUIfFY")
         (field
           (name "SKiDL Line") "vest_mb_netlist.py:53"))
       (libsource
@@ -185,7 +185,55 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "b19da81e-f4ca-5763-a9be-70c5919b54c4"))
+      (tstamps "b99dd6f8-e9c2-5198-9841-ca025c0db0cc"))
+    (comp
+      (ref "C7")
+      (value "100nF")
+      (description "")
+      (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "m2VbVTyl3N")
+        (field
+          (name "SKiDL Line") "vest_mb_netlist.py:53"))
+      (libsource
+        (lib "NO_LIB")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "771660ca-a9d5-5f1d-bcb7-c33647ee2e90"))
+    (comp
+      (ref "D1")
+      (value "SMBJ12A")
+      (description "")
+      (footprint "Diode_SMD:D_SMB")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Diode_SMD:D_SMB")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "XbCwICjnAJ")
+        (field
+          (name "SKiDL Line") "vest_mb_netlist.py:117"))
+      (libsource
+        (lib "NO_LIB")
+        (part "SMBJ12A"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "b9e5a4ba-93d0-53ac-9d64-2277c8a2926d"))
     (comp
       (ref "H1")
       (value "M2.5")
@@ -199,9 +247,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "IKQyMR5DME")
+          (name "SKiDL Tag") "lUlcbA8Zhd")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:109"))
+          (name "SKiDL Line") "vest_mb_netlist.py:126"))
       (libsource
         (lib "NO_LIB")
         (part "MH"))
@@ -209,7 +257,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "cbc252af-7717-5b16-9ee2-aa37a8ed8c0d"))
+      (tstamps "a5127f8b-f7a1-5d3d-8c0b-4f1ce8beb18b"))
     (comp
       (ref "H2")
       (value "M2.5")
@@ -223,9 +271,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "rhnJhaDOr1")
+          (name "SKiDL Tag") "pcGHhO_rGw")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:109"))
+          (name "SKiDL Line") "vest_mb_netlist.py:126"))
       (libsource
         (lib "NO_LIB")
         (part "MH"))
@@ -233,7 +281,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "351e715b-0dd7-5cdb-b349-31ac291f992d"))
+      (tstamps "e6cae625-ef5e-5d6a-9a77-ee9984604949"))
     (comp
       (ref "H3")
       (value "M2.5")
@@ -247,9 +295,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "rhbGTtxqKf")
+          (name "SKiDL Tag") "o6cIevFZMF")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:109"))
+          (name "SKiDL Line") "vest_mb_netlist.py:126"))
       (libsource
         (lib "NO_LIB")
         (part "MH"))
@@ -257,7 +305,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "93098c08-b87e-513e-ab43-371ad40dbe3e"))
+      (tstamps "63c8ece3-9b9e-5358-8509-585bc8132104"))
     (comp
       (ref "H4")
       (value "M2.5")
@@ -271,9 +319,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "GtUoeAXaDI")
+          (name "SKiDL Tag") "NMjHHYtSfI")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:109"))
+          (name "SKiDL Line") "vest_mb_netlist.py:126"))
       (libsource
         (lib "NO_LIB")
         (part "MH"))
@@ -281,7 +329,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "05858f86-ef8b-5208-85ab-ea7ab6c9932b"))
+      (tstamps "7d2cba2f-cce6-53d8-9257-855ddbd52e53"))
     (comp
       (ref "J1")
       (value "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB")
@@ -295,9 +343,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "m9cz100rtN")
+          (name "SKiDL Tag") "1sNxUWt9ev")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:88"))
+          (name "SKiDL Line") "vest_mb_netlist.py:93"))
       (libsource
         (lib "NO_LIB")
         (part "Zone_1x06"))
@@ -305,7 +353,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "39eb8907-f85b-52ef-ac10-d2779d6e8494"))
+      (tstamps "89f60b28-764c-56ea-84d7-a5a6848eb1fd"))
     (comp
       (ref "J10")
       (value "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB")
@@ -319,9 +367,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "iCllDOOtcI")
+          (name "SKiDL Tag") "sGOsSCj2zv")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:88"))
+          (name "SKiDL Line") "vest_mb_netlist.py:93"))
       (libsource
         (lib "NO_LIB")
         (part "Zone_1x06"))
@@ -329,7 +377,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "0feddca0-bdfc-5798-87b1-69193f37b14e"))
+      (tstamps "5a4b8463-d1be-5247-80ce-7e2dff0fa0e7"))
     (comp
       (ref "J11")
       (value "P4-WIFI6 edge B")
@@ -343,9 +391,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "di2DLGtYSR")
+          (name "SKiDL Tag") "KXzeo2QElW")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:94"))
+          (name "SKiDL Line") "vest_mb_netlist.py:99"))
       (libsource
         (lib "NO_LIB")
         (part "P4_EDGE_B"))
@@ -353,7 +401,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "4c7dfaec-4a12-54c5-a7e6-16db88f04121"))
+      (tstamps "2da211d8-2e56-5da1-b00e-39e603b5ad83"))
     (comp
       (ref "J12")
       (value "P4-WIFI6 edge A")
@@ -367,9 +415,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "lQKn7q2lHo")
+          (name "SKiDL Tag") "2IdBPrtBdm")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:97"))
+          (name "SKiDL Line") "vest_mb_netlist.py:103"))
       (libsource
         (lib "NO_LIB")
         (part "P4_EDGE_A"))
@@ -377,7 +425,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "4fc0661d-9f36-5a3c-a0e0-3a5a61c9f4f8"))
+      (tstamps "666f4e63-0e93-5068-a0b6-0d9524466aaf"))
     (comp
       (ref "J13")
       (value "2S batteri XT30 (≥15A)")
@@ -391,9 +439,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "ST08grSggD")
+          (name "SKiDL Tag") "LkOs66q5iL")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:107"))
+          (name "SKiDL Line") "vest_mb_netlist.py:113"))
       (libsource
         (lib "NO_LIB")
         (part "BATT_2S"))
@@ -401,7 +449,31 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "db925f95-074e-5036-9bed-7c6248c4379e"))
+      (tstamps "e3ad8a3d-405f-5d76-b419-c6c5355040eb"))
+    (comp
+      (ref "J14")
+      (value "Strombrytare (extern SPST)")
+      (description "")
+      (footprint "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "8q5Hu9pp7S")
+        (field
+          (name "SKiDL Line") "vest_mb_netlist.py:116"))
+      (libsource
+        (lib "NO_LIB")
+        (part "PWR_SW"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "483a2c0d-57a0-5593-bdd5-b35503bd9ea1"))
     (comp
       (ref "J2")
       (value "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB")
@@ -415,9 +487,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "zymLTqxp3e")
+          (name "SKiDL Tag") "4zbgyWlNXc")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:88"))
+          (name "SKiDL Line") "vest_mb_netlist.py:93"))
       (libsource
         (lib "NO_LIB")
         (part "Zone_1x06"))
@@ -425,7 +497,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "6a5bc4c0-1bb0-5a93-8fbb-acd8107d73d9"))
+      (tstamps "da6e13e6-a77e-5e59-b018-c075a720ef91"))
     (comp
       (ref "J3")
       (value "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB")
@@ -439,9 +511,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "sgM3idHaUs")
+          (name "SKiDL Tag") "LVj11aprL7")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:88"))
+          (name "SKiDL Line") "vest_mb_netlist.py:93"))
       (libsource
         (lib "NO_LIB")
         (part "Zone_1x06"))
@@ -449,7 +521,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "af331ebb-968f-55d2-b7a2-460f84f274ee"))
+      (tstamps "d411125c-56a9-53fc-bdcf-953fcc3dd779"))
     (comp
       (ref "J4")
       (value "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB")
@@ -463,9 +535,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "KrLKtKHsde")
+          (name "SKiDL Tag") "rYppJyjmnd")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:88"))
+          (name "SKiDL Line") "vest_mb_netlist.py:93"))
       (libsource
         (lib "NO_LIB")
         (part "Zone_1x06"))
@@ -473,7 +545,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "afe7595c-972b-54bf-bbd2-9f595c658ee8"))
+      (tstamps "5b1238ba-9490-5b68-a227-354b27f58446"))
     (comp
       (ref "J5")
       (value "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB")
@@ -487,9 +559,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "x1gCuapTSu")
+          (name "SKiDL Tag") "lGK7hHmoR3")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:88"))
+          (name "SKiDL Line") "vest_mb_netlist.py:93"))
       (libsource
         (lib "NO_LIB")
         (part "Zone_1x06"))
@@ -497,7 +569,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "769f0f84-1a61-5ef5-b407-3f6977baa2d3"))
+      (tstamps "7ed8580f-4398-593b-8666-43e1f440e3cf"))
     (comp
       (ref "J6")
       (value "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB")
@@ -511,9 +583,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "v9OzcemwQW")
+          (name "SKiDL Tag") "daM7Tl3GFd")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:88"))
+          (name "SKiDL Line") "vest_mb_netlist.py:93"))
       (libsource
         (lib "NO_LIB")
         (part "Zone_1x06"))
@@ -521,7 +593,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "86bca213-ff7e-593e-b306-68c2d0d384e7"))
+      (tstamps "aad7df50-01d9-5195-a8af-7ff956a43c15"))
     (comp
       (ref "J7")
       (value "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB")
@@ -535,9 +607,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "5IJFxnsy3E")
+          (name "SKiDL Tag") "4mabWRAwiB")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:88"))
+          (name "SKiDL Line") "vest_mb_netlist.py:93"))
       (libsource
         (lib "NO_LIB")
         (part "Zone_1x06"))
@@ -545,7 +617,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "0ac132c7-a7ee-5a22-9211-bd581a03e37d"))
+      (tstamps "536c33dd-f15e-53dd-807c-afcc8b0b1d83"))
     (comp
       (ref "J8")
       (value "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB")
@@ -559,9 +631,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "2z92Boshk2")
+          (name "SKiDL Tag") "iCKFkE836A")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:88"))
+          (name "SKiDL Line") "vest_mb_netlist.py:93"))
       (libsource
         (lib "NO_LIB")
         (part "Zone_1x06"))
@@ -569,7 +641,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "7f554fae-39d2-5d0b-9b14-134269c6186b"))
+      (tstamps "edb5bc46-82d3-5653-aab1-251b74c75084"))
     (comp
       (ref "J9")
       (value "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB")
@@ -583,9 +655,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "8yPKxh8vAL")
+          (name "SKiDL Tag") "URzkfS4uFg")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:88"))
+          (name "SKiDL Line") "vest_mb_netlist.py:93"))
       (libsource
         (lib "NO_LIB")
         (part "Zone_1x06"))
@@ -593,7 +665,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "80d0650c-e6ac-5023-ae50-8cc58fb3f626"))
+      (tstamps "e2ef559a-f310-51dc-aa42-0a4c63ec544c"))
     (comp
       (ref "L1")
       (value "4.7uH")
@@ -607,9 +679,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "zukwawP5rN")
+          (name "SKiDL Tag") "U_GxTlb9_O")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:67"))
+          (name "SKiDL Line") "vest_mb_netlist.py:72"))
       (libsource
         (lib "NO_LIB")
         (part "L"))
@@ -617,7 +689,31 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "c36dd970-6556-5aee-a4a6-d29495497511"))
+      (tstamps "61e82950-0833-5646-8d25-b74d98a47c67"))
+    (comp
+      (ref "Q1")
+      (value "AOD4185A")
+      (description "")
+      (footprint "Package_TO_SOT_SMD:TO-252-2")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Package_TO_SOT_SMD:TO-252-2")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "hrBfadaDzU")
+        (field
+          (name "SKiDL Line") "vest_mb_netlist.py:114"))
+      (libsource
+        (lib "NO_LIB")
+        (part "AOD4185"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "3b21af43-452c-5ce3-a00d-33274a50e34b"))
     (comp
       (ref "R1")
       (value "31.6k")
@@ -631,7 +727,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "J4dOlUj5pr")
+          (name "SKiDL Tag") "r5hTzHjH6X")
         (field
           (name "SKiDL Line") "vest_mb_netlist.py:52"))
       (libsource
@@ -641,7 +737,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "3e7e07fc-975f-5271-84c2-7031605ae68a"))
+      (tstamps "672f6815-d4b3-5e5f-8a0b-8961da3c9112"))
     (comp
       (ref "R2")
       (value "10k")
@@ -655,7 +751,7 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "GXpb5MF_om")
+          (name "SKiDL Tag") "ZzXAo6ag99")
         (field
           (name "SKiDL Line") "vest_mb_netlist.py:52"))
       (libsource
@@ -665,7 +761,175 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "3e2b9125-b8ab-5c8e-bad6-3e122753767e"))
+      (tstamps "9964399c-f1e5-534b-a09d-2cbb0475d589"))
+    (comp
+      (ref "R3")
+      (value "100k")
+      (description "")
+      (footprint "Resistor_SMD:R_0805_2012Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "uVq7kb0sTA")
+        (field
+          (name "SKiDL Line") "vest_mb_netlist.py:52"))
+      (libsource
+        (lib "NO_LIB")
+        (part "R"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "01b94867-bd46-596d-a44d-b691953c0446"))
+    (comp
+      (ref "R4")
+      (value "100k")
+      (description "")
+      (footprint "Resistor_SMD:R_0805_2012Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "g5leymcwlY")
+        (field
+          (name "SKiDL Line") "vest_mb_netlist.py:52"))
+      (libsource
+        (lib "NO_LIB")
+        (part "R"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "e4498763-906b-5207-970d-c615dd7ae110"))
+    (comp
+      (ref "R5")
+      (value "47k")
+      (description "")
+      (footprint "Resistor_SMD:R_0805_2012Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "mpNgnr5bEZ")
+        (field
+          (name "SKiDL Line") "vest_mb_netlist.py:52"))
+      (libsource
+        (lib "NO_LIB")
+        (part "R"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "3d7647b9-de99-5979-aee8-701a8a5c11d4"))
+    (comp
+      (ref "TP1")
+      (value "TP")
+      (description "")
+      (footprint "TestPoint:TestPoint_Pad_D1.5mm")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "TestPoint:TestPoint_Pad_D1.5mm")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "RU4td2WEDk")
+        (field
+          (name "SKiDL Line") "vest_mb_netlist.py:124"))
+      (libsource
+        (lib "NO_LIB")
+        (part "TestPoint"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "94c6f4b5-a9cb-59e0-bd87-c869f15b0861"))
+    (comp
+      (ref "TP2")
+      (value "TP")
+      (description "")
+      (footprint "TestPoint:TestPoint_Pad_D1.5mm")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "TestPoint:TestPoint_Pad_D1.5mm")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "sqCpL4TAEs")
+        (field
+          (name "SKiDL Line") "vest_mb_netlist.py:124"))
+      (libsource
+        (lib "NO_LIB")
+        (part "TestPoint"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "21d0990a-887a-5cdd-a850-e889de3bb52d"))
+    (comp
+      (ref "TP3")
+      (value "TP")
+      (description "")
+      (footprint "TestPoint:TestPoint_Pad_D1.5mm")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "TestPoint:TestPoint_Pad_D1.5mm")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "fdqEFPEjqh")
+        (field
+          (name "SKiDL Line") "vest_mb_netlist.py:124"))
+      (libsource
+        (lib "NO_LIB")
+        (part "TestPoint"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "824e1e2f-d954-5124-9f1a-0fb1f4403480"))
+    (comp
+      (ref "TP4")
+      (value "TP")
+      (description "")
+      (footprint "TestPoint:TestPoint_Pad_D1.5mm")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "TestPoint:TestPoint_Pad_D1.5mm")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "ZwaPzFwkjf")
+        (field
+          (name "SKiDL Line") "vest_mb_netlist.py:124"))
+      (libsource
+        (lib "NO_LIB")
+        (part "TestPoint"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "b288c5d3-1afd-5a44-8012-db1a204e084b"))
     (comp
       (ref "U1")
       (value "AP63203")
@@ -679,9 +943,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "9sBm8nqTCM")
+          (name "SKiDL Tag") "GJ9l9WTdwt")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:65"))
+          (name "SKiDL Line") "vest_mb_netlist.py:70"))
       (libsource
         (lib "NO_LIB")
         (part "AP63203"))
@@ -689,7 +953,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "0786eef0-c711-51a9-9cd9-8d73445dfc3a"))
+      (tstamps "684cbe61-1f59-51ed-9105-95ecd725ec26"))
     (comp
       (ref "U2")
       (value "TPIC6B595")
@@ -703,9 +967,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "CSlsOkJ09y")
+          (name "SKiDL Tag") "q3tJZ4y6Ao")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:75"))
+          (name "SKiDL Line") "vest_mb_netlist.py:80"))
       (libsource
         (lib "NO_LIB")
         (part "TPIC6B595"))
@@ -713,7 +977,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "3d1efb6f-0244-5683-bf41-13e3fe466fdc"))
+      (tstamps "560d808b-5305-5347-b671-f498797b2e64"))
     (comp
       (ref "U3")
       (value "TPIC6B595")
@@ -727,9 +991,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "7o7Q8lndsn")
+          (name "SKiDL Tag") "tNQVv3zoud")
         (field
-          (name "SKiDL Line") "vest_mb_netlist.py:75"))
+          (name "SKiDL Line") "vest_mb_netlist.py:80"))
       (libsource
         (lib "NO_LIB")
         (part "TPIC6B595"))
@@ -737,7 +1001,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "edd3aa2c-1864-5a0b-ad81-bcab04f4e9dd")))
+      (tstamps "e4909494-b73f-544f-9392-b1ea0ee4ff04")))
   (nets
     (net
       (code 1)
@@ -808,6 +1072,10 @@
         (pin "1")
         (pintype "UNSPECIFIED"))
       (node
+        (ref "TP2")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
         (ref "U2")
         (pin "2")
         (pintype "UNSPECIFIED"))
@@ -845,6 +1113,10 @@
         (pintype "UNSPECIFIED"))
       (node
         (ref "J12")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "TP4")
         (pin "1")
         (pintype "UNSPECIFIED")))
     (net
@@ -996,6 +1268,14 @@
         (pin "2")
         (pintype "UNSPECIFIED"))
       (node
+        (ref "C7")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "D1")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
         (ref "H1")
         (pin "1")
         (pintype "UNSPECIFIED"))
@@ -1056,6 +1336,10 @@
         (pin "1")
         (pintype "UNSPECIFIED"))
       (node
+        (ref "J14")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
         (ref "J2")
         (pin "2")
         (pintype "UNSPECIFIED"))
@@ -1090,6 +1374,14 @@
       (node
         (ref "R2")
         (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R5")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "TP3")
+        (pin "1")
         (pintype "UNSPECIFIED"))
       (node
         (ref "U1")
@@ -1177,6 +1469,22 @@
         (pintype "UNSPECIFIED")))
     (net
       (code 16)
+      (name "PGATE")
+      (class "Default")
+      (node
+        (ref "J14")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "Q1")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R3")
+        (pin "1")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 17)
       (name "SW")
       (class "Default")
       (node
@@ -1192,7 +1500,7 @@
         (pin "5")
         (pintype "UNSPECIFIED")))
     (net
-      (code 17)
+      (code 18)
       (name "TPIC_CHAIN")
       (class "Default")
       (node
@@ -1204,7 +1512,7 @@
         (pin "3")
         (pintype "UNSPECIFIED")))
     (net
-      (code 18)
+      (code 19)
       (name "TPIC_RCK")
       (class "Default")
       (node
@@ -1220,7 +1528,7 @@
         (pin "12")
         (pintype "UNSPECIFIED")))
     (net
-      (code 19)
+      (code 20)
       (name "TPIC_SER")
       (class "Default")
       (node
@@ -1232,7 +1540,7 @@
         (pin "3")
         (pintype "UNSPECIFIED")))
     (net
-      (code 20)
+      (code 21)
       (name "TPIC_SRCK")
       (class "Default")
       (node
@@ -1248,11 +1556,15 @@
         (pin "13")
         (pintype "UNSPECIFIED")))
     (net
-      (code 21)
+      (code 22)
       (name "VBAT")
       (class "Default")
       (node
         (ref "C2")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "D1")
         (pin "1")
         (pintype "UNSPECIFIED"))
       (node
@@ -1265,10 +1577,6 @@
         (pintype "UNSPECIFIED"))
       (node
         (ref "J11")
-        (pin "2")
-        (pintype "UNSPECIFIED"))
-      (node
-        (ref "J13")
         (pin "2")
         (pintype "UNSPECIFIED"))
       (node
@@ -1304,6 +1612,18 @@
         (pin "1")
         (pintype "UNSPECIFIED"))
       (node
+        (ref "Q1")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R4")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "TP1")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
         (ref "U1")
         (pin "2")
         (pintype "UNSPECIFIED"))
@@ -1312,7 +1632,43 @@
         (pin "3")
         (pintype "UNSPECIFIED")))
     (net
-      (code 22)
+      (code 23)
+      (name "VBAT_RAW")
+      (class "Default")
+      (node
+        (ref "J13")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "Q1")
+        (pin "3")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R3")
+        (pin "2")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 24)
+      (name "VBAT_SENSE")
+      (class "Default")
+      (node
+        (ref "C7")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J11")
+        (pin "6")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R4")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R5")
+        (pin "1")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 25)
       (name "VIB1")
       (class "Default")
       (node
@@ -1324,7 +1680,7 @@
         (pin "4")
         (pintype "UNSPECIFIED")))
     (net
-      (code 23)
+      (code 26)
       (name "VIB10")
       (class "Default")
       (node
@@ -1336,7 +1692,7 @@
         (pin "5")
         (pintype "UNSPECIFIED")))
     (net
-      (code 24)
+      (code 27)
       (name "VIB2")
       (class "Default")
       (node
@@ -1348,7 +1704,7 @@
         (pin "5")
         (pintype "UNSPECIFIED")))
     (net
-      (code 25)
+      (code 28)
       (name "VIB3")
       (class "Default")
       (node
@@ -1360,7 +1716,7 @@
         (pin "6")
         (pintype "UNSPECIFIED")))
     (net
-      (code 26)
+      (code 29)
       (name "VIB4")
       (class "Default")
       (node
@@ -1372,7 +1728,7 @@
         (pin "7")
         (pintype "UNSPECIFIED")))
     (net
-      (code 27)
+      (code 30)
       (name "VIB5")
       (class "Default")
       (node
@@ -1384,7 +1740,7 @@
         (pin "14")
         (pintype "UNSPECIFIED")))
     (net
-      (code 28)
+      (code 31)
       (name "VIB6")
       (class "Default")
       (node
@@ -1396,7 +1752,7 @@
         (pin "15")
         (pintype "UNSPECIFIED")))
     (net
-      (code 29)
+      (code 32)
       (name "VIB7")
       (class "Default")
       (node
@@ -1408,7 +1764,7 @@
         (pin "16")
         (pintype "UNSPECIFIED")))
     (net
-      (code 30)
+      (code 33)
       (name "VIB8")
       (class "Default")
       (node
@@ -1420,7 +1776,7 @@
         (pin "17")
         (pintype "UNSPECIFIED")))
     (net
-      (code 31)
+      (code 34)
       (name "VIB9")
       (class "Default")
       (node
