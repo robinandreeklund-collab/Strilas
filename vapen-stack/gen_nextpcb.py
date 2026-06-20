@@ -130,6 +130,21 @@ def conn_refs(board_net, *needles):
             out.add(r.group(1))
     return out
 
+def mount_set(board_pcb, board_net):
+    """Kontakter att maskin-montera, med SINGLE-SIDED-skydd: en baksides-placerad kontakt
+    maskin-monteras BARA om kortet redan är double-sided (har baksides-SMD). Annars handlöds
+    den (annars skulle den lägga till en baksides-montering → onödig double-sided-kostnad på
+    optik/FC). Top-kontakter monteras alltid (THT från top = ändå single-sided placering)."""
+    refs = conn_refs(board_net, *MOUNT_NEEDLES)
+    b = pcbnew.LoadBoard(board_pcb)
+    bottom, bottom_smd = set(), False
+    for f in b.GetFootprints():
+        if f.IsFlipped():
+            bottom.add(f.GetReference())
+            if any(p.GetAttribute() == pcbnew.PAD_ATTRIB_SMD for p in f.Pads()):
+                bottom_smd = True          # baksides-SMD → kortet redan double-sided
+    return refs if bottom_smd else (refs - bottom)
+
 HDR = ["Designator*", "Quantity*", "Manufacturer Part Number*", "Manufacturer",
        "Package/Footprint", "Description", "Procurement Type", "Customer Note"]
 
@@ -220,17 +235,17 @@ if __name__ == "__main__":
     # rimligt via vest-mb-test). conn_refs() plockar dem per kort. PinSocket/PinHeader (2.54) +
     # JST-GH undantas (handlödd resp. redan SMD).
     # OPTIK: IMU (U1=ICM-42688-P) bestyckad. R3 = DNP (3A-override). J2 (XH) maskin-monteras; J1 (1x14) handlödd.
-    OPTIK_MOUNT = conn_refs("weapon-module.net", *MOUNT_NEEDLES)
+    OPTIK_MOUNT = mount_set("weapon-module.kicad_pcb", "weapon-module.net")  # baksides J1(P4)/J2(XH) → handlöds (single-sided)
     print("OPTIK (IMU ICM-42688-P bestyckad):"); build("weapon-module.kicad_pcb", "weapon-module.net", "nextpcb/optik-bom.xls",
           ovr_refs={"R3"}, extra=OPTIK_EXTRA, mount_refs=OPTIK_MOUNT)
     centroid("weapon-module.kicad_pcb", "nextpcb/optik-centroid.csv", exclude={"R3"}, mount_refs=OPTIK_MOUNT)
     # FIRE-CONTROL: avkoppling bestyckad. JST-PH J3-J10 + 2.54-socklar J1(1x15)/J2(1x03) maskin-monteras (Ckmtw).
-    FC_MOUNT = conn_refs("firecontrol.net", *MOUNT_NEEDLES)
+    FC_MOUNT = mount_set("firecontrol.kicad_pcb", "firecontrol.net")  # baksides J1(P4)/J2(kraft) → handlöds; top-JST monteras
     print("FIRE-CONTROL (2× IMU U1/U2 = ICM-42688-P bestyckade):")
     build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls", mount_refs=FC_MOUNT)
     centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv", mount_refs=FC_MOUNT)
     # VÄST-PATCH: J1 (S5B-PH) maskin-monteras; U1-U4 (ledade TSOP) + D7-D10 (LED-tab) kund-handlödda.
-    PATCH_MOUNT = conn_refs("vest-patch.net", *MOUNT_NEEDLES)
+    PATCH_MOUNT = mount_set("vest-patch.kicad_pcb", "vest-patch.net")
     PATCH_CUST = {"U1","U2","U3","U4","D7","D8","D9","D10"}
     print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls",
           cust_refs=PATCH_CUST | {"J1"}, mount_refs=PATCH_MOUNT)
@@ -244,13 +259,13 @@ if __name__ == "__main__":
     # HJÄLM-MODERKORT (ESP32-P4-WIFI6, Ø100): JST-PH/XH (headset/patch/batteri J2-J7,J10,J11) +
     # J8/J9 (1x20 P4-socklar, Ckmtw) maskin-monteras; J1/J12 = RTK-puck GH redan SMD. ES8388/PAM8302A SMD.
     # cust = ledade optik-delar (4 TSOP U3-U6 + 6 LED-tab D5-D10) som kund handlöder.
-    HMB_MOUNT = conn_refs("helmet-mb.net", *MOUNT_NEEDLES)
+    HMB_MOUNT = mount_set("helmet-mb.kicad_pcb", "helmet-mb.net")  # redan double-sided (GH-SMD baksida) → montera allt
     HMB_CUST = {"U3","U4","U5","U6","D5","D6","D7","D8","D9","D10"}
     print("HJÄLM-MB (IMU U2 ICM-42688-P bestyckad):")
     build("helmet-mb.kicad_pcb", "helmet-mb.net", "nextpcb/helmet-mb-bom.xls", cust_refs=HMB_CUST, mount_refs=HMB_MOUNT)
     centroid("helmet-mb.kicad_pcb", "nextpcb/helmet-mb-centroid.csv", exclude=HMB_CUST, mount_refs=HMB_MOUNT)
     # VÄST-MODERKORT (ESP32-P4-WIFI6): JST-PH J1-J10 + XT30 J13 maskin-monteras; J11/J12 (1x20 P4-socklar) handlödda.
-    VMB_MOUNT = conn_refs("vest-mb.net", *MOUNT_NEEDLES)
+    VMB_MOUNT = mount_set("vest-mb.kicad_pcb", "vest-mb.net")  # allt Top → single-sided
     VMB_CUST = {f"J{i}" for i in range(1, 14)}
     print("VÄST-MB:"); build("vest-mb.kicad_pcb", "vest-mb.net", "nextpcb/vest-mb-bom.xls", cust_refs=VMB_CUST, mount_refs=VMB_MOUNT)
     centroid("vest-mb.kicad_pcb", "nextpcb/vest-mb-centroid.csv", exclude=VMB_CUST - VMB_MOUNT, mount_refs=VMB_MOUNT)
