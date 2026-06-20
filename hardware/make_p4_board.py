@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 """STRILAS — monteringsmodell av ESP32-P4-WIFI6 (Waveshare, 71.00×21.00 mm).
+
+⚠️⚠️ ICKE-AUKTORITATIV FÖR MATING/PASSNING — använd tillverkarens STEP ⚠️⚠️
+Denna förenklade modell får ALDRIG användas för att avgöra om kort-socklar möter P4:ans stift.
+Header-placeringarna (J_A/J_B) är opålitliga (flip/rad-offset) och gav FALSKLARM (påstått
+9,89 mm J1-fel på optik + edge-A pin-count på FC — BÅDA FALSKA). GRUNDSANNING för mekanisk
+passning = tillverkarens STEP/DXF i hardware/P4/ (ESP32-P4-WIFI6_3d-20260109.stp). Verifierat i
+Fusion: optik (edge B, J1=pins 2-15; 1 ledig nedtill VBUS, 5 upptill 16-20) + FC (edge A, J1=pins
+6-20) mater på ALLA standoff-hål. HÅL-positionerna här är korrekta (DXF-verifierade); endast
+pin-headerns geometri är fel. Elektrisk pin-mapping verifierad rätt via p4_pinmap.py mot .net.
+
 Geometrin EXAKT avläst ur Waveshares OFFICIELLA DXF/STEP-måttritning
 (hardware/P4/ESP32-P4-WIFI6_*-20260109.dxf, cirkel-koordinater i mm @ 1:1):
 
