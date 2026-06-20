@@ -43,14 +43,31 @@ använder. Två syften:
 | **Kraft** ||||||
 | J17 | AMASS_XT30PW-M 1x02 | XT30PW-M | AMASS | batteri-in | 1 |
 
-## Efter lager-/monteringskoll
-- **JST-GH (J15/J16)** är redan SMD → NextPCB placerar dem på de riktiga korten oavsett (de är
-  *inte* DNP idag). Här bekräftas bara lager.
-- **THT-delarna (J1–J14, J17):** är NextPCB-monterbara (selektiv/våglödning)?
-  - **JA** → ändra `is_conn()`-DNP-logiken i `gen_nextpcb.py` så de korten/refsen får montering
-    istället för kund-handlödning (uppdatera `cust_refs`/`is_conn`), regenerera alla BOM/centroid.
-    Vinst: färdigmonterade kort, ingen handlödning.
-  - **NEJ / dyrt** → behåll nuvarande upplägg (kund handlöder, DNP). Då vet vi i alla fall vilka
-    MPN/lager som gäller för de kontakter vi köper löst.
-- Sullins 2.54-MPN är representativa (NextPCB korsar mot motsv. lagerförd hona/stift); JST/AMASS-MPN
-  är exakta. Bekräfta lager + ledtid och välj in-stock-ekvivalent där det behövs.
+## LAGER-/MONTERINGSKOLL RESULTAT (NextPCB, 10/17 matchade)
+
+| Del | MPN | Lager | $/st | Slutsats |
+|---|---|---|---|---|
+| J8 PH 2p vert | B2B-PH-K-S(LF)(SN) | ✅ In Stock | 0.035 | sourca+montera OK |
+| J9 PH 3p vert | B3B-PH-K-S(LF)(SN) | ✅ In Stock | 0.041 | OK |
+| J10 PH 4p vert | B4B-PH-K-S(LF)(SN) | ✅ In Stock | 0.046 | OK |
+| J11 PH 2p sido | S2B-PH-K-S(LF)(SN) | ✅ In Stock | 0.039 | OK |
+| J12 PH 5p sido | S5B-PH-K-S(LF)(SN) | ✅ In Stock | 0.076 | OK |
+| J13 PH 6p sido | S6B-PH-K-S(LF)(SN) | ✅ In Stock | 0.072 | OK |
+| J14 XH 2p | S2B-XH-A(LF)(SN) | ✅ In Stock | 0.072 | OK |
+| J15 GH 6p SMD | SM06B-GHS-TB(LF)(SN) | ✅ In Stock | 0.457 | (redan SMD) |
+| J16 GH 8p SMD | SM08B-GHS-TB(LF)(SN) | ✅ In Stock | 0.553 | (redan SMD) |
+| J17 XT30 | XT30PW-M | ✅ In Stock | 0.383 | OK |
+| J1–J7 2.54 headers | Sullins PPTC/PREC | ⚠️ Pending | — | Sullins ej i auto-lib; manual-offert / byt MPN |
+
+**Slutsats:** **alla JST-PH/XH/GH + XT30 är In Stock och togs FÖR montering (ej DNP, prissatta)** →
+NextPCB kan **sourca + genomplåts-montera** dem åt oss. De 7 Pending är bara 2.54-headerna (Sullins-
+MPN matchar ej deras lib; generiska 2.54-hona/stift finns dock överallt → manual-offert 1 dag, eller
+byt till NextPCB-lagerförd MPN).
+
+## Nästa steg (kräver beslut — kostnad/process-avvägning)
+- **Aktivera maskin-montering** på de riktiga korten = ändra `is_conn()`/`cust_refs` i
+  `gen_nextpcb.py` så JST/XT30 får montering istället för DNP, regenerera alla BOM/centroid.
+  Vinst: färdiga kort, ingen handlödning. Kostnad: NextPCB tar betalt för THT-montering (selektiv/
+  våg) per kontakt + ev. setup; hjälm-kortet är redan dubbelsidigt.
+- **2.54 P4-socklar/headers:** byt placeholder-/Sullins-MPN → NextPCB-lagerförd generisk 2.54 (kräver
+  egen liten lager-koll eller manual-offert) om de också ska maskin-monteras.
