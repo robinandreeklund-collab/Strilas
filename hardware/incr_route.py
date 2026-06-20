@@ -65,9 +65,9 @@ class Router:
                 return False
         return True
 
-    def _add_track(self, a, b, layer, net):
+    def _add_track(self, a, b, layer, net, width=TW):
         t = pcbnew.PCB_TRACK(self.b); t.SetStart(V(*a)); t.SetEnd(V(*b))
-        t.SetWidth(TW); t.SetLayer(layer); t.SetNet(net); self.b.Add(t)
+        t.SetWidth(width); t.SetLayer(layer); t.SetNet(net); self.b.Add(t)
 
     def _add_via(self, p, net):
         v = pcbnew.PCB_VIA(self.b); v.SetPosition(V(*p))
@@ -177,7 +177,7 @@ class Router:
                 return True
         return False
 
-    def maze_route(self, ref1, pad1, ref2, pad2, step=0.6, clr=MM(0.25)):
+    def maze_route(self, ref1, pad1, ref2, pad2, step=0.6, clr=MM(0.25), width=TW):
         """rutnatsbaserad maze-router (BFS, 2 lager F/B + via) for SVÅRA langa nat dar
         direkt/L/Z misslyckas. Undviker annan-net-koppar (track/pad/via; zoner ignoreras,
         de fylls om runt det nya spåret). Lagger spår + vior langs hittad vag."""
@@ -213,7 +213,7 @@ class Router:
             for ax in range(max(0,min(gx0,gx1)-2), min(nx,max(gx0,gx1)+3)):
                 for ay in range(max(0,min(gy0,gy1)-2), min(ny,max(gy0,gy1)+3)):
                     cx, cy = pt(ax, ay)
-                    seg = pcbnew.SHAPE_SEGMENT(V(cx, cy), V(cx, cy), TW)
+                    seg = pcbnew.SHAPE_SEGMENT(V(cx, cy), V(cx, cy), width)
                     if shp.Collide(seg, margin):
                         for L in Ls: blk[L][ay*nx+ax] = 1
                         if via_blk: bvia[ay*nx+ax] = 1
@@ -233,34 +233,49 @@ class Router:
             if (cur[0], cur[1]) == (sb[0], sb[1]):
                 found = cur; break
             cx, cy, cl = cur
-            nbrs = [(cx+1,cy,cl),(cx-1,cy,cl),(cx,cy+1,cl),(cx,cy-1,cl),(cx,cy,1-cl)]
-            for nb in nbrs:
-                gx, gy, gl = nb
+            def freec(gx, gy, gl):
+                return 0 <= gx < nx and 0 <= gy < ny and (not blk[gl][gy*nx+gx] or (gx,gy)==(sb[0],sb[1]))
+            # 8-riktning (diagonaler => rakare/renare spår) + via
+            steps = [(1,0),(-1,0),(0,1),(0,-1),(1,1),(1,-1),(-1,1),(-1,-1)]
+            nbrs = [(cx+dx, cy+dy, cl, dx, dy) for dx,dy in steps] + [(cx,cy,1-cl,0,0)]
+            for gx, gy, gl, dx, dy in nbrs:
                 if not (0<=gx<nx and 0<=gy<ny): continue
                 if blk[gl][gy*nx+gx] and (gx,gy)!=(sb[0],sb[1]): continue
-                if gl != cl and bvia[gy*nx+gx]: continue   # lager-byte (via) far ej klippa inner-koppar
-                c2 = cost[cur] + (step if gl==cl else step*3)  # via-straff
+                if gl != cl and bvia[gy*nx+gx]: continue   # via far ej klippa inner-koppar
+                if dx and dy and not (freec(cx+dx,cy,cl) and freec(cx,cy+dy,cl)):
+                    continue   # diagonal: hörn-klipp ej tillatet (bada ortogonala grannar fria)
+                diag = 1.414 if (dx and dy) else 1.0
+                nb = (gx, gy, gl)
+                c2 = cost[cur] + (step*diag if gl==cl else step*3)  # via-straff
                 if nb not in cost or c2 < cost[nb]:
                     cost[nb] = c2; came[nb] = cur; heapq.heappush(pq, (c2+h(nb), nb))
         if not found:
             return False
-        # rekonstruera + lagg spår/via
         path = []
         n = found
         while n is not None: path.append(n); n = came[n]
         path.reverse()
+        # SLÅ IHOP kollineära steg -> långa rena segment (ej trappsteg)
+        simp = [path[0]]
+        for i in range(1, len(path)-1):
+            a, b_, c = path[i-1], path[i], path[i+1]
+            if a[2] == b_[2] == c[2]:
+                d1 = (b_[0]-a[0], b_[1]-a[1]); d2 = (c[0]-b_[0], c[1]-b_[1])
+                if d1[0]*d2[1]-d1[1]*d2[0] == 0 and (d1[0]*d2[0]+d1[1]*d2[1]) > 0:
+                    continue   # samma riktning -> hoppa mellanpunkten
+            simp.append(b_)
+        simp.append(path[-1])
         prev = None
-        for nde in path:
+        for nde in simp:
             p = pt(nde[0], nde[1])
             if prev is not None:
                 if prev[2] != nde[2]:
                     self._add_via(p, net)
                 else:
-                    self._add_track(pt(prev[0], prev[1]), p, lay[nde[2]], net)
+                    self._add_track(pt(prev[0], prev[1]), p, lay[nde[2]], net, width)
             prev = nde
-        # anslut paddarnas exakta lagen
-        self._add_track(pa, pt(*sa), lay[start[2]], net)
-        self._add_track(pb, pt(*sb), lay[goalL], net)
+        self._add_track(pa, pt(*sa), lay[start[2]], net, width)
+        self._add_track(pb, pt(*sb), lay[goalL], net, width)
         return True
 
     def trace_point(self, ref, pad, pt):

@@ -83,10 +83,14 @@ def route_phase():
     b = pcbnew.LoadBoard(PCB)
     R = Router(b, {"GND": [pcbnew.In1_Cu, pcbnew.B_Cu, pcbnew.F_Cu], "+3V3": [pcbnew.In2_Cu]})
     r = {}
-    def hard(name, r1, p1, r2, p2):
-        """forsok trace_between (snabb), annars maze-router (lang/trang)."""
-        ok = R.trace_between(r1, p1, r2, p2) or R.maze_route(r1, p1, r2, p2)
-        r[name] = ok; return ok
+    def hard(name, r1, p1, r2, p2, power=True):
+        """kort: trace_between (ren direkt/L/Z). Annars maze, bredast kraftbredd som får plats."""
+        if R.trace_between(r1, p1, r2, p2):
+            r[name] = "OK (direkt)"; return True
+        for w in ([0.5, 0.4, 0.3, 0.25] if power else [0.3, 0.25]):
+            if R.maze_route(r1, p1, r2, p2, width=pcbnew.FromMM(w)):
+                r[name] = f"OK maze @{w}mm"; return True
+        r[name] = False; return False
     # series-kedjan J10 -> F1 -> Q2 (lang VBAT_IN gar via maze)
     hard("J10.1-F1(VBAT_IN)", "J10", "1", "F1", "1")
     hard("F1-Q2.D(VBAT_RAW)", "F1", "2", "Q2", "3")
