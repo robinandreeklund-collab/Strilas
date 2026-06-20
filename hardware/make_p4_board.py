@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 """STRILAS — monteringsmodell av ESP32-P4-WIFI6 (Waveshare, 71.00×21.00 mm).
 
-⚠️⚠️ ICKE-AUKTORITATIV FÖR MATING/PASSNING — använd tillverkarens STEP ⚠️⚠️
-Denna förenklade modell får ALDRIG användas för att avgöra om kort-socklar möter P4:ans stift.
-Header-placeringarna (J_A/J_B) är opålitliga (flip/rad-offset) och gav FALSKLARM (påstått
-9,89 mm J1-fel på optik + edge-A pin-count på FC — BÅDA FALSKA). GRUNDSANNING för mekanisk
-passning = tillverkarens STEP/DXF i hardware/P4/ (ESP32-P4-WIFI6_3d-20260109.stp). Verifierat i
-Fusion: optik (edge B, J1=pins 2-15; 1 ledig nedtill VBUS, 5 upptill 16-20) + FC (edge A, J1=pins
-6-20) mater på ALLA standoff-hål. HÅL-positionerna här är korrekta (DXF-verifierade); endast
-pin-headerns geometri är fel. Elektrisk pin-mapping verifierad rätt via p4_pinmap.py mot .net.
+SELEKTIVA HEADERS (P4 köps olött; kund löder bara de stift som används):
+  • Edge B (mot OPTIK): 1×14 @ pin 2 → pins 2-15 (VSYS..GPIO32). Fria: pin 1 (VBUS) nederst
+    vid USB-C + pins 16-20 överst. (Optik J1 = 1×14.)
+  • Edge A (mot FC):    1×15 @ pin 6 → pins 6-20 (GPIO29..GPIO25). Fria: pins 1-5 nederst vid
+    USB-C (GPIO52/51/GND/31/30). (FC J1 = 1×15.)
+  • FC matas dessutom 3V3+GND från edge B pins 3-5 via FC:s 1×03-kraft-tapp (J2), motsatt långsida.
+Pin 1 (båda kanterna) ligger vid USB-C-änden (PIN1_X) → därav "fria nederst". INGEN flip
+(tidigare flip speglade pad-XY → falskt 9,89mm-mating-larm; borttaget). Verifierat: socket-mitt-
+vs-hål-mitt-offset matchar pin-täckningen (optik 4,95≈5,08mm; FC 6,48≈6,35mm; tapp 16,4≈16,5mm),
+och i Fusion mot tillverkarens STEP (hardware/P4/ESP32-P4-WIFI6_3d-20260109.stp = full 3D-sanning).
+HÅL-positioner DXF-exakta; elektrisk pin-mapping verifierad mot .net via p4_pinmap.py.
 
 Geometrin EXAKT avläst ur Waveshares OFFICIELLA DXF/STEP-måttritning
 (hardware/P4/ESP32-P4-WIFI6_*-20260109.dxf, cirkel-koordinater i mm @ 1:1):
@@ -78,17 +81,16 @@ def main():
         if rot: f.SetOrientationDegrees(rot)
         b.Add(f); return f
 
-    # MALE pin-header — bara de stift som FAKTISKT används monteras (kortet köps olött,
-    # man löder endast nödvändiga header-stift). Mating-korten (optik/FC) får FEMALE socket.
-    #   pin n castellation: x = PIN1_X + (n-1)*PITCH ; raden går +x vid rot90.
-    # SANDWICH-STACK: optik UNDER, FC OVANPÅ → stiften pekar åt MOTSATTA håll:
-    #   Edge B (y=-8.89): pin 2..15 (VSYS..GPIO32) → optik UNDER → stift NEDÅT (B_Cu) → 1×14 @ pin2
-    #   Edge A (y=+8.89): pin 6..17 (GPIO29..GPIO7) → FC OVAN    → stift UPPÅT (F_Cu) → 1×12 @ pin6
-    jb = place_fp("J_B", "Connector_PinHeader_2.54mm", "PinHeader_1x14_P2.54mm_Vertical",
-                  PIN1_X + 1 * PITCH, -ROW_Y, 90)
-    jb.Flip(jb.GetPosition(), False)                 # edge B nedåt (mot optiken)
-    place_fp("J_A", "Connector_PinHeader_2.54mm", "PinHeader_1x12_P2.54mm_Vertical",
-             PIN1_X + 5 * PITCH, ROW_Y, 90)           # edge A uppåt (mot FC) — behåll F_Cu
+    # MALE pin-header — kortet köps OLÖTT; kund löder ENDAST de stift som används (selektivt).
+    # Mating-korten (optik/FC) får FEMALE socket. pin n castellation: x = PIN1_X + (n-1)*PITCH.
+    #   Edge B (y=-8.89): pins 2..15 (VSYS..GPIO32) → optik  → 1×14 @ pin2
+    #   Edge A (y=+8.89): pins 6..20 (GPIO29..GPIO25) → FC   → 1×15 @ pin6
+    # INGEN flip (gamla flip-buggen speglade pad-XY → falskt 9,89mm-mating). pad-XY = verkliga
+    # castellation-XY. Stift-RIKTNING (upp/ned i sandwich) modelleras ej — full 3D = tillverkar-STEP.
+    place_fp("J_B", "Connector_PinHeader_2.54mm", "PinHeader_1x14_P2.54mm_Vertical",
+             PIN1_X + 1 * PITCH, -ROW_Y, 90)          # edge B: pins 2-15 (optik-J1, 14 st)
+    place_fp("J_A", "Connector_PinHeader_2.54mm", "PinHeader_1x15_P2.54mm_Vertical",
+             PIN1_X + 5 * PITCH, ROW_Y, 90)           # edge A: pins 6-20 (FC-J1, 15 st)
 
     # USB-C-mottagare i vänster ände (3D-modell → syns i STEP) — visar var USB ligger.
     place_fp("USBC", "Connector_USB", "USB_C_Receptacle_HRO_TYPE-C-31-M-12", -34.0, 0, 90)
