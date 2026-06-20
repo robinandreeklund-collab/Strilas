@@ -14,7 +14,7 @@ MPN = {
     # --- passiva: MPN bekräftade mot NextPCB lager-koll (common-sampler). Paket-specifika nycklar
     #     val@<paketstorlek> (0402/0805/1206/1210); build() väljer rätt. IN STOCK där ej annat anges. ---
     "100nF@0805": ("CL21B104KBCNNNC", "Samsung", "MLCC 100nF 50V X7R 0805 — IN STOCK", "", ""),
-    "100nF@0402": ("CL05B104KO5NNNC", "Samsung", "MLCC 100nF 50V X7R 0402 (4-7 d lager)", "", ""),
+    "100nF@0402": ("GRM155R71H104KE14D", "Murata", "MLCC 100nF 50V X7R 0402 — IN STOCK (byt fr Samsung CL05B104KO5NNNC: 4-20 d lead → kapat; samma 50V X7R-spec, billigare). Lager-koll cap-sampler", "", ""),
     "100nF": ("CL21B104KBCNNNC", "Samsung", "MLCC 100nF 50V X7R 0805 — IN STOCK (default)", "", ""),
     "1uF@0805": ("GRM21BR61E105KA99L", "Murata", "MLCC 1uF 25V X5R 0805 (high-runner, byt fr utgången CL21A105KAFNNNG)", "", ""),
     "1uF@0402": ("CL05A105KP5NNNC", "Samsung", "MLCC 1uF 10V X5R 0402 — IN STOCK", "", ""),
@@ -25,7 +25,7 @@ MPN = {
     "220R":  ("RC0805FR-07220RL", "Yageo", "Res 220R 1% 1/8W 0805", "", ""),
     "4k7":   ("RC0805FR-074K7L", "Yageo", "Res 4.7k 1% 1/8W 0805", "", ""),
     "3R3_2W":("CRCW25123R30FKEGHP", "Vishay", "Res 3.3R 1% 2W 2512 (HP) — (legacy, ej i CC-driver)", "", ""),
-    "0R2":   ("PE2512FKE070R200L", "Yageo", "Res 0.2R 1% 2W 2512 sense — CC-driver sätter ~1A (Vref/Rs)", "", "verifiera basbibliotek; HW-strömtak/ögonsäkerhet"),
+    "0R2":   ("WSL2512R2000FEA", "Vishay", "Res 0.2R 1% 1W 2512 Kelvin-sense (lågt TCR) — CC-driver sätter ~1A (Vref/Rs)", "", "Sourcebar 4-7 d (byt fr Yageo PE2512FKE070R200L som krävde manuell offert). Precisions-sense → bättre ström-/ögonsäkerhetsstabilitet. P=I²R≈0,2W ≪ 1W"),
     "15k":   ("RC0805FR-0715KL", "Yageo", "Res 15k 1% 0805 — CC-referensdelare (övre)", "", ""),
     "1k":    ("RC0805FR-071KL", "Yageo", "Res 1k 1% 0805 — CC-referensdelare (undre)", "", ""),
     "100pF": ("CL21C101JBANNNC", "Samsung", "MLCC 100pF 50V C0G 0805 — slingkomp", "", ""),
@@ -66,7 +66,7 @@ MPN = {
     "MIC_BOOM":    ("S2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol header 2.0mm THT SIDOMONTERAD (S-typ, låg bygghöjd) — analog bom-electret-mik", "", "TH; headset-element kund-kablas"),
     "SPEAKER":     ("S2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol header 2.0mm THT SIDOMONTERAD (S-typ) — öronhögtalare (mono)", "", "TH; headset-element kund-kablas"),
     "PTT_BTN":     ("S2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol header 2.0mm THT SIDOMONTERAD (S-typ) — PTT-knapp", "", "TH; knapp kund-kablas"),
-    "4.7uH":       ("FNR5040320R47M", "Changjiang", "Effektinduktor 4.7uH 5x5mm (buck)", "", "verifiera mättnadsström >2A"),
+    "4.7uH":       ("SWPA5040S4R7MT", "Sunlord", "Effektinduktor 4.7uH 5x5mm (buck) — IN STOCK (byt fr Changjiang FNR5040320R47M som krävde manuell offert; samma FNR5040-footprint)", "", "Isat≈2.8A > 2A buck-topp ✓ (verifierad mot AP63203)"),
     "31.6k":       ("RC0805FR-0731K6L", "Yageo", "Res 31.6k 1% 0805 — buck FB (övre, 3.33V)", "", ""),
     "22uF":        ("CL31A226KAHNNNE", "Samsung", "MLCC 22uF 25V X5R 1206 — buck-utgång", "", ""),
     "XIAO-S3 1x7 sockel": ("2.54-1x07-FH", "generisk", "Sockel 1x07 2.54mm (XIAO ESP32-S3 stack, 2 st)", "", "TH; XIAO ESP32-S3 köps separat"),
