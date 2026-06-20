@@ -49,3 +49,42 @@ och omverifierat. Inga ytterligare fel.
 ## Not
 `audit_board.py` är nu det stående verifierings-verktyget. Kör det efter VARJE board-ändring
 (placering/routning/netlist) som komplement till route-skriptens egna DRC-grind.
+
+---
+
+## TILLÄGG (v5): ingångsskydd · batterimätning · testpunkter · fiducials
+
+Efter funktionsgenomgång tillkom (alla kort omverifierade, DRC 0/0):
+
+| Kort | Omvändpol-skydd | Surge (TVS) | Batteri-sense | Testpunkter | Fiducials |
+|---|---|---|---|---|---|
+| weapon-module (optik) | ✓ (PTC+P-FET gate→GND, fanns) | ✓ (fanns) | **✓ ny** → J1[6]/GPIO21 | — (kontakter/IMU-header) | **✓ 3 nya** |
+| vest-mb | **✓ ny** (P-FET gate→GND) | **✓ ny** | **✓ ny** → J11[6]/GPIO20 | **✓ 4 nya** | **✓ 3 nya** |
+| helmet-mb | — (keyad JST-XH, se nedan) | **✓ ny** | **✓ ny** → J8[7]/GPIO21 | — (patch/F9P/ljud-kontakter) | **✓ 3 nya** |
+| firecontrol | — (matas via 3V3-tapp, ej batteri) | — | — | — (JST-headers/nät) | **✓ 3 nya** |
+| vest-patch | — | — | — | — | **✓ 3 nya** |
+| led-tab | — | — | — | — | — (mikro 2-pad-PCB) |
+
+### Kraftarkitektur-beslut (omvändpolaritets-skydd + PÅ/AV)
+- **En enda P-FET kan INTE vara både omvändpol-skydd OCH gate-styrd strömbrytare** — kraven är
+  motsatta (skydd kräver gate→GND så vänt batteri stänger FETen; gate-brytare kräver gate→batteri).
+  Tidigt "FET-som-även-strömbrytare"-förslag var elektriskt felaktigt (kroppsdiod ledde vid AV +
+  vänt batteri drog gate negativ → FET PÅ) och förkastades.
+- **Vald lösning:** P-FET enbart som omvändpol-skydd (gate→GND, alltid på — samma beprövade krets
+  som vapnet). **PÅ/AV = seriebrytare i BATTERIKABELN** (klarar full ström; inget litet
+  kontaktdon på kortet).
+- **vest-mb (XT30, ej keyad → kan vändas):** full omvändpol-FET (Q1 AOD4185A) + TVS.
+- **helmet-mb (keyad JST-XH → omvänd isättning fysiskt omöjlig):** ingen omvändpol-FET (skulle
+  kräva splits i den verifierade VBAT-kraftvägen); TVS räcker som ingångsskydd.
+- **weapon (optik):** hade redan PTC+P-FET+TVS; ingen serie-last-switch tillagd (skulle äta
+  IR-drivarens eye-safety-spänningsmarginal ~6,9 V).
+
+### Batterimätning
+100k/47k-delare (8,4 V → 2,69 V) + 100nF-filter → ledig ADC1-GPIO (GPIO20/21 via P4-kant).
+Firmware läser cellspänning → lågbatterivarning.
+
+### Routnings-metod för tilläggen
+Optik + helmet routades **inkrementellt** (`hardware/incr_route.py`): BEVARAR all befintlig
+verifierad koppar och drar bara de nya anslutningarna deterministiskt (via→plan, cluster-medvetna
+spår) — ingen freeroute-omroutning som nollställer layouten. vest-mb omplacerades + freeroutades
+rent (seed 1). Fiducials läggs efter routning (`hardware/add_fiducials.py`, kopparplan omfylls).
