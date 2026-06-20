@@ -35,12 +35,12 @@ MPN = {
     "AOD4184A":    ("AOD4184A", "Alpha & Omega", "N-MOSFET 40V logic-level DPAK (TO-252) — CC pass-FET (linjär)", "", ""),
     "OPA171":      ("OPA171AIDBVR", "Texas Instruments", "Op-amp 36V 3MHz SOT-23-5 — CC-sänkans regulator", "", ""),
     "SMBJ12A":     ("SMBJ12A", "Littelfuse", "TVS unidir 12V SMB", "", ""),
-    "AOD4185A":    ("AOD4185A", "Alpha & Omega", "P-MOSFET -40V DPAK (TO-252) — omvändpolaritets-skydd (gate→GND, alltid på)", "", ""),
+    "AOD4185A":    ("AOD403", "Alpha & Omega", "P-MOSFET -30V DPAK (TO-252) AOD403 ~8mΩ — omvändpol-skydd (gate→GND). IN-STOCK-verifierad drop-in för AOD4185A (ej i lager); -30V >> 2S 8,4V", "", "samma A&O DPAK-pinout som AOD4185A → footprint oförändrad"),
     "47k":         ("RC0805FR-0747KL", "Yageo", "Res 47k 1% 0805 — batteri-sense-delare (undre)", "", ""),
     "Strombrytare (extern SPST)": ("B2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol vertikal — extern strömbrytare (SPST → load-switch-gate)", "", "TH; brytare köps separat"),
     "SFH4725S_940nm":("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black (980mW@1A)", "", "UTGÅENDE/EOL (databl. 2023) men lagerförs ännu (RS/Farnell/DigiKey, last-time-buy). NextPCB sourcar + SMT-placerar (verifiera lager/aktuell 940nm OSLON-ersättare inför produktion, t.ex. SFH4725AS bin13)"),
     "PTC_1A":      ("MF-MSMF075/16X-2", "Bourns", "PTC resättbar 0.75A-hold 16V 1206", "", "NOTE: verifiera hold-ström mot systemtopp"),
-    "PTC_3A":      ("MF-MSMF300/16-2", "Bourns", "PTC resättbar 3A-hold 16V 1812 — matningsskydd (matar P4+IR, 3A-skala)", "", "alltid-i-lager jellybean; 2S 8.4V kräver 1812 f. 3A@16V"),
+    "PTC_3A":      ("MF-MSMF300/16-2", "Bourns", "PTC resättbar 3A-hold 16V 1812 — matningsskydd", "", "OBS 2S 8,4V KRÄVER 16V-märkt (6V-varianter som miniSMDC300F duger EJ). In-stock 16V-variant utvärderas via sampler v2; MF-MSMF300/16 = orderbar referens"),
     "IIM-42653": ("IIM-42653", "TDK InvenSense", "6-axlig industri-IMU LGA-14, ±4000dps, -40..+105C", "", ""),
     "ICM-42688-P": ("ICM-42688-P", "TDK InvenSense", "6-axlig hög-precisions-IMU LGA-14 2.5×3mm — ultralågt gyro-brus ~2.8 mdps/√Hz, ±2000dps/±16g; pin-kompatibel drop-in mot IIM-42653", "", "Vald för prototyp (i lager hos NextPCB, lägst brus → bäst INS-fusion)"),
     # --- kontakter (genomplåt → selektiv/handlödning) ---
@@ -251,7 +251,7 @@ if __name__ == "__main__":
     centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv", mount_refs=FC_MOUNT)
     # VÄST-PATCH: J1 (S5B-PH) maskin-monteras; U1-U4 (ledade TSOP) + D7-D10 (LED-tab) kund-handlödda.
     PATCH_MOUNT = mount_set("vest-patch.kicad_pcb", "vest-patch.net")
-    PATCH_CUST = {"U1","U2","U3","U4","D7","D8","D9","D10"}
+    PATCH_CUST = {"U1","U2","U3","U4","D7","D8","D9","D10","M1"}   # M1 ERM-motor = DNP (kund monterar själv)
     print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls",
           cust_refs=PATCH_CUST | {"J1"}, mount_refs=PATCH_MOUNT)
     centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude=PATCH_CUST, mount_refs=PATCH_MOUNT)
