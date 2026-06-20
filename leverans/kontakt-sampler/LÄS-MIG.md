@@ -64,10 +64,22 @@ NextPCB kan **sourca + genomplåts-montera** dem åt oss. De 7 Pending är bara 
 MPN matchar ej deras lib; generiska 2.54-hona/stift finns dock överallt → manual-offert 1 dag, eller
 byt till NextPCB-lagerförd MPN).
 
-## Nästa steg (kräver beslut — kostnad/process-avvägning)
-- **Aktivera maskin-montering** på de riktiga korten = ändra `is_conn()`/`cust_refs` i
-  `gen_nextpcb.py` så JST/XT30 får montering istället för DNP, regenerera alla BOM/centroid.
-  Vinst: färdiga kort, ingen handlödning. Kostnad: NextPCB tar betalt för THT-montering (selektiv/
-  våg) per kontakt + ev. setup; hjälm-kortet är redan dubbelsidigt.
-- **2.54 P4-socklar/headers:** byt placeholder-/Sullins-MPN → NextPCB-lagerförd generisk 2.54 (kräver
-  egen liten lager-koll eller manual-offert) om de också ska maskin-monteras.
+## BESLUT & GENOMFÖRT (juni 2026)
+Pris-test på **vest-mb** (JST+XT30 maskin-monterade) → **rimligt pris bekräftat**. Maskin-montering
+av alla JST-PH/XH + XT30 **aktiverad på ALLA kort** via `mount_refs`/`conn_refs()` i `gen_nextpcb.py`:
+
+| Kort | Maskin-monteras nu (JST/XT30) | Kvar handlödd |
+|---|---|---|
+| optik | J2 (XH) | J1 (1x14 P4-carrier) |
+| optik-PROTOTYP | J2 (XH) | J1 |
+| firecontrol | J3–J10 (PH 2/3/4p) | J1/J2 (1x12/1x03) |
+| vest-patch | J1 (PH 5p) | U1–U4 TSOP, D7–D10 LED-tab |
+| helmet-mb | J2–J7, J10, J11 (PH/XH) | J8/J9 (1x20), U3–U6 TSOP, D5–D10 LED-tab; J1/J12 GH redan SMD |
+| vest-mb | J1–J10 (PH 6p), J13 (XT30) | J11/J12 (1x20 P4-socklar) |
+
+Alla BOM/centroid regenererade + kopierade till `leverans/` (kontakterna nu i centroid, Procurement
+Type tom = monteras). **Kvar handlödd:** 2.54 P4-socklar/headers (generisk 2.54-MPN ej i NextPCB-lib
+ännu) + ledade TSOP/LED-tabbar (optisk/mekanisk kund-montering). JST-GH var redan SMD.
+
+**Om även 2.54-socklarna ska monteras:** byt placeholder-MPN (`2.54-1xNN-FH`) → NextPCB-lagerförd
+generisk 2.54-hona (kräver egen liten lager-koll/manual-offert).

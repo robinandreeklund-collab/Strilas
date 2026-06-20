@@ -115,6 +115,21 @@ def is_conn(pkg):   # THT-stiftlistar/socklar/JST-PH/XH = kund handlöder (DNP, 
     # OBS: JST-GH (1.25 mm SMD, finpitch) är EJ handlödbar → NextPCB SMT-placerar (ej DNP, med i centroid).
     return any(s in pkg for s in ("PinHeader", "PinSocket", "JST_PH", "JST_XH", "JST_EH"))
 
+# Kontakt-monteringskoll (kontakt-sampler): NextPCB sourcar + genomplåts-monterar alla JST-PH/XH +
+# XT30 till rimligt pris → maskin-monteras (ej handlödd). PinSocket/PinHeader (2.54 P4-socklar/
+# breakout) + JST-GH undantas: 2.54 stannar handlödd (generisk MPN ej i NextPCB-lib ännu), GH är
+# redan SMD-placerad (ej DNP). conn_refs() läser dessa refs ur .net per kort.
+MOUNT_NEEDLES = ("JST_PH", "JST_XH", "JST_EH", "AMASS")
+
+def conn_refs(board_net, *needles):
+    t = open(board_net).read(); seg = t[t.find("(components"):t.find("(libparts")]
+    out = set()
+    for blk in re.split(r"\(comp\b", seg)[1:]:
+        r = re.search(r'\(ref "([^"]+)"\)', blk); fp = re.search(r'\(footprint "([^"]+)"\)', blk)
+        if r and fp and any(n in fp.group(1) for n in needles):
+            out.add(r.group(1))
+    return out
+
 HDR = ["Designator*", "Quantity*", "Manufacturer Part Number*", "Manufacturer",
        "Package/Footprint", "Description", "Procurement Type", "Customer Note"]
 
@@ -201,40 +216,39 @@ def centroid(board_pcb, out_csv, exclude=frozenset(), mount_refs=frozenset()):
 
 if __name__ == "__main__":
     import os; os.makedirs("nextpcb", exist_ok=True)
-    # OPTIK: IMU (U1=ICM-42688-P) NU BESTYCKAD (i lager) — avkoppling C3/C4/C5 med. Bara R3 = DNP
-    # (3A-override, ögonsäkerhets-default 1A). Kontakter/headers auto-DNP via is_conn().
+    # KONTAKT-MONTERING AKTIV: alla JST-PH/XH + XT30 maskin-monteras av NextPCB (pris bekräftat
+    # rimligt via vest-mb-test). conn_refs() plockar dem per kort. PinSocket/PinHeader (2.54) +
+    # JST-GH undantas (handlödd resp. redan SMD).
+    # OPTIK: IMU (U1=ICM-42688-P) bestyckad. R3 = DNP (3A-override). J2 (XH) maskin-monteras; J1 (1x14) handlödd.
+    OPTIK_MOUNT = conn_refs("weapon-module.net", *MOUNT_NEEDLES)
     print("OPTIK (IMU ICM-42688-P bestyckad):"); build("weapon-module.kicad_pcb", "weapon-module.net", "nextpcb/optik-bom.xls",
-          ovr_refs={"R3"}, extra=OPTIK_EXTRA)
-    centroid("weapon-module.kicad_pcb", "nextpcb/optik-centroid.csv", exclude={"R3"})
-    # FIRE-CONTROL: 2 extra IMU (U1,U2 = IIM-42653) PROTOTYP-DNP → körs på breakout (ev. inga i början).
-    # Står kvar i BOM som referens men monteras EJ av NextPCB → ej i centroid. Avkopplingen lämnas
-    # bestyckad (billig, redo om IMU handlöds på senare). Kontakter auto-DNP via is_conn().
+          ovr_refs={"R3"}, extra=OPTIK_EXTRA, mount_refs=OPTIK_MOUNT)
+    centroid("weapon-module.kicad_pcb", "nextpcb/optik-centroid.csv", exclude={"R3"}, mount_refs=OPTIK_MOUNT)
+    # FIRE-CONTROL: avkoppling bestyckad. JST-PH J3-J10 maskin-monteras; J1/J2 (PinSocket) handlödda.
+    FC_MOUNT = conn_refs("firecontrol.net", *MOUNT_NEEDLES)
     print("FIRE-CONTROL (2× IMU U1/U2 = ICM-42688-P bestyckade):")
-    build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls")
-    centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv")
+    build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls", mount_refs=FC_MOUNT)
+    centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv", mount_refs=FC_MOUNT)
+    # VÄST-PATCH: J1 (S5B-PH) maskin-monteras; U1-U4 (ledade TSOP) + D7-D10 (LED-tab) kund-handlödda.
+    PATCH_MOUNT = conn_refs("vest-patch.net", *MOUNT_NEEDLES)
+    PATCH_CUST = {"U1","U2","U3","U4","D7","D8","D9","D10"}
     print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls",
-          cust_refs={"J1","U1","U2","U3","U4","D7","D8","D9","D10"})  # J1 + 4 ledade TSOP + 4 LED-tab-socklar (kund)
-    centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude={"J1","U1","U2","U3","U4","D7","D8","D9","D10"})
-    # Prototyp-optik: IMU DNP (breakout på P4) + J1/J2 kund-lödda (TH)
-    print("OPTIK-PROTOTYP (IMU bestyckad, J1/J2 kund-lödd):"); build("weapon-module.kicad_pcb", "weapon-module.net",
-          "nextpcb/optik-PROTOTYP-bom.xls", cust_refs={"J1","J2"}, ovr_refs={"R3"}, extra=OPTIK_EXTRA)
-    centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"J1","J2","R3"})
-    # HJÄLM-MODERKORT (ESP32-P4-WIFI6, Ø100 rund): TH-kontakter (P4-socklar/patch/headset/batteri JST-PH/XH)
-    # auto-DNP via is_conn(). J1/J12 = RTK-puck GH (SMD) → NextPCB SMT-placerar. ES8388/PAM8302A SMD-placeras.
-    # cust = enbart de ledade optik-delarna (4 TSOP + 6 LED-tab-micro-PCB) som kund handlöder.
-    # IMU U2 = ICM-42688-P NU BESTYCKAD (i lager, drop-in mot IIM-42653). cust = ledade optik-delar.
+          cust_refs=PATCH_CUST | {"J1"}, mount_refs=PATCH_MOUNT)
+    centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude=PATCH_CUST, mount_refs=PATCH_MOUNT)
+    # Prototyp-optik: IMU bestyckad, J1 (1x14 P4-carrier) kund-lödd (TH); J2 (XH) maskin-monteras
+    print("OPTIK-PROTOTYP (IMU bestyckad, J1 kund-lödd):"); build("weapon-module.kicad_pcb", "weapon-module.net",
+          "nextpcb/optik-PROTOTYP-bom.xls", cust_refs={"J1"}, ovr_refs={"R3"}, extra=OPTIK_EXTRA, mount_refs=OPTIK_MOUNT)
+    centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"J1","R3"}, mount_refs=OPTIK_MOUNT)
+    # HJÄLM-MODERKORT (ESP32-P4-WIFI6, Ø100): JST-PH/XH (headset/patch/batteri J2-J7,J10,J11) maskin-
+    # monteras; J8/J9 (1x20 P4-socklar) handlödda; J1/J12 = RTK-puck GH redan SMD. ES8388/PAM8302A SMD.
+    # cust = ledade optik-delar (4 TSOP U3-U6 + 6 LED-tab D5-D10) som kund handlöder.
+    HMB_MOUNT = conn_refs("helmet-mb.net", *MOUNT_NEEDLES)
     HMB_CUST = {"U3","U4","U5","U6","D5","D6","D7","D8","D9","D10"}
     print("HJÄLM-MB (IMU U2 ICM-42688-P bestyckad):")
-    build("helmet-mb.kicad_pcb", "helmet-mb.net", "nextpcb/helmet-mb-bom.xls", cust_refs=HMB_CUST)
-    centroid("helmet-mb.kicad_pcb", "nextpcb/helmet-mb-centroid.csv", exclude=HMB_CUST)
-    # VÄST-MODERKORT (ESP32-P4-WIFI6): alla TH-kontakter (zon-headers/P4-socklar/batteri) kund-lödda.
+    build("helmet-mb.kicad_pcb", "helmet-mb.net", "nextpcb/helmet-mb-bom.xls", cust_refs=HMB_CUST, mount_refs=HMB_MOUNT)
+    centroid("helmet-mb.kicad_pcb", "nextpcb/helmet-mb-centroid.csv", exclude=HMB_CUST, mount_refs=HMB_MOUNT)
+    # VÄST-MODERKORT (ESP32-P4-WIFI6): JST-PH J1-J10 + XT30 J13 maskin-monteras; J11/J12 (1x20 P4-socklar) handlödda.
+    VMB_MOUNT = conn_refs("vest-mb.net", *MOUNT_NEEDLES)
     VMB_CUST = {f"J{i}" for i in range(1, 14)}
-    print("VÄST-MB:"); build("vest-mb.kicad_pcb", "vest-mb.net", "nextpcb/vest-mb-bom.xls", cust_refs=VMB_CUST)
-    centroid("vest-mb.kicad_pcb", "nextpcb/vest-mb-centroid.csv", exclude=VMB_CUST)
-    # VÄST-MB MONTERINGSTEST: låt NextPCB sourca + montera alla JST-PH (J1-J10) + XT30 (J13).
-    # P4-socklar J11/J12 (1x20 2.54) stannar handlödda (utanför JST/XT30-scope). Separata
-    # MONTERAD-filer → kanoniska vest-mb-BOM/centroid (handlödd) lämnas orörda tills priset bekräftas.
-    VMB_MOUNT = {f"J{i}" for i in range(1, 11)} | {"J13"}
-    print("VÄST-MB MONTERINGSTEST (JST+XT30 maskin-monterade):")
-    build("vest-mb.kicad_pcb", "vest-mb.net", "nextpcb/vest-mb-MONTERAD-bom.xls", cust_refs=VMB_CUST, mount_refs=VMB_MOUNT)
-    centroid("vest-mb.kicad_pcb", "nextpcb/vest-mb-MONTERAD-centroid.csv", exclude={"J11", "J12"}, mount_refs=VMB_MOUNT)
+    print("VÄST-MB:"); build("vest-mb.kicad_pcb", "vest-mb.net", "nextpcb/vest-mb-bom.xls", cust_refs=VMB_CUST, mount_refs=VMB_MOUNT)
+    centroid("vest-mb.kicad_pcb", "nextpcb/vest-mb-centroid.csv", exclude=VMB_CUST - VMB_MOUNT, mount_refs=VMB_MOUNT)
