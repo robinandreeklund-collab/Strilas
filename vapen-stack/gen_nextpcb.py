@@ -30,7 +30,7 @@ MPN = {
     "1k":    ("RC0805FR-071KL", "Yageo", "Res 1k 1% 0805 — CC-referensdelare (undre)", "", ""),
     "100pF": ("CL21C101JBANNNC", "Samsung", "MLCC 100pF 50V C0G 0805 — slingkomp", "", ""),
     # --- halvledare ---
-    "AO3401":      ("AO3401A", "Alpha & Omega", "P-MOSFET -30V SOT-23 (rev-pol-skydd / lastbrytare)", "", ""),
+    "AO3401":      ("AO3401A", "Alpha & Omega", "P-MOSFET -30V SOT-23 (omvändpolaritets-skydd)", "", ""),
     "AO3400":      ("AO3400A", "Alpha & Omega", "N-MOSFET 30V SOT-23 (väst LED-driver 56kHz)", "", ""),
     "AOD4184A":    ("AOD4184A", "Alpha & Omega", "N-MOSFET 40V logic-level DPAK (TO-252) — CC pass-FET (linjär)", "", ""),
     "OPA171":      ("OPA171AIDBVR", "Texas Instruments", "Op-amp 36V 3MHz SOT-23-5 — CC-sänkans regulator", "", ""),

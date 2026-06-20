@@ -316,11 +316,10 @@ vest_mb_pos.update({
     "C1": (-17, -16, 0), "C2": (-17, -13, 0), "C3": (4, -16, 0), "C4": (11, -16, 0),  # Cin/.. + Cbulk
     "R1": (-7, -13, 90), "R2": (1, -13, 90),     # FB-delare
     "J13": (35.4, -5, 270),                      # 2S-batteri XT30PW — öppning UT mot höger kant (orient270), origo inåt så kropp+stift ryms; ≥15A
-    # --- skydd (2-FET): Q1 (DPAK omvandpol-skydd) + Q2 (AO3401 load-switch) nedre-höger nära J13
-    #     (kort VBAT_RAW/VBAT_PROT i serie); TVS+gate-R+sense i center-bandet (SMD, under P4) ---
-    "Q1": (27, -15, 0), "Q2": (17, -15, 0), "D1": (10, 1, 0), "R3": (15, 1, 90),
-    "J14": (0, 14, 90),                                            # strömbrytare i fria bandet ovanför J11 (ej under P4)
-    "R4": (-3, 1, 90), "R5": (-8, 1, 90), "R6": (-13, 1, 90), "C7": (-18, 1, 0),  # gate-pull + batteri-sense (100k/47k) + filter
+    # --- skydd: Q1 (DPAK omvandpol-skydd, gate->GND) nedre-höger nära J13 (kort VBAT_RAW);
+    #     TVS + gate-R + batteri-sense i center-bandet (SMD, under P4). PÅ/AV = seriebrytare i kabel. ---
+    "Q1": (27, -15, 0), "D1": (10, 1, 0), "R3": (15, 1, 90),       # Q1=rev-skydd, D1=TVS, R3=gate->GND
+    "R4": (-3, 1, 90), "R5": (-8, 1, 90), "C7": (-13, 1, 0),       # batteri-sense 100k/47k + filter
     "TP1": (-3, -3, 0), "TP2": (-8, -3, 0), "TP3": (-13, -3, 0), "TP4": (-18, -3, 0),  # test points
     "H1": (-48, 28, 0), "H2": (48, 28, 0), "H3": (-48, -28, 0), "H4": (48, -28, 0),
 })
@@ -491,14 +490,11 @@ if abs(_HR - 54.0) > 0.05:
 # placeras UTANFOR modul-keepout. VBAT_RAW kort fran batteri (J10 nedre vanster).
 helmet_mb_pos.update({
     "Q2":  (-20.0,  0.0, 0),    # AOD4185A (DPAK, pads 11.2 mm) omvandpol-skydd - inter-sockel-lucka (vanster)
-    "Q3":  (-12.0,  4.0, 0),    # AO3401 SOT-23 load-switch (i serie m Q2, gate-styrd av J21)
-    "D11": (-11.0, -4.0, 0),    # TVS SMBJ12A (D_SMB) pa VBAT_PROT
-    "R11": ( -7.0,  4.0, 90),   # Q2 gate->GND 100k (alltid pa)
-    "R12": ( -4.0, -4.0, 90),   # Q3 gate pull-up 100k (av default)
-    "R13": ( 16.0,  3.0, 90),   # sense-delare topp 100k (hoger lucka, hoger om R7)
-    "R14": ( 16.0, -3.0, 90),   # sense-delare botten 47k
+    "D11": (-11.0, -4.0, 0),    # TVS SMBJ12A (D_SMB) pa VBAT (last-rail)
+    "R11": ( -7.0,  4.0, 90),   # Q2 gate->GND 100k (alltid pa; PA/AV = seriebrytare i kabel)
+    "R12": ( 16.0,  3.0, 90),   # sense-delare topp 100k (hoger lucka, hoger om R7)
+    "R13": ( 16.0, -3.0, 90),   # sense-delare botten 47k
     "C22": ( 20.0,  0.0, 0),    # sense-filter 100nF
-    "J21": (-24.0,-21.0, 0),    # strombrytare (extern SPST, JST-PH vertikal) - utanfor modul, nara batteri
     "TP1": (-11.0,-23.5, 0),    # VBAT
     "TP2": ( -6.5,-23.5, 0),    # +3V3
     "TP3": ( -2.0,-23.5, 0),    # GND
