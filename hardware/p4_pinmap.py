@@ -22,7 +22,10 @@ EDGE_A = {1: "GPIO52", 2: "GPIO51", 3: "GND", 4: "GPIO31", 5: "GPIO30", 6: "GPIO
 # ESP32-P4-databladsfakta (verifierat juni 2026 mot Espressif ESP-IDF/datablad):
 P4_GPIO_RANGE = range(0, 55)                 # GPIO0..GPIO54 (55 st)
 P4_STRAPPING = {34, 35, 36, 37, 38}          # boot-strapping (35/36/37/38 styr bootläge)
-P4_USB_JTAG = {24, 25}                        # USB-Serial-JTAG default; om-konfig → JTAG-över-USB tappas
+P4_USB_JTAG = {24, 25}                        # USB-Serial-JTAG D-/D+ (default). SEKUNDÄRT USB-IF.
+P4_USB_OTG_FS = {26, 27}                       # USB-OTG Full-Speed D-/D+ (default). SEKUNDÄRT USB-IF.
+# P4:ans PRIMÄRA USB = HS-OTG på DEDIKERADE PHY-stift (ej GPIO-matris) → modulens USB-C för
+# programmering/debug påverkas EJ av att GPIO24-27 nyttjas som vanliga GPIO (matrisen tillåter det).
 P4_INPUT_ONLY = set()                         # P4 har INGA input-only-pinnar (till skillnad fr klassiska ESP32)
 # RESERVED (flash/PSRAM) exponeras EJ på Waveshare-modulens kant → ej i EDGE_A/EDGE_B.
 
