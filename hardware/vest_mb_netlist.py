@@ -53,6 +53,7 @@ RES = lambda v: RES_T(value=v)
 CAP = lambda v, fp="Capacitor_SMD:C_0805_2012Metric": CAP_T(value=v, footprint=fp)
 MH = mk("MH", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", "M2.5")
 PFET = mk("AOD4185", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:TO-252-2", "AOD4185A")
+SWFET = mk("AO3401", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3401")
 TVS  = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
 PWRSW = mk("PWR_SW", "J", [(1, "GATE"), (2, "GND")], "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical", "Strombrytare (extern SPST)")
 TP   = mk("TestPoint", "TP", [(1, "1")], "TestPoint:TestPoint_Pad_D1.5mm", "TP")
@@ -64,7 +65,7 @@ TSER, TSRCK, TRCK, LED_EN = Net("TPIC_SER"), Net("TPIC_SRCK"), Net("TPIC_RCK"), 
 DATA = [Net(f"DATA{i+1}") for i in range(10)]
 VIB = [Net(f"VIB{i+1}") for i in range(10)]
 CHAINTPIC = Net("TPIC_CHAIN")
-VBAT_RAW, PGATE, VBAT_SENSE = Net("VBAT_RAW"), Net("PGATE"), Net("VBAT_SENSE")
+VBAT_RAW, VBAT_PROT, PGATE, VBAT_SENSE = Net("VBAT_RAW"), Net("VBAT_PROT"), Net("PGATE"), Net("VBAT_SENSE")
 
 # ---------- carrier-buck 2S → 3,3 V (TPIC/ERM/patch-rail; P4 självförsörjer via VSYS) ----------
 Ubk = BUCK()
@@ -109,12 +110,20 @@ JA["GPIO3"] += TSER; JA["GPIO2"] += TSRCK; JA["GPIO8"] += TRCK       # TPIC SER/
 JA["GPIO7"] += LED_EN                                                # konstellation broadcast
 # (GPIO24/GPIO25 reserv)
 
-# ---------- batteri-in + ingangsskydd + strombrytare ----------
+# ---------- batteri-in + ingangsskydd (2-FET: omvandpol-skydd + load-switch) ----------
+# EN ENDA P-FET kan INTE vara bade omvandpol-skydd (gate->GND) OCH gate-styrd strombrytare
+# (gate->batteri) — kraven ar motsatta. Darfor 2 FET i serie:
+#   Qrev = omvandpol-skydd: gate till GND (alltid pa; vand batteri -> Vgs=0 -> AV, kroppsdiod sparrar).
+#          Samma bevisade krets som vapnet. D=batteri, S=skyddad rail.
+#   Qsw  = load-switch: gate pull-up till kallan (AV som default), extern SPST drar gate -> GND (PA).
+#          Kroppsdioden sparrar nar AV -> EKTA frankoppling (ej diod-lacka).
 Jb = BATT(); Jb["GND"] += GND; Jb["VBAT"] += VBAT_RAW
-Qp = PFET(); Qp["D"] += VBAT_RAW; Qp["S"] += VBAT; Qp["G"] += PGATE
-Rgate = RES("100k"); Rgate[1] += PGATE; Rgate[2] += VBAT_RAW
-Jsw = PWRSW(); Jsw["GATE"] += PGATE; Jsw["GND"] += GND
-Dtvs = TVS(); Dtvs["K"] += VBAT; Dtvs["A"] += GND
+Qrev = PFET(); Qrev["D"] += VBAT_RAW; Qrev["S"] += VBAT_PROT; Rgrev = RES("100k")
+Qrev["G"] += Rgrev[1]; Rgrev[2] += GND                          # gate->GND => alltid pa, omvandpol-spar
+Qsw = SWFET(); Qsw["S"] += VBAT_PROT; Qsw["D"] += VBAT; Qsw["G"] += PGATE
+Rgate = RES("100k"); Rgate[1] += PGATE; Rgate[2] += VBAT_PROT   # pull-up till kallan => AV som default
+Jsw = PWRSW(); Jsw["GATE"] += PGATE; Jsw["GND"] += GND          # SPST stanger -> gate till GND -> PA
+Dtvs = TVS(); Dtvs["K"] += VBAT_PROT; Dtvs["A"] += GND          # surge-clamp pa skyddad (alltid-live) rail
 # ---------- batteri-sense (8.4V -> 100k/47k -> 2.69V pa GPIO20/ADC1) ----------
 Rst = RES("100k"); Rsb = RES("47k"); Csns = CAP("100nF")
 Rst[1] += VBAT; Rst[2] += VBAT_SENSE; Rsb[1] += VBAT_SENSE; Rsb[2] += GND
