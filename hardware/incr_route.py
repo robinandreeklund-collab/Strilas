@@ -177,6 +177,12 @@ class Router:
                 return True
         return False
 
+    def trace_point(self, ref, pad, pt):
+        """dra spar fran pad till en GODTYCKLIG punkt (x,y) pa samma nat (t.ex. en gammal
+        track-andpunkt). Anvands for att aterskapa en matnings-junction vid en ny FET-source."""
+        pd = self._pad(ref, pad); net = pd.GetNet()
+        return self._route(xy(pd.GetPosition()), tuple(pt), net, net.GetNetname())
+
     def _route(self, p1, p2, net, nm):
         obs = self._obstacles(nm)
         bvia = self._via_clear(p1, obs) and self._via_clear(p2, obs)
@@ -210,6 +216,73 @@ class Router:
                 self._add_track(p1, c1, F, net); self._add_track(c1, c2, F, net); self._add_track(c2, p2, F, net)
                 return True
         return False
+
+    def _islands(self, net):
+        """returnera lista av öar (var = lista av item-index) for net via Collide(0)-union-find."""
+        cu = self.cu
+        it = []
+        for t in self.b.GetTracks():
+            if t.GetNetname() != net:
+                continue
+            lays = set(cu) if t.Type() == pcbnew.PCB_VIA_T else {t.GetLayer()}
+            it.append((lays, t.GetEffectiveShape(), ("trk", t)))
+        for f in self.b.GetFootprints():
+            for pd in f.Pads():
+                if pd.GetNetname() == net:
+                    it.append(({L for L in cu if pd.IsOnLayer(L)}, pd.GetEffectiveShape(), ("pad", f.GetReference() + "." + pd.GetName(), pd)))
+        for z in self.b.Zones():
+            if z.GetNetname() == net:
+                for L in cu:
+                    if z.IsOnLayer(L):
+                        it.append(({L}, z.GetFilledPolysList(L), ("zone", L)))
+        n = len(it); par = list(range(n))
+        def find(x):
+            while par[x] != x: par[x] = par[par[x]]; x = par[x]
+            return x
+        for i in range(n):
+            for j in range(i + 1, n):
+                if (it[i][0] & it[j][0]) and it[i][1].Collide(it[j][1], 0):
+                    par[find(i)] = find(j)
+        groups = {}
+        for i in range(n):
+            groups.setdefault(find(i), []).append(i)
+        return it, list(groups.values())
+
+    def connect_islands(self, net):
+        """slå ihop ALLA öar i net till EN sammanhängande ö (garanterar full anslutning efter
+        en kraftvägs-splits). Routar mellan närmaste punkter på olika öar tills 1 ö kvarstår."""
+        for _ in range(12):
+            it, groups = self._islands(net)
+            # bara öar som innehåller minst en pad räknas (rena track-stubbar utan pad ignoreras)
+            real = [g for g in groups if any(it[i][2][0] == "pad" for i in g)]
+            if len(real) <= 1:
+                return True
+            # punkter per ö (pad-center + track-andar)
+            def pts(g):
+                out = []
+                for i in g:
+                    k = it[i][2]
+                    if k[0] == "pad":
+                        out.append((xy(k[2].GetPosition()), F if k[2].IsOnLayer(F) else B))
+                    elif k[0] == "trk" and k[1].Type() != pcbnew.PCB_VIA_T:
+                        out.append((xy(k[1].GetStart()), k[1].GetLayer()))
+                        out.append((xy(k[1].GetEnd()), k[1].GetLayer()))
+                return out
+            # koppla ö[0] till närmaste andra ö
+            base = real[0]; bpts = pts(base)
+            best = None
+            for g in real[1:]:
+                for (q, lq) in pts(g):
+                    for (p, lp) in bpts:
+                        d = (p[0]-q[0])**2 + (p[1]-q[1])**2
+                        if best is None or d < best[0]:
+                            best = (d, p, q)
+            if not best or not self._route(best[1], best[2], self._net_obj(net), net):
+                return False
+        return False
+
+    def _net_obj(self, nm):
+        return self._net(nm)
 
     def finish(self):
         pcbnew.ZONE_FILLER(self.b).Fill(self.b.Zones())

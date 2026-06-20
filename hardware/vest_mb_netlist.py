@@ -54,6 +54,7 @@ CAP = lambda v, fp="Capacitor_SMD:C_0805_2012Metric": CAP_T(value=v, footprint=f
 MH = mk("MH", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", "M2.5")
 PFET = mk("AOD4185", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:TO-252-2", "AOD4185A")
 TVS  = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
+PTC  = mk("PTC", "F", [(1, "1"), (2, "2")], "Fuse:Fuse_1812_4532Metric", "PTC_3A")  # resättbar säkring (3A-hold, 16V)
 TP   = mk("TestPoint", "TP", [(1, "1")], "TestPoint:TestPoint_Pad_D1.5mm", "TP")
 
 # ---------- nät ----------
@@ -63,7 +64,7 @@ TSER, TSRCK, TRCK, LED_EN = Net("TPIC_SER"), Net("TPIC_SRCK"), Net("TPIC_RCK"), 
 DATA = [Net(f"DATA{i+1}") for i in range(10)]
 VIB = [Net(f"VIB{i+1}") for i in range(10)]
 CHAINTPIC = Net("TPIC_CHAIN")
-VBAT_RAW, VBAT_SENSE = Net("VBAT_RAW"), Net("VBAT_SENSE")
+VBAT_IN, VBAT_RAW, VBAT_SENSE = Net("VBAT_IN"), Net("VBAT_RAW"), Net("VBAT_SENSE")
 
 # ---------- carrier-buck 2S → 3,3 V (TPIC/ERM/patch-rail; P4 självförsörjer via VSYS) ----------
 Ubk = BUCK()
@@ -108,11 +109,12 @@ JA["GPIO3"] += TSER; JA["GPIO2"] += TSRCK; JA["GPIO8"] += TRCK       # TPIC SER/
 JA["GPIO7"] += LED_EN                                                # konstellation broadcast
 # (GPIO24/GPIO25 reserv)
 
-# ---------- batteri-in + omvandpolaritets-skydd ----------
-# Omvandpol-skydd via P-FET med gate till GND (alltid pa) — samma bevisade krets som vapnet.
-# Vand batteri -> Vgs=0 -> FET AV + kroppsdiod sparrar -> last skyddad. D=batteri, S=last.
+# ---------- batteri-in + ingangsskydd (best practice: sakring -> omvandpol-FET -> TVS) ----------
+# Kedja: BATT+ -> PTC-sakring (overstrom/kortslutning) -> omvandpol-P-FET (gate->GND, alltid pa;
+# vand batteri -> Vgs=0 -> AV + kroppsdiod sparrar) -> VBAT-rail med TVS-clamp + bulk.
 # PA/AV-strombrytare = seriebrytare i BATTERIKABELN (klarar full strom, inget kontaktdon pa kort).
-Jb = BATT(); Jb["GND"] += GND; Jb["VBAT"] += VBAT_RAW
+Jb = BATT(); Jb["GND"] += GND; Jb["VBAT"] += VBAT_IN
+F1 = PTC(); F1[1] += VBAT_IN; F1[2] += VBAT_RAW                  # resettbar sakring i serie pa plus
 Qrev = PFET(); Qrev["D"] += VBAT_RAW; Qrev["S"] += VBAT; Rgrev = RES("100k")
 Qrev["G"] += Rgrev[1]; Rgrev[2] += GND                          # gate->GND => alltid pa, omvandpol-spar
 Dtvs = TVS(); Dtvs["K"] += VBAT; Dtvs["A"] += GND               # surge-clamp pa last-rail
