@@ -55,7 +55,7 @@ MPN = {
     "TSOP4856":    ("TSOP4856", "Vishay", "IR-mottagare 56 kHz (940 nm), LEDAD MOLD-3 (genomplåt/THT)", "", "KUND monterar: böjs 40° för sikte + handlöds (THT, ej SMT) → ej i centroid"),
     "BAT54":       ("BAT54-7-F", "Diodes Inc", "Schottky SOD-123 (OR av TSOP-utgångar)", "", ""),
     "SFH4715AS_860nm": ("SFH 4715AS", "ams OSRAM", "IR-LED 860 nm OSLON Black SMD, Ie 780 mW/sr@1A (konstellation)", "", "NextPCB sourcar + SMT-placerar (precision). Matcha kamerans 860 nm IR-pass (verifiera lager)"),
-    "10R":         ("CRCW251210R0FKEGHP", "Vishay", "Res 10R 1% 2W 2512 (HP) — LED-serieR konstellation", "", "OBS max ~50% duty (2,5W topp @0,5A)"),
+    "10R":         ("CRCW251210R0JNEGHP", "Vishay", "Res 10R 5% 2W 2512 HP — LED-serieR konstellation (byt fr ...FKEGHP: 31-42 d lead → 4-6 d, −58% pris; samma 2W-HP-familj, 5% tol OK för LED-serie). Lager-koll r2512-sampler", "", "OBS max ~50% duty (2,5W topp @0,5A); 2W HP-rating bibehållen"),
     "HT7333-A":    ("HT7333-A", "Holtek", "LDO 3.3V 250mA SOT-89, Vin<=12V — matar TSOP+DATA (TSOP abs-max 6V)", "", ""),
     # --- hjälm-nod ---
     "AP63203":     ("AP63203WU-7", "Diodes Inc", "Synk-buck 3.8-32Vin 2A TSOT23-6 — 2S→3V3 @1A", "", ""),

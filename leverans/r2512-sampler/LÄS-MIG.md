@@ -32,10 +32,24 @@ Konstellations-LED: ~**2,5 W topp @0,5 A**, ~50 % duty → ~**1,25 W medel**. D�
 | R10 | WR12X10R0FTL | Walsin | **1W** 1% | basic-lib |
 | R11 | ESR25JZPF10R0 | ROHM | **1W** 1% | — |
 
-## Val-regel efter lager-koll
-1. Finns en **2W In Stock** (R2–R6)? → välj den (helst 1%; 5% OK för LED-serie). Klart.
-2. Annars: är någon **1W In Stock** billig (R7–R11)? → två vägar:
-   a. Behåll en R + **sänk duty** i firmware så medel ≤0,8–1 W (verifiera ljusstyrka räcker), eller
-   b. **2× parallell 20R 1W** per LED → 2 W total (kräver liten layout-ändring: dubbla pads).
-3. Uppdatera `"10R"`-nyckeln i `vapen-stack/gen_nextpcb.py`, regenerera helmet-mb + vest-mb-BOM,
-   kopiera till `leverans/`. (Alt. 2b kräver även board-ändring → då gäller leverans-regeln fullt ut.)
+## LAGER-KOLL RESULTAT (NextPCB, 7/11 matchade) + valt MPN
+
+| Ref | MPN | Märke | Effekt | Lead | $ |
+|---|---|---|---|---|---|
+| R1 | CRCW251210R0FKEGHP | Vishay | 2W HP 1% | **31–42 d** ❌ | 0.955 (nuvarande, blev värre) |
+| **R2 ✅VALD** | CRCW251210R0JNEGHP | Vishay | **2W HP** 5% | **4–6 d** | 0.401 |
+| R6 | CRM2512-FX-10R0ELF | Bourns | (rating osäker) | 4–6 d | 0.268 |
+| R7 | RC2512FK-0710RL | Yageo | **1W** 1% | ✅ In Stock | 0.119 |
+| R8 | RC2512JK-0710RL | Yageo | **1W** 5% | ✅ In Stock | 0.100 |
+| R10 / R11 | WR12X10R0FTL / ESR25JZPF10R0 | Walsin / ROHM | 1W | 7–18 d | 0.040 / 0.261 |
+| R3 / R4 / R5 / R9 | — | Vishay/Yageo/Panasonic/Uniroyal | — | Pending | — |
+
+**Valt: R2 Vishay `CRCW251210R0JNEGHP` (2W HP, 5%, 4–6 d, $0,40).** Enda *In Stock* var R7/R8 men
+de är **1W < 1,25 W medel** (underdimensionerade). Enda bekräftat 2W-tillgängligt är Vishay HP-familjen;
+R1 (nuvarande) är 31–42 d, **R2 = samma 2W-HP-familj på 4–6 d** (i linje med övriga BOM, t.ex. 0R2:s
+4–7 d → förlänger ej kritiska vägen) och **−58 % pris**. 5 % tol är irrelevant för ett LED-serie­motstånd.
+**Drop-in: ingen omroutning, ingen firmware-ändring, full 2W-marginal behållen.** (R7/R8 1W = skenbesparing
+→ skulle kräva sänkt duty eller 2× parallell layout-ändring.)
+
+**Gjort:** `gen_nextpcb.py` `"10R"` → R2; helmet-mb + vest-patch-BOM regenererade + kopierade till
+`leverans/` (de två kort som bär 10R; footprint oförändrad → ingen omroutning).
