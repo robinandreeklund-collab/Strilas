@@ -74,6 +74,7 @@ MPN = {
     "AMP: 3V3·GND·SD·GAIN·DIN·BCLK·LRC": ("2.54-1x07-FH", "generisk", "Header 1x07 → MAX98357A-amp-breakout", "", "TH; amp+högtalare köps separat"),
     "MIC: 3V3·GND·SD·WS·SCK·LR": ("2.54-1x06-FH", "generisk", "Header 1x06 → I²S MEMS-mik-breakout", "", "TH; mik köps separat"),
     "2S batteri":  ("S2B-XH-A(LF)(SN)", "JST", "JST-XH 2-pol header 2.5mm THT (2S-batteri)", "", "TH"),
+    "2S batteri XT30 (≥15A)": ("XT30PW-M", "AMASS", "XT30PW-M kraftkontakt genomplåt (2S-batteri in, ≥15A) — IN STOCK (kontakt-sampler)", "", ""),
     # --- väst-moderkort ---
     "74HC165":     ("SN74HC165DR", "Texas Instruments", "8-bit PISO shift-register SOIC-16 (läs 10 DATA via SPI)", "", ""),
     "TPIC6B595":   ("TPIC6B595DWR", "Texas Instruments", "Power 8-bit shift-register SOIC-20W, 150mA/kanal open-drain (vibrator-driver)", "", ""),
@@ -117,7 +118,7 @@ def is_conn(pkg):   # THT-stiftlistar/socklar/JST-PH/XH = kund handlöder (DNP, 
 HDR = ["Designator*", "Quantity*", "Manufacturer Part Number*", "Manufacturer",
        "Package/Footprint", "Description", "Procurement Type", "Customer Note"]
 
-def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozenset(), ovr_refs=frozenset(), extra=()):
+def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozenset(), ovr_refs=frozenset(), extra=(), mount_refs=frozenset()):
     vals = netvals(board_net)
     b = pcbnew.LoadBoard(board_pcb)
     groups = defaultdict(list)   # (value, footprint) -> [ref]  (gruppera på BÅDE värde och paket)
@@ -140,7 +141,10 @@ def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozens
         size = m.group(1) if m else ""
         key = f"{val}@{size}" if f"{val}@{size}" in MPN else val   # paket-specifik MPN om sådan finns
         mpn, mfr, desc, proc, note = MPN.get(key, ("", "", val, "", "SAKNAR MPN — fyll i"))
-        if refs and all(r in ovr_refs for r in refs):
+        if refs and all(r in mount_refs for r in refs):
+            # kontakt-monteringstest: NextPCB sourcar + genomplåts-monterar (ej DNP, ej handlödd)
+            proc = ""; note = "MONTERAS av NextPCB (kontakt-test) — sourcas + THT-monteras, ej handlödd"
+        elif refs and all(r in ovr_refs for r in refs):
             proc = "DNP"; note = ("3A-override (Rp): DNP = säker 1A fail-safe default; "
                                   "montera för 3A (medvetet labbeslut, kräver förnyad ögonsäkerhetsmätning)")
         elif refs and all(r in dnp_refs for r in refs):
@@ -164,14 +168,14 @@ def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozens
     wb.save(out_xls)
     print(f"  {out_xls}: {row-1} BOM-rader ({sum(len(v) for v in groups.values())} komponenter)")
 
-def centroid(board_pcb, out_csv, exclude=frozenset()):
+def centroid(board_pcb, out_csv, exclude=frozenset(), mount_refs=frozenset()):
     b = pcbnew.LoadBoard(board_pcb)
     ox, oy = b.GetDesignSettings().GetAuxOrigin()
     rows = []
     for f in b.GetFootprints():
         fp = str(f.GetFPID().GetLibItemName())
         if "MountingHole" in fp: continue
-        if is_conn(fp): continue                   # kontakter/headers handlöds → ej i SMT-centroid
+        if is_conn(fp) and f.GetReference() not in mount_refs: continue   # handlödda kontakter → ej i SMT-centroid (mount_refs = NextPCB-monterade → med)
         # mekaniska hål (alla paddar NPTH / inga kopparpaddar) → ej en placerad komponent
         if f.Pads() and all(p.GetAttribute() == pcbnew.PAD_ATTRIB_NPTH for p in f.Pads()): continue
         if f.GetReference() in exclude: continue   # DNP → ej i centroid
@@ -227,3 +231,10 @@ if __name__ == "__main__":
     VMB_CUST = {f"J{i}" for i in range(1, 14)}
     print("VÄST-MB:"); build("vest-mb.kicad_pcb", "vest-mb.net", "nextpcb/vest-mb-bom.xls", cust_refs=VMB_CUST)
     centroid("vest-mb.kicad_pcb", "nextpcb/vest-mb-centroid.csv", exclude=VMB_CUST)
+    # VÄST-MB MONTERINGSTEST: låt NextPCB sourca + montera alla JST-PH (J1-J10) + XT30 (J13).
+    # P4-socklar J11/J12 (1x20 2.54) stannar handlödda (utanför JST/XT30-scope). Separata
+    # MONTERAD-filer → kanoniska vest-mb-BOM/centroid (handlödd) lämnas orörda tills priset bekräftas.
+    VMB_MOUNT = {f"J{i}" for i in range(1, 11)} | {"J13"}
+    print("VÄST-MB MONTERINGSTEST (JST+XT30 maskin-monterade):")
+    build("vest-mb.kicad_pcb", "vest-mb.net", "nextpcb/vest-mb-MONTERAD-bom.xls", cust_refs=VMB_CUST, mount_refs=VMB_MOUNT)
+    centroid("vest-mb.kicad_pcb", "nextpcb/vest-mb-MONTERAD-centroid.csv", exclude={"J11", "J12"}, mount_refs=VMB_MOUNT)
