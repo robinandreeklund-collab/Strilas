@@ -86,6 +86,8 @@ MPN = {
     "100R":        ("RC0805FR-07100RL", "Yageo", "Res 100R 1% 0805", "", ""),
     "10k":         ("RC0805FR-0710KL", "Yageo", "Res 10k 1% 0805", "", ""),
     "VBAT·GND·DATA·LED_EN·3V3":("S5B-PH-K-S(LF)(SN)", "JST", "JST-PH 5-pol header 2.0mm THT SIDOMONTERAD (S-typ, horisontell, låg bygghöjd) på patchens BAKSIDA → kabel ut i kant", "", "TH; kund-lödd. Side-entry (bygger ej på höjden under domen)"),
+    "VBAT·GND·DATA·LED_EN·3V3·VIB":("S6B-PH-K-S(LF)(SN)", "JST", "JST-PH 6-pol header 2.0mm THT SIDOMONTERAD (S-typ) på patchens BAKSIDA → matchar moderkortets zon-kontakt (pin6=VIB till motorn)", "", "TH; kund-lödd. Side-entry"),
+    "ERM 3V coin Ø10×3mm":("VC1027B028F", "Vybronics", "ERM coin-vibrationsmotor Ø10mm 3V (eller likvärdig 10mm coin; + → 3V3, − → VIB/TPIC låg-sida)", "", "SMD-lödd på patchens baksida (mot kroppen). BESTYCKAS PÅ VÄST-patch; DNP på hjälm-patch (VIB-pin NC via 5-tråds kabel)"),
     # --- P4-WIFI6 kant-socklar (moderkort: ESP32-P4-WIFI6 stackas i 2× 1x20 hona) ---
     "P4-WIFI6 edge B": ("DS1023-1X20SF11", "Ckmtw", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge B (kraft)", "", "socket-sampler: 4-7 d. ESP32-P4-WIFI6 köps separat (Waveshare)"),
     "P4-WIFI6 edge A": ("DS1023-1X20SF11", "Ckmtw", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge A (signaler)", "", "socket-sampler: 4-7 d. ESP32-P4-WIFI6 köps separat (Waveshare)"),

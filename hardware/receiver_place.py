@@ -173,7 +173,8 @@ vest_pos.update({
     "R3": (0.0, 9.0, 0),                             # 10R gren-1 — N-kanal (radiellt, mellan center o tab)
     "R4": (9.0, 0.0, 90), "R5": (-9.0, 0.0, 90),     # 10R gren-2/3 — Ö/V-kanal (spegel)
     "C1": (0.0, -9.0, 90),                           # 10µF bulk (VBAT) — S-kanal
-    "J1": _se(270, 14.0, 5, "out", flip=True),       # 5-pol JST-PH SIDOMONT. på BAKSIDAN, kabel ut nedkant
+    "J1": _se(270, 14.0, 6, "out", flip=True),       # 6-pol JST-PH SIDOMONT. på BAKSIDAN (VBAT·GND·DATA·LED_EN·3V3·VIB)
+    "M1": (0.0, 0.0, 0, "B"),                        # ERM coin-motor Ø10 CENTRERAD på BAKSIDAN (mot kroppen → haptik)
 })
 vest_labels = [(0.0, 5.5, "BOJ 40 UT", 0.5)]         # böj-instruktion (kort, center-fri yta)
 

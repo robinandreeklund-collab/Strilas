@@ -2,7 +2,7 @@
   (version "D")
   (design
     (source "receiver_netlists.py")
-    (date "06/18/2026 10:30 PM")
+    (date "06/20/2026 09:16 PM")
     (tool "SKiDL (2.2.3)")
     (sheet
       (number 1)
@@ -55,9 +55,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "lszFGMyEne")
+          (name "SKiDL Tag") "r3gCBDs7vP")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:49"))
+          (name "SKiDL Line") "receiver_netlists.py:54"))
       (libsource
         (lib "NO_LIB")
         (part "C"))
@@ -65,7 +65,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "cd035764-930d-5d9f-9529-b6af00eb72e6"))
+      (tstamps "db387b13-ad58-509b-ab3d-d17704c55bd3"))
     (comp
       (ref "C2")
       (value "100nF")
@@ -79,9 +79,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "dK1wxu_P7a")
+          (name "SKiDL Tag") "DFiMTtCGRz")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:55"))
+          (name "SKiDL Line") "receiver_netlists.py:60"))
       (libsource
         (lib "NO_LIB")
         (part "C"))
@@ -89,7 +89,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "1dc435a3-07f1-52ae-8420-811869f3378d"))
+      (tstamps "0bf2cf6f-e770-52be-8938-e67e7527ceda"))
     (comp
       (ref "C3")
       (value "100nF")
@@ -103,9 +103,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "mCosDppka0")
+          (name "SKiDL Tag") "YVI58I_WRj")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:55"))
+          (name "SKiDL Line") "receiver_netlists.py:60"))
       (libsource
         (lib "NO_LIB")
         (part "C"))
@@ -113,7 +113,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "71de0db0-78f4-5615-a8c2-7c0916593a83"))
+      (tstamps "84ad762d-f68b-561e-9b2a-663e214ccf48"))
     (comp
       (ref "C4")
       (value "100nF")
@@ -127,9 +127,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "ByCpFvQoKw")
+          (name "SKiDL Tag") "lae3CIrR1s")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:55"))
+          (name "SKiDL Line") "receiver_netlists.py:60"))
       (libsource
         (lib "NO_LIB")
         (part "C"))
@@ -137,7 +137,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "7e78de37-6222-5d83-90b1-a80dfee8e97c"))
+      (tstamps "908e3310-b725-5ffa-9e75-47f350c80286"))
     (comp
       (ref "C5")
       (value "100nF")
@@ -151,9 +151,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "4pTsYC18gt")
+          (name "SKiDL Tag") "OvtOFNiyaC")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:55"))
+          (name "SKiDL Line") "receiver_netlists.py:60"))
       (libsource
         (lib "NO_LIB")
         (part "C"))
@@ -161,7 +161,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "87fab4ce-8733-58ec-9150-81aa8aaa7222"))
+      (tstamps "f43db080-dcbf-5893-a3d8-92c4d358c843"))
     (comp
       (ref "D1")
       (value "BAT54")
@@ -175,9 +175,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "iENX5DucuA")
+          (name "SKiDL Tag") "0n12hPKf7C")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:54"))
+          (name "SKiDL Line") "receiver_netlists.py:59"))
       (libsource
         (lib "NO_LIB")
         (part "ORdiode"))
@@ -185,7 +185,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "17da9d22-f6f1-500a-b4c6-4380da3e2217"))
+      (tstamps "39bdcfa2-4b41-5ec1-a4d3-f4f76f289f45"))
     (comp
       (ref "D10")
       (value "LED-tab (OSLON-micro-PCB, ben böjs 40° UT som TSOP)")
@@ -199,9 +199,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "mXbTEFQXdi")
+          (name "SKiDL Tag") "s5W74CGHDJ")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:66"))
+          (name "SKiDL Line") "receiver_netlists.py:71"))
       (libsource
         (lib "NO_LIB")
         (part "LED_TAB"))
@@ -209,7 +209,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "1d5c493c-85eb-5a99-bab4-4bb7f96f21b2"))
+      (tstamps "6a00009d-990c-5349-a971-116e0fc0a59d"))
     (comp
       (ref "D2")
       (value "BAT54")
@@ -223,9 +223,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "b1ycUDtOlT")
+          (name "SKiDL Tag") "SeX_ddwyre")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:54"))
+          (name "SKiDL Line") "receiver_netlists.py:59"))
       (libsource
         (lib "NO_LIB")
         (part "ORdiode"))
@@ -233,7 +233,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "102f6193-6e73-5fd8-b209-70be72f172dc"))
+      (tstamps "09434c36-2273-52b0-8afd-df7da638815d"))
     (comp
       (ref "D3")
       (value "BAT54")
@@ -247,9 +247,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "RPc5CExM7U")
+          (name "SKiDL Tag") "izhJ3Fo7li")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:54"))
+          (name "SKiDL Line") "receiver_netlists.py:59"))
       (libsource
         (lib "NO_LIB")
         (part "ORdiode"))
@@ -257,7 +257,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "abecd647-b086-5f54-9da6-17f37d4b41d8"))
+      (tstamps "c611faae-3f4c-5fd9-bbb1-7d563f6e949b"))
     (comp
       (ref "D4")
       (value "BAT54")
@@ -271,9 +271,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "RSAdgUPfYF")
+          (name "SKiDL Tag") "JDXF3e8VZc")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:54"))
+          (name "SKiDL Line") "receiver_netlists.py:59"))
       (libsource
         (lib "NO_LIB")
         (part "ORdiode"))
@@ -281,7 +281,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "d5b22da6-1f9e-55d7-bff2-29718318b7d3"))
+      (tstamps "49985fe4-6ed0-58d9-b774-d9c270a1883a"))
     (comp
       (ref "D5")
       (value "SFH4715AS_860nm")
@@ -295,9 +295,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "7w_nOCw7z5")
+          (name "SKiDL Tag") "BYVoIEmgWX")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:66"))
+          (name "SKiDL Line") "receiver_netlists.py:71"))
       (libsource
         (lib "NO_LIB")
         (part "SFH4715AS"))
@@ -305,7 +305,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "2c834b89-dd9b-5f69-b5d7-00230d5a708d"))
+      (tstamps "ae58310f-9b56-5efc-9f06-f36575792e49"))
     (comp
       (ref "D6")
       (value "SFH4715AS_860nm")
@@ -319,9 +319,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "8jt_e7B6IP")
+          (name "SKiDL Tag") "l2pqN_ZG4t")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:66"))
+          (name "SKiDL Line") "receiver_netlists.py:71"))
       (libsource
         (lib "NO_LIB")
         (part "SFH4715AS"))
@@ -329,7 +329,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "c840b5da-91ea-53ad-9a68-54b4453577a1"))
+      (tstamps "39f43deb-8750-5f13-ad27-4c668d56ea7a"))
     (comp
       (ref "D7")
       (value "LED-tab (OSLON-micro-PCB, ben böjs 40° UT som TSOP)")
@@ -343,9 +343,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "4aRkWeuzDE")
+          (name "SKiDL Tag") "d02R37S25P")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:66"))
+          (name "SKiDL Line") "receiver_netlists.py:71"))
       (libsource
         (lib "NO_LIB")
         (part "LED_TAB"))
@@ -353,7 +353,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "814e6b8d-90a6-5b32-b452-78193fc62fa5"))
+      (tstamps "68dbfd1f-ee8f-5889-a57a-c11dfeb8463d"))
     (comp
       (ref "D8")
       (value "LED-tab (OSLON-micro-PCB, ben böjs 40° UT som TSOP)")
@@ -367,9 +367,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "EL8apdb2Hf")
+          (name "SKiDL Tag") "bJna7NHEHp")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:66"))
+          (name "SKiDL Line") "receiver_netlists.py:71"))
       (libsource
         (lib "NO_LIB")
         (part "LED_TAB"))
@@ -377,7 +377,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "0934fd08-a6b3-5085-893f-8ab64bae6d5f"))
+      (tstamps "338025ae-c595-5a20-9d41-ed33d9489d76"))
     (comp
       (ref "D9")
       (value "LED-tab (OSLON-micro-PCB, ben böjs 40° UT som TSOP)")
@@ -391,9 +391,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "1_BhljVu0X")
+          (name "SKiDL Tag") "nJ7POAcsQJ")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:66"))
+          (name "SKiDL Line") "receiver_netlists.py:71"))
       (libsource
         (lib "NO_LIB")
         (part "LED_TAB"))
@@ -401,7 +401,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "e4616bcb-88ac-5a86-9678-33a8103f0f40"))
+      (tstamps "f2e39ccb-d3eb-5ccf-abd7-0ef79ea3964d"))
     (comp
       (ref "H1")
       (value "M2")
@@ -415,9 +415,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "1zPTeAn2LN")
+          (name "SKiDL Tag") "2gkilyNEce")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:80"))
+          (name "SKiDL Line") "receiver_netlists.py:85"))
       (libsource
         (lib "NO_LIB")
         (part "MH"))
@@ -425,7 +425,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "ed81b817-89b7-5bae-bc02-7d5c31c610b1"))
+      (tstamps "4a007c88-1b3d-56cb-9bc9-4379cb4e59dc"))
     (comp
       (ref "H2")
       (value "M2")
@@ -439,9 +439,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "MTp_pg_KDJ")
+          (name "SKiDL Tag") "8QHinJUjK8")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:80"))
+          (name "SKiDL Line") "receiver_netlists.py:85"))
       (libsource
         (lib "NO_LIB")
         (part "MH"))
@@ -449,7 +449,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "b5b37923-51a1-575f-b4f6-3e3ba1a8849f"))
+      (tstamps "f342ec47-841e-589a-80bb-0486dc1f6207"))
     (comp
       (ref "H3")
       (value "M2")
@@ -463,9 +463,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "cReqQBxpBx")
+          (name "SKiDL Tag") "SUUwG7b5Lh")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:80"))
+          (name "SKiDL Line") "receiver_netlists.py:85"))
       (libsource
         (lib "NO_LIB")
         (part "MH"))
@@ -473,7 +473,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "c1a85610-09ea-5234-8bc4-e9ad9f9e6aee"))
+      (tstamps "e0e66a56-c73e-5665-82f4-d1a6f5fd5470"))
     (comp
       (ref "H4")
       (value "M2")
@@ -487,9 +487,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "kJ7AmMHOis")
+          (name "SKiDL Tag") "Nzob7OMIFR")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:80"))
+          (name "SKiDL Line") "receiver_netlists.py:85"))
       (libsource
         (lib "NO_LIB")
         (part "MH"))
@@ -497,31 +497,55 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "224984c8-5347-5ca2-97f6-0f12d82ee706"))
+      (tstamps "3d71fdd5-c680-5fbf-a887-469f4a827f1d"))
     (comp
       (ref "J1")
-      (value "VBAT·GND·DATA·LED_EN·3V3")
+      (value "VBAT·GND·DATA·LED_EN·3V3·VIB")
       (description "")
-      (footprint "Connector_JST:JST_PH_S5B-PH-K_1x05_P2.00mm_Horizontal")
+      (footprint "Connector_JST:JST_PH_S6B-PH-K_1x06_P2.00mm_Horizontal")
       (fields
         (field
           (name "Description"))
         (field
-          (name "Footprint") "Connector_JST:JST_PH_S5B-PH-K_1x05_P2.00mm_Horizontal")
+          (name "Footprint") "Connector_JST:JST_PH_S6B-PH-K_1x06_P2.00mm_Horizontal")
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "df96J8_btP")
+          (name "SKiDL Tag") "eka5IDdCLO")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:46"))
+          (name "SKiDL Line") "receiver_netlists.py:48"))
       (libsource
         (lib "NO_LIB")
-        (part "Conn_1x05"))
+        (part "Conn_1x06"))
       (sheetpath
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "93cea1c9-7669-55f8-8361-7aa6e94a3550"))
+      (tstamps "4bd92a7e-2e55-5606-97a5-42709969c924"))
+    (comp
+      (ref "M1")
+      (value "ERM 3V coin Ø10×3mm")
+      (description "")
+      (footprint "strilas:ERM_Coin_10mm")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "strilas:ERM_Coin_10mm")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "xdYAmiCWLF")
+        (field
+          (name "SKiDL Line") "receiver_netlists.py:52"))
+      (libsource
+        (lib "NO_LIB")
+        (part "ERM_3V"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "3e721bb2-9c3c-5fb2-bda8-b2cb3c07303d"))
     (comp
       (ref "Q1")
       (value "AO3400")
@@ -535,9 +559,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "v5HvxZSYQx")
+          (name "SKiDL Tag") "03fQ6UxCpi")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:57"))
+          (name "SKiDL Line") "receiver_netlists.py:62"))
       (libsource
         (lib "NO_LIB")
         (part "AO3400"))
@@ -545,7 +569,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "45e9982e-616f-5f38-aae4-203e5f7bf07a"))
+      (tstamps "53fa4f10-d549-5b01-bc6f-da7dfcbe359d"))
     (comp
       (ref "R1")
       (value "10k")
@@ -559,9 +583,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "p9m_Iaf5IX")
+          (name "SKiDL Tag") "wPvFhrIjLr")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:48"))
+          (name "SKiDL Line") "receiver_netlists.py:53"))
       (libsource
         (lib "NO_LIB")
         (part "R"))
@@ -569,7 +593,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "a98454d6-fc2e-50bd-bc5c-8dac587566b6"))
+      (tstamps "ec780174-514f-51b7-9cd2-ea35b9ff3398"))
     (comp
       (ref "R2")
       (value "220R")
@@ -583,9 +607,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "zG1LkbVUBW")
+          (name "SKiDL Tag") "hEerpctCSM")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:58"))
+          (name "SKiDL Line") "receiver_netlists.py:63"))
       (libsource
         (lib "NO_LIB")
         (part "R"))
@@ -593,7 +617,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "1d3741a2-1038-555b-b5f2-b96131304069"))
+      (tstamps "3f21418a-9a30-53e7-acb6-4ae6e91ade12"))
     (comp
       (ref "R3")
       (value "10R")
@@ -607,9 +631,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "UvURcIiIna")
+          (name "SKiDL Tag") "Po7jstwFLm")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:68"))
+          (name "SKiDL Line") "receiver_netlists.py:73"))
       (libsource
         (lib "NO_LIB")
         (part "R"))
@@ -617,7 +641,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "654b9f5d-58ac-5c32-9a5d-e84524c582b4"))
+      (tstamps "e8caef7d-92e9-5aa6-8284-c57506ed0e3b"))
     (comp
       (ref "R4")
       (value "10R")
@@ -631,9 +655,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "nj9Yui4Sqp")
+          (name "SKiDL Tag") "roqoSQNfnL")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:68"))
+          (name "SKiDL Line") "receiver_netlists.py:73"))
       (libsource
         (lib "NO_LIB")
         (part "R"))
@@ -641,7 +665,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "a9a52214-6527-579c-a0a1-734bfc9a11c6"))
+      (tstamps "6dc50773-2d4a-5b49-b9a6-3b5961b4a96f"))
     (comp
       (ref "R5")
       (value "10R")
@@ -655,9 +679,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "9NzTjiYqAp")
+          (name "SKiDL Tag") "tDTkq8JnPJ")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:68"))
+          (name "SKiDL Line") "receiver_netlists.py:73"))
       (libsource
         (lib "NO_LIB")
         (part "R"))
@@ -665,7 +689,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "6f3a9002-99f9-53db-9c84-82be2a4196ad"))
+      (tstamps "0952d988-68c8-538a-8e70-defd43562e12"))
     (comp
       (ref "U1")
       (value "TSOP4856")
@@ -679,9 +703,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "HHfkVff7Jd")
+          (name "SKiDL Tag") "x8lcgHCtVs")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:52"))
+          (name "SKiDL Line") "receiver_netlists.py:57"))
       (libsource
         (lib "NO_LIB")
         (part "TSOP4856"))
@@ -689,7 +713,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "45572206-5883-5d85-ac81-4dae0a9e279f"))
+      (tstamps "20dde89b-e7ba-5ce6-83d9-2de6fc5c1cd9"))
     (comp
       (ref "U2")
       (value "TSOP4856")
@@ -703,9 +727,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "aS3WPILDzx")
+          (name "SKiDL Tag") "HlOfe_RbxU")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:52"))
+          (name "SKiDL Line") "receiver_netlists.py:57"))
       (libsource
         (lib "NO_LIB")
         (part "TSOP4856"))
@@ -713,7 +737,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "6deedf6f-eb5b-565f-844a-99012afb24b7"))
+      (tstamps "a14b8161-7d2e-52ea-b06d-012581bd9cd5"))
     (comp
       (ref "U3")
       (value "TSOP4856")
@@ -727,9 +751,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "EkKYVrTUnq")
+          (name "SKiDL Tag") "AodyNArBQK")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:52"))
+          (name "SKiDL Line") "receiver_netlists.py:57"))
       (libsource
         (lib "NO_LIB")
         (part "TSOP4856"))
@@ -737,7 +761,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "93d65010-4886-5a7e-ac48-a99931b99a50"))
+      (tstamps "e1165975-faf4-5b30-8d4e-7282558f7674"))
     (comp
       (ref "U4")
       (value "TSOP4856")
@@ -751,9 +775,9 @@
         (field
           (name "Datasheet"))
         (field
-          (name "SKiDL Tag") "7wpKAU6sxC")
+          (name "SKiDL Tag") "pb7CxYnjzi")
         (field
-          (name "SKiDL Line") "receiver_netlists.py:52"))
+          (name "SKiDL Line") "receiver_netlists.py:57"))
       (libsource
         (lib "NO_LIB")
         (part "TSOP4856"))
@@ -761,7 +785,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "a0950121-df52-51fc-a04e-ce51464ad1a7")))
+      (tstamps "99d03cd2-0759-5ed8-b101-348839716c98")))
   (nets
     (net
       (code 1)
@@ -786,6 +810,10 @@
       (node
         (ref "J1")
         (pin "5")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "M1")
+        (pin "1")
         (pintype "UNSPECIFIED"))
       (node
         (ref "R1")
@@ -1086,4 +1114,16 @@
       (node
         (ref "R5")
         (pin "1")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 18)
+      (name "VIB")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "6")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "M1")
+        (pin "2")
         (pintype "UNSPECIFIED")))))
