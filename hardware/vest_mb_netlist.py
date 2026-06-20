@@ -44,7 +44,9 @@ P4A = mk("P4_EDGE_A", "J", [(1, "GPIO52"), (2, "GPIO51"), (3, "GND"), (4, "GPIO3
          (18, "GNDd"), (19, "GPIO24"), (20, "GPIO25")], "Connector_PinSocket_2.54mm:PinSocket_1x20_P2.54mm_Vertical", "P4-WIFI6 edge A")
 ZONE = mk("Zone_1x06", "J", [(1, "VBAT"), (2, "GND"), (3, "DATA"), (4, "LED_EN"), (5, "P3V3"), (6, "VIB")],
           "Connector_JST:JST_PH_S6B-PH-K_1x06_P2.00mm_Horizontal", "Zon: VBAT·GND·DATA·LED_EN·3V3·VIB")
-BATT = mk("BATT_2S", "J", [(1, "VBAT"), (2, "GND")], "Connector_AMASS:AMASS_XT30PW-M_1x02_P2.50mm_Horizontal", "2S batteri XT30 (≥15A)")
+# OBS POLARITET: AMASS XT30PW-M-footprinten har pin 1 = "−" (rect-pad, silk −) och pin 2 = "+" (silk +).
+# Därför pin1=GND, pin2=VBAT — annars kopplas batteriets plus till minus-terminalen (omvänd polaritet).
+BATT = mk("BATT_2S", "J", [(1, "GND"), (2, "VBAT")], "Connector_AMASS:AMASS_XT30PW-M_1x02_P2.50mm_Horizontal", "2S batteri XT30 (≥15A)")
 RES_T = mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric")
 CAP_T = mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0805_2012Metric")
 RES = lambda v: RES_T(value=v)
