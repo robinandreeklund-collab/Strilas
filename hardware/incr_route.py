@@ -177,6 +177,92 @@ class Router:
                 return True
         return False
 
+    def maze_route(self, ref1, pad1, ref2, pad2, step=0.6, clr=MM(0.25)):
+        """rutnatsbaserad maze-router (BFS, 2 lager F/B + via) for SVÅRA langa nat dar
+        direkt/L/Z misslyckas. Undviker annan-net-koppar (track/pad/via; zoner ignoreras,
+        de fylls om runt det nya spåret). Lagger spår + vior langs hittad vag."""
+        import heapq
+        pdA = self._pad(ref1, pad1); pdB = self._pad(ref2, pad2)
+        net = pdA.GetNet(); nm = net.GetNetname()
+        pa = xy(pdA.GetPosition()); pb = xy(pdB.GetPosition())
+        obs = self._obstacles(nm)
+        # board-grans ur Edge.Cuts
+        xs = [pa[0], pb[0]]; ys = [pa[1], pb[1]]
+        for d in self.b.GetDrawings():
+            if d.GetLayer() == pcbnew.Edge_Cuts:
+                bb = d.GetBoundingBox()
+                xs += [bb.GetX()/1e6-OX, bb.GetRight()/1e6-OX]; ys += [OY-bb.GetBottom()/1e6, OY-bb.GetTop()/1e6]
+        x0, x1 = min(xs)-2, max(xs)+2; y0, y1 = min(ys)-2, max(ys)+2
+        nx = int((x1-x0)/step)+1; ny = int((y1-y0)/step)+1
+        def cell(p): return (int(round((p[0]-x0)/step)), int(round((p[1]-y0)/step)))
+        def pt(gx, gy): return (x0+gx*step, y0+gy*step)
+        # blockerad[lager][gy*nx+gx]
+        F_, B_ = 0, 1
+        blk = {F_: bytearray(nx*ny), B_: bytearray(nx*ny)}
+        bvia = bytearray(nx*ny)     # cell dar en VIA klipper annan-net-koppar (inner-lager In1/In2)
+        lay = {F_: F, B_: B}
+        inner = {pcbnew.In1_Cu, pcbnew.In2_Cu}
+        margin = int(clr) + int(MM(0.35))   # extra marginal -> spåret hålls undan obstaklen
+        for lays, shp in obs:
+            bb = shp.BBox(); bx0 = bb.GetX()/1e6-OX; bx1 = bb.GetRight()/1e6-OX
+            by0 = OY-bb.GetBottom()/1e6; by1 = OY-bb.GetTop()/1e6
+            Ls = [L for L in (F_, B_) if lay[L] in lays]
+            via_blk = bool(lays & inner)        # inner-koppar -> en via dit klipper
+            if not Ls and not via_blk: continue
+            gx0, gy0 = cell((bx0, by0)); gx1, gy1 = cell((bx1, by1))
+            for ax in range(max(0,min(gx0,gx1)-2), min(nx,max(gx0,gx1)+3)):
+                for ay in range(max(0,min(gy0,gy1)-2), min(ny,max(gy0,gy1)+3)):
+                    cx, cy = pt(ax, ay)
+                    seg = pcbnew.SHAPE_SEGMENT(V(cx, cy), V(cx, cy), TW)
+                    if shp.Collide(seg, margin):
+                        for L in Ls: blk[L][ay*nx+ax] = 1
+                        if via_blk: bvia[ay*nx+ax] = 1
+        sa = cell(pa); sb = cell(pb)
+        for L in (F_, B_):  # frigor start/mal-cellerna (egna paddar)
+            blk[L][sa[1]*nx+sa[0]] = 0; blk[L][sb[1]*nx+sb[0]] = 0
+        bvia[sa[1]*nx+sa[0]] = 0; bvia[sb[1]*nx+sb[0]] = 0
+        # BFS (A*) over (gx,gy,layer)
+        start = (sa[0], sa[1], F_ if pdA.IsOnLayer(F) else B_)
+        goalL = F_ if pdB.IsOnLayer(F) else B_
+        goal = (sb[0], sb[1], goalL)
+        def h(n): return (abs(n[0]-sb[0])+abs(n[1]-sb[1]))*step
+        pq = [(0, start)]; came = {start: None}; cost = {start: 0}
+        found = None
+        while pq:
+            _, cur = heapq.heappop(pq)
+            if (cur[0], cur[1]) == (sb[0], sb[1]):
+                found = cur; break
+            cx, cy, cl = cur
+            nbrs = [(cx+1,cy,cl),(cx-1,cy,cl),(cx,cy+1,cl),(cx,cy-1,cl),(cx,cy,1-cl)]
+            for nb in nbrs:
+                gx, gy, gl = nb
+                if not (0<=gx<nx and 0<=gy<ny): continue
+                if blk[gl][gy*nx+gx] and (gx,gy)!=(sb[0],sb[1]): continue
+                if gl != cl and bvia[gy*nx+gx]: continue   # lager-byte (via) far ej klippa inner-koppar
+                c2 = cost[cur] + (step if gl==cl else step*3)  # via-straff
+                if nb not in cost or c2 < cost[nb]:
+                    cost[nb] = c2; came[nb] = cur; heapq.heappush(pq, (c2+h(nb), nb))
+        if not found:
+            return False
+        # rekonstruera + lagg spår/via
+        path = []
+        n = found
+        while n is not None: path.append(n); n = came[n]
+        path.reverse()
+        prev = None
+        for nde in path:
+            p = pt(nde[0], nde[1])
+            if prev is not None:
+                if prev[2] != nde[2]:
+                    self._add_via(p, net)
+                else:
+                    self._add_track(pt(prev[0], prev[1]), p, lay[nde[2]], net)
+            prev = nde
+        # anslut paddarnas exakta lagen
+        self._add_track(pa, pt(*sa), lay[start[2]], net)
+        self._add_track(pb, pt(*sb), lay[goalL], net)
+        return True
+
     def trace_point(self, ref, pad, pt):
         """dra spar fran pad till en GODTYCKLIG punkt (x,y) pa samma nat (t.ex. en gammal
         track-andpunkt). Anvands for att aterskapa en matnings-junction vid en ny FET-source."""

@@ -59,11 +59,13 @@ RES = lambda v, fp="Resistor_SMD:R_0805_2012Metric": RES_T(value=v, footprint=fp
 CAP = lambda v, fp="Capacitor_SMD:C_0805_2012Metric": CAP_T(value=v, footprint=fp)
 MH = mk("MH", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", "M2.5")
 TVS  = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
+PFET = mk("AO3401", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3401")  # omvändpol-FET (SOT-23)
+PTC  = mk("PTC", "F", [(1, "1"), (2, "2")], "Fuse:Fuse_1812_4532Metric", "PTC_3A")  # resättbar säkring 3A/16V
 TP   = mk("TestPoint", "TP", [(1, "1")], "TestPoint:TestPoint_Pad_D1.5mm", "TP")
 
 # ---------- nät ----------
 VBAT, GND, P3V3 = Net("VBAT"), Net("GND"), Net("+3V3")
-VBAT_SENSE = Net("VBAT_SENSE")
+VBAT_IN, VBAT_RAW, VBAT_SENSE = Net("VBAT_IN"), Net("VBAT_RAW"), Net("VBAT_SENSE")
 SW, BST, FB = Net("SW"), Net("BST"), Net("FB")
 LED_EN, I2C_SDA, I2C_SCL, IMU_INT = Net("LED_EN"), Net("I2C_SDA"), Net("I2C_SCL"), Net("IMU_INT")
 GNSS_TX, GNSS_RX = Net("GNSS_TX"), Net("GNSS_RX")
@@ -181,14 +183,17 @@ JA["GPIO3"] += IMU_INT; JA["GPIO2"] += LED_EN
 JA["GPIO52"] += DATA_OB; JA["GPIO51"] += DP[0]; JA["GPIO31"] += DP[1]; JA["GPIO30"] += DP[2]; JA["GPIO29"] += DP[3]  # 5 DATA
 JA["GPIO28"] += BCLK; JA["GPIO50"] += LRCK; JA["GPIO49"] += I2S_DOUT; JA["GPIO24"] += I2S_DIN; JA["GPIO25"] += AMP_SD  # I²S + amp_SD
 
-# ---------- batteri-in + ingangsskydd ----------
-# Batteri via KEYAD JST-XH (S2B-XH-A) -> omvand isattning fysiskt forhindrad (till skillnad fran
-# vapnets/vastens XT30) -> ingen omvandpol-FET behovs (skulle krava splits i den verifierade
-# VBAT-kraftvagen). TVS (surge-clamp) racker som ingangsskydd. PA/AV = seriebrytare i batterikabeln.
-Jb = BATT(); Jb.ref = "J10"; Jb["VBAT"] += VBAT; Jb["GND"] += GND
-Dtvs = TVS(); Dtvs["K"] += VBAT; Dtvs["A"] += GND               # surge-clamp pa VBAT
+# ---------- batteri-in + ingangsskydd (best practice: sakring -> omvandpol-FET -> TVS) ----------
+# Komplett kedja som ovriga batterikort: BATT+ -> PTC-sakring (F1) -> omvandpol-P-FET (Q2 AO3401,
+# gate->GND via R13, alltid pa) -> VBAT-rail med TVS (D11). PA/AV = seriebrytare i batterikabeln.
+# Explicita ref (F1/Q2/R13/D11/R11/R12/C22) -> matchar BEFINTLIGT routat kort (inkrementell splits).
+Jb = BATT(); Jb.ref = "J10"; Jb["VBAT"] += VBAT_IN; Jb["GND"] += GND
+F1 = PTC(); F1.ref = "F1"; F1[1] += VBAT_IN; F1[2] += VBAT_RAW   # resettbar sakring i serie pa plus
+Qrev = PFET(); Qrev.ref = "Q2"; Qrev["D"] += VBAT_RAW; Qrev["S"] += VBAT
+Rgrev = RES("100k"); Rgrev.ref = "R13"; Qrev["G"] += Rgrev[1]; Rgrev[2] += GND  # gate->GND => alltid pa
+Dtvs = TVS(); Dtvs.ref = "D11"; Dtvs["K"] += VBAT; Dtvs["A"] += GND   # surge-clamp pa VBAT
 # ---------- batteri-sense (8.4V -> 100k/47k -> 2.69V pa GPIO21/ADC1) ----------
-Rst = RES("100k"); Rsb = RES("47k"); Csns = CAP("100nF")
+Rst = RES("100k"); Rst.ref = "R11"; Rsb = RES("47k"); Rsb.ref = "R12"; Csns = CAP("100nF"); Csns.ref = "C22"
 Rst[1] += VBAT; Rst[2] += VBAT_SENSE; Rsb[1] += VBAT_SENSE; Rsb[2] += GND
 Csns[1] += VBAT_SENSE; Csns[2] += GND
 # (Inga separata testpunkter: hjalm-kortets manga JST-kontakter — patch (VBAT·GND·DATA·LED_EN·3V3),
