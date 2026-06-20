@@ -1894,6 +1894,11 @@
       (net 15 "I2C_SCL") (tstamp ca291607-a9dd-4d9b-97bd-1214ad19e9e1))
     (pad "29" smd rect (at 0 0) (size 2.5 2.5) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 11 "GND") (tstamp 397ec20e-74b3-49f2-923f-d26481d21d51))
+    (model "${KICAD7_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/QFN-28-1EP_4x4mm_P0.4mm_EP2.4x2.4mm.wrl"
+      (offset (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
   )
 
   (footprint "C_0402_1005Metric" (layer "F.Cu")
@@ -3277,7 +3282,7 @@
       (net 47 "SW") (tstamp ccde6ce8-5e68-43cb-808e-3c2b29565223))
     (pad "2" smd rect (at 1.85 0) (size 1.4 4.2) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 1 "+3V3") (tstamp c4671fd7-6564-40e2-8e0d-4183664cc8a6))
-    (model "${KICAD7_3DMODEL_DIR}/Inductor_SMD.3dshapes/L_Changjiang_FNR5040S.wrl"
+    (model "${KIPRJMOD}/strilas-3d/L_Changjiang_FNR5040S.step"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
