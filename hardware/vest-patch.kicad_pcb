@@ -1740,6 +1740,11 @@
       (net 1 "+3V3") (tstamp 06d82148-ad95-4863-8a3e-88844fdb216a))
     (pad "2" smd roundrect (at 2.7 0) (size 2.4 3.2) (layers "B.Cu" "B.Paste" "B.Mask") (roundrect_rratio 0.25)
       (net 18 "VIB") (tstamp 16594588-9b9d-4965-8c6b-1024bc419b0c))
+    (model "${KIPRJMOD}/erm-coin-3d.step"
+      (offset (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
   )
 
   (gr_circle (center 150 120) (end 172.5 120)
