@@ -88,3 +88,34 @@ Optik + helmet routades **inkrementellt** (`hardware/incr_route.py`): BEVARAR al
 verifierad koppar och drar bara de nya anslutningarna deterministiskt (via→plan, cluster-medvetna
 spår) — ingen freeroute-omroutning som nollställer layouten. vest-mb omplacerades + freeroutades
 rent (seed 1). Fiducials läggs efter routning (`hardware/add_fiducials.py`, kopparplan omfylls).
+
+---
+
+## TILLÄGG (v6): KOMPLETT ingångsskydd på ALLA batterikort (full paritet, best practice)
+
+Efter krav på "bygg för perfektion" har alla tre batterikort nu **identisk** ingångsskyddskedja:
+
+| Kort | PTC-säkring | Omvändpol-FET (gate→GND) | TVS | Batteri-sense | DRC |
+|---|---|---|---|---|---|
+| weapon-module (optik) | F1 (MF-MSMF300/16, 3A) | Q1 (AO3401) | D1 (SMBJ12A) | →GPIO21 | 0/0 (308 spår) |
+| vest-mb | F1 (MF-MSMF300/16, 3A) | Q1 (AOD4185A, DPAK) | D1 (SMBJ12A) | →GPIO20 | 0/0 (595 spår) |
+| helmet-mb | F1 (MF-MSMF300/16, 3A) | Q2 (AO3401) | D11 (SMBJ12A) | →GPIO21 | 0/0 (1264 spår) |
+
+**Kedja (alla):** `BATT+ → PTC-säkring (överström/kortslutning) → omvändpol-P-FET (gate→GND,
+alltid på; vänt batteri → Vgs=0 → AV + kroppsdiod spärrar) → VBAT-rail med TVS-clamp + bulk`.
+PÅ/AV = seriebrytare i batterikabeln (full ström, inget litet kontaktdon på kortet).
+
+### Spänningsreglering 2S (7,4–8,4 V) → 3,3 V
+- **P4-modulens onboard-buck MP1658** (3A, **16 V**-tålig; bekräftat mot Waveshares schema) tar
+  VSYS=VBAT → P4:ans 3,3 V. Alla P4-kort matar P4 via VSYS=VBAT (8,4 V « 16 V → säker marginal).
+- **Carrier-buck AP63203** (vest-mb + helmet-mb): VBAT → 3,3 V @2A för kort-laster (FB 31,6k/10k →
+  3,328 V). Optik + firecontrol tar 3,3 V från P4:ans 3V3-utgång (ingen egen buck).
+- Batteri-sense: 100k/47k + 100nF → ledig ADC1-GPIO (8,4 V→2,69 V, < 3,3 V-ref ✓).
+
+### Routnings-metod (inga genvägar, bevarad verifierad layout)
+Skydden lades till **inkrementellt** (`hardware/incr_route.py`) som BEVARAR all befintlig
+verifierad koppar (inkl. ES8388-codecens känsliga QFN-28-fanout på hjälmen) och drar bara de nya
+anslutningarna deterministiskt. För hjälmens långa kraftbanor genom trängseln byggdes en
+**rutnäts-maze-router** (BFS, 2 lager + via-säkra lager-byten) + `connect_islands` (garanterar att
+VBAT förblir ETT sammanhängande nät efter in-splitsningen). Ingen freeroute-omroutning som
+nollställer verifierade kort. Alla kort omverifierade: DRC 0/0, PCB↔.net 0, polariteter OK.
