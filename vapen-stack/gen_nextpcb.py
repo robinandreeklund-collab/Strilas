@@ -41,9 +41,9 @@ MPN = {
     "IIM-42653": ("IIM-42653", "TDK InvenSense", "6-axlig industri-IMU LGA-14, ±4000dps, -40..+105C", "", ""),
     "ICM-42688-P": ("ICM-42688-P", "TDK InvenSense", "6-axlig hög-precisions-IMU LGA-14 2.5×3mm — ultralågt gyro-brus ~2.8 mdps/√Hz, ±2000dps/±16g; pin-kompatibel drop-in mot IIM-42653", "", "Vald för prototyp (i lager hos NextPCB, lägst brus → bäst INS-fusion)"),
     # --- kontakter (genomplåt → selektiv/handlödning) ---
-    "P4-socket (edge B)":      ("2.54-1x14-FH", "generisk", "Stiftsockel 1x14 2.54mm THT (hona)", "", "TH; valfri likvärdig IN-STOCK 2.54 hona OK"),
-    "P4-socket (edge A)":      ("2.54-1x12-FH", "generisk", "Stiftsockel 1x12 2.54mm THT (hona)", "", "TH; valfri likvärdig IN-STOCK 2.54 hona OK"),
-    "edge-B kraft-tapp 3V3+GND":("2.54-1x03-FH", "generisk", "Stiftsockel 1x03 2.54mm THT (hona)", "", "TH; valfri likvärdig IN-STOCK 2.54 hona OK"),
+    "P4-socket (edge B)":      ("DS1023-1X14SF11", "Ckmtw", "Stiftsockel 1x14 2.54mm THT (hona) — P4 edge B", "", "socket-sampler: 4-6 d"),
+    "P4-socket (edge A)":      ("DS1023-1X15SF11", "Ckmtw", "Stiftsockel 1x15 2.54mm THT (hona) — P4 edge A", "", "1x15 manuell offert (mindre vanlig längd); Sullins PPTC151LFBN-RC = backup"),
+    "edge-B kraft-tapp 3V3+GND":("DS1023-1X3SF11", "Ckmtw", "Stiftsockel 1x03 2.54mm THT (hona) — kraft-tapp", "", "socket-sampler: 4-7 d"),
     "2S batteri (JST-XH)":     ("S2B-XH-A(LF)(SN)", "JST", "JST-XH 2-pol header 2.5mm THT", "", "TH"),
     "TRIGGER":     ("B2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol header 2.0mm THT", "", "TH"),
     "RACK_SW":     ("B2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol header 2.0mm THT", "", "TH"),
@@ -69,7 +69,7 @@ MPN = {
     "4.7uH":       ("SWPA5040S4R7MT", "Sunlord", "Effektinduktor 4.7uH 5x5mm (buck) — IN STOCK (byt fr Changjiang FNR5040320R47M som krävde manuell offert; samma FNR5040-footprint)", "", "Isat≈2.8A > 2A buck-topp ✓ (verifierad mot AP63203)"),
     "31.6k":       ("RC0805FR-0731K6L", "Yageo", "Res 31.6k 1% 0805 — buck FB (övre, 3.33V)", "", ""),
     "22uF":        ("CL31A226KAHNNNE", "Samsung", "MLCC 22uF 25V X5R 1206 — buck-utgång", "", ""),
-    "XIAO-S3 1x7 sockel": ("2.54-1x07-FH", "generisk", "Sockel 1x07 2.54mm (XIAO ESP32-S3 stack, 2 st)", "", "TH; XIAO ESP32-S3 köps separat"),
+    "XIAO-S3 1x7 sockel": ("DS1023-1X7SF11", "Ckmtw", "Sockel 1x07 2.54mm hona (XIAO ESP32-S3 stack, 2 st)", "", "socket-sampler: 4-6 d; XIAO köps separat"),
     "ZED-F9P RTK (UART+I²C)": ("SM08B-GHS-TB(LF)(SN)", "JST", "JST GH 8-pol SMD-sockel → kabel till ZED-F9P RTK-puck", "", "ZED-F9P-puck köps separat (komplett: F9P+antenn+IST8310-kompass, centrum-monterad); VERIFIERA kabel-pinout"),
     "AMP: 3V3·GND·SD·GAIN·DIN·BCLK·LRC": ("2.54-1x07-FH", "generisk", "Header 1x07 → MAX98357A-amp-breakout", "", "TH; amp+högtalare köps separat"),
     "MIC: 3V3·GND·SD·WS·SCK·LR": ("2.54-1x06-FH", "generisk", "Header 1x06 → I²S MEMS-mik-breakout", "", "TH; mik köps separat"),
@@ -84,8 +84,8 @@ MPN = {
     "10k":         ("RC0805FR-0710KL", "Yageo", "Res 10k 1% 0805", "", ""),
     "VBAT·GND·DATA·LED_EN·3V3":("S5B-PH-K-S(LF)(SN)", "JST", "JST-PH 5-pol header 2.0mm THT SIDOMONTERAD (S-typ, horisontell, låg bygghöjd) på patchens BAKSIDA → kabel ut i kant", "", "TH; kund-lödd. Side-entry (bygger ej på höjden under domen)"),
     # --- P4-WIFI6 kant-socklar (moderkort: ESP32-P4-WIFI6 stackas i 2× 1x20 hona) ---
-    "P4-WIFI6 edge B": ("2.54-1x20-FH", "generisk", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge B (kraft)", "", "TH; kund-lödd. ESP32-P4-WIFI6 köps separat (Waveshare)"),
-    "P4-WIFI6 edge A": ("2.54-1x20-FH", "generisk", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge A (signaler)", "", "TH; kund-lödd. ESP32-P4-WIFI6 köps separat (Waveshare)"),
+    "P4-WIFI6 edge B": ("DS1023-1X20SF11", "Ckmtw", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge B (kraft)", "", "socket-sampler: 4-7 d. ESP32-P4-WIFI6 köps separat (Waveshare)"),
+    "P4-WIFI6 edge A": ("DS1023-1X20SF11", "Ckmtw", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge A (signaler)", "", "socket-sampler: 4-7 d. ESP32-P4-WIFI6 köps separat (Waveshare)"),
     "SFH4725S_940nm": ("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD (980mW@1A)", "", "UTGÅENDE/EOL men lagerförs ännu (last-time-buy); NextPCB sourcar + SMT-placerar (precision UNDER LINSEN). Verifiera lager/ersättare SFH4725AS bin13 inför produktion"),
     "SFH4725AS_940nm_bin13": ("SFH 4725AS", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD, bin 13 (aktiv drop-in för utgångna 4725S; samma paket C63062-A4141/footprint/optik)", "", "NextPCB sourcar + SMT-placerar (precision UNDER LINSEN)"),
 }
@@ -119,7 +119,7 @@ def is_conn(pkg):   # THT-stiftlistar/socklar/JST-PH/XH = kund handlöder (DNP, 
 # XT30 till rimligt pris → maskin-monteras (ej handlödd). PinSocket/PinHeader (2.54 P4-socklar/
 # breakout) + JST-GH undantas: 2.54 stannar handlödd (generisk MPN ej i NextPCB-lib ännu), GH är
 # redan SMD-placerad (ej DNP). conn_refs() läser dessa refs ur .net per kort.
-MOUNT_NEEDLES = ("JST_PH", "JST_XH", "JST_EH", "AMASS")
+MOUNT_NEEDLES = ("JST_PH", "JST_XH", "JST_EH", "AMASS", "PinSocket")   # +2.54 hona-socklar (Ckmtw DS1023 in-stock, socket-sampler)
 
 def conn_refs(board_net, *needles):
     t = open(board_net).read(); seg = t[t.find("(components"):t.find("(libparts")]
@@ -224,7 +224,7 @@ if __name__ == "__main__":
     print("OPTIK (IMU ICM-42688-P bestyckad):"); build("weapon-module.kicad_pcb", "weapon-module.net", "nextpcb/optik-bom.xls",
           ovr_refs={"R3"}, extra=OPTIK_EXTRA, mount_refs=OPTIK_MOUNT)
     centroid("weapon-module.kicad_pcb", "nextpcb/optik-centroid.csv", exclude={"R3"}, mount_refs=OPTIK_MOUNT)
-    # FIRE-CONTROL: avkoppling bestyckad. JST-PH J3-J10 maskin-monteras; J1/J2 (PinSocket) handlödda.
+    # FIRE-CONTROL: avkoppling bestyckad. JST-PH J3-J10 + 2.54-socklar J1(1x15)/J2(1x03) maskin-monteras (Ckmtw).
     FC_MOUNT = conn_refs("firecontrol.net", *MOUNT_NEEDLES)
     print("FIRE-CONTROL (2× IMU U1/U2 = ICM-42688-P bestyckade):")
     build("firecontrol.kicad_pcb", "firecontrol.net", "nextpcb/firecontrol-bom.xls", mount_refs=FC_MOUNT)
@@ -235,12 +235,14 @@ if __name__ == "__main__":
     print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls",
           cust_refs=PATCH_CUST | {"J1"}, mount_refs=PATCH_MOUNT)
     centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude=PATCH_CUST, mount_refs=PATCH_MOUNT)
-    # Prototyp-optik: IMU bestyckad, J1 (1x14 P4-carrier) kund-lödd (TH); J2 (XH) maskin-monteras
+    # Prototyp-optik: J1 (1x14 P4-carrier) kund-lödd (TH) i denna variant → uteslut J1 ur mount
+    # (annars säger BOM 'monteras' men centroid utesluter J1 → motsägelse). Övrigt = som optik.
+    PROTO_MOUNT = OPTIK_MOUNT - {"J1"}
     print("OPTIK-PROTOTYP (IMU bestyckad, J1 kund-lödd):"); build("weapon-module.kicad_pcb", "weapon-module.net",
-          "nextpcb/optik-PROTOTYP-bom.xls", cust_refs={"J1"}, ovr_refs={"R3"}, extra=OPTIK_EXTRA, mount_refs=OPTIK_MOUNT)
-    centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"J1","R3"}, mount_refs=OPTIK_MOUNT)
-    # HJÄLM-MODERKORT (ESP32-P4-WIFI6, Ø100): JST-PH/XH (headset/patch/batteri J2-J7,J10,J11) maskin-
-    # monteras; J8/J9 (1x20 P4-socklar) handlödda; J1/J12 = RTK-puck GH redan SMD. ES8388/PAM8302A SMD.
+          "nextpcb/optik-PROTOTYP-bom.xls", cust_refs={"J1"}, ovr_refs={"R3"}, extra=OPTIK_EXTRA, mount_refs=PROTO_MOUNT)
+    centroid("weapon-module.kicad_pcb", "nextpcb/optik-PROTOTYP-centroid.csv", exclude={"J1","R3"}, mount_refs=PROTO_MOUNT)
+    # HJÄLM-MODERKORT (ESP32-P4-WIFI6, Ø100): JST-PH/XH (headset/patch/batteri J2-J7,J10,J11) +
+    # J8/J9 (1x20 P4-socklar, Ckmtw) maskin-monteras; J1/J12 = RTK-puck GH redan SMD. ES8388/PAM8302A SMD.
     # cust = ledade optik-delar (4 TSOP U3-U6 + 6 LED-tab D5-D10) som kund handlöder.
     HMB_MOUNT = conn_refs("helmet-mb.net", *MOUNT_NEEDLES)
     HMB_CUST = {"U3","U4","U5","U6","D5","D6","D7","D8","D9","D10"}

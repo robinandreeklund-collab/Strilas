@@ -36,11 +36,33 @@ montera även P4-socklarna (då slipper vi handlöda dem).
 | J10 | 1x20 | PPTC201LFBN-RC | Sullins | kontroll |
 | J11 | 1x20 | SSW-120-01-T-S | Samtec | premium-referens |
 
-## Efter lager-koll
-1. Hitta märket som är **In Stock** (troligast Ckmtw / kinesisk basic-lib) i 1x20 (+ helst alla pinn).
-2. Lägg in dess MPN per pinantal i `gen_nextpcb.py` MPN-dicten (ersätt placeholder `2.54-1xNN-FH`
-   för `P4-socket …` / `P4-WIFI6 edge …` / kraft-tapp-nycklarna).
-3. Lägg P4-sock-refsen i `mount_refs`-logiken (t.ex. utöka `MOUNT_NEEDLES`/`conn_refs` till att
-   även ta `PinSocket`, eller addera refsen explicit), regenerera alla BOM/centroid → P4-socklarna
-   maskin-monteras också. **Ingen omroutning** (footprint oförändrad).
-- Finns inget auto-matchat i lager → NextPCB manual-offererar (1 dag); välj billigaste In-Stock-hona.
+## LAGER-KOLL RESULTAT (NextPCB, 10/11) + valt MPN
+
+| Pinn | **Ckmtw DS1023** | Sullins | Samtec |
+|---|---|---|---|
+| 1x3 | ✅ 4–7 d, $0.042 | 7–18 d, $0.46 | — |
+| 1x7 | ✅ 4–6 d, $0.072 | 7–18 d, $0.71 | — |
+| 1x14 | ✅ 4–6 d, $0.136 | 7–18 d, $1.17 | — |
+| 1x15 | ⚠️ Pending | 7–18 d, $1.24 | — |
+| 1x20 | ✅ 4–7 d, $0.205 | 7–18 d, $1.55 | 7–18 d, $3.23 |
+
+**Valt: Ckmtw DS1023-serien** — matchad, 4–7 d lead (i linje med övriga BOM), **5–10× billigare**
+än Sullins. Sullins (kontroll) matchade nu men dyr/långsam → det var *märket* som saknades i auto-lib,
+inte footprinten. Enda luckan: **1x15 = Pending** (mindre vanlig längd; bara firecontrol J1) →
+manuell offert (1 dag), Sullins PPTC151LFBN-RC som backup.
+
+## GENOMFÖRT
+`gen_nextpcb.py` uppdaterad: placeholder-MPN → Ckmtw DS1023 per storlek (1x3/1x7/1x14/1x15/1x20),
+och **`PinSocket` tillagt i `MOUNT_NEEDLES`** → 2.54-hona-socklarna maskin-monteras nu också:
+
+| Kort | Hona-sockel | MPN |
+|---|---|---|
+| optik | J1 1x14 (P4 edge B) | DS1023-1X14SF11 |
+| firecontrol | J1 1x15 (P4 edge A) + J2 1x3 (kraft-tapp) | DS1023-1X15SF11 / -1X3SF11 |
+| helmet-mb | J8/J9 1x20 (P4-WIFI6) | DS1023-1X20SF11 |
+| vest-mb | J11/J12 1x20 (P4-WIFI6) | DS1023-1X20SF11 |
+
+Alla BOM/centroid regenererade + kopierade till `leverans/` (socklar nu i centroid, Procurement
+Type tom = monteras). **Ingen omroutning** (footprint oförändrad). Undantag: optik-PROTOTYP-varianten
+behåller J1 handlödd (J1 utesluten ur mount där → BOM=DNP + ej i centroid, konsekvent). Hane-
+breakout-headers (1x6/1x7 amp/mik) ej sämplade → fortsatt handlödda.
