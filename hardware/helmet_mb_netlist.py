@@ -58,9 +58,12 @@ CAP_T = mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0805_2012Metric")
 RES = lambda v, fp="Resistor_SMD:R_0805_2012Metric": RES_T(value=v, footprint=fp)
 CAP = lambda v, fp="Capacitor_SMD:C_0805_2012Metric": CAP_T(value=v, footprint=fp)
 MH = mk("MH", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", "M2.5")
+TVS  = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
+TP   = mk("TestPoint", "TP", [(1, "1")], "TestPoint:TestPoint_Pad_D1.5mm", "TP")
 
 # ---------- nät ----------
 VBAT, GND, P3V3 = Net("VBAT"), Net("GND"), Net("+3V3")
+VBAT_SENSE = Net("VBAT_SENSE")
 SW, BST, FB = Net("SW"), Net("BST"), Net("FB")
 LED_EN, I2C_SDA, I2C_SCL, IMU_INT = Net("LED_EN"), Net("I2C_SDA"), Net("I2C_SCL"), Net("IMU_INT")
 GNSS_TX, GNSS_RX = Net("GNSS_TX"), Net("GNSS_RX")
@@ -168,6 +171,7 @@ Rscl = RES("4k7"); Rscl[1] += P3V3; Rscl[2] += I2C_SCL
 JB = P4B(); JB.ref = "J8"
 JB["VSYS"] += VBAT; JB["GND"] += GND; JB["GNDb"] += GND; JB["GNDc"] += GND; JB["GNDd"] += GND
 JB["GPIO23"] += MCLK; JB["GPIO20"] += PTT              # edge B: I²S MCLK till codec + PTT-knapp
+JB["GPIO21"] += VBAT_SENSE                              # batterimätning (ADC1, ledig edge-B-pin)
 # Edge A = alla signaler (16 GPIO). I²C på dedikerade GPIO8(SCL)/GPIO7(SDA).
 JA = P4A(); JA.ref = "J9"
 JA["GND"] += GND; JA["GNDb"] += GND; JA["GNDc"] += GND; JA["GNDd"] += GND
@@ -177,8 +181,19 @@ JA["GPIO3"] += IMU_INT; JA["GPIO2"] += LED_EN
 JA["GPIO52"] += DATA_OB; JA["GPIO51"] += DP[0]; JA["GPIO31"] += DP[1]; JA["GPIO30"] += DP[2]; JA["GPIO29"] += DP[3]  # 5 DATA
 JA["GPIO28"] += BCLK; JA["GPIO50"] += LRCK; JA["GPIO49"] += I2S_DOUT; JA["GPIO24"] += I2S_DIN; JA["GPIO25"] += AMP_SD  # I²S + amp_SD
 
-# ---------- batteri + monteringshål ----------
+# ---------- batteri-in + ingangsskydd ----------
+# Batteri via KEYAD JST-XH (S2B-XH-A) -> omvand isattning fysiskt forhindrad (till skillnad fran
+# vapnets/vastens XT30) -> ingen omvandpol-FET behovs (skulle krava splits i den verifierade
+# VBAT-kraftvagen). TVS (surge-clamp) racker som ingangsskydd. PA/AV = seriebrytare i batterikabeln.
 Jb = BATT(); Jb.ref = "J10"; Jb["VBAT"] += VBAT; Jb["GND"] += GND
+Dtvs = TVS(); Dtvs["K"] += VBAT; Dtvs["A"] += GND               # surge-clamp pa VBAT
+# ---------- batteri-sense (8.4V -> 100k/47k -> 2.69V pa GPIO21/ADC1) ----------
+Rst = RES("100k"); Rsb = RES("47k"); Csns = CAP("100nF")
+Rst[1] += VBAT; Rst[2] += VBAT_SENSE; Rsb[1] += VBAT_SENSE; Rsb[2] += GND
+Csns[1] += VBAT_SENSE; Csns[2] += GND
+# (Inga separata testpunkter: hjalm-kortets manga JST-kontakter — patch (VBAT·GND·DATA·LED_EN·3V3),
+#  F9P, ljud/PTT — exponerar redan nyckelnaten for provning, som pa FC/optik. TP utelamnas pa
+#  det bandtata kortet.)
 # H1-H4 = kort-monteringshål (ring); H5-H8 = ZED-F9P-puckens fäste (M2.5, 20.80×33.90 mm rektangel,
 # centrerat) → pucken skruvas direkt på PCB:n med standoffs (puck-bas Ø55, höjd 55, kontakt i syd).
 for _ in range(8):

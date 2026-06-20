@@ -104,18 +104,59 @@ class Router:
             return True
         return False
 
+    def _main_cluster(self, net):
+        """returnera koppar-ITEMS i NÄTETS STÖRSTA sammanhängande ö (Collide(0) union-find).
+        Undviker att dra spår till isolerade stubbar (=> oansluten ö)."""
+        cu = self.cu
+        it = []
+        for t in self.b.GetTracks():
+            if t.GetNetname() != net:
+                continue
+            lays = set(cu) if t.Type() == pcbnew.PCB_VIA_T else {t.GetLayer()}
+            it.append((lays, t.GetEffectiveShape(), t))
+        for f in self.b.GetFootprints():
+            for pd in f.Pads():
+                if pd.GetNetname() == net:
+                    it.append(({L for L in cu if pd.IsOnLayer(L)}, pd.GetEffectiveShape(), pd))
+        for z in self.b.Zones():
+            if z.GetNetname() == net:
+                for L in cu:
+                    if z.IsOnLayer(L):
+                        it.append(({L}, z.GetFilledPolysList(L), z))
+        n = len(it); par = list(range(n))
+        def find(x):
+            while par[x] != x: par[x] = par[par[x]]; x = par[x]
+            return x
+        for i in range(n):
+            for j in range(i + 1, n):
+                if (it[i][0] & it[j][0]) and it[i][1].Collide(it[j][1], 0):
+                    par[find(i)] = find(j)
+        groups = {}
+        for i in range(n):
+            groups.setdefault(find(i), []).append(i)
+        if not groups:
+            return set()
+        main = max(groups.values(), key=len)
+        return {id(it[i][2]) for i in main}
+
     def _net_points(self, net):
-        """befintliga koppar-punkter (pad-center + track-andar) pa net, med lager."""
+        """koppar-punkter (pad-center + track-andar) pa net STÖRSTA ö, med lager."""
+        main = self._main_cluster(net)
         pts = []
         for t in self.b.GetTracks():
-            if t.GetNetname() != net or t.Type() == pcbnew.PCB_VIA_T:
+            if t.GetNetname() != net or t.Type() == pcbnew.PCB_VIA_T or id(t) not in main:
                 continue
             pts.append((xy(t.GetStart()), t.GetLayer()))
             pts.append((xy(t.GetEnd()), t.GetLayer()))
         for f in self.b.GetFootprints():
             for pd in f.Pads():
-                if pd.GetNetname() == net:
+                if pd.GetNetname() == net and id(pd) in main:
                     pts.append((xy(pd.GetPosition()), F if pd.IsOnLayer(F) else B))
+        if not pts:   # fallback: alla punkter om ingen huvud-ö hittas
+            for f in self.b.GetFootprints():
+                for pd in f.Pads():
+                    if pd.GetNetname() == net:
+                        pts.append((xy(pd.GetPosition()), F if pd.IsOnLayer(F) else B))
         return pts
 
     def trace_between(self, ref1, pad1, ref2, pad2):
