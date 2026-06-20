@@ -158,7 +158,7 @@ for i, a in enumerate((45, 135, 225, 315)):
 # _comp m. off=(0,1.27): centrera pad-MITTPUNKTEN (mellan de 2 hålen) + 3D-modellen på ring-punkten
 # (footprint-origo=pad1 → annars hamnar de 2 hålen osymmetriskt utåt). → hål straddlar kardinalen symmetriskt.
 for i, a in enumerate((0, 90, 180, 270)):
-    rot = (a + 180) % 360
+    rot = a % 360                  # FIX: +X-emission RADIELLT UT (var a+180=inåt)
     cx, cy = _ring2(_PL, a)
     vest_pos[f"D{i+7}"] = (*_comp(cx, cy, rot, (0.0, 1.27)), rot)
 # 4 monteringshål MITT i TSOP→tab-luckorna (67.5/157.5/247.5/337.5) → symmetriskt, EJ snett mot tab/TSOP
@@ -315,7 +315,7 @@ vest_mb_pos.update({
     "U1": (-10, -16, 0), "L1": (-3, -16, 0),     # buck + induktor (nedre-centrum)
     "C1": (-17, -16, 0), "C2": (-17, -13, 0), "C3": (4, -16, 0), "C4": (11, -16, 0),  # Cin/.. + Cbulk
     "R1": (-7, -13, 90), "R2": (1, -13, 90),     # FB-delare
-    "J13": (42, -5, 90),                         # 2S-batteri XT30PW (höger kant, mellan TPIC o nedre zon-rad; ≥15A)
+    "J13": (35.4, -5, 270),                      # 2S-batteri XT30PW — öppning UT mot höger kant (orient270), origo inåt så kropp+stift ryms; ≥15A
     "H1": (-48, 28, 0), "H2": (48, 28, 0), "H3": (-48, -28, 0), "H4": (48, -28, 0),
 })
 
@@ -455,7 +455,7 @@ if abs(_HR - 54.0) > 0.05:
         for r in _blk:
             _p = helmet_mb_pos[r]; helmet_mb_pos[r] = (round(_p[0] + _dx, 2), round(_p[1] + _dy, 2), _p[2])
     for _i, _a in enumerate((30, 90, 150, 210, 270, 330)):       # 6 LED-tabbar (pad-mitt centrerad)
-        _rot = (_a + 180) % 360; _cx, _cy = _ring2(_HR - 1.8, _a)
+        _rot = _a % 360; _cx, _cy = _ring2(_HR - 1.8, _a)            # FIX: emission RADIELLT UT (var _a+180=inåt)
         helmet_mb_pos[f"D{_i+5}"] = (*_comp(_cx, _cy, _rot, (0.0, 1.27)), _rot)
     _rc = _HR - 5.8                                              # kontakt-pad-radie (kropp/öppning når kanten)
     # ALLA kant-kontakter i tab-LUCKORNA (mellan LED-tabbarna @28/88/148/208/268/328°), fria från
