@@ -64,6 +64,7 @@ LED = mk("SFH4725AS", "D", [(1, "A"), (2, "K")],
 #  AUX1 (2/3/10/11) = oanvänd sekundär-SPI → NC. ±4000 dps, ±0,5% SF, -40..+105°C, 20000g.)
 IMU = mk("ICM-42688-P", "U", [(i, i) for i in range(1, 15)],
          "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-42688-P")
+TP = mk("TestPoint", "TP", [(1, "1")], "TestPoint:TestPoint_Pad_D1.5mm", "TP")
 MH = lambda n: mk(f"MH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.5mm", "M2.5")
 # kamera-monteringshål (M2) — matchar Arducam B0332 28×28 mm-mönster
 CMH = lambda n: mk(f"CMH{n}", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2_kamera")
@@ -79,6 +80,7 @@ VBAT_IN, VBAT_F, VBAT, GND, P3V3 = Net("VBAT_IN"), Net("VBAT_F"), Net("VBAT"), N
 IR_MOD, SCK, MOSI, MISO, nCS, INT = (Net(n) for n in ("IR_MOD", "SCK", "MOSI", "MISO", "nCS", "IMU_INT"))
 STR1, LEDC, GATE = Net("LED_MID"), Net("LED_CATH"), Net("DRV_GATE")
 VREF, SENSE = Net("IDRV_REF"), Net("IDRV_SENSE")   # CC-sänka: gatad referens + ström-sense
+VBAT_SENSE = Net("VBAT_SENSE")                     # batterimätning (8.4V→100k/47k→2.69V på P4 ADC)
 
 # ---------- instansiera ----------
 J1 = P4IF(); J2 = BATT()
@@ -131,7 +133,8 @@ J2["VBAT"] += VBAT_IN; J2["GND"] += GND
 J1[14] += nCS; J1[13] += MOSI; J1[12] += GND; J1[11] += INT
 J1[9]  += SCK; J1[8]  += MISO; J1[7]  += GND
 J1[5]  += IR_MOD; J1[4] += P3V3; J1[2] += GND; J1[1] += VBAT
-# NC: J1[10]=RUN, J1[6]=GPIO21, J1[3]=EN (drivs ej från vårt kort).
+J1[6]  += VBAT_SENSE   # GPIO21 (ADC1): batterimätning (var NC) → lågbatterivarning i firmware
+# NC: J1[10]=RUN, J1[3]=EN (drivs ej från vårt kort).
 
 # ---------- kraftinmatning + skydd ----------
 F1[1] += VBAT_IN; F1[2] += VBAT_F                 # PTC-säkring
@@ -164,6 +167,13 @@ U2[7] += GND                                      # pin7 RESV → GND (IIM-42653
 U2[13] += SCK; U2[14] += MOSI; U2[1] += MISO; U2[12] += nCS; U2[4] += INT
 # pinnar 2,3,9,10,11 = RESV/INT2/FSYNC -> ej anslutna (NC), enligt datablad
 Cd1[1] += P3V3; Cd1[2] += GND; Cd2[1] += P3V3; Cd2[2] += GND; Cd3[1] += P3V3; Cd3[2] += GND
+
+# ---------- batteri-sense (8.4V → 100k/47k → 2.69V på J1[6]=GPIO21/ADC1) + testpunkter ----------
+Rst = RES("100k"); Rsb = RES("47k"); Csns = CAP("100nF")
+Rst[1] += VBAT; Rst[2] += VBAT_SENSE; Rsb[1] += VBAT_SENSE; Rsb[2] += GND
+Csns[1] += VBAT_SENSE; Csns[2] += GND
+for _net in (VBAT, P3V3, GND, IR_MOD):     # bring-up/QC-testpunkter på nyckelnät
+    TP()[1] += _net
 
 # ---------- mekanik (hål till GND) ----------
 for H in (H1, H2, H3, HC, HP1, HP2, HP3, HP4, H4, H5, H6, H7, *CL):

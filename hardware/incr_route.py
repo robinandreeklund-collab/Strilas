@@ -1,0 +1,192 @@
+#!/usr/bin/env python3
+"""STRILAS — DETERMINISTISK inkrementell routning: bevarar ALL befintlig koppar och drar BARA
+de nya anslutningarna (som finish_helmet_pullups.py, men generiskt). Ingen freerouting-roulette.
+
+API (importeras av per-kort-skript):
+  R = Router(board, plane_nets={"GND": [In1,F,B], "+3V3":[In2], ...})
+  R.to_plane(ref, pad)                  # via fran pad -> plan (zon-fyll kopplar)
+  R.trace(ref, pad, net)                # dra spar fran pad till narmaste befintliga koppar pa net
+  R.trace_between(ref1,pad1, ref2,pad2) # dra spar mellan tva specifika paddar (samma net)
+  R.finish()                            # fyll om zoner + returnera (clearance, unconnected)
+Klarar korta/medellanga anslutningar: provar direkt-segment pa F/B, sen L-form, sen via-hopp.
+Clearance kollas (0.2mm) mot all annan-net-koppar; valjer forsta rena vag."""
+import math, pcbnew
+
+OX, OY = 150.0, 120.0
+MM = pcbnew.FromMM
+F, B = pcbnew.F_Cu, pcbnew.B_Cu
+TW = MM(0.25)        # spar-bredd signal
+VIA_D, VIA_DR = MM(0.6), MM(0.3)
+
+
+def V(x, y): return pcbnew.VECTOR2I(MM(OX + x), MM(OY - y))
+def xy(p): return (p.x / 1e6 - OX, OY - p.y / 1e6)
+
+
+class Router:
+    def __init__(self, board, plane_nets):
+        self.b = board
+        self.plane = plane_nets               # netname -> [layers]
+        self.cu = [F, pcbnew.In1_Cu, pcbnew.In2_Cu, B]
+        self.fps = {f.GetReference(): f for f in board.GetFootprints()}
+
+    def _net(self, nm):
+        ni = self.b.FindNet(nm)
+        if ni is None:
+            ni = pcbnew.NETINFO_ITEM(self.b, nm); self.b.Add(ni)
+        return ni
+
+    def _pad(self, ref, pad):
+        for p in self.fps[ref].Pads():
+            if p.GetName() == pad:
+                return p
+        raise KeyError(f"{ref}.{pad}")
+
+    def _obstacles(self, net):
+        """alla koppar-shapes (track/pad/via) som INTE tillhor net -> (layerset, shape)."""
+        obs = []
+        for t in self.b.GetTracks():
+            if t.GetNetname() == net:
+                continue
+            lays = set(self.cu) if t.Type() == pcbnew.PCB_VIA_T else {t.GetLayer()}
+            obs.append((lays, t.GetEffectiveShape()))
+        for f in self.b.GetFootprints():
+            for pd in f.Pads():
+                if pd.GetNetname() == net:
+                    continue
+                lays = {L for L in self.cu if pd.IsOnLayer(L)}
+                obs.append((lays, pd.GetEffectiveShape()))
+        return obs
+
+    def _seg_clear(self, a, b, layer, obs, clr=MM(0.2)):
+        s = pcbnew.SHAPE_SEGMENT(V(*a), V(*b), TW)
+        for lays, shp in obs:
+            if layer in lays and s.Collide(shp, clr):
+                return False
+        return True
+
+    def _add_track(self, a, b, layer, net):
+        t = pcbnew.PCB_TRACK(self.b); t.SetStart(V(*a)); t.SetEnd(V(*b))
+        t.SetWidth(TW); t.SetLayer(layer); t.SetNet(net); self.b.Add(t)
+
+    def _add_via(self, p, net):
+        v = pcbnew.PCB_VIA(self.b); v.SetPosition(V(*p))
+        v.SetDrill(VIA_DR); v.SetWidth(VIA_D); v.SetNet(net)
+        v.SetLayerPair(F, B); self.b.Add(v)
+
+    def _via_clear(self, p, obs, clr=MM(0.2)):
+        c = pcbnew.SHAPE_SEGMENT(V(*p), V(*p), VIA_D)   # noll-langd tjockt segment = cirkel Ø VIA_D
+        for lays, shp in obs:
+            if c.Collide(shp, clr):
+                return False
+        return True
+
+    def to_fill(self, ref, pad):
+        """net har redan zon-fyll pa paddens lager (t.ex. GND pa F.Cu) -> inget behovs;
+        zon-omfyllningen kopplar padden. (No-op; verifieras i finish.)"""
+        return True
+
+    def to_plane(self, ref, pad):
+        """koppla pad till plan-net pa ANNAT lager via en clearance-kollad via (+ ev kort F-stub)."""
+        pd = self._pad(ref, pad); net = pd.GetNet(); nm = net.GetNetname()
+        p = xy(pd.GetPosition()); obs = self._obstacles(nm)
+        offs = [(0, 0)] + [(dx, dy) for r in (1.0, 1.4, 1.8, 2.2, 2.6, 3.0)
+                           for dx, dy in [(r, 0), (-r, 0), (0, r), (0, -r), (r, r), (-r, -r), (r, -r), (-r, r)]]
+        for dx, dy in offs:
+            vp = (p[0] + dx, p[1] + dy)
+            if not self._via_clear(vp, obs):
+                continue
+            if (dx or dy) and not self._seg_clear(p, vp, F, obs):
+                continue
+            if dx or dy:
+                self._add_track(p, vp, F, net)
+            self._add_via(vp, net)
+            return True
+        return False
+
+    def _net_points(self, net):
+        """befintliga koppar-punkter (pad-center + track-andar) pa net, med lager."""
+        pts = []
+        for t in self.b.GetTracks():
+            if t.GetNetname() != net or t.Type() == pcbnew.PCB_VIA_T:
+                continue
+            pts.append((xy(t.GetStart()), t.GetLayer()))
+            pts.append((xy(t.GetEnd()), t.GetLayer()))
+        for f in self.b.GetFootprints():
+            for pd in f.Pads():
+                if pd.GetNetname() == net:
+                    pts.append((xy(pd.GetPosition()), F if pd.IsOnLayer(F) else B))
+        return pts
+
+    def trace_between(self, ref1, pad1, ref2, pad2):
+        p1 = xy(self._pad(ref1, pad1).GetPosition())
+        p2 = xy(self._pad(ref2, pad2).GetPosition())
+        net = self._pad(ref1, pad1).GetNet()
+        return self._route(p1, p2, net, net.GetNetname())
+
+    def trace(self, ref, pad, exclude_self=True):
+        pd = self._pad(ref, pad); net = pd.GetNet(); nm = net.GetNetname()
+        p1 = xy(pd.GetPosition())
+        cands = self._net_points(nm)
+        # exkludera punkter pa samma footprint-pad (oss sjalva)
+        cands = [(p, L) for (p, L) in cands if math.hypot(p[0]-p1[0], p[1]-p1[1]) > 0.3]
+        cands.sort(key=lambda c: math.hypot(c[0][0]-p1[0], c[0][1]-p1[1]))
+        for (p2, L) in cands[:12]:
+            if self._route(p1, p2, net, nm):
+                return True
+        return False
+
+    def _route(self, p1, p2, net, nm):
+        obs = self._obstacles(nm)
+        bvia = self._via_clear(p1, obs) and self._via_clear(p2, obs)
+        # 1) direkt pa F el B
+        for layer in (F, B):
+            if layer == B and not bvia:
+                continue
+            if self._seg_clear(p1, p2, layer, obs):
+                if layer == B:
+                    self._add_via(p1, net); self._add_via(p2, net)
+                self._add_track(p1, p2, layer, net); return True
+        # 2) L-form (2 segment) pa F el B
+        for layer in (F, B):
+            if layer == B and not bvia:
+                continue
+            for corner in ((p2[0], p1[1]), (p1[0], p2[1])):
+                if self._seg_clear(p1, corner, layer, obs) and self._seg_clear(corner, p2, layer, obs):
+                    if layer == B:
+                        self._add_via(p1, net); self._add_via(p2, net)
+                    self._add_track(p1, corner, layer, net); self._add_track(corner, p2, layer, net)
+                    return True
+        # 3) Z-form (3 segment) pa F: mittpunkt-offset i bada riktningar
+        mids = []
+        for frac in (0.5,):
+            mx = p1[0] + (p2[0]-p1[0])*frac; my = p1[1] + (p2[1]-p1[1])*frac
+            for off in (1.5, -1.5, 2.5, -2.5, 3.5, -3.5):
+                mids += [((mx+off, p1[1]), (mx+off, p2[1])), ((p1[0], my+off), (p2[0], my+off))]
+        for c1, c2 in mids:
+            if (self._seg_clear(p1, c1, F, obs) and self._seg_clear(c1, c2, F, obs)
+                    and self._seg_clear(c2, p2, F, obs)):
+                self._add_track(p1, c1, F, net); self._add_track(c1, c2, F, net); self._add_track(c2, p2, F, net)
+                return True
+        return False
+
+    def finish(self):
+        pcbnew.ZONE_FILLER(self.b).Fill(self.b.Zones())
+        # DRC
+        items = []
+        for t in self.b.GetTracks():
+            lays = set(self.cu) if t.Type() == pcbnew.PCB_VIA_T else {t.GetLayer()}
+            items.append((t.GetNetCode(), lays, t.GetEffectiveShape()))
+        for z in self.b.Zones():
+            for L in self.cu:
+                if z.IsOnLayer(L):
+                    items.append((z.GetNetCode(), {L}, z.GetFilledPolysList(L)))
+        for f in self.b.GetFootprints():
+            for pd in f.Pads():
+                items.append((pd.GetNetCode(), {L for L in self.cu if pd.IsOnLayer(L)}, pd.GetEffectiveShape()))
+        clr = sum(1 for i in range(len(items)) for j in range(i+1, len(items))
+                  if items[i][0] != items[j][0] and (items[i][1] & items[j][1]) and items[i][2].Collide(items[j][2], int(0.2e6)))
+        self.b.BuildConnectivity()
+        try: un = self.b.GetConnectivity().GetUnconnectedCount(True)
+        except TypeError: un = self.b.GetConnectivity().GetUnconnectedCount()
+        return clr, un
