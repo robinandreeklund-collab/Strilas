@@ -182,7 +182,7 @@ vest_pos.update({
     "R3": (0.0, 9.0, 0),                             # balans-R gren-1 (radiellt, mellan center o tab)
     "R4": (9.0, 0.0, 90), "R5": (-9.0, 0.0, 90),     # balans-R gren-2/3 (spegel)
     "J1": _se(270, 14.0, 6, "out", flip=True),       # 6-pol JST-PH SIDOMONT. på BAKSIDAN (VBAT·GND·DATA·LED_EN·3V3·VIB)
-    "J2": (-17.0, -6.0, 90, "B"),                   # 2-pol JST → ERM-motor (BAKSIDA, intill J1; motor-keepout @centrum)
+    "J2": (-13.0, -2.5, 90, "B"),                   # 2-pol JST → ERM-motor (BAKSIDA). Flyttad in i ben-gapet (-17,-6→-13,-2.5): kroppen klarar alla genomstuckna TSOP/tab-ben (kvar @kant krockade m U3-benet), kabel pekar mot center-motorn
 })
 vest_labels = [(0.0, 7.2, "BOJ 40 UT", 0.4)]         # böj-instruktion (kort, övre center-fri yta)
 
