@@ -1,109 +1,105 @@
 #!/usr/bin/env python3
-"""STRILAS — OPTIK-PCB (vapen v2, kompakt enligt CAD): porträtt ≤56×41, kamera tittar genom CUTOUT
-topp, 2 IR-emittrar + Carclo 10734/10003 SIDA-VID-SIDA i botten. Kameran (VEYE AR0234M) sitter BAKOM
-på 10 mm standoff, linsen genom cutouten; optik-PCB:n sitter 20 mm framför HAT/FC. Carclo-hållarnas
-diameter sticker ut lite utanför 41 mm-kanten (OK per design).
+"""STRILAS — OPTIK-PCB (vapen v2): kompakt porträtt ≤56×41, ALLA SMT på FRAMSIDAN (enkelsidig
+montering = billigare). Kamera-cutout topp; CC-sänka (OPA171+DPAK+0R2 sense+0R1 DNP+15k/1k+gate-R+
+komp) i MITTBANDET; 2 IR-emittrar + Carclo 10734/10003 sida-vid-sida i BOTTEN. JST 3-pin (VBAT·IR_MOD·
+GND) på BAKSIDAN (THT, handlödd). CC-sänkan flyttad hit från HAT → kortare puls-loop, lägre EMI; HAT
+skickar bara DC VBAT + µA IR_MOD + GND. Kameran (VEYE AR0234M) sitter BAKOM på 10 mm standoff.
 
-Hål: lins-CUTOUT (Ø15, Edge_Cuts) · 4 kamera-standoff (M2.5, matchar AR0234M 29×29 — verifiera VEYE-DXF)
-· 8 Carclo-ben (Ø2.1, ±4,5×±7,8/emitter) · 4 board-mount (M2.5, 20 mm standoff → HAT). JST emitter-ström
-VERTIKAL på BAKSIDAN. Ingen aktiv elektronik (bara dioder + JST).
-
-Kör:  python3 hardware/optik_head.py   → hardware/optik-head.kicad_pcb (+ BOM/centroid)
+Placerar + tilldelar nät; routas av route_optik.py (freerouting + GND-fyll).
+Kör:  python3 hardware/optik_head.py
 """
-import pcbnew, os, csv, xlwt, math
+import pcbnew, os, csv, xlwt
 OX, OY = 150.0, 120.0; MM = pcbnew.FromMM
 def V(x, y): return pcbnew.VECTOR2I(MM(OX + x), MM(OY - y))
 FPD = "/usr/share/kicad/footprints"; LOC = "/home/user/Strilas/hardware/strilas.pretty"
 
-# --- geometri (mm, board-centrum = origo); porträtt 41 (b) × 52 (h) ---
-BW, BH = 20.5, 26.0       # halva → 41×52 mm (inom 56×41-envelopen)
-LENS_C = (0.0, 11.0)      # lins-cutout-centrum (topp)
-LENS_R = 7.5             # Ø15 cutout för M12-lins-barrel
-CAM_PITCH = 24.0          # AR0234M 29×29 mont-hål (±12) — PARAMETRISK, sätt mot VEYE-DXF
-EMIT_Y = -14.0            # emittrar i botten
-EMIT_DX = 10.5            # sida-vid-sida (Carclo Ø~22 → centra ±10,5; ringen sticker ut lite)
-LEG_DX, LEG_DY = 4.5, 7.8 # Carclo 10734-ben (= gamla kortet)
+BW, BH = 20.5, 28.0       # 41×56 mm porträtt (max i 56×41-envelopen)
+LENS_C = (0.0, 13.0); LENS_R = 7.5          # kamera-cutout topp (Ø15)
+CAM_PITCH = 24.0          # AR0234M 29×29 mont (±12) — verifiera VEYE-DXF
+EMIT_Y = -18.5; EMIT_DX = 10.5              # emittrar botten, sida-vid-sida
+LEG_DX, LEG_DY = 4.5, 7.8
 
 def main():
     b = pcbnew.CreateEmptyBoard(); b.SetCopperLayerCount(2)
-    VE = pcbnew.NETINFO_ITEM(b, "VBAT_E"); b.Add(VE)
-    MID = pcbnew.NETINFO_ITEM(b, "LED_MID"); b.Add(MID)
-    DR = pcbnew.NETINFO_ITEM(b, "LED_DRV"); b.Add(DR)
+    nets = {}
+    def N(n):
+        if n not in nets: ni = pcbnew.NETINFO_ITEM(b, n); b.Add(ni); nets[n] = ni
+        return nets[n]
+    for n in ("VBAT","IR_MOD","GND","LED_MID","LED_CATH","IDRV_SENSE","DRV_GATE","IDRV_REF","OPA_OUT"): N(n)
 
-    # 2 emittrar sida-vid-sida i botten, ROT 90 (pads horisontellt → ren serie). pad1=A, pad2=K
-    def emitter(ref, x, rot):
-        e = pcbnew.FootprintLoad(LOC, "IR_Emitter_OSRAM_OSLON_Black_SFH4725S")
-        e.SetReference(ref); e.SetValue("SFH4725AS_940nm"); e.SetPosition(V(x, EMIT_Y)); e.SetOrientationDegrees(rot); b.Add(e); return e
-    D1 = emitter("D1", -EMIT_DX, 90); D2 = emitter("D2", +EMIT_DX, 90)   # speglade → inner-pads möts
-    D1.FindPadByNumber("1").SetNet(VE);  D1.FindPadByNumber("2").SetNet(MID)
-    D2.FindPadByNumber("1").SetNet(MID); D2.FindPadByNumber("2").SetNet(DR)
+    def fp(lib, mod, ref, val, x, y, rot=0, back=False):
+        f = pcbnew.FootprintLoad(LOC if lib == "strilas" else f"{FPD}/{lib}.pretty", mod)
+        f.SetReference(ref); f.SetValue(val); f.SetPosition(V(x, y)); f.SetOrientationDegrees(rot); b.Add(f)
+        if back: f.Flip(f.GetPosition(), False)
+        return f
+    def setnet(f, pad, net):
+        for p in f.Pads():
+            if p.GetName()==pad: p.SetNet(N(net))
 
-    # JST 2-pol VERTIKAL på BAKSIDAN, UNDER emittrarna (öppen yta, klar av kamera-hål)
-    J = pcbnew.FootprintLoad(f"{FPD}/Connector_JST.pretty", "JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical")
-    J.SetReference("J1"); J.SetValue("emitter→HAT"); J.SetPosition(V(0.0, -9.0)); J.SetOrientationDegrees(90)
-    b.Add(J); J.Flip(J.GetPosition(), False)
-    J.FindPadByNumber("1").SetNet(VE); J.FindPadByNumber("2").SetNet(DR)
+    # 2 emittrar (front) sida-vid-sida, rot 90 → inner-pads i serie
+    D1 = fp("strilas","IR_Emitter_OSRAM_OSLON_Black_SFH4725S","D1","SFH4725AS_940nm",-EMIT_DX,EMIT_Y,90)
+    D2 = fp("strilas","IR_Emitter_OSRAM_OSLON_Black_SFH4725S","D2","SFH4725AS_940nm",+EMIT_DX,EMIT_Y,90)
+    setnet(D1,"1","VBAT"); setnet(D1,"2","LED_MID"); setnet(D2,"1","LED_MID"); setnet(D2,"2","LED_CATH")
 
-    def track(net, pts, w=0.8):
-        for i in range(len(pts)-1):
-            t = pcbnew.PCB_TRACK(b); t.SetStart(V(*pts[i])); t.SetEnd(V(*pts[i+1]))
-            t.SetWidth(MM(w)); t.SetLayer(pcbnew.F_Cu); t.SetNetCode(net.GetNetCode()); b.Add(t)
-    def P(fp, n): p = fp.FindPadByNumber(n); return (p.GetPosition().x/1e6-OX, OY-p.GetPosition().y/1e6)
-    j1, j2 = P(J,"1"), P(J,"2"); d1a,d1k = P(D1,"1"),P(D1,"2"); d2a,d2k = P(D2,"1"),P(D2,"2")
-    # MID (serie): D1.K → D2.A — de inre paddarna, kort horisontell
-    track(MID, [d1k, ((d1k[0]+d2a[0])/2, d1k[1]), d2a])
-    # VBAT_E: JST.1 → D1.A (yttre vänster pad), DRV: JST.2 → D2.K (yttre höger pad)
-    track(VE, [j1, (d1a[0], j1[1]), d1a])
-    track(DR, [j2, (d2k[0], j2[1]), d2k])
+    # CC-sänka (front, mittband y≈-1..-12)
+    Uop = fp("Package_TO_SOT_SMD","SOT-23-5","U1","OPA171",-1,-4,0)
+    for p,n in (("1","OPA_OUT"),("2","GND"),("3","IDRV_REF"),("4","IDRV_SENSE"),("5","VBAT")): setnet(Uop,p,n)
+    Qd = fp("Package_TO_SOT_SMD","TO-252-2","Q1","AOD4184A",-9,-6,0)
+    for p,n in (("1","DRV_GATE"),("2","LED_CATH"),("3","IDRV_SENSE")): setnet(Qd,p,n)
+    Rs = fp("Resistor_SMD","R_2512_6332Metric","R1","0R2",10,-3,0); setnet(Rs,"1","IDRV_SENSE"); setnet(Rs,"2","GND")
+    Ro = fp("Resistor_SMD","R_0805_2012Metric","R2","0R1 DNP=3A",10,-7,0); setnet(Ro,"1","GND"); setnet(Ro,"2","IDRV_SENSE")
+    Rda= fp("Resistor_SMD","R_0805_2012Metric","R3","15k",-1,-13,0); setnet(Rda,"1","IR_MOD"); setnet(Rda,"2","IDRV_REF")
+    Rdb= fp("Resistor_SMD","R_0805_2012Metric","R4","1k",3,-12,0); setnet(Rdb,"1","IDRV_REF"); setnet(Rdb,"2","GND")
+    Rg = fp("Resistor_SMD","R_0805_2012Metric","R5","100R",3,-8,0); setnet(Rg,"1","OPA_OUT"); setnet(Rg,"2","DRV_GATE")
+    Cop= fp("Resistor_SMD","R_0805_2012Metric","C1","100nF",12,-9,0); setnet(Cop,"1","VBAT"); setnet(Cop,"2","GND")
+    Cc = fp("Resistor_SMD","R_0805_2012Metric","C2","100pF",-9,-11,0); setnet(Cc,"1","OPA_OUT"); setnet(Cc,"2","IDRV_SENSE")
+
+    # JST 3-pin (VBAT·IR_MOD·GND) på BAKSIDAN, THT
+    J = fp("Connector_JST","JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical","J1","→HAT (VBAT·IR_MOD·GND)",16,-3,90,back=True)
+    setnet(J,"1","VBAT"); setnet(J,"2","IR_MOD"); setnet(J,"3","GND")
 
     # mekaniska hål
-    def hole(ref, fp, x, y):
-        h = pcbnew.FootprintLoad(f"{FPD}/MountingHole.pretty", fp); h.SetReference(ref); h.SetPosition(V(x,y)); b.Add(h)
+    def hole(ref, mod, x, y):
+        h = pcbnew.FootprintLoad(f"{FPD}/MountingHole.pretty", mod); h.SetReference(ref); h.SetPosition(V(x,y)); b.Add(h)
     lx, ly = LENS_C
-    for i,(sx,sy) in enumerate([(1,1),(1,-1),(-1,1),(-1,-1)]):                 # kamera-standoff (AR0234M)
-        hole(f"CAM{i+1}", "MountingHole_2.5mm", lx+sx*CAM_PITCH/2, ly+sy*CAM_PITCH/2)
-    n=1                                                                        # Carclo-ben 4/emitter
-    for ex in (-EMIT_DX, +EMIT_DX):
-        for sx,sy in [(1,1),(1,-1),(-1,1),(-1,-1)]:
-            hole(f"CL{n}", "MountingHole_2.1mm", ex+sx*LEG_DX, EMIT_Y+sy*LEG_DY); n+=1
-    for i,(sx,sy) in enumerate([(1,1),(1,-1),(-1,1),(-1,-1)]):                 # board-mount → HAT (20 mm)
-        hole(f"MH{i+1}", "MountingHole_2.5mm", sx*(BW-2.5), sy*(BH-2.5))
+    for i,(sx,sy) in enumerate([(1,1),(1,-1),(-1,1),(-1,-1)]): hole(f"CAM{i+1}","MountingHole_2.2mm_M2",lx+sx*CAM_PITCH/2,ly+sy*CAM_PITCH/2)
+    n=1
+    for ex in (-EMIT_DX,+EMIT_DX):
+        for sx,sy in [(1,1),(1,-1),(-1,1),(-1,-1)]: hole(f"CL{n}","MountingHole_2.1mm",ex+sx*LEG_DX,EMIT_Y+sy*LEG_DY); n+=1
+    for i,(sx,sy) in enumerate([(1,1),(1,-1),(-1,1),(-1,-1)]): hole(f"MH{i+1}","MountingHole_2.5mm",sx*(BW-2.5),sy*(BH-2.5))
 
-    # lins-CUTOUT (rund Edge_Cuts-cirkel)
-    cir = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_CIRCLE); cir.SetCenter(V(*LENS_C))
-    cir.SetEnd(V(LENS_C[0]+LENS_R, LENS_C[1])); cir.SetLayer(pcbnew.Edge_Cuts); cir.SetWidth(MM(0.15)); b.Add(cir)
-    # outline
-    pts = [(-BW,-BH),(BW,-BH),(BW,BH),(-BW,BH)]
+    # lins-cutout + outline + silk
+    cir = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_CIRCLE); cir.SetCenter(V(*LENS_C)); cir.SetEnd(V(LENS_C[0]+LENS_R,LENS_C[1]))
+    cir.SetLayer(pcbnew.Edge_Cuts); cir.SetWidth(MM(0.15)); b.Add(cir)
+    box = [(-BW,-BH),(BW,-BH),(BW,BH),(-BW,BH)]
     for i in range(4):
-        s = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_SEGMENT); s.SetStart(V(*pts[i])); s.SetEnd(V(*pts[(i+1)%4]))
+        s=pcbnew.PCB_SHAPE(b,pcbnew.SHAPE_T_SEGMENT); s.SetStart(V(*box[i])); s.SetEnd(V(*box[(i+1)%4]))
         s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(MM(0.15)); b.Add(s)
-    def silk(txt,x,y,sz=0.8):
-        t=pcbnew.PCB_TEXT(b); t.SetText(txt); t.SetPosition(V(x,y)); t.SetLayer(pcbnew.F_SilkS)
-        t.SetTextSize(pcbnew.VECTOR2I(MM(sz),MM(sz))); t.SetTextThickness(MM(0.12)); t.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER); b.Add(t)
-    silk("STRILAS OPTIK", 0, 23); silk("AR0234", 0, 4); silk("D1", -EMIT_DX, EMIT_Y+2.5); silk("D2", EMIT_DX, EMIT_Y+2.5)
+    t=pcbnew.PCB_TEXT(b); t.SetText("STRILAS OPTIK"); t.SetPosition(V(0,24)); t.SetLayer(pcbnew.F_SilkS)
+    t.SetTextSize(pcbnew.VECTOR2I(MM(1.0),MM(1.0))); t.SetTextThickness(MM(0.15)); t.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER); b.Add(t)
 
     pcbnew.SaveBoard("hardware/optik-head.kicad_pcb", b)
-    print("wrote optik-head.kicad_pcb (41×52 porträtt: lins-cutout topp, 2 emitter+Carclo botten, kamera bak)")
+    print("placerade optik-PCB (41×56): kamera topp + CC-sänka mitt (front) + 2 emitter botten + JST bak")
 
-    COLS = ["Designator*","Quantity*","Manufacturer Part Number*","Manufacturer","Package/Footprint","Description","Procurement Type","Customer Note"]
-    rows = [
-        ("D1,D2","2","SFH4725AS","ams OSRAM","strilas:SFH4725S","IR-emitter 940 nm (2 i serie, sida-vid-sida botten; Carclo 10734/10003 → smal beam)","","CC-sänka på HAT; eye-safe 1A/3A"),
-        ("(lins)","2","10734","Carclo","Carclo_10734","Linshållare över emitter","","mekanisk, på ben-hål (Ø2.1); ringen sticker ut lite utanför kant"),
-        ("(lins)","2","10003","Carclo","Carclo_10003","Smal-beam-lins i hållaren","","mekanisk"),
-        ("J1","1","B2B-PH-K","JST","JST_PH_1x02_Vertical","Emitter-ström → HAT (VBAT_E,DRV) — VERTIKAL BAKSIDA","","2-pol THT"),
-    ]
-    for outdir in ("hardware/nextpcb","leverans/optik-head"):
-        os.makedirs(outdir, exist_ok=True); wb=xlwt.Workbook(); ws=wb.add_sheet("BOM")
+    COLS=["Designator*","Quantity*","Manufacturer Part Number*","Manufacturer","Package/Footprint","Description","Procurement Type","Customer Note"]
+    rows=[("D1,D2","2","SFH4725AS","ams OSRAM","strilas:SFH4725S","IR-emitter 940 nm (serie; Carclo 10734/10003 smal beam)","",""),
+          ("U1","1","OPA171","TI","SOT-23-5","CC-sänka op-amp","",""),("Q1","1","AOD4184A","AOS","TO-252","pass-FET","",""),
+          ("R1","1","WSL2512R2000","Vishay","R_2512","0R2 sense (1A)","",""),("R2","1","-","-","R_0805","0R1 DNP (3A-override)","","DNP"),
+          ("R3,R4,R5","3","-","-","R_0805","15k/1k-delare + 100R gate","",""),("C1,C2","2","-","-","R_0805-pkg","100nF/100pF","",""),
+          ("(lins)","2+2","10734/10003","Carclo","Carclo","Linshållare + smal-beam-lins/emitter","","mekanisk"),
+          ("J1","1","B3B-PH-K","JST","JST_PH_1x03","→HAT (VBAT·IR_MOD·GND) — VERTIKAL BAKSIDA","","THT handlödd")]
+    for od in ("hardware/nextpcb","leverans/optik-head"):
+        os.makedirs(od,exist_ok=True); wb=xlwt.Workbook(); ws=wb.add_sheet("BOM")
         for c,h in enumerate(COLS): ws.write(0,c,h)
         for r,row in enumerate(rows,1):
             for c,v in enumerate(row): ws.write(r,c,v)
-        wb.save(f"{outdir}/optik-head-bom.xls")
-        with open(f"{outdir}/optik-head-centroid.csv","w",newline="") as fp:
-            w=csv.writer(fp); w.writerow(["Designator","Mid X","Mid Y","Layer","Rotation"])
-            for ref in ("D1","D2"):
-                f=b.FindFootprintByReference(ref); p=f.GetPosition()
-                w.writerow([ref,f"{p.x/1e6-OX:.3f}",f"{OY-p.y/1e6:.3f}","top",f.GetOrientationDegrees()])
-    print("  BOM + centroid; kamera mekanisk (AR0234M bak på 10mm standoff, lins genom cutout)")
+        wb.save(f"{od}/optik-head-bom.xls")
+        with open(f"{od}/optik-head-centroid.csv","w",newline="") as f:
+            w=csv.writer(f); w.writerow(["Designator","Mid X","Mid Y","Layer","Rotation"])
+            for ref in ("D1","D2","U1","Q1","R1","R2","R3","R4","R5","C1","C2"):
+                ff=b.FindFootprintByReference(ref); p=ff.GetPosition()
+                w.writerow([ref,f"{p.x/1e6-OX:.3f}",f"{OY-p.y/1e6:.3f}","top",ff.GetOrientationDegrees()])
+    print("  BOM + centroid (allt SMT på framsidan; JST THT bak)")
 
 if __name__ == "__main__":
     main()
