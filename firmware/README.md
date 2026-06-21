@@ -53,8 +53,11 @@ python3 -m firmware.compute_budget # COMPUTE/EFFEKT-cosim: orkar P4:n driva allt
   värsta solfall**, <2 % med ROI. (2) Full-frame mono8 @120 fps ≈ 123 MB/s **spränger USB2** (~40 MB/s) → MIPI-CSI
   ELLER full-frame-sök @30 fps + ROI-spårning @120 fps (256×256 ≈ 7,9 MB/s, ryms USB). Effekt/latens med marginal.
   Levererar en **HIL-checklista** att mäta på kisel innan full batch.
-- **Fas 3 — ESP-IDF/C-port** *(nästa)*: `cv_pose`/`fire_control`/`weapon_node` → C (med O(n) CCL + ROI); `transport`
-  → ESP-NOW+MQTT; `adjudicator`/`engine` stannar server-side. Per-nod-app (optik/väst/hjälm) + HIL-rigg.
+- **Fas 3 — ESP-IDF/C-port ✅** `../firmware-esp/`: portabel C-kärna (`strilas_core`: blob-CCL O(n), pose,
+  fire-control, ballistik, rullande kod) **host-kompilerad + paritetstestad mot denna Python-referens** (17/17 OK);
+  per-nod-appar (optik/väst/hjälm via `-DSTRILAS_ROLE`); HAL med HW-drivrutins-stubbar; JSON som matchar
+  `protocol.py`. Hela nod-trädet länkar koherent på host. Server (`adjudicator`/`engine`) stannar i Python.
+  Kvar: fyll HW-stubbar (`hal_esp.c`) + ESP-IDF-bygge vid bänk-bringup (Fas 2:s HIL-checklista). Se `firmware-esp/README.md`.
 
 ## Vad som är verifierat i kod (@150 m, allt PASS)
 
