@@ -24,8 +24,8 @@ def defs():
         # TSOP4856 = LEDAD (genomplåt) 3-bens IR-mottagare (Vishay doc 82459, 6,0×6,95×5,6, AGC2).
         # MOLD-footprint (rätt storlek). Benen BÖJS för att rikta domen (3 åt sidan + 1 rakt upp/patch).
         TSOP=mk("TSOP4856", "U", [(1, "OUT"), (2, "GND"), (3, "VS")], "OptoDevice:Vishay_MOLD-3Pin", "TSOP4856"),
-        LED=mk("VSMY98545", "D", [(1, "A"), (2, "K")], "strilas:VSMY98545_IR", "VSMY98545_850nm"),
-        LEDTAB=mk("LED_TAB", "D", [(1, "A"), (2, "K")], "strilas:LED_Tab", "LED-tab (VSMY98545-micro-PCB, ben böjs 40° UT som TSOP)"),
+        LED=mk("L1I0", "D", [(1, "A"), (2, "K")], "strilas:L1I0_IR", "L1I0-0850090200000"),
+        LEDTAB=mk("LED_TAB", "D", [(1, "A"), (2, "K")], "strilas:LED_Tab", "LED-tab (L1I0-micro-PCB, ben böjs 40° UT som TSOP)"),
         ORD=mk("ORdiode", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SOD-123", "BAT54"),
         NFET=mk("AO3400", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3400"),
         # OPA171 (SOT-23-5 DBV) konstantströms-op-amp (TI SBOS516H): 1=OUT 2=V- 3=IN+ 4=IN- 5=V+.
@@ -72,7 +72,8 @@ def build(n_tsop, n_led, gnss, out_file, n_tab=0):
     # Firmware sätter PWM-duty 0–100 % → I 0–1,0 A STEGLÖST (kan ALDRIG överstiga taket → eye-safety-
     # regel #1 i HÅRDVARA). 3A-OVERRIDE: montera DNP R7=0R1 parallellt över R6 → 0,2∥0,1=0,067 Ω →
     # I_max ≈ 3 A (medvetet, lab; kräver IEC 60825-1-ommätning + branch-R-termik-koll, se eye-safety-budget.md).
-    # 850 nm VSMY98545 (vidvinkel ±45°, kamera-markör) — drivs hårdare än gamla OSLON (0,5 A) f. matchad räckvidd.
+    # 850 nm Lumileds L1I0-0850090200000 (LUXEON IR Domed, 90°, ~750 mW/sr@1A ≈ 2× VSMY, 1,5 A DC-rating,
+    # Vf ~3,2 V@1A) — kamera-markör. Starkare än VSMY → når räckvidd vid lägre ström (eye-safe-marginal).
     Uop = P["OPAMP"]()                                               # U5 = OPA171 (CC-op-amp)
     SENSE = Net("IDRV_SENSE"); GATE = Net("LED_GATE"); VREF = Net("IDRV_REF")
     Q = P["NFET"](); Q["D"] += LEDC; Q["S"] += SENSE; Q["G"] += GATE  # Q1 = pass-FET (låg-sida)

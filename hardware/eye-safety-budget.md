@@ -60,11 +60,18 @@ relaxationen täcker troligen 1–3 A. **Det måste mätas**, inte antas. HW-tak
 
 ---
 
-# Konstellations-emitter (850 nm VSMY98545, väst-patch + hjälm-mb) — FIRMWARE-TRIMBAR CC-sänka
+# Konstellations-emitter (850 nm Lumileds L1I0, väst-patch + hjälm-mb) — FIRMWARE-TRIMBAR CC-sänka
 
-> Separat hazard från skott-emittern: **850 nm, VIDVINKEL ±45° UTAN kollimatorlins** (kamera-markör).
+> Separat hazard från skott-emittern: **850 nm, 90° vidvinkel** (kamera-markör, LUXEON IR Domed).
 > Ingen lins-koncentration → irradiansen vid given ström är **mycket lägre** än den kollimerade
 > skott-strålen. Men 850 nm är näIR-näthinnefarligt vid hög effekt → samma HW-tak-princip gäller.
+>
+> **⚠️ LED-BYTE VSMY98545 → Lumileds L1I0-0850090200000 (2026-06):** L1I0 ger **~750 mW/sr@1A ≈ 2× VSMY:s
+> 380 mW/sr**. Det betyder att **den ögonsäkra strömmen ungefär HALVERAS** mot VSMY-budgeten nedan — det HÅRDA
+> 1 A-taket står kvar (säkert), men den uppmätta säkra DRIFTPUNKTEN blir lägre. *Netto positivt för räckvidd:*
+> du når samma räckvidd som VSMY vid ~halva strömmen → större eye-safety-marginal. L1I0 tål 1,5 A DC / 5 A puls
+> (200000-variant), Vf~3,2 V@1A (tightare 2S-headroom → firmware-LV-spärr ~7,2 V). **Kräver förnyad IEC 60825-1-
+> mätning med L1I0 innan modulen riktas mot människor** — siffrorna nedan är VSMY-baserade och konservativa nu.
 >
 > **STATUS:** Realiserat på BÅDA korten — **väst-patch** (×14; U5/Q1/R6 etc.) OCH **hjälm-mb:s egna 6
 > navmarkör-LED** (U9/Q1/R14 etc.). Hjälm-mb routades INKREMENTELLT (`hardware/helmet_cc_sink.py`,
@@ -95,5 +102,5 @@ kort har egen CC-sänka → **självreglerar oavsett kabellängd** (ingen kalibr
 1. **Börja LÅGT** (duty f. ~0,3 A) vid bringup; öka stegvis och **MÄT** accessible emission + skenbar
    källa per IEC 60825-1 **innan** patchar/hjälmar bärs mot människor.
 2. HW-taket (R6 + 15k/1k) = hård barriär; firmware kan bara gå lägre. 3 A endast via medveten R7-montering.
-3. VSMY98545 (vidvinkel) drivs hårdare än gamla OSLON (0,5 A) f. matchad räckvidd — **strömökning kräver
-   ommätning** (gäller även byte OSLON→VSMY: lägre Ie/A → mer ström f. samma räckvidd).
+3. L1I0 (~2× VSMY mW/sr) når räckvidd vid LÄGRE ström — **varje strömnivå/LED-byte kräver ommätning**
+   (OSLON 0,5A → VSMY → L1I0: Ie/A ökar nu kraftigt → KÖR LÄGRE ström, mät om den säkra punkten).
