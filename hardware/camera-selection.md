@@ -1,6 +1,35 @@
 # STRILAS — Kameraval (sikteskamera)
 
-> ## 🔒🔒 LÅST (för 150 m): **Arducam B0332 (USB OV9281 GS) + 16 mm M12-lins + 850 nm IR-pass**
+> ## ⚠️ KORRIGERING (juni 2026) — B0332 UTGÅR: linsen går INTE att byta
+> Arducams datablad för **B0332**: *"assembled with a 70°(H) low distortion M12 lens … The lens is
+> **fixed (non-interchangeable)**."* Den tidigare "låsningen" nedan byggde på att **byta** stock-linsen
+> mot en 16 mm → det är **omöjligt** på B0332. Med fast 70° H når siktet bara ~25–30 m, inte 150 m.
+> **→ B0332 är därmed ELIMINERAD.** (Samma fälla: Waveshare OV9281-110 = fast 110°; Arducams OV9281-
+> M12-moduler = fabrikslimmad lins, ej användarbytbar.)
+>
+> **HÅRT KRAV som vinnaren måste uppfylla (annars 150 m omöjligt):**
+> 1. **Utbytbart linsfäste** (riktig M12-hållare / CS / C-mount) ELLER fabriksvald ~16 mm-ekv. lins →
+>    måste ge **~13,7° H FOV** på sin sensor (config.py-målet: ~14 px LED-sep + 24 px baslinje @150 m).
+> 2. **Ser 860 nm** (NoIR / inget IR-cut) + plats för 850/860 nm-bandpass.
+> 3. **Mono global shutter** (ingen pan-smet), ≥1 MP.
+> 4. **P4-väg:** USB-UVC (ingen drivrutin) **eller** `esp_cam_sensor`-MIPI-drivare (ov9281/sc2336/mira220).
+>    AR0234-**MIPI**/Pivariety = ingen P4-driver → köp INTE.
+>
+> **Kandidater (alla har en ÖPPEN verifieringspunkt — inget låses förrän den är klar):**
+> | # | Kandidat | Styrka | ÖPPET att verifiera |
+> |---|---|---|---|
+> | 1 | **DECXIN AR0234 USB-UVC** (2,3 MP mono GS) + 25 mm M12 | USB → ingen driver; 28 mm-hål = som B0332; 2,3 MP | **utbytbar lins?** + 860 nm-känslighet (AR0234 NIR-QE lägre) |
+> | 2 | **ams Mira220 mono** (`MIRA220MINI`, MIPI) | **NIR-enhanced (bäst 860 nm), samma leverantör som OSLON**, P4-repo finns | drivrutins-mognad + eval-bräda → MIPI-adapter/FFC + kontakt mot P4 + linsfäste |
+> | 3 | **Industriell OV9281/AR0234 C-/CS-mount** (e-con/Vision Components/Leopard) | äkta utbytbar optik + IR-bandpass i gänga; OV9281 har esp_cam_sensor-driver | storlek/vikt + kontakt mot P4 + pris |
+>
+> **Board-påverkan (optik-kortet):** kameran är mekanisk (mount + Ø16-lins-hål, ingen routning), men
+> monteringsmönstret (idag B0332 28×28 M2) + lins-aperturen måste **anpassas till vald modul**. → optik-
+> kortet är **INTE beställningsklart** förrän kameran är vald. Mjukvaran (Fas 0–3) är opåverkad.
+>
+> **Nästa steg:** verifiera punkt 1 (DECXIN lins-swap + NIR). Håller den → enklast (USB, samma mount).
+> Annars Mira220 (bäst optiskt/NIR, mer firmware) eller industriell C-mount.
+
+> ## ❌ OGILTIG (fast lins — se KORRIGERING ovan): tidigare "🔒 LÅST" Arducam B0332 + 16 mm M12-lins
 > | Del | Exakt | ~Pris | Not |
 > |---|---|---|---|
 > | **Modul** | **Arducam B0332** — 1 MP OV9281 **mono global shutter**, **USB-UVC 2.0**, M12-fäste | ~$30 | UVC → P4:ans USB OTG 2.0 HS, ingen drivrutin; sensorn ser NIR (850 nm) i grunden |

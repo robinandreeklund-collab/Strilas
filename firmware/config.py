@@ -3,7 +3,10 @@ Samma värden som hårdvaru-/verifieringsdokumenten. Allt i SI där inget annat 
 """
 import numpy as np
 
-# ---- Sikteskamera (LÅST): OV9281 mono GLOBAL SHUTTER NoIR, USB-UVC, M12 NoIR-lins ----
+# ---- Sikteskamera: mono GLOBAL SHUTTER NoIR, ~13,7° H FOV (KAMERA UNDER OMVAL) ----
+# OBS: tidigare "låst" Arducam B0332 UTGÅR — dess lins går ej att byta (fast 70°) → klarar ej
+# 16 mm/13,7°/150 m. Optiska KONSTANTERNA nedan är MÅLET (oförändrat); vald modul måste nå dem.
+# Se hardware/camera-selection.md (KORRIGERING juni 2026) för kandidater + öppna verifieringspunkter.
 # 1 MP 1280×800, 3 µm-pixlar, 1/4". Global shutter → ingen pan-smet. NoIR krävs för 860 nm.
 # LINS: 16 mm M12 → 2·atan(3.84/32) = 13,7° H FOV. (Fysik: 1 MP @ 6mm/35,5° upplöser bara
 # ~9 px konstellation @150 m → LED:erna smälter ihop. 16 mm ger ~14 px LED-separation + 24 px
