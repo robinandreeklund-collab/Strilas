@@ -12,9 +12,10 @@ FPD = "/usr/share/kicad/footprints"; LOC = "/home/user/Strilas/hardware/strilas.
 
 def main():
     b = pcbnew.CreateEmptyBoard(); b.SetCopperLayerCount(2)
-    # OSLON (emitterar ut tab-facet) nära toppen
-    led = pcbnew.FootprintLoad(LOC, "IR_Emitter_OSRAM_OSLON_Black_SFH4725S")
-    led.SetReference("D1"); led.SetValue("SFH4715AS_860nm"); led.SetPosition(V(0, 2.5)); b.Add(led)
+    # VSMY98545 (Vishay 850nm högeffekt, ±45°, VF 1.8V) — emitterar ut tab-facetten. Pad1=anod
+    # (vänster + mitt-pad), pad2=katod (höger). In-stock-verifierad konstellations-LED (ersätter OSLON).
+    led = pcbnew.FootprintLoad(LOC, "VSMY98545_IR")
+    led.SetReference("D1"); led.SetValue("VSMY98545_850nm"); led.SetPosition(V(0, 1.8)); b.Add(led)
     # 2-håls fot (1x2, 2.54 mm) — RIGHT-ANGLE (horisontell) stiftlist: pinnarna går 90° UT från
     # tab-kanten och rakt NER i moderkortets 2-hålssockel → tab:en står stelt LODRÄT (90°) UTAN
     # handböjning, samma vinkel varje exemplar. Hålmönstret (2.54 mm) = identiskt mot moderkortets sockel.
@@ -29,12 +30,16 @@ def main():
         for i in range(len(pts)-1):
             t = pcbnew.PCB_TRACK(b); t.SetStart(V(*pts[i])); t.SetEnd(V(*pts[i+1]))
             t.SetWidth(MM(0.4)); t.SetLayer(pcbnew.F_Cu); t.SetNetCode(b.FindNet(n).GetNetCode()); b.Add(t)
-    aL=led.FindPadByNumber("1").GetPosition(); kL=led.FindPadByNumber("2").GetPosition()
-    a1=hdr.FindPadByNumber("1").GetPosition(); k2=hdr.FindPadByNumber("2").GetPosition()
     def U(p): return (p.x/1e6-OX, OY-p.y/1e6)
-    # A dras runt VÄNSTER kant (dogleg) → klarar centrerade LED-K-padden; K dras direkt på HÖGER sida.
-    track("A", [U(aL), (-1.6, 3.55), (-1.6, -3.5), U(a1)])
-    track("K", [U(kL), U(k2)])
+    ap = [U(p.GetPosition()) for p in led.Pads() if p.GetName()=="1"]   # 2 anod-pads (vänster, mitt)
+    kp = [U(p.GetPosition()) for p in led.Pads() if p.GetName()=="2"][0]  # katod (höger)
+    a1=U(hdr.FindPadByNumber("1").GetPosition()); k2=U(hdr.FindPadByNumber("2").GetPosition())
+    ax = min(p[0] for p in ap)                                          # vänstra anod-padden
+    # anod: förena de 2 anod-paddarna + dra VÄNSTER om LED ner till ben1 (dogleg)
+    track("A", [ap[0], ap[1]])
+    track("A", [(ax, ap[0][1]), (-2.4, ap[0][1]), (-2.4, a1[1]), a1])
+    # katod: höger pad → HÖGER om LED ner till ben2
+    track("K", [kp, (2.4, kp[1]), (2.4, k2[1]), k2])
     # kant-cuts 6×11
     pts=[(-3,-5.5),(3,-5.5),(3,5.5),(-3,5.5)]
     for i in range(4):
@@ -44,6 +49,25 @@ def main():
     t=pcbnew.PCB_TEXT(b); t.SetText("STRILAS LED"); t.SetPosition(V(0,-1)); t.SetLayer(pcbnew.F_SilkS)
     t.SetTextSize(pcbnew.VECTOR2I(MM(0.7),MM(0.7))); t.SetTextThickness(MM(0.12)); t.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER); b.Add(t)
     pcbnew.SaveBoard("hardware/led-tab.kicad_pcb", b)
-    print("wrote hardware/led-tab.kicad_pcb (6×11mm: OSLON + 2 ben-hål, 2 spår)")
+    print("wrote hardware/led-tab.kicad_pcb (6×11mm: VSMY98545 + 2 ben-hål, 2 spår)")
+    # --- BOM + centroid (NextPCB-format) → hålls i synk med kortet ---
+    import xlwt, csv, os
+    COLS = ["Designator*","Quantity*","Manufacturer Part Number*","Manufacturer","Package/Footprint","Description","Procurement Type","Customer Note"]
+    bom_rows = [
+        ("D1","1","VSMY98545","Vishay","VSMY98545_IR","IR-LED 850nm Vishay högeffekt ±45° domed (konstellation, på 90°-tab; in-stock-ersättare f. OSLON)","C","NextPCB SMT-PLACERAR; 850nm matchar kamera-bandpass (rejekterar 940nm-taggen)"),
+        ("J1","1","2.54-1x02-RA","generisk","PinHeader_1x02_P2.54mm_Horizontal","Right-angle (90°) stiftlist 1x02 2.54mm — håller LED-tab lodrät utan böjning","","Handlöds av kund hemma (THT right-angle) — med i BOM, ej i centroid"),
+    ]
+    for outdir in ("hardware/nextpcb", "leverans/led-tab"):
+        os.makedirs(outdir, exist_ok=True)
+        wb = xlwt.Workbook(); ws = wb.add_sheet("BOM")
+        for c, h in enumerate(COLS): ws.write(0, c, h)
+        for r, row in enumerate(bom_rows, 1):
+            for c, v in enumerate(row): ws.write(r, c, v)
+        wb.save(f"{outdir}/led-tab-bom.xls")
+        with open(f"{outdir}/led-tab-centroid.csv", "w", newline="") as fp:
+            w = csv.writer(fp); w.writerow(["Designator","Mid X","Mid Y","Layer","Rotation"])
+            d1 = next(f for f in b.GetFootprints() if f.GetReference() == "D1")
+            p = d1.GetPosition(); w.writerow(["D1", f"{p.x/1e6-OX:.3f}", f"{OY-p.y/1e6:.3f}", "top", d1.GetOrientationDegrees()])  # endast D1 (J1=THT kund)
+    print("  led-tab BOM + centroid (VSMY98545) → hardware/nextpcb + leverans/led-tab")
 
 if __name__ == "__main__": main()

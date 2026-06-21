@@ -24,8 +24,8 @@ def defs():
         # TSOP4856 = LEDAD (genomplåt) 3-bens IR-mottagare (Vishay doc 82459, 6,0×6,95×5,6, AGC2).
         # MOLD-footprint (rätt storlek). Benen BÖJS för att rikta domen (3 åt sidan + 1 rakt upp/patch).
         TSOP=mk("TSOP4856", "U", [(1, "OUT"), (2, "GND"), (3, "VS")], "OptoDevice:Vishay_MOLD-3Pin", "TSOP4856"),
-        LED=mk("SFH4715AS", "D", [(1, "A"), (2, "K")], "strilas:IR_Emitter_OSRAM_OSLON_Black_SFH4725S", "SFH4715AS_860nm"),
-        LEDTAB=mk("LED_TAB", "D", [(1, "A"), (2, "K")], "strilas:LED_Tab", "LED-tab (OSLON-micro-PCB, ben böjs 40° UT som TSOP)"),
+        LED=mk("VSMY98545", "D", [(1, "A"), (2, "K")], "strilas:VSMY98545_IR", "VSMY98545_850nm"),
+        LEDTAB=mk("LED_TAB", "D", [(1, "A"), (2, "K")], "strilas:LED_Tab", "LED-tab (VSMY98545-micro-PCB, ben böjs 40° UT som TSOP)"),
         ORD=mk("ORdiode", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SOD-123", "BAT54"),
         NFET=mk("AO3400", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3400"),
         # 3,3 V LDO för TSOP+logik. SOT-89 pin (Holtek HT73XX datablad): 1=GND 2=VIN(tab) 3=VOUT.
