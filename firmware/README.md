@@ -13,6 +13,7 @@ python3 -m firmware.test_chain    # 15 automatiska tester (alla PASS)
 python3 -m firmware.benchmark     # server-prestanda (~57k adj/s)
 python3 -m firmware.run_mesh      # DISTRIBUERAD fler-nods-sim: optik+väst+hjälm+server på mesh
 python3 -m firmware.test_mesh     # 7 tester för distribuerade vägen (reorder, loss, klockfel)
+python3 -m firmware.compute_budget # COMPUTE/EFFEKT-cosim: orkar P4:n driva allt? + HIL-plan
 ```
 
 ## Moduler
@@ -37,6 +38,7 @@ python3 -m firmware.test_mesh     # 7 tester för distribuerade vägen (reorder,
 | `mesh.py` | **mesh (Fas 1)**: diskret-händelse-nät (latens/jitter/loss) + per-nod klocka (offset/drift/PTP) | WiFi6/ESP-NOW |
 | `run_mesh.py` | **distribuerad sim (Fas 1)**: 3 P4-noder + server pratar över mesh:en | *3 fysiska noder* |
 | `test_mesh.py` | 7 tester: distribuerade domar = in-process, reorder, loss, klockdrift | — |
+| `compute_budget.py` | **compute/effekt-cosim (Fas 2)**: P4-pipeline-budget, bandbredd, W/drifttid, HIL-plan | — |
 
 ## Faser (mjukvaru-program)
 
@@ -45,8 +47,14 @@ python3 -m firmware.test_mesh     # 7 tester för distribuerade vägen (reorder,
   WiFi6/ESP-NOW-modell (latens, jitter, paketförlust, klock-offset/drift/PTP-residual). Visar att domarna står sig
   under realistisk störning (IR-fönster 200 ms + flygtid ~167 ms ≫ ms-latens + µs-klockfel); reorder-skydd för IR
   som anländer före FireEvent; kontinuerlig PlayerState-ström för lag-komp.
-- **Fas 2 — compute/effekt-cosim** *(nästa)*: P4-pipeline-budget (CV/PnP/IMU/radio) + W/drifttid, HIL-mätplan.
-- **Fas 3 — ESP-IDF/C-port**: `cv_pose`/`fire_control`/`weapon_node` → C; `adjudicator`/`engine` stannar server-side.
+- **Fas 2 — compute/effekt-cosim ✅** `compute_budget.py`: modellerar P4-pipelinen mot ESP32-P4 (2× RISC-V 400 MHz,
+  PIE-SIMD, PPA). Svar på "orkar vi driva allt?": **ja, villkorat av två fixar.** (1) `cv_pose`-klustringen är O(n²)
+  och skenar i dagsljus (redan 95 % av en kärna nominellt) → byt mot O(n) connected-components → då **26,7 % även i
+  värsta solfall**, <2 % med ROI. (2) Full-frame mono8 @120 fps ≈ 123 MB/s **spränger USB2** (~40 MB/s) → MIPI-CSI
+  ELLER full-frame-sök @30 fps + ROI-spårning @120 fps (256×256 ≈ 7,9 MB/s, ryms USB). Effekt/latens med marginal.
+  Levererar en **HIL-checklista** att mäta på kisel innan full batch.
+- **Fas 3 — ESP-IDF/C-port** *(nästa)*: `cv_pose`/`fire_control`/`weapon_node` → C (med O(n) CCL + ROI); `transport`
+  → ESP-NOW+MQTT; `adjudicator`/`engine` stannar server-side. Per-nod-app (optik/väst/hjälm) + HIL-rigg.
 
 ## Vad som är verifierat i kod (@150 m, allt PASS)
 
