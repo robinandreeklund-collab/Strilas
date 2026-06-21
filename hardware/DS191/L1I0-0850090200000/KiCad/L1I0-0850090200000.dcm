@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP L1I0-0850090200000
+D Infrared Emitters - High Power Infrared, 850nm LUXEON IR
+K
+F https://lumileds.com/wp-content/uploads/files/DS191-luxeon-ir-domed-line-datasheet-1.pdf
+$ENDCMP
+#
+#End Doc Library

@@ -1,0 +1,9 @@
+Manufacturer=Lumileds
+PartNumber=L1I0-0850090200000
+PartCategory=LED
+PackageCategory=Other
+PinCount=3
+Version=2.4
+Released=2022-04-28 05:15:38
+Downloaded=2026-06-21 15:47:07
+3D=Y
