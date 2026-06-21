@@ -11,6 +11,8 @@ cd <repo-rot>
 python3 -m firmware.run_demo      # end-to-end-demo @150 m (perception → FC → server → verdikt)
 python3 -m firmware.test_chain    # 15 automatiska tester (alla PASS)
 python3 -m firmware.benchmark     # server-prestanda (~57k adj/s)
+python3 -m firmware.run_mesh      # DISTRIBUERAD fler-nods-sim: optik+väst+hjälm+server på mesh
+python3 -m firmware.test_mesh     # 7 tester för distribuerade vägen (reorder, loss, klockfel)
 ```
 
 ## Moduler
@@ -31,6 +33,20 @@ python3 -m firmware.benchmark     # server-prestanda (~57k adj/s)
 | `target_node.py` | mål-logik: TSOP → IRHit + PlayerState | ESP32-C5/XIAO-S3 |
 | `vest_mb_hw.py` | **väst-moderkortets HW-I/O**: 74HC165-läsning + TPIC6B595-PWM + LED_EN (delat SPI-svep) | XIAO ESP32-S3 (MicroPython→ESP-IDF) |
 | `world_sim.py` | **sim-harness**: fejk-kamera, IR-länk, scenario | *ersätts av hårdvaran* |
+| `hal.py` | **HAL (Fas 0)**: Clock/Sensors/Radio/Actuators-gräns; `SimHAL` nu, `HardwareHAL`-stub | *byts mot ESP-IDF-drivrutiner* |
+| `mesh.py` | **mesh (Fas 1)**: diskret-händelse-nät (latens/jitter/loss) + per-nod klocka (offset/drift/PTP) | WiFi6/ESP-NOW |
+| `run_mesh.py` | **distribuerad sim (Fas 1)**: 3 P4-noder + server pratar över mesh:en | *3 fysiska noder* |
+| `test_mesh.py` | 7 tester: distribuerade domar = in-process, reorder, loss, klockdrift | — |
+
+## Faser (mjukvaru-program)
+
+- **Fas 0 — HAL-gräns ✅** `hal.py`: nod-logiken kör mot `SimHAL` (nu) eller `HardwareHAL` (Fas 3) utan ändring.
+- **Fas 1 — distribuerad fler-nods-sim ✅** `mesh.py`+`run_mesh.py`: optik/väst/hjälm/server som separata noder på en
+  WiFi6/ESP-NOW-modell (latens, jitter, paketförlust, klock-offset/drift/PTP-residual). Visar att domarna står sig
+  under realistisk störning (IR-fönster 200 ms + flygtid ~167 ms ≫ ms-latens + µs-klockfel); reorder-skydd för IR
+  som anländer före FireEvent; kontinuerlig PlayerState-ström för lag-komp.
+- **Fas 2 — compute/effekt-cosim** *(nästa)*: P4-pipeline-budget (CV/PnP/IMU/radio) + W/drifttid, HIL-mätplan.
+- **Fas 3 — ESP-IDF/C-port**: `cv_pose`/`fire_control`/`weapon_node` → C; `adjudicator`/`engine` stannar server-side.
 
 ## Vad som är verifierat i kod (@150 m, allt PASS)
 
