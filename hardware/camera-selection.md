@@ -1,5 +1,17 @@
 # STRILAS — Kameraval (sikteskamera)
 
+> ## 🔒 LÅST (2026-06): **ams Mira220 MONO** på **Raspberry Pi CM5** (libcamera)
+> | Del | Val | Varför |
+> |---|---|---|
+> | **Plattform** | **Raspberry Pi CM5** (carrier-native) | enda plattformen där GS-NIR-kamerans driver är turnkey (RPi ≫ Rockchip > Allwinner). Kör Python/libcamera direkt. |
+> | **Sensor** | **ams Mira220 mono** (MIRA220MINI MONO) | **NIR-enhanced (~38% QE@940, högre @860) → bäst dagsljus-SNR** (Fas 2 #1-risk); mono = full NIR-QE; **samma leverantör som OSLON-emittrarna**; `ams_rpi_kernel`-driver. |
+> | **Lins** | **~18 mm M12** (1/2.7″ → 13,7°) + **850/860 nm bandpass** | räckvidds-FOV @150 m + dagsljus-rejektion |
+> | **Interface** | 22-pin MIPI-CSI FFC → carrier → CM5 | vi äger MIPI-vägen på carriern |
+>
+> Övervägt: AR0234 (mer fps/pixlar men ej NIR-enhanced; turnkey-libcamera-varianten är färg → Bayer
+> dödar NIR). Mira220 attackerar exakt rätt risk. Se [`weapon-v2-design.md`](weapon-v2-design.md).
+> **Öppet vid köp:** MIRA220MINI:s exakta linsfäste/mått (för optik-huvudets mount) + bandpass-passning.
+
 > ## ⚠️ KORRIGERING (juni 2026) — B0332 UTGÅR: linsen går INTE att byta
 > Arducams datablad för **B0332**: *"assembled with a 70°(H) low distortion M12 lens … The lens is
 > **fixed (non-interchangeable)**."* Den tidigare "låsningen" nedan byggde på att **byta** stock-linsen

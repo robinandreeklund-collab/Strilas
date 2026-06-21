@@ -3,18 +3,16 @@ Samma värden som hårdvaru-/verifieringsdokumenten. Allt i SI där inget annat 
 """
 import numpy as np
 
-# ---- Sikteskamera: mono GLOBAL SHUTTER NoIR, ~13,7° H FOV (KAMERA UNDER OMVAL) ----
-# OBS: tidigare "låst" Arducam B0332 UTGÅR — dess lins går ej att byta (fast 70°) → klarar ej
-# 16 mm/13,7°/150 m. Optiska KONSTANTERNA nedan är MÅLET (oförändrat); vald modul måste nå dem.
-# Se hardware/camera-selection.md (KORRIGERING juni 2026) för kandidater + öppna verifieringspunkter.
-# 1 MP 1280×800, 3 µm-pixlar, 1/4". Global shutter → ingen pan-smet. NoIR krävs för 860 nm.
-# LINS: 16 mm M12 → 2·atan(3.84/32) = 13,7° H FOV. (Fysik: 1 MP @ 6mm/35,5° upplöser bara
-# ~9 px konstellation @150 m → LED:erna smälter ihop. 16 mm ger ~14 px LED-separation + 24 px
-# baslinje → ROBUST PnP @150 m med marginal. Scen @150 m = 36 m bred (gott om plats att hitta mål).
-# 12 mm (18°) = vidare FOV men knappare marginal; 6 mm = bara ~80 m. Se camera-selection.md.)
-NX, NY = 1280, 800
+# ---- Sikteskamera (LÅST 2026-06): ams Mira220 MONO, GS NIR-enhanced, MIPI-CSI på CM5 ----
+# 2,2 MP 1600×1400, 2,79 µm BSI-pixlar, 1/2.7". Global shutter → ingen pan-smet. NIR-enhanced
+# (~38% QE@940, högre @860) → bäst dagsljus-SNR; mono = full NIR-QE utan Bayer. Samma leverantör
+# (ams OSRAM) som OSLON-emittrarna. Turnkey libcamera-driver på RPi CM5 (ams_rpi_kernel).
+# LINS: ~18 mm M12 → 2·atan(2.23/18) = 13,7° H FOV (1/2.7″). + 850/860 nm bandpass (dagsljus-rejekt).
+# (Fysik: 13,7° ger ~14 px LED-sep + 24 px baslinje @150 m → robust PnP. Se hardware/camera-selection.md
+#  + weapon-v2-design.md. Tidigare Arducam B0332/USB UTGICK — fast lins, nådde ej 150 m.)
+NX, NY = 1600, 1400
 FOV_DEG = 13.7
-F_PX = (NX/2)/np.tan(np.radians(FOV_DEG/2))     # brännvidd i pixlar (~5330)
+F_PX = (NX/2)/np.tan(np.radians(FOV_DEG/2))      # brännvidd i pixlar (~6660)
 CX, CY = NX/2, NY/2
 DEG_PX = FOV_DEG/NX
 
