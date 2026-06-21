@@ -61,8 +61,9 @@ REG = {"CC":(-27,-15,11), "IMU":(-14,-5,11), "ADC":(-3,7,11),
 def fixedpos(ref):
     fp, v = comps[ref]; v = v or ""
     if ref == "J1": return (0, 16, 90)       # 40-pin header topp (48 mm i 56-bredden)
+    if "TO-263" in (fp or ""): return (-21, 2, 90)   # buck (stor, roterad) vänster, klar av kant
     if "XT30" in v: return (-23, -17, 0)      # batteri nedre-vänster
-    if "emitter" in v: return (24, 6, 90)     # emitter-JST höger kant
+    if "optik" in v: return (24, 6, 90)       # emitter-JST (→optik) höger kant
     if "TRIGGER" in v: return (-11, -17.5, 0)
     if "RACK" in v: return (-4, -17.5, 0)
     if "MAGREL" in v: return (3, -17.5, 0)

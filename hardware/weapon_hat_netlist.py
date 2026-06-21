@@ -36,8 +36,8 @@ HDR = mk("RPi_40pin", "J", HDR_PINS,
          "Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical", "40-pin → CM5-carrier")
 
 BATT = mk("XT30", "J", [(1, "VBAT"), (2, "GND")], "Connector_JST:JST_XH_S2B-XH-A_1x02_P2.50mm_Horizontal", "2S batteri")
-EMIT = mk("EmitConn", "J", [(1, "VBAT_E"), (2, "DRV")],
-          "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal", "→ optik-huvud (emitter)")
+EMIT = mk("EmitConn", "J", [(1, "VBAT"), (2, "IR_MOD"), (3, "GND")],
+          "Connector_JST:JST_PH_S3B-PH-K_1x03_P2.00mm_Horizontal", "→ optik (VBAT·IR_MOD·GND; CC-sänka på optik)")
 SW = lambda n, a, b: mk(f"SW_{n}", "J", [(1, a), (2, b)],
                         "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal", n)
 RECOIL = mk("RecoilConn", "J", [(1, "VBAT"), (2, "PWM"), (3, "FAULT"), (4, "GND")],
@@ -64,8 +64,7 @@ TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
 
 # ---------- nät ----------
 VBAT_IN, VBAT_F, VBAT, V5, V3, GND = (Net(n) for n in ("VBAT_IN","VBAT_F","VBAT","+5V","+3V3","GND"))
-VBAT_E, LEDC, GATE = Net("VBAT_E"), Net("LED_CATH"), Net("DRV_GATE")
-VREF, SENSE, IR_MOD = Net("IDRV_REF"), Net("IDRV_SENSE"), Net("IR_MOD")
+IR_MOD = Net("IR_MOD")
 SCK, MOSI, MISO, nCS, IMU_INT = (Net(n) for n in ("SCK","MOSI","MISO","nCS","IMU_INT"))
 I2C_SCL, I2C_SDA = Net("I2C_SCL"), Net("I2C_SDA")
 VBAT_SENSE = Net("VBAT_SENSE")
@@ -77,9 +76,7 @@ H = HDR(); J2 = BATT(); Je = EMIT()
 F1 = PTC(); Qrp = PFET(); Rg = RES("100k"); Dt = TVS()
 Cin = CAP("10uF","Capacitor_SMD:C_1206_3216Metric"); Cbulk = CAP("100uF","Capacitor_SMD:C_1210_3225Metric")
 Ub = BUCK(); Lbi = CAP("22uF","Capacitor_SMD:C_1210_3225Metric"); Lbo = CAP("22uF","Capacitor_SMD:C_1210_3225Metric")
-Uop = OPAMP(); Qd = DFET()
-Rsense = RES("0R2","Resistor_SMD:R_2512_6332Metric"); Rovr = RES("0R1 DNP=1A/montera=3A")
-Rda = RES("15k"); Rdb = RES("1k"); Rgate = RES("100R"); Cop = CAP("100nF"); Cc = CAP("100pF")
+# CC-sänkan (OPA171+DPAK+sense+delare) FLYTTAD till optik-PCB:n (kortare puls-loop, frigör HAT-yta).
 U_imu = IMU(); Ci1 = CAP("100nF","Capacitor_SMD:C_0402_1005Metric"); Ci2 = CAP("1uF")
 U_adc = ADC(); Rsa = RES("100k"); Rsb = RES("47k"); Csns = CAP("100nF"); Cadc = CAP("100nF")
 Jt = SW("TRIGGER","TRIG","GND")(); Jr = SW("RACK","RACK","GND")()
@@ -107,13 +104,8 @@ Dt["K"] += VBAT; Dt["A"] += GND; Cin[1] += VBAT; Cin[2] += GND; Cbulk[1] += VBAT
 Ub["VIN"] += VBAT; Ub["EN"] += VBAT; Ub["GND"] += GND; Ub["VOUT"] += V5
 Lbi[1] += VBAT; Lbi[2] += GND; Lbo[1] += V5; Lbo[2] += GND
 
-# ---------- CC-sänka → emitter på huvudet via Je ----------
-Je["VBAT_E"] += VBAT; Je["DRV"] += LEDC
-Qd["D"] += LEDC; Qd["S"] += SENSE; Qd["G"] += GATE
-Rsense[1] += SENSE; Rsense[2] += GND; Rovr[1] += GND; Rovr[2] += SENSE
-Uop["V+"] += VBAT; Uop["V-"] += GND; Uop["IN+"] += VREF; Uop["IN-"] += SENSE; Uop["OUT"] += Rgate[1]; Rgate[2] += GATE
-Rda[1] += IR_MOD; Rda[2] += VREF; Rdb[1] += VREF; Rdb[2] += GND
-Cc[1] += Uop["OUT"]; Cc[2] += SENSE; Cop[1] += VBAT; Cop[2] += GND
+# ---------- emitter-kontakt → optik (VBAT + IR_MOD + GND; CC-sänkan sitter på optik-PCB:n) ----------
+Je["VBAT"] += VBAT; Je["IR_MOD"] += IR_MOD; Je["GND"] += GND
 
 # ---------- IMU (SPI; VDD/VDDIO = 3V3 från headern) ----------
 U_imu["VDD"] += V3; U_imu["VDDIO"] += V3; U_imu["GND"] += GND
