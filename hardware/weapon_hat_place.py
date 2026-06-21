@@ -54,21 +54,21 @@ def cell(fp):
         if k in (fp or ""): return w, h
     return 3.5, 3.5
 
-# ---- regioner (radpacka vänster→höger, nedåt): xL, xR, yTop ----
-REG = {"CC":(-31,-15,20), "IMU":(-6,6,18), "ADC":(13,23,20),
-       "PWR":(-31,-8,2), "FC":(-6,10,2),  "MISC":(13,23,2)}
+# ---- regioner (radpacka vänster→höger, nedåt): xL, xR, yTop — TIGHT för 56×41 ----
+REG = {"CC":(-27,-15,11), "IMU":(-14,-5,11), "ADC":(-3,7,11),
+       "PWR":(-26,-2,-2), "FC":(-1,22,-2), "MISC":(8,22,11)}
 # fasta kontakt-lägen — mappas via VÄRDE-sträng (robust mot SKiDL-ref-numrering J3..J9)
 def fixedpos(ref):
     fp, v = comps[ref]; v = v or ""
-    if ref == "J1": return (0, 24, 90)
-    if "XT30" in v: return (-30, -25, 0)
-    if "emitter" in v: return (-32, 7, 0)
-    if "TRIGGER" in v: return (-2, -25, 0)
-    if "RACK" in v: return (5, -25, 0)
-    if "MAGREL" in v: return (12, -25, 0)
-    if "MAGWELL" in v: return (19, -25, 0)
-    if "recoil" in v: return (30, -18, 90)
-    if "NFC" in v: return (30, -3, 90)
+    if ref == "J1": return (0, 16, 90)       # 40-pin header topp (48 mm i 56-bredden)
+    if "XT30" in v: return (-23, -17, 0)      # batteri nedre-vänster
+    if "emitter" in v: return (24, 6, 90)     # emitter-JST höger kant
+    if "TRIGGER" in v: return (-11, -17.5, 0)
+    if "RACK" in v: return (-4, -17.5, 0)
+    if "MAGREL" in v: return (3, -17.5, 0)
+    if "MAGWELL" in v: return (10, -17.5, 0)
+    if "recoil" in v: return (24, -14, 90)
+    if "NFC" in v: return (24, -6, 90)
     return None
 
 b = pcbnew.CreateEmptyBoard(); b.SetCopperLayerCount(2)
@@ -109,7 +109,7 @@ for cl, refs in groups.items():
 
 # centrera 40-pin headern via bbox (origo = pin1)
 j1 = fps["J1"]; bb = j1.GetBoundingBox()
-j1.Move(pcbnew.VECTOR2I(int(OX*1e6) - (bb.GetLeft()+bb.GetRight())//2, int((OY-24)*1e6) - (bb.GetTop()+bb.GetBottom())//2))
+j1.Move(pcbnew.VECTOR2I(int(OX*1e6) - (bb.GetLeft()+bb.GetRight())//2, int((OY-16.5)*1e6) - (bb.GetTop()+bb.GetBottom())//2))
 
 # --- relaxering: nudga ev. överlappande (icke-fasta) footprints isär tills 0 clearance ---
 import math
@@ -117,7 +117,7 @@ movable = [r for r in fps if fixedpos(r) is None]
 def hits(ra, rb):
     return any(pa.GetEffectiveShape().Collide(pb.GetEffectiveShape(), int(0.2e6))
                for pa in fps[ra].Pads() for pb in fps[rb].Pads())
-XMIN, XMAX = int((OX-33)*1e6), int((OX+33)*1e6); YMIN, YMAX = int((OY-27)*1e6), int((OY+27)*1e6)
+XMIN, XMAX = int((OX-24)*1e6), int((OX+24)*1e6); YMIN, YMAX = int((OY-18)*1e6), int((OY+18)*1e6)
 for _ in range(80):
     moved = False
     for ra in movable:
@@ -132,7 +132,7 @@ for _ in range(80):
     if not moved: break
 
 # outline 70×58 mm
-W, H = 35.0, 29.0
+W, H = 28.0, 20.5
 pts = [(-W,-H),(W,-H),(W,H),(-W,H)]
 for i in range(4):
     s = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_SEGMENT)
