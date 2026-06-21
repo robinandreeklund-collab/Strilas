@@ -1,5 +1,26 @@
 # STRILAS — Vapen-modul v2 (Raspberry Pi CM5) — komplett design
 
+> ## ✅ SLUTGILTIG ARKITEKTUR + FÄRDIGA KORT (2026-06)
+> **Stack (mot målet →):** CM5 → CM5-carrier (köpt, t.ex. CM5 Nano Base 56×41) → **HAT/FC** →
+> *[20 mm; AR0234M @10 mm]* → **OPTIK-PCB**. Hård gräns: alla PCB ≤ **56×41 mm**.
+>
+> | Kort | Status | Innehåll |
+> |---|---|---|
+> | **OPTIK-PCB** (`optik_head.py`) | ✅ **ROUTAD 0/0**, leverans klar | 41×56 porträtt; **lins-cutout** topp (AR0234M bakom @10 mm standoff); **2 emittrar + Carclo 10734/10003 SIDA-VID-SIDA** botten; **CC-sänka (OPA171+DPAK+0R2/0R1+15k/1k+gate) på FRAMSIDAN** (enkelsidig SMT = billigare); JST 3-pin (VBAT·IR_MOD·GND) THT bak. |
+> | **HAT/FC** (`weapon_hat_netlist.py`) | ✅ **ROUTAD 0/0**, 4-lager, leverans klar | 56×41 på carrier-headern; 40-pin RPi-header; 2S-batteri **JST-XH** + skydd (PTC/rev-FET/TVS); 2S→5V buck (back-feed); IMU (SPI); batteri-sense (I²C-ADC); FC-IO (trigger/rack/mag/magwell/recoil/NFC/MODE/PTT). |
+> | **AR0234M** (VEYE) | köps | 29×29, V4L2-driver på CM5, M12-lins + 860 nm bandpass, FFC→carrier-CSI. |
+> | **CM5 + carrier** | köps | bänk: CM5 Nano Base. |
+>
+> **Nyckeländringar mot tidigare iterationer i denna doc:** (a) carrier-elektroniken blev en **HAT på
+> carrier-headern** (ej eget DF40-kort) → bara stock-footprints, routbart. (b) emittrarna **sida-vid-sida**
+> (ej över/under). (c) **CC-sänkan flyttad optik→** kortare puls-loop, lägre EMI; HAT skickar bara DC VBAT +
+> µA IR_MOD + GND. (d) kamera = **AR0234M** (tillgänglig). (e) batteri **JST-XH** (ej XT30).
+>
+> **Compute bekräftad (`compute_budget_cm5.py`):** CM5 kör CV-pipelinen på <2 % av EN A76-kärna även i
+> värsta dagsljus; MIPI-CSI 4-lane → ingen USB-flaskhals. **Orkar driva allt med stor marginal** (båda
+> P4-riskerna borta). Sim/test-svit grön. **Öppet (HIL):** AR0234M:s exakta 29×29-mått (VEYE-DXF → CAM_PITCH),
+> IEC 60825-1-ommätning, bänk-bringup. Avsnitten nedan beskriver tidigare designiterationer.
+
 > **Status:** designförslag (2026-06). Vapen-noden = **Raspberry Pi Compute Module 5** (Linux).
 > Väst/hjälm = oförändrat ESP32-P4. Mesh:en (firmware/run_mesh.py) är transport-agnostisk → blandade noder OK.
 >
