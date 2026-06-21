@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """STRILAS — OPTIK-HUVUD (vapen v2): mini-PCB med kamera + 2 IR-emittrar ÖVER/UNDER kameran.
 
-"Business end" på vapnet: bär Mira220-kameran (mitten) + 2× SFH4725AS (940 nm) i SERIE, en över och
+"Business end" på vapnet: bär VEYE AR0234M-kameran (mitten) + 2× SFH4725AS (940 nm) i SERIE, en över och
 en under kameran (symmetriskt kring optiska axeln → stråltyngdpunkt på siktlinjen). Över VARJE emitter
 sitter en **Carclo 10734-linshållare + 10003-lins** → kollimerar till SMAL beam (räckvidd). Hålbilden
 för hållaren = 4 ben Ø2.1 på **±4,5 mm (x) × ±7,8 mm (y)** kring emittern (= gamla optik-kortets 10734-
 mönster, verifierat). Ingen aktiv elektronik — bara dioder + ben-hål + en JST för emitter-strömmen
 (drivs av CC-sänkan på carriern). Kamerans egen RPi-CSI-FFC går separat till carriern (EMI-skild).
 
-Kameran (Mira220 + M12-lins) fästs i mitten (2× M2 M12-hållare). JST = VERTIKAL på BAKSIDAN (ej kant-
+Kameran (VEYE AR0234M + M12-lins) fästs i mitten (2× M2 M12-hållare). JST = VERTIKAL på BAKSIDAN (ej kant-
 monterad → tar ej kant-plats); emitter-strömmen via 2 spår till dess THT-pads.
 
 Kör:  python3 hardware/optik_head.py   → hardware/optik-head.kicad_pcb (+ BOM/centroid)
@@ -77,7 +77,7 @@ def main():
     def silk(txt, x, y, sz=0.8):
         t = pcbnew.PCB_TEXT(b); t.SetText(txt); t.SetPosition(V(x, y)); t.SetLayer(pcbnew.F_SilkS)
         t.SetTextSize(pcbnew.VECTOR2I(MM(sz),MM(sz))); t.SetTextThickness(MM(0.12)); t.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER); b.Add(t)
-    silk("STRILAS OPTIK-HEAD", 0, 31); silk("D1", 6, EMIT_DY); silk("D2", 6, -EMIT_DY); silk("MIRA220", 0, 0, 1.0)
+    silk("STRILAS OPTIK-HEAD", 0, 31); silk("D1", 6, EMIT_DY); silk("D2", 6, -EMIT_DY); silk("AR0234", 0, 0, 1.0)
 
     pcbnew.SaveBoard("hardware/optik-head.kicad_pcb", b)
     print("wrote hardware/optik-head.kicad_pcb (32×66: 2 emitter + Carclo-10734-ben + kamera + JST baksida)")

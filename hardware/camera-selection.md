@@ -1,16 +1,18 @@
 # STRILAS — Kameraval (sikteskamera)
 
-> ## 🔒 LÅST (2026-06): **ams Mira220 MONO** på **Raspberry Pi CM5** (libcamera)
+> ## 🔒 LÅST (2026-06): **VEYE RAW-MIPI-AR0234M MONO** på **Raspberry Pi CM5** (V4L2)
 > | Del | Val | Varför |
 > |---|---|---|
-> | **Plattform** | **Raspberry Pi CM5** (carrier-native) | enda plattformen där GS-NIR-kamerans driver är turnkey (RPi ≫ Rockchip > Allwinner). Kör Python/libcamera direkt. |
-> | **Sensor** | **ams Mira220 mono** (MIRA220MINI MONO) | **NIR-enhanced (~38% QE@940, högre @860) → bäst dagsljus-SNR** (Fas 2 #1-risk); mono = full NIR-QE; **samma leverantör som OSLON-emittrarna**; `ams_rpi_kernel`-driver. |
-> | **Lins** | **~18 mm M12** (1/2.7″ → 13,7°) + **850/860 nm bandpass** | räckvidds-FOV @150 m + dagsljus-rejektion |
-> | **Interface** | 22-pin MIPI-CSI FFC → carrier → CM5 | vi äger MIPI-vägen på carriern |
+> | **Plattform** | **Raspberry Pi CM5** | turnkey kamera-drivrutiner (RPi ≫ Rockchip > Allwinner). |
+> | **Sensor** | **VEYE RAW-MIPI-AR0234M mono** | AR0234 2,3 MP GS, **mono = full NIR-QE** (ser 860 nm), RAW Mono8/10, **22-pin MIPI-CSI** (passar CM5), **120 fps @4-lane**. **TILLGÄNGLIG** (Mira220 svår att få). |
+> | **Driver** | **VEYE V4L2** (ej libcamera) | VEYE:s MV/RAW-kameror kör V4L2 (`mvcam_raspberrypi`/`raspberrypi_v4l2`); CM4 stöds, Pi5/CM5 aktivt. Firmware läser rå mono via `cv2.VideoCapture` — *enklare* än libcamera. |
+> | **Lins** | **~24 mm M12** (1/2.6″ → 13,7°) + **850/860 nm bandpass** | räckvidds-FOV @150 m + dagsljus-rejektion |
+> | **Mount** | M12-hållare; board **29×29 mm**, DXF/STP från VEYE | exakta monteringshål till optik-huvudet |
 >
-> Övervägt: AR0234 (mer fps/pixlar men ej NIR-enhanced; turnkey-libcamera-varianten är färg → Bayer
-> dödar NIR). Mira220 attackerar exakt rätt risk. Se [`weapon-v2-design.md`](weapon-v2-design.md).
-> **Öppet vid köp:** MIRA220MINI:s exakta linsfäste/mått (för optik-huvudets mount) + bandpass-passning.
+> Bytt FRÅN ams Mira220 (bättre NIR-enhanced-SNR men **svår att få tag på**). AR0234 mono är NIR-dugligt;
+> **bänkmät dagsljus-SNR @150 m** (lutar mer på bandpass + emitter-effekt — `ir_link_budget.py` täcker det).
+> Datablad: [VEYE RAW-MIPI-AR0234M](https://wiki.veye.cc/index.php?title=RAW-MIPI-AR0234M_Data_Sheet).
+> **Öppet vid köp/bringup:** CM5-specifik V4L2-dtbo (Pi5-grenen) + 24 mm M12 + bandpass-passning.
 
 > ## ⚠️ KORRIGERING (juni 2026) — B0332 UTGÅR: linsen går INTE att byta
 > Arducams datablad för **B0332**: *"assembled with a 70°(H) low distortion M12 lens … The lens is
