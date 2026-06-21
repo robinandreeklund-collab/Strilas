@@ -60,11 +60,16 @@ relaxationen täcker troligen 1–3 A. **Det måste mätas**, inte antas. HW-tak
 
 ---
 
-# Konstellations-emitter (850 nm VSMY98545, väst-patch + hjälm-mb) — FIRMWARE-TRIMBAR CC-sänka
+# Konstellations-emitter (850 nm VSMY98545, väst-patch) — FIRMWARE-TRIMBAR CC-sänka
 
 > Separat hazard från skott-emittern: **850 nm, VIDVINKEL ±45° UTAN kollimatorlins** (kamera-markör).
 > Ingen lins-koncentration → irradiansen vid given ström är **mycket lägre** än den kollimerade
 > skott-strålen. Men 850 nm är näIR-näthinnefarligt vid hög effekt → samma HW-tak-princip gäller.
+>
+> **STATUS:** Realiserat på **väst-patchen** (×14, bärs på väst OCH hjälm — samma kort). Hjälm-mb:ns
+> EGNA 6 konstellations-LED (D5-D10 på navet) kör tills vidare kvar på passiv ström; konvertering till
+> samma CC-sänka är förberedd i netlistan men kräver en dedikerad inkrementell route av det tätt
+> routade 4-lagers-kortet (freerouting hänger) — görs i separat pass.
 
 ## Topologi (2026-06, ersätter passiv 10R-strömsättning)
 
