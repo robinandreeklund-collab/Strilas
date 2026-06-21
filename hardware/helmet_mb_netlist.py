@@ -106,7 +106,7 @@ for i in range(4):
 # @150 m ser punkterna). Full OSLON-effekt behålls. Serie-par halverar VBAT-strömmen + 3 serieR (2512).
 # FIRMWARE-TRIMBAR AKTIV KONSTANTSTRÖMS-SÄNKA (samma topologi som väst-patch + vapen). I=Vref/Rsense,
 # batteri-oberoende. Vref = LED_EN (P4 GPIO2) körd som FILTRERAD LEDC-PWM: R16(15k)/R17(1k)-delare +
-# C23(100nF) RC ~94µs släpper blink (≤120Hz) men filtrerar PWM-bärvågen → analog setpunkt. Delaren
+# C23(22nF) RC τ≈20µs släpper blink (≤120Hz) men filtrerar PWM-bärvågen → analog setpunkt. Delaren
 # 15k/1k = HÅRT TAK: Vref_max 0,206V → I_max 1,0A (R14=0R2). Firmware PWM-duty 0–100% → I 0–1,0A STEGLÖST
 # (kan ALDRIG överstiga taket → eye-safety-regel #1 i HÅRDVARA). DNP R15=0R1 parallellt → 3A lab-override.
 # Q1=pass-FET, R4=gate-R, R5-R7=balans (1R 2512, behåller ring-routning). CC-op-amp+sense instansieras SIST.
@@ -225,7 +225,7 @@ Rsense = RES("0R2", "Resistor_SMD:R_1206_3216Metric"); Rsense.ref = "R14"; Rsens
 Rovr = RES("0R1 DNP=1A/montera=3A"); Rovr.ref = "R15"; Rovr[1] += GND; Rovr[2] += _SENSE
 Rda = RES("15k"); Rda.ref = "R16"; Rda[1] += LED_EN; Rda[2] += _VREF
 Rdb = RES("1k"); Rdb.ref = "R17"; Rdb[1] += _VREF; Rdb[2] += GND
-Cf = CAP("100nF"); Cf.ref = "C23"; Cf[1] += _VREF; Cf[2] += GND
+Cf = CAP("22nF"); Cf.ref = "C23"; Cf[1] += _VREF; Cf[2] += GND
 
 generate_netlist(file_="hardware/helmet-mb.net")
 print("wrote hardware/helmet-mb.net (hjälm-mb v4: ESP32-P4-WIFI6 + buck + F9P + IIM-42653 + 4 TSOP + 2 LED + ljud + 4 patch)")

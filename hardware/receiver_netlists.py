@@ -66,7 +66,7 @@ def build(n_tsop, n_led, gnss, out_file, n_tab=0):
         cd = P["C"](); cd[1] += P3V3; cd[2] += GND                    # TSOP-avkoppling på 3V3
     # konstellations-LED + FIRMWARE-TRIMBAR AKTIV KONSTANTSTRÖMS-SÄNKA (samma topologi som vapnet).
     # I = Vref/Rsense, BATTERI-OBEROENDE. Vref kommer från LED_EN (moderkortets broadcast-GPIO) som
-    # nu körs som FILTRERAD LEDC-PWM: RC (R8·15k ∥ R9·1k + C6·100nF, ~94µs) släpper blink (≤120 Hz,
+    # nu körs som FILTRERAD LEDC-PWM: RC (R8·15k ∥ R9·1k + C6·22nF, τ≈20µs) släpper blink (≤120 Hz,
     # kamera-fps) men filtrerar PWM-bärvågen → analog setpunkt. Delaren 15k/1k SKALAR + är HÅRT TAK:
     # Vref_max = 3,3·1/16 = 0,206 V → I_max = 0,206/Rsense. R6=0R2 → 1,0 A (säker default, levereras så).
     # Firmware sätter PWM-duty 0–100 % → I 0–1,0 A STEGLÖST (kan ALDRIG överstiga taket → eye-safety-
@@ -97,7 +97,7 @@ def build(n_tsop, n_led, gnss, out_file, n_tab=0):
     Rovr = P["R"](value="0R1 DNP=1A/montera=3A"); Rovr[1] += GND; Rovr[2] += SENSE   # R7: 3A-override (DNP, parallellt över R6)
     Rda = P["R"](value="15k"); Rda[1] += LED_EN; Rda[2] += VREF      # R8: skal/tak-delare topp (LED_EN-PWM in)
     Rdb = P["R"](value="1k"); Rdb[1] += VREF; Rdb[2] += GND          # R9: skal/tak-delare botten → Vref=LED_EN·1/16
-    Cf = P["C"](value="100nF"); Cf[1] += VREF; Cf[2] += GND          # C6: RC-filter (PWM→analog setpunkt)
+    Cf = P["C"](value="22nF"); Cf[1] += VREF; Cf[2] += GND           # C6: RC-filter 22nF (τ≈20µs → skarpa kamera-strobar, filtrerar PWM)
     # (Ingen LDO — 3,3 V från moderkortet.) 4 monteringshål (M2.5) i hörnen → skruv/standoff-fäste
     # som komplement till lim/kardborre (t.ex. patch skruvad mot hjälmskal/styv platta).
     for _ in range(4):

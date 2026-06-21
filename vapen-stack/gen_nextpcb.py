@@ -16,6 +16,7 @@ MPN = {
     "100nF@0805": ("CL21B104KBCNNNC", "Samsung", "MLCC 100nF 50V X7R 0805 — IN STOCK", "", ""),
     "100nF@0402": ("GRM155R71H104KE14D", "Murata", "MLCC 100nF 50V X7R 0402 — IN STOCK (byt fr Samsung CL05B104KO5NNNC: 4-20 d lead → kapat; samma 50V X7R-spec, billigare). Lager-koll cap-sampler", "", ""),
     "100nF": ("CL21B104KBCNNNC", "Samsung", "MLCC 100nF 50V X7R 0805 — IN STOCK (default)", "", ""),
+    "22nF":  ("CL21B223KBANNNC", "Samsung", "MLCC 22nF 50V X7R 0805 — CC-RC-filter (τ≈20µs, skarp kamera-strobe)", "", ""),
     "1uF@0805": ("GRM21BR61E105KA99L", "Murata", "MLCC 1uF 25V X5R 0805 (high-runner, byt fr utgången CL21A105KAFNNNG)", "", ""),
     "1uF@0402": ("CL05A105KP5NNNC", "Samsung", "MLCC 1uF 10V X5R 0402 — IN STOCK", "", ""),
     "1uF":   ("GRM21BR61E105KA99L", "Murata", "MLCC 1uF 25V X5R 0805 (default)", "", ""),

@@ -748,7 +748,7 @@
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp a71c5160-1493-47d1-b524-cad31ef6be23)
     )
-    (fp_text value "C_0805_2012Metric" (at 0 1.68) (layer "F.Fab")
+    (fp_text value "22nF" (at 0 1.68) (layer "F.Fab")
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 7f007897-5060-42d1-b411-230f72d3e6ac)
     )
