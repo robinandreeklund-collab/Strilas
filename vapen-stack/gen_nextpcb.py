@@ -79,6 +79,7 @@ MPN = {
     "22uF":        ("CL31A226KAHNNNE", "Samsung", "MLCC 22uF 25V X5R 1206 — buck-utgång", "", ""),
     "XIAO-S3 1x7 sockel": ("DS1023-1X7SF11", "Ckmtw", "Sockel 1x07 2.54mm hona (XIAO ESP32-S3 stack, 2 st)", "", "socket-sampler: 4-6 d; XIAO köps separat"),
     "ZED-F9P RTK (UART+I²C)": ("SM08B-GHS-TB(LF)(SN)", "JST", "JST GH 8-pol SMD-sockel → kabel till ZED-F9P RTK-puck", "", "ZED-F9P-puck köps separat (komplett: F9P+antenn+IST8310-kompass, centrum-monterad); VERIFIERA kabel-pinout"),
+    "RTK all-in-one 6-pol GH (UM980/F9P, alt-puck)": ("SM06B-GHS-TB(LF)(SN)", "JST", "JST GH 6-pol SMD-sockel → kabel till alt-RTK-puck (UM980/F9P all-in-one)", "", "6-pols-syskon till J1 (SM08B-GHS-TB). ALTERNATIV puck: montera ENDERA J1 (8-pol ZED-F9P) ELLER J12 (6-pol); båda kontakterna placeras, pucken pluggas i en. VERIFIERA kabel-pinout"),
     "AMP: 3V3·GND·SD·GAIN·DIN·BCLK·LRC": ("2.54-1x07-FH", "generisk", "Header 1x07 → MAX98357A-amp-breakout", "", "TH; amp+högtalare köps separat"),
     "MIC: 3V3·GND·SD·WS·SCK·LR": ("2.54-1x06-FH", "generisk", "Header 1x06 → I²S MEMS-mik-breakout", "", "TH; mik köps separat"),
     "2S batteri":  ("S2B-XH-A(LF)(SN)", "JST", "JST-XH 2-pol header 2.5mm THT (2S-batteri)", "", "TH"),
