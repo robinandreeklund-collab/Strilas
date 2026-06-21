@@ -390,8 +390,16 @@ helmet_mb_pos = {
     "U2": (0.16, 13.5, 0),
     "C4": (-3.7, 13.5, 90),
     "C5": (3.7, 13.5, 90),
-    "Q1": (0.0, 19.91, 0),
-    "R4": (5.0, 20.0, 90),
+    "Q1": (0.0, 19.91, 0),                           # konstellations-CC pass-FET
+    "R4": (-5.19, 20.85, 0),                         # gate-R (op-amp OUT → Q1.G) — flyttad in i CC-klustret
+    # konstellations-CC-sänka (firmware-trimbar drivström) — kompakt kluster intill Q1, clear-pocket-scannat.
+    # OBS: hjälm-mb routas INKREMENTELLT (hardware/helmet_cc_sink.py) — EJ via freerouting (hänger på 4-lagret).
+    "U9": (-6.0, 23.5, 0),                           # OPA171 CC-op-amp
+    "R14": (-2.69, 24.21, 90),                       # sense 0R2 (Q1.S → GND)
+    "R15": (-0.5, 25.12, 90),                        # 3A-override DNP 0R1 (parallellt R14)
+    "R16": (-10.5, 20.2, 90),                        # tak-delare 15k; pin1 (LED_EN) på In1-spårets via-punkt
+    "R17": (-13.15, 20.85, 0),                       # tak-delare 1k (Vref→GND)
+    "C23": (-12.8, 23.0, 0),                         # RC-filter 100nF (PWM→Vref)
     "L1": (-3.5, -15.0, 0),
     "U1": (3.0, -15.09, 0),
     "C2": (0.0, -19.5, 0),

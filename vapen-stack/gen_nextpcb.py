@@ -29,6 +29,7 @@ MPN = {
     "0R2@1206": ("WSL1206R2000FEA", "Vishay", "Res 0.2R 1% 0.5W 1206 Kelvin-sense (lågt TCR) — patch-CC-sänka sätter ~1A (Vref/Rs); P=I²R≈0,2W < 0,5W", "", "1206 (kompakt f. tät väst-patch); 1% sense → ström-/ögonsäkerhetsstabilitet"),
     "100R":  ("RC0805FR-07100RL", "Yageo", "Res 100R 1% 1/8W 0805 — CC-op-amp gate-R (stabilitet)", "", ""),
     "1R":    ("RC1206FR-071RL", "Yageo", "Res 1R 1% 1/4W 1206 — konstellations-gren-balansering (CC-sänka sätter total ström)", "", "Default 1A → 0,33A/gren → 0,11W ≪ 0,25W. OBS 3A-override: 1A/gren → 1W → uppgradera till 1R 1W (2010) + termik-koll vid medvetet 3A-labbeslut"),
+    "1R@2512": ("RC2512FK-071RL", "Yageo", "Res 1R 1% 1W 2512 — hjälm-konstellations-gren-balansering (CC-sänka sätter total ström); 1W-paket tål 3A-override (1A/gren → 1W)", "", "2512 (behåller hjälm-mb:s ring-routning vid 10R→1R-byte; 1W-rating klarar 3A-labbeslut utan uppgradering)"),
     "15k":   ("RC0805FR-0715KL", "Yageo", "Res 15k 1% 0805 — CC-referensdelare (övre)", "", ""),
     "1k":    ("RC0805FR-071KL", "Yageo", "Res 1k 1% 0805 — CC-referensdelare (undre)", "", ""),
     "100pF": ("CL21C101JBANNNC", "Samsung", "MLCC 100pF 50V C0G 0805 — slingkomp", "", ""),
@@ -271,8 +272,9 @@ if __name__ == "__main__":
     HMB_MOUNT = mount_set("helmet-mb.kicad_pcb", "helmet-mb.net")  # redan double-sided (GH-SMD baksida) → montera allt
     HMB_CUST = {"U3","U4","U5","U6","D5","D6","D7","D8","D9","D10"}
     print("HJÄLM-MB (IMU U2 ICM-42688-P bestyckad):")
-    build("helmet-mb.kicad_pcb", "helmet-mb.net", "nextpcb/helmet-mb-bom.xls", cust_refs=HMB_CUST, mount_refs=HMB_MOUNT)
-    centroid("helmet-mb.kicad_pcb", "nextpcb/helmet-mb-centroid.csv", exclude=HMB_CUST, mount_refs=HMB_MOUNT)
+    build("helmet-mb.kicad_pcb", "helmet-mb.net", "nextpcb/helmet-mb-bom.xls",
+          cust_refs=HMB_CUST, ovr_refs={"R15"}, mount_refs=HMB_MOUNT)   # R15 = konstellations-3A-override (DNP, 1A default)
+    centroid("helmet-mb.kicad_pcb", "nextpcb/helmet-mb-centroid.csv", exclude=HMB_CUST | {"R15"}, mount_refs=HMB_MOUNT)
     # VÄST-MODERKORT (ESP32-P4-WIFI6): JST-PH J1-J10 + XT30 J13 maskin-monteras; J11/J12 (1x20 P4-socklar) handlödda.
     VMB_MOUNT = mount_set("vest-mb.kicad_pcb", "vest-mb.net")  # allt Top → single-sided
     VMB_CUST = {f"J{i}" for i in range(1, 14)}

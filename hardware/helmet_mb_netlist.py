@@ -34,6 +34,9 @@ TSOP = mk("TSOP4856", "U", [(1, "OUT"), (2, "GND"), (3, "VS")], "OptoDevice:Vish
 LED = mk("LED_TAB", "D", [(1, "A"), (2, "K")], "strilas:LED_Tab", "LED-tab (VSMY98545 på micro-PCB med ben → böjs/vinklas; ledad)")
 ORD = mk("ORdiode", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SOD-123", "BAT54")
 NFET = mk("AO3400", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3400")
+# OPA171 (SOT-23-5 DBV) konstantströms-op-amp (TI SBOS516H): 1=OUT 2=V- 3=IN+ 4=IN- 5=V+.
+OPAMP = mk("OPA171", "U", [(1, "OUT"), (2, "V-"), (3, "IN+"), (4, "IN-"), (5, "V+")],
+           "Package_TO_SOT_SMD:SOT-23-5", "OPA171")
 F9P = mk("ZED-F9P", "J", [(1, "VCC"), (2, "GND"), (3, "TXD"), (4, "RXD"), (5, "SDA"), (6, "SCL"), (7, "PPS"), (8, "RSV")],
          "Connector_JST:JST_GH_SM08B-GHS-TB_1x08-1MP_P1.25mm_Horizontal", "ZED-F9P RTK (UART+I²C)")
 # ALT RTK-puck (UM980/F9P all-in-one, IST8310, LÅG PROFIL): 6-pol JST-GH 1.25mm. Pinout per databl.:
@@ -101,13 +104,21 @@ for i in range(4):
 # OSLON:en sitter på en egen micro-PCB (led-tab, hardware/led_tab.py) med 2 BEN (wire-legs) som löds in
 # i discens 2-håls tab-sockel (D5-D10) → böjs/vinklas RADIELLT UT mot horisonten (kameran i ögonhöjd
 # @150 m ser punkterna). Full OSLON-effekt behålls. Serie-par halverar VBAT-strömmen + 3 serieR (2512).
-Q = NFET(); Q["S"] += GND; Q["D"] += LEDC
-Rg = RES("220R"); Rg[1] += LED_EN; Rg[2] += Q["G"]
+# FIRMWARE-TRIMBAR AKTIV KONSTANTSTRÖMS-SÄNKA (samma topologi som väst-patch + vapen). I=Vref/Rsense,
+# batteri-oberoende. Vref = LED_EN (P4 GPIO2) körd som FILTRERAD LEDC-PWM: R16(15k)/R17(1k)-delare +
+# C23(100nF) RC ~94µs släpper blink (≤120Hz) men filtrerar PWM-bärvågen → analog setpunkt. Delaren
+# 15k/1k = HÅRT TAK: Vref_max 0,206V → I_max 1,0A (R14=0R2). Firmware PWM-duty 0–100% → I 0–1,0A STEGLÖST
+# (kan ALDRIG överstiga taket → eye-safety-regel #1 i HÅRDVARA). DNP R15=0R1 parallellt → 3A lab-override.
+# Q1=pass-FET, R4=gate-R, R5-R7=balans (1R 2512, behåller ring-routning). CC-op-amp+sense instansieras SIST.
+SENSE = Net("IDRV_SENSE"); GATE = Net("LED_GATE"); VREF = Net("IDRV_REF")
+Q = NFET(); Q["D"] += LEDC; Q["S"] += SENSE; Q["G"] += GATE     # Q1 = pass-FET (låg-sida)
+Rg = RES("100R"); Rg[2] += GATE                                # R4 = gate-R (op-amp OUT wires sist)
 for i in range(3):
-    rl = RES("10R", "Resistor_SMD:R_2512_6332Metric"); a = Net(f"LED_A{i+1}"); mid = Net(f"LED_M{i+1}")
-    rl[1] += VBAT; rl[2] += a
-    l1 = LED(); l1["A"] += a; l1["K"] += mid       # gren: VBAT→R→LED1→LED2→LED_CATH(FET)
+    rl = RES("1R", "Resistor_SMD:R_2512_6332Metric"); a = Net(f"LED_A{i+1}"); mid = Net(f"LED_M{i+1}")
+    rl[1] += VBAT; rl[2] += a                                  # R5-R7 = balans-R 2512 (behåller routning; 1W-tål 3A)
+    l1 = LED(); l1["A"] += a; l1["K"] += mid       # gren: VBAT→R→LED1→LED2→LED_CATH(pass-FET)
     l2 = LED(); l2["A"] += mid; l2["K"] += LEDC
+_CC_NETS = (SENSE, GATE, VREF, Rg)                             # → CC-sänkans op-amp+sense instansieras sist
 
 # ---------- RTK-puck (8-pol ZED-F9P + 6-pol alt-puck, parallellt) + 4 patch-kontakter ----------
 Jf = F9P(); Jf.ref = "J1"            # 8-pol ZED-F9P (explicit ref → undvik auto-kollision)
@@ -203,6 +214,18 @@ Csns[1] += VBAT_SENSE; Csns[2] += GND
 # centrerat) → pucken skruvas direkt på PCB:n med standoffs (puck-bas Ø55, höjd 55, kontakt i syd).
 for _ in range(8):
     MH()[1] += GND
+
+# ---------- konstellations-CC-sänkans op-amp + sense + tak-delare (SIST → explicit ref U9/R14-R17/C23,
+#            ingen ref-skift av codec/amp/batt-sense ovan). Wiras mot näten från driver-blocket. ----------
+_SENSE, _GATE, _VREF, _Rg = _CC_NETS
+Uop = OPAMP(); Uop.ref = "U9"
+Uop["IN+"] += _VREF; Uop["IN-"] += _SENSE; Uop["V+"] += VBAT; Uop["V-"] += GND
+_Rg[1] += Uop["OUT"]                                                    # R4: op-amp OUT → gate-R → GATE
+Rsense = RES("0R2", "Resistor_SMD:R_1206_3216Metric"); Rsense.ref = "R14"; Rsense[1] += _SENSE; Rsense[2] += GND
+Rovr = RES("0R1 DNP=1A/montera=3A"); Rovr.ref = "R15"; Rovr[1] += GND; Rovr[2] += _SENSE
+Rda = RES("15k"); Rda.ref = "R16"; Rda[1] += LED_EN; Rda[2] += _VREF
+Rdb = RES("1k"); Rdb.ref = "R17"; Rdb[1] += _VREF; Rdb[2] += GND
+Cf = CAP("100nF"); Cf.ref = "C23"; Cf[1] += _VREF; Cf[2] += GND
 
 generate_netlist(file_="hardware/helmet-mb.net")
 print("wrote hardware/helmet-mb.net (hjälm-mb v4: ESP32-P4-WIFI6 + buck + F9P + IIM-42653 + 4 TSOP + 2 LED + ljud + 4 patch)")
