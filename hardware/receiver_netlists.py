@@ -28,6 +28,9 @@ def defs():
         LEDTAB=mk("LED_TAB", "D", [(1, "A"), (2, "K")], "strilas:LED_Tab", "LED-tab (VSMY98545-micro-PCB, ben böjs 40° UT som TSOP)"),
         ORD=mk("ORdiode", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SOD-123", "BAT54"),
         NFET=mk("AO3400", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3400"),
+        # OPA171 (SOT-23-5 DBV) konstantströms-op-amp (TI SBOS516H): 1=OUT 2=V- 3=IN+ 4=IN- 5=V+.
+        OPAMP=mk("OPA171", "U", [(1, "OUT"), (2, "V-"), (3, "IN+"), (4, "IN-"), (5, "V+")],
+                 "Package_TO_SOT_SMD:SOT-23-5", "OPA171"),
         # 3,3 V LDO för TSOP+logik. SOT-89 pin (Holtek HT73XX datablad): 1=GND 2=VIN(tab) 3=VOUT.
         LDO=mk("HT7333-A", "U", [(1, "GND"), (2, "VIN"), (3, "VOUT")], "Package_TO_SOT_SMD:SOT-89-3", "HT7333-A"),
         R=mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric"),
@@ -61,27 +64,39 @@ def build(n_tsop, n_led, gnss, out_file, n_tab=0):
         s["VS"] += P3V3; s["GND"] += GND; s["OUT"] += out
         d = P["ORD"](); d["K"] += out; d["A"] += DATA                 # diod-OR (active-low)
         cd = P["C"](); cd[1] += P3V3; cd[2] += GND                    # TSOP-avkoppling på 3V3
-    # konstellations-LED + driver
-    Q = P["NFET"](); Q["S"] += GND; Q["D"] += LEDC
-    Rg = P["R"](value="220R"); Rg[1] += LED_EN; Rg[2] += Q["G"]
-    # konstellation = högeffekt 860 nm OSLON SFH 4715AS (Ie 780 mW/sr @1A databl.) för 150 m dagsljus.
-    # Serieresistor 10R 2512 → ~0,4–0,5 A/LED vid VBAT 2S. OBS blink-modulerad: max ~50 % duty
-    # (annars 2,5 W topp i 2 W-motstånd). LED-näten breddas till 0,4 mm via dsn_power_class.
-    # Konstellation: n_led fasta SMD-OSLON (centralt, inåt) + n_tab BÖJBARA LED-tabbar (kanter,
-    # böjs 40° UT som TSOP → matchande sido-täckning, allround). LED:erna kopplas i SERIE-PAR
-    # (2 LED/gren) → halverar antal 2512-motstånd (ryms på patchen). VBAT→10R→LED→LED→LED_CATH.
-    # 2 OSLON i serie (~2,6 V) + 10R @ VBAT 2S (7,4–8,4 V) → ~0,5 A/gren, blink-mod ≤50 % duty.
+    # konstellations-LED + FIRMWARE-TRIMBAR AKTIV KONSTANTSTRÖMS-SÄNKA (samma topologi som vapnet).
+    # I = Vref/Rsense, BATTERI-OBEROENDE. Vref kommer från LED_EN (moderkortets broadcast-GPIO) som
+    # nu körs som FILTRERAD LEDC-PWM: RC (R8·15k ∥ R9·1k + C6·100nF, ~94µs) släpper blink (≤120 Hz,
+    # kamera-fps) men filtrerar PWM-bärvågen → analog setpunkt. Delaren 15k/1k SKALAR + är HÅRT TAK:
+    # Vref_max = 3,3·1/16 = 0,206 V → I_max = 0,206/Rsense. R6=0R2 → 1,0 A (säker default, levereras så).
+    # Firmware sätter PWM-duty 0–100 % → I 0–1,0 A STEGLÖST (kan ALDRIG överstiga taket → eye-safety-
+    # regel #1 i HÅRDVARA). 3A-OVERRIDE: montera DNP R7=0R1 parallellt över R6 → 0,2∥0,1=0,067 Ω →
+    # I_max ≈ 3 A (medvetet, lab; kräver IEC 60825-1-ommätning + branch-R-termik-koll, se eye-safety-budget.md).
+    # 850 nm VSMY98545 (vidvinkel ±45°, kamera-markör) — drivs hårdare än gamla OSLON (0,5 A) f. matchad räckvidd.
+    Uop = P["OPAMP"]()                                               # U5 = OPA171 (CC-op-amp)
+    SENSE = Net("IDRV_SENSE"); GATE = Net("LED_GATE"); VREF = Net("IDRV_REF")
+    Q = P["NFET"](); Q["D"] += LEDC; Q["S"] += SENSE; Q["G"] += GATE  # Q1 = pass-FET (låg-sida)
+    Uop["IN+"] += VREF; Uop["IN-"] += SENSE; Uop["V+"] += VBAT; Uop["V-"] += GND
+    Rg = P["R"](value="100R"); Rg[1] += Uop["OUT"]; Rg[2] += GATE    # R2 = gate-R (stabilitet)
+    # LED-grenar (serie-par): VBAT → Rbal → LED → LED → LED_CATH → Q1(pass-FET) → SENSE → R6 → GND.
+    # CC-sänkan sätter TOTAL ström; Rbal (R3-R5, 1R 1206) balanserar bara grenarna (ej strömsättning).
     leds = [P["LED"]() for _ in range(n_led)] + [P["LEDTAB"]() for _ in range(n_tab)]
     for i in range(0, len(leds) - 1, 2):
-        rl = P["R"](value="10R", footprint="Resistor_SMD:R_2512_6332Metric")
+        rl = P["R"](value="1R", footprint="Resistor_SMD:R_1206_3216Metric")
         a = Net(f"LED_A{i//2+1}"); mid = Net(f"LED_M{i//2+1}")
         rl[1] += VBAT; rl[2] += a
         leds[i]["A"] += a;   leds[i]["K"] += mid
         leds[i+1]["A"] += mid; leds[i+1]["K"] += LEDC
     if len(leds) % 2:                                                # udda LED → egen gren
-        rl = P["R"](value="10R", footprint="Resistor_SMD:R_2512_6332Metric")
+        rl = P["R"](value="1R", footprint="Resistor_SMD:R_1206_3216Metric")
         a = Net(f"LED_A{len(leds)//2+1}"); rl[1] += VBAT; rl[2] += a
         leds[-1]["A"] += a; leds[-1]["K"] += LEDC
+    # CC-sänkans sense + referens (instansieras EFTER branch-R → branch = R3-R5, dessa R6-R9)
+    Rsense = P["R"](value="0R2", footprint="Resistor_SMD:R_1206_3216Metric"); Rsense[1] += SENSE; Rsense[2] += GND  # R6: I=Vref/0R2 → 1A@0,206V
+    Rovr = P["R"](value="0R1 DNP=1A/montera=3A"); Rovr[1] += GND; Rovr[2] += SENSE   # R7: 3A-override (DNP, parallellt över R6)
+    Rda = P["R"](value="15k"); Rda[1] += LED_EN; Rda[2] += VREF      # R8: skal/tak-delare topp (LED_EN-PWM in)
+    Rdb = P["R"](value="1k"); Rdb[1] += VREF; Rdb[2] += GND          # R9: skal/tak-delare botten → Vref=LED_EN·1/16
+    Cf = P["C"](value="100nF"); Cf[1] += VREF; Cf[2] += GND          # C6: RC-filter (PWM→analog setpunkt)
     # (Ingen LDO — 3,3 V från moderkortet.) 4 monteringshål (M2.5) i hörnen → skruv/standoff-fäste
     # som komplement till lim/kardborre (t.ex. patch skruvad mot hjälmskal/styv platta).
     for _ in range(4):

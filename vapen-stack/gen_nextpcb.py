@@ -26,6 +26,9 @@ MPN = {
     "4k7":   ("RC0805FR-074K7L", "Yageo", "Res 4.7k 1% 1/8W 0805", "", ""),
     "3R3_2W":("CRCW25123R30FKEGHP", "Vishay", "Res 3.3R 1% 2W 2512 (HP) — (legacy, ej i CC-driver)", "", ""),
     "0R2":   ("WSL2512R2000FEA", "Vishay", "Res 0.2R 1% 1W 2512 Kelvin-sense (lågt TCR) — CC-driver sätter ~1A (Vref/Rs)", "", "Sourcebar 4-7 d (byt fr Yageo PE2512FKE070R200L som krävde manuell offert). Precisions-sense → bättre ström-/ögonsäkerhetsstabilitet. P=I²R≈0,2W ≪ 1W"),
+    "0R2@1206": ("WSL1206R2000FEA", "Vishay", "Res 0.2R 1% 0.5W 1206 Kelvin-sense (lågt TCR) — patch-CC-sänka sätter ~1A (Vref/Rs); P=I²R≈0,2W < 0,5W", "", "1206 (kompakt f. tät väst-patch); 1% sense → ström-/ögonsäkerhetsstabilitet"),
+    "100R":  ("RC0805FR-07100RL", "Yageo", "Res 100R 1% 1/8W 0805 — CC-op-amp gate-R (stabilitet)", "", ""),
+    "1R":    ("RC1206FR-071RL", "Yageo", "Res 1R 1% 1/4W 1206 — konstellations-gren-balansering (CC-sänka sätter total ström)", "", "Default 1A → 0,33A/gren → 0,11W ≪ 0,25W. OBS 3A-override: 1A/gren → 1W → uppgradera till 1R 1W (2010) + termik-koll vid medvetet 3A-labbeslut"),
     "15k":   ("RC0805FR-0715KL", "Yageo", "Res 15k 1% 0805 — CC-referensdelare (övre)", "", ""),
     "1k":    ("RC0805FR-071KL", "Yageo", "Res 1k 1% 0805 — CC-referensdelare (undre)", "", ""),
     "100pF": ("CL21C101JBANNNC", "Samsung", "MLCC 100pF 50V C0G 0805 — slingkomp", "", ""),
@@ -254,8 +257,8 @@ if __name__ == "__main__":
     PATCH_MOUNT = mount_set("vest-patch.kicad_pcb", "vest-patch.net")
     PATCH_CUST = {"U1","U2","U3","U4","D7","D8","D9","D10"}            # ERM-motor pluggas i J2 (extern, DNP via is_conn)
     print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls",
-          cust_refs=PATCH_CUST | {"J1"}, mount_refs=PATCH_MOUNT)
-    centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude=PATCH_CUST, mount_refs=PATCH_MOUNT)
+          cust_refs=PATCH_CUST | {"J1"}, ovr_refs={"R7"}, mount_refs=PATCH_MOUNT)   # R7 = 3A-override (DNP, 1A default)
+    centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude=PATCH_CUST | {"R7"}, mount_refs=PATCH_MOUNT)
     # Prototyp-optik: J1 (1x14 P4-carrier) kund-lödd (TH) i denna variant → uteslut J1 ur mount
     # (annars säger BOM 'monteras' men centroid utesluter J1 → motsägelse). Övrigt = som optik.
     PROTO_MOUNT = OPTIK_MOUNT - {"J1"}

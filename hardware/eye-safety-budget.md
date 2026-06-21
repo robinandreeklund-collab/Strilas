@@ -57,3 +57,39 @@ utsträckt källa**. Om den uppmätta **skenbara källan ≥ α_max (100 mrad)**
 Med konservativ punktkälla är vi **inte** Class 1 vid räckviddsström — men extended-source-
 relaxationen täcker troligen 1–3 A. **Det måste mätas**, inte antas. HW-taket + duty-cap +
 2-emitter-splitten är de hårda skyddsbarriärerna oavsett mätutfall.
+
+---
+
+# Konstellations-emitter (850 nm VSMY98545, väst-patch + hjälm-mb) — FIRMWARE-TRIMBAR CC-sänka
+
+> Separat hazard från skott-emittern: **850 nm, VIDVINKEL ±45° UTAN kollimatorlins** (kamera-markör).
+> Ingen lins-koncentration → irradiansen vid given ström är **mycket lägre** än den kollimerade
+> skott-strålen. Men 850 nm är näIR-näthinnefarligt vid hög effekt → samma HW-tak-princip gäller.
+
+## Topologi (2026-06, ersätter passiv 10R-strömsättning)
+
+Samma aktiva CC-sänka som skott-emittern, men **referensen är nu FIRMWARE-STYRD**:
+- **U5 = OPA171** + **Q1 pass-FET (AO3400)** + **R6 = 0R2 sense** → I = Vref/Rsense.
+- **Vref = LED_EN** (moderkortets broadcast-GPIO) körd som **FILTRERAD LEDC-PWM**: R8(15k)/R9(1k)-
+  delare + C6(100nF) → RC ~94 µs släpper blink (≤120 Hz kamera-fps) men filtrerar PWM-bärvågen.
+- **Delaren 15k/1k är SAMTIDIGT det HÅRDA TAKET:** Vref_max = 3,3·1/16 = 0,206 V → **I_max = 1,0 A**
+  (R6 = 0R2). Firmware sätter PWM-duty 0–100 % → I **0–1,0 A STEGLÖST** men kan **ALDRIG** överstiga
+  taket (eye-safety-regel #1 i HÅRDVARA — firmware-bugg/full duty ger fortfarande ≤1 A).
+- **3A-override:** montera DNP **R7 = 0R1** parallellt över R6 → 0,2∥0,1 = 0,067 Ω → I_max ≈ 3 A.
+  Default **DNP/obestyckat = 1 A** (säker fail-safe, levereras så). 3 A = medvetet labbeslut, kräver
+  **förnyad IEC 60825-1-mätning + branch-balans-R-termik-koll** (R3-R5 = 1R 1206: 1 A/gren → 1 W → uppgradera).
+
+## ⚠️ FIRMWARE-KONTRAKT — LED_EN är nu ANALOG setpunkt, EJ digital enable
+
+`LED_EN` (vest-mb GPIO7 / helmet-mb GPIO2, broadcast till alla konstellations-drivare) drivs nu som
+**LEDC-PWM**, INTE en på/av-GPIO. **Ström ∝ PWM-duty** (filtrerad). Blink/identifiering görs genom att
+släppa duty till 0 i blink-takten (RC släpper ≤120 Hz). PWM-bärvåg ≥100 kHz (filtreras av RC). Varje
+kort har egen CC-sänka → **självreglerar oavsett kabellängd** (ingen kalibrering per patch).
+
+## Design-regler (konstellation)
+
+1. **Börja LÅGT** (duty f. ~0,3 A) vid bringup; öka stegvis och **MÄT** accessible emission + skenbar
+   källa per IEC 60825-1 **innan** patchar/hjälmar bärs mot människor.
+2. HW-taket (R6 + 15k/1k) = hård barriär; firmware kan bara gå lägre. 3 A endast via medveten R7-montering.
+3. VSMY98545 (vidvinkel) drivs hårdare än gamla OSLON (0,5 A) f. matchad räckvidd — **strömökning kräver
+   ommätning** (gäller även byte OSLON→VSMY: lägre Ie/A → mer ström f. samma räckvidd).

@@ -164,19 +164,27 @@ for i, a in enumerate((0, 90, 180, 270)):
 # 4 monteringshål MITT i TSOP→tab-luckorna (67.5/157.5/247.5/337.5) → symmetriskt, EJ snett mot tab/TSOP
 for i, a in enumerate((67.5, 157.5, 247.5, 337.5)):
     vest_pos[f"H{i+1}"] = (*_ring2(_PH, a), 0)
-# CENTRUM (spegelsymmetriskt vänster/höger): 2 fasta OSLON + driver + 3× 10R-grenR + DATA-pull/gate + bulk.
-# J1 (5-pol JST-PH) är SIDOMONTERAD på BAKSIDAN (S-typ, låg bygghöjd, kabel ut i kant) → fronten helt fri.
+# CENTRUM: 2 fasta VSMY-LED (topp) + FIRMWARE-TRIMBAR CC-SÄNKA (U5 op-amp + Q1 pass-FET + R6 sense +
+# R7 DNP-3A-override + R8/R9 tak-delare + C6 RC-filter) i nedre halvan + 3× balans-R (R3-R5) radiellt.
+# J1 (6-pol JST-PH) SIDOMONTERAD på BAKSIDAN. Branch-R krympta 2512→1206 (CC sätter ström → frigör yta).
 vest_pos.update({
-    "D5": (-2.4, 1.5, 0), "D6": (2.4, 1.5, 0),       # 2 fasta OSLON-konstellation (aim upp), center-par
-    "Q1": (0.0, -3.0, 0),                            # LED-driver FET, center
-    "R1": (-4.2, -3.0, 90), "R2": (4.2, -3.0, 90),   # DATA-pull 10k + gate 220R, flankerar FET (spegel)
-    "R3": (0.0, 9.0, 0),                             # 10R gren-1 — N-kanal (radiellt, mellan center o tab)
-    "R4": (9.0, 0.0, 90), "R5": (-9.0, 0.0, 90),     # 10R gren-2/3 — Ö/V-kanal (spegel)
-    "C1": (0.0, -9.0, 90),                           # 10µF bulk (VBAT) — S-kanal
+    "D5": (-2.4, 1.5, 0), "D6": (2.4, 1.5, 0),       # 2 fasta VSMY-konstellation (aim upp), center-par
+    "R1": (0.0, 5.2, 0),                             # DATA-pull 10k (övre center, mellan LED-par o R3)
+    "Q1": (0.0, -3.5, 0),                            # pass-FET (CC-sänka), center
+    "U5": (-3.98, -2.3, 0),                          # OPA171 CC-op-amp (vänster om FET)
+    "R2": (3.8, -3.0, 0),                            # gate-R 100R (op-amp OUT → Q1.G), höger om FET
+    "R6": (0.0, -6.5, 0),                            # sense 0R2 (Q1.S → GND), under FET
+    "C6": (-3.19, -8.98, 0),                         # RC-filter 100nF (PWM→Vref)
+    "R7": (2.9, -8.99, 0),                           # 3A-override DNP 0R1 (parallellt R6)
+    "R8": (-9.65, -4.03, 0),                         # tak-delare 15k (LED_EN→Vref) — clear av J1 TH-pad
+    "R9": (6.5, -1.71, 90),                          # tak-delare 1k (Vref→GND) — clear av J1 TH-pad
+    "C1": (0.0, -10.0, 90),                          # 10µF bulk (VBAT) — nedre center
+    "R3": (0.0, 9.0, 0),                             # balans-R gren-1 (radiellt, mellan center o tab)
+    "R4": (9.0, 0.0, 90), "R5": (-9.0, 0.0, 90),     # balans-R gren-2/3 (spegel)
     "J1": _se(270, 14.0, 6, "out", flip=True),       # 6-pol JST-PH SIDOMONT. på BAKSIDAN (VBAT·GND·DATA·LED_EN·3V3·VIB)
-    "J2": (-17.0, -6.0, 90, "B"),                   # 2-pol JST → ERM-motor (BAKSIDA, intill J1 → korta +3V3/VIB-hopp; motor-keepout @centrum)
+    "J2": (-17.0, -6.0, 90, "B"),                   # 2-pol JST → ERM-motor (BAKSIDA, intill J1; motor-keepout @centrum)
 })
-vest_labels = [(0.0, 5.5, "BOJ 40 UT", 0.5)]         # böj-instruktion (kort, center-fri yta)
+vest_labels = [(0.0, 7.2, "BOJ 40 UT", 0.4)]         # böj-instruktion (kort, övre center-fri yta)
 
 # ---- hjälm-NOD (Ø100, komplett: buck+XIAO-S3+8TSOP+4LED+GNSS+I2S-audio) ----
 # Ring (r=42) = 8× TSOP utåtriktade (360° huvud) + diod-OR + avkoppling strax innanför.
