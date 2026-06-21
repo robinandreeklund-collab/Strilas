@@ -152,6 +152,7 @@ for seed in range(1, 13):
     if best is None or u < best[0]:
         best = (u, seed); shutil.copy(PCB, "/tmp/_vp_best.kicad_pcb")
     if u == 0: clean = True; break
+    if seed >= 4 and best[0] <= 1: break   # tillräckligt bra → maze stänger sista nätet (spar tid)
 # bästa seed (GND routas av freerouting → inga instängda GND-paddar). Stäng ev. kvar-signaler med maze.
 shutil.copy("/tmp/_vp_best.kicad_pcb", PCB)
 # maze-routa ev. kvar-signaler + HELA GND-nätet (GND uteslöts ur freerouting → måste dras nu)

@@ -33,7 +33,7 @@ def defs():
         R=mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric"),
         C=mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0805_2012Metric", "100nF"),
         J=mk("Conn_1x06", "J", [(i, i) for i in range(1, 7)], "Connector_JST:JST_PH_S6B-PH-K_1x06_P2.00mm_Horizontal", "VBAT·GND·DATA·LED_EN·3V3·VIB"),
-        MOT=mk("ERM_3V", "M", [(1, "+"), (2, "-")], "strilas:ERM_Coin_10mm", "ERM 3V coin Ø10×3mm"),
+        MOT=mk("Motor_2pin", "J", [(1, "+"), (2, "-")], "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal", "ERM-motor 2-pol JST (+3V3/VIB)"),
         UFL=mk("U.FL", "J", [(1, "S"), (2, "G")], "Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical", "GNSS"),
         MH=mk("MH", "H", [(1, "1")], "MountingHole:MountingHole_2.2mm_M2", "M2"),
     )
@@ -47,12 +47,12 @@ def build(n_tsop, n_led, gnss, out_file, n_tab=0):
     VIB = Net("VIB")                                                  # vibrator-retur (moderkortets TPIC låg-sida)
     J1 = P["J"]()                                                    # 6-pol → matchar moderkortets zon-kontakt
     J1[1] += VBAT; J1[2] += GND; J1[3] += DATA; J1[4] += LED_EN; J1[5] += P3V3; J1[6] += VIB  # 3V3+VIB från moderkort
-    # ERM-coin-vibrationsmotor (3 V) PÅ patchen: + → 3V3 (EJ VBAT/8,4V!), − → VIB.
-    # Moderkortets TPIC6B595 drar VIB→GND (PWM = styrka); TPIC:ns inbyggda klampdiod tar flyback.
-    # DELAD PATCH (×14): VÄST bestyckar M1 + 6-trådskabel (VIB driven). HJÄLM = SAMMA kort men M1
-    # DNP (obestyckad) + VIB-pin NC (kabel mot hjälm-mb krimpas med 5 trådar; pos6/VIB lämnas tom)
-    # → hjälm-mb (5-pol-portar, ingen motordrivare) behöver EJ ändras. Kontakt = 6-pol på patchen.
-    M1 = P["MOT"](); M1["+"] += P3V3; M1["-"] += VIB
+    # ERM-coin-vibrationsmotor (3 V): pluggas in via 2-pol JST (J2) — EJ SMD-lödd. + → 3V3 (EJ VBAT/8,4V!),
+    # − → VIB. Moderkortets TPIC6B595 drar VIB→GND (PWM=styrka); TPIC:ns inbyggda klampdiod tar flyback.
+    # Motorkroppen (Ø10 coin) fästs med sin 3M-tejp inom keepout-ringen på BAKSIDAN (mekanisk markering,
+    # ingen koppar under → höljet kortsluts ej). DELAD PATCH (×14): VÄST pluggar in motorn + 6-trådskabel
+    # (VIB driven). HJÄLM = SAMMA kort, J2 obestyckad/tom + VIB-pin NC (5-tråds kabel) → hjälm-mb oförändrad.
+    J2 = P["MOT"](); J2.ref = "J2"; J2["+"] += P3V3; J2["-"] += VIB
     Rpu = P["R"](value="10k"); Rpu[1] += P3V3; Rpu[2] += DATA         # DATA pullup → 3V3 → 3,3 V-logik
     Cb = P["C"](value="10uF", footprint="Capacitor_SMD:C_1206_3216Metric"); Cb[1] += VBAT; Cb[2] += GND  # LED-bulk på VBAT
     # TSOP-array + diod-OR  (TSOP matas från +3V3, EJ VBAT — abs-max VS = 6 V)

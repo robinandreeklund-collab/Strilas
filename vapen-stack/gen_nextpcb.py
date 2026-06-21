@@ -88,7 +88,7 @@ MPN = {
     "10k":         ("RC0805FR-0710KL", "Yageo", "Res 10k 1% 0805", "", ""),
     "VBAT·GND·DATA·LED_EN·3V3":("S5B-PH-K-S(LF)(SN)", "JST", "JST-PH 5-pol header 2.0mm THT SIDOMONTERAD (S-typ, horisontell, låg bygghöjd) på patchens BAKSIDA → kabel ut i kant", "", "TH; kund-lödd. Side-entry (bygger ej på höjden under domen)"),
     "VBAT·GND·DATA·LED_EN·3V3·VIB":("S6B-PH-K-S(LF)(SN)", "JST", "JST-PH 6-pol header 2.0mm THT SIDOMONTERAD (S-typ) på patchens BAKSIDA → matchar moderkortets zon-kontakt (pin6=VIB till motorn)", "", "TH; kund-lödd. Side-entry"),
-    "ERM 3V coin Ø10×3mm":("VC1027B028F", "Vybronics", "ERM coin-vibrationsmotor Ø10mm 3V (eller likvärdig 10mm coin; + → 3V3, − → VIB/TPIC låg-sida)", "", "SMD-lödd på patchens baksida (mot kroppen). BESTYCKAS PÅ VÄST-patch; DNP på hjälm-patch (VIB-pin NC via 5-tråds kabel)"),
+    "ERM-motor 2-pol JST (+3V3/VIB)":("S2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol header 2.0mm (J2) → ERM coin-motor (Ø10×3mm 3V, t.ex. Vybronics VC1027B028F) PLUGGAS IN. + → 3V3 (EJ VBAT!), − → VIB. Motorn fästs m 3M-tejp i keepout-ringen baksida.", "", "TH header; MOTORN kund-levereras+pluggas in (DNP). BESTYCKAS på väst-patch; J2 obestyckad på hjälm-patch"),
     # --- P4-WIFI6 kant-socklar (moderkort: ESP32-P4-WIFI6 stackas i 2× 1x20 hona) ---
     "P4-WIFI6 edge B": ("DS1023-1X20SF11", "Ckmtw", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge B (kraft)", "", "socket-sampler: 4-7 d. ESP32-P4-WIFI6 köps separat (Waveshare)"),
     "P4-WIFI6 edge A": ("DS1023-1X20SF11", "Ckmtw", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge A (signaler)", "", "socket-sampler: 4-7 d. ESP32-P4-WIFI6 köps separat (Waveshare)"),
@@ -161,7 +161,7 @@ def build(board_pcb, board_net, out_xls, dnp_refs=frozenset(), cust_refs=frozens
     for f in b.GetFootprints():
         ref = f.GetReference()
         fp = str(f.GetFPID().GetLibItemName())
-        if any(k in fp for k in ("MountingHole","Fiducial","TestPoint")):  # kort-feature, ej placerad komponent
+        if any(k in fp for k in ("MountingHole","Fiducial","TestPoint","Keepout")):  # kort-feature, ej placerad komponent
             continue
         if f.Pads() and all(p.GetAttribute() == pcbnew.PAD_ATTRIB_NPTH for p in f.Pads()):
             continue                    # mekaniskt hål (NPTH) — ej komponent
@@ -210,7 +210,7 @@ def centroid(board_pcb, out_csv, exclude=frozenset(), mount_refs=frozenset()):
     rows = []
     for f in b.GetFootprints():
         fp = str(f.GetFPID().GetLibItemName())
-        if any(k in fp for k in ("MountingHole","Fiducial","TestPoint")): continue
+        if any(k in fp for k in ("MountingHole","Fiducial","TestPoint","Keepout")): continue
         if is_conn(fp) and f.GetReference() not in mount_refs: continue   # handlödda kontakter → ej i SMT-centroid (mount_refs = NextPCB-monterade → med)
         # mekaniska hål (alla paddar NPTH / inga kopparpaddar) → ej en placerad komponent
         if f.Pads() and all(p.GetAttribute() == pcbnew.PAD_ATTRIB_NPTH for p in f.Pads()): continue
@@ -252,7 +252,7 @@ if __name__ == "__main__":
     centroid("firecontrol.kicad_pcb", "nextpcb/firecontrol-centroid.csv", mount_refs=FC_MOUNT)
     # VÄST-PATCH: J1 (S5B-PH) maskin-monteras; U1-U4 (ledade TSOP) + D7-D10 (LED-tab) kund-handlödda.
     PATCH_MOUNT = mount_set("vest-patch.kicad_pcb", "vest-patch.net")
-    PATCH_CUST = {"U1","U2","U3","U4","D7","D8","D9","D10","M1"}   # M1 ERM-motor = DNP (kund monterar själv)
+    PATCH_CUST = {"U1","U2","U3","U4","D7","D8","D9","D10"}            # ERM-motor pluggas i J2 (extern, DNP via is_conn)
     print("VÄST-PATCH:"); build("vest-patch.kicad_pcb", "vest-patch.net", "nextpcb/vest-patch-bom.xls",
           cust_refs=PATCH_CUST | {"J1"}, mount_refs=PATCH_MOUNT)
     centroid("vest-patch.kicad_pcb", "nextpcb/vest-patch-centroid.csv", exclude=PATCH_CUST, mount_refs=PATCH_MOUNT)
