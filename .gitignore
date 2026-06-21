@@ -12,3 +12,7 @@ __pycache__/
 hardware/gerbers/
 fr-*.log
 hardware/gb_*/
+
+# transienta KiCad-projektfiler
+hardware/*.kicad_pro
+hardware/*.kicad_prl
