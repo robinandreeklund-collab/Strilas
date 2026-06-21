@@ -58,6 +58,8 @@ MPN = {
     "MAGWELL_SW":  ("B2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol header 2.0mm THT", "", "TH"),
     "recoil-styrning":("B3B-PH-K-S(LF)(SN)", "JST", "JST-PH 3-pol header 2.0mm THT", "", "TH"),
     "NFC PN532 (I²C)":("B4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol header 2.0mm THT", "", "TH"),
+    "OLED SSD1306 (I²C, GND/3V3/SCL/SDA)":("B4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol header 2.0mm vertikal THT → OLED SSD1306-modul (I²C)", "", "TH; OLED-modul köps separat + kabel"),
+    "4-läges rotarykopplare (MODE_A/MODE_B/GND)":("B3B-PH-K-S(LF)(SN)", "JST", "JST-PH 3-pol header 2.0mm vertikal THT → 4-läges rotary/mode-väljare", "", "TH; rotarykopplare köps separat + kabel"),
     # --- väst-patch ---
     "TSOP4856":    ("TSOP4856", "Vishay", "IR-mottagare 56 kHz (940 nm), LEDAD MOLD-3 (genomplåt/THT)", "", "KUND monterar: böjs 40° för sikte + handlöds (THT, ej SMT) → ej i centroid"),
     "BAT54":       ("BAT54-7-F", "Diodes Inc", "Schottky SOD-123 (OR av TSOP-utgångar)", "", ""),
