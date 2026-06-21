@@ -35,7 +35,7 @@ HDR_PINS = [(1,"3V3"),(2,"5V"),(3,"GPIO2_SDA"),(4,"5V"),(5,"GPIO3_SCL"),(6,"GND"
 HDR = mk("RPi_40pin", "J", HDR_PINS,
          "Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical", "40-pin → CM5-carrier")
 
-BATT = mk("XT30", "J", [(1, "VBAT"), (2, "GND")], "Connector_JST:JST_XH_S2B-XH-A_1x02_P2.50mm_Horizontal", "2S batteri")
+BATT = mk("BATT_2S", "J", [(1, "VBAT"), (2, "GND")], "Connector_JST:JST_XH_S2B-XH-A_1x02_P2.50mm_Horizontal", "2S batteri (JST-XH)")
 EMIT = mk("EmitConn", "J", [(1, "VBAT"), (2, "IR_MOD"), (3, "GND")],
           "Connector_JST:JST_PH_S3B-PH-K_1x03_P2.00mm_Horizontal", "→ optik (VBAT·IR_MOD·GND; CC-sänka på optik)")
 SW = lambda n, a, b: mk(f"SW_{n}", "J", [(1, a), (2, b)],

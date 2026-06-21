@@ -95,11 +95,11 @@ Det är dev-kortet; vapen-carriern nedan är produkten.
 - **CC-sänka:** OPA171 + AOD4184A DPAK + 0R2 sense (1 A) + 0R1 DNP (3 A) + 15k/1k + gate-R + komp —
   **identisk beprövad topologi**. IR_MOD från CM5 PWM-GPIO (56 kHz).
 - **IMU:** ICM-42688-P / IIM-42653 på CM5-SPI.
-- **Kraft:** 2S (XT30) → **5 V buck ≥3 A** (CM5 drar mer än P4/Radxa) + VBAT emitter-rail; rev-polaritet
+- **Kraft:** 2S (JST-XH) → **5 V buck ≥3 A** (CM5 drar mer än P4/Radxa) + VBAT emitter-rail; rev-polaritet
   P-FET, TVS, bulk-MLCC (56 kHz-puls), PTC. Batteri-sense → ADC (I²C-ADC el. CM5).
 - **Fire-control:** trigger/rack/mag-release/magwell-switchar, recoil-PWM+FAULT, NFC (PN532 I²C),
   MODE-väljare. Make-ready-state-maskin i Python.
-- **Kontakter:** optik-emitter-kabel (JST 2-pol), batteri (XT30), grepp-signaler, ev. headset.
+- **Kontakter:** optik-emitter-kabel (JST 2-pol), batteri (JST-XH), grepp-signaler, ev. headset.
 
 ## 7. Effekt & drifttid (2S 2200 mAh = 16,3 Wh)
 
@@ -169,7 +169,7 @@ CM5:s 2× DF40C-100DS-kontakter ska INTE handritas. Byggväg:
 **Floorplan (≈60×45 mm, 4-lager — MIPI + kraftplan):**
 ```
         ┌──────────────────── 60 × 45 mm, 4-lager ────────────────────┐
-   kant │ [XT30] [PTC][rev-FET]    ┌─────── CM5 (DF40×2) ───────┐  [FC- │ ← grepp-kablar
+   kant │ [JST-XH] [PTC][rev-FET]    ┌─────── CM5 (DF40×2) ───────┐  [FC- │ ← grepp-kablar
    kraft│ [buck 2S→5V][bulk]       │  55×40 modul ovanpå        │   IO: │   (trig/rack/
         │ [ADC+batt-sense]         │                            │  trig │    mag/recoil/
         │                          └────────────────────────────┘  rack │    NFC/MODE)
@@ -179,11 +179,11 @@ CM5:s 2× DF40C-100DS-kontakter ska INTE handritas. Byggväg:
 ```
 - **CAM-FFC** placeras intill CM5:s CSI-stift → kortast möjliga MIPI-route (kritiskt).
 - **CC-sänka** vid emitter-JST-kanten → emitter-kabeln ut rent, pulsad ström kort.
-- **Kraft** (XT30→buck) i ett hörn; VBAT-plan matar emitter-rail + buck.
+- **Kraft** (JST-XH→buck) i ett hörn; VBAT-plan matar emitter-rail + buck.
 - **FC-IO-kontakter** längs en kant → kablar till greppet.
 
 **Footprints som saknas i miljön (sourcas vid layout):** CM5 DF40 (RPi-referens), 2S→5 V-buck (modul/IC),
-XT30. Övriga (FFC, OPA171, DPAK, ICM-456xx, JST, R/C) finns.
+JST-XH. Övriga (FFC, OPA171, DPAK, ICM-456xx, JST, R/C) finns.
 
 ## 12. Nästa steg
 
