@@ -6,8 +6,9 @@ en över och en under kameran (symmetriskt kring optiska axeln → stråltyngdpu
 Ingen aktiv elektronik — bara dioder + kollimator-hållarben + en JST för emitter-strömmen (drivs av
 CC-sänkan på carriern). Kamerans egen 22-pin MIPI-FFC går separat till carriern (EMI-skild från pulsen).
 
-⚠️ Kamera-mount-hålbilden (CAM_*) är PARAMETRISK platshållare (22 mm kvadrat) → sätt mot MIRA220MINI:s
-   datablad innan tillverkning. Allt annat (emitter-läge, kollimator-ben, JST, outline) är definitivt.
+Kameran (ams Mira220-board + M12-lins) bultas på FRAMSIDAN via en standard M12-linshållare (2× M2 @
+18 mm pitch) → sensorn vetter framåt, boarden sitter bakom hållaren. Kamerans egen RPi-CSI-FFC går till
+carriern. (M12-hållarens 18 mm är vanligast; bekräfta mot vald hållare — hålen är NPTH, triv. att nudga.)
 
 Kör:  python3 hardware/optik_head.py   → hardware/optik-head.kicad_pcb (+ BOM/centroid)
 """
@@ -19,7 +20,7 @@ FPD = "/usr/share/kicad/footprints"; LOC = "/home/user/Strilas/hardware/strilas.
 # --- geometri (mm, kamera-centrum = origo) ---
 EMIT_DY   = 22.0     # emitter-offset över/under kameran
 LEG_DXY   = 7.0      # Carclo-hållarben på ±7 kvadrat runt varje emitter
-CAM_HOLE  = 11.0     # PARAMETRISK kamera-mount (±11 = 22 mm kvadrat) — sätt mot Mira220-datablad
+M12_PITCH = 18.0     # M12-linshållarens mont-pitch (2× M2 @ ±9 mm) — standard S-mount-hållare
 BW, BH    = 16.0, 33.0  # halva outline → 32×66 mm vertikal remsa
 
 def main():
@@ -67,8 +68,8 @@ def main():
     def hole(ref, fp, x, y):
         h = pcbnew.FootprintLoad(f"{FPD}/MountingHole.pretty", fp)
         h.SetReference(ref); h.SetPosition(V(x, y)); b.Add(h)
-    for i, (sx, sy) in enumerate([(1,1),(1,-1),(-1,1),(-1,-1)]):
-        hole(f"CAM{i+1}", "MountingHole_2.2mm_M2", sx*CAM_HOLE, sy*CAM_HOLE)
+    hole("CAM1", "MountingHole_2.2mm_M2", -M12_PITCH/2, 0.0)   # M12-linshållare, vänster
+    hole("CAM2", "MountingHole_2.2mm_M2", +M12_PITCH/2, 0.0)   # M12-linshållare, höger
     n = 1
     for ey in (+EMIT_DY, -EMIT_DY):
         for sx, sy in [(1,1),(1,-1),(-1,1),(-1,-1)]:
@@ -108,7 +109,7 @@ def main():
                 f = b.FindFootprintByReference(ref); p = f.GetPosition()
                 w.writerow([ref, f"{p.x/1e6-OX:.3f}", f"{OY-p.y/1e6:.3f}", "top", f.GetOrientationDegrees()])
     print("  optik-head BOM + centroid → hardware/nextpcb + leverans/optik-head")
-    print("  ⚠️ CAM-mount = parametrisk platshållare (22 mm kvadrat) — sätt mot MIRA220MINI-datablad")
+    print("  kamera = Mira220-board + M12-lins via M12-hållare (2× M2 @18 mm); RPi-CSI-FFC → carrier")
 
 if __name__ == "__main__":
     main()

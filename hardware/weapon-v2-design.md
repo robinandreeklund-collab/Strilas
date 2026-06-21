@@ -129,9 +129,45 @@ turnkey-kameran + mest compute.
 5. **IEC 60825-1-ommätning** för 2-emitter-configen.
 6. **Drifttid:** acceptera ~2,5 h ELLER större batteri/underklock.
 
-## 10. Nästa steg
+## 10. Optik-huvud — KLART (hardware/optik_head.py)
 
-1. **Bänk:** CM5 Nano Base + vald kamera → validera libcamera + CV + range (löser open #1).
-2. Rita **optik-huvudet** (SKiDL: 2 emitter + kollimator-hålbild + kamera-mount + FFC + JST).
-3. Rita **carriern** kring CM5 DF40 + MIPI-route + CC-sänka + IMU + buck + FC-IO.
-4. Uppdatera `firmware/config.py` (sensor/lins/F_PX) + `hardware/camera-selection.md`.
+`optik-head.kicad_pcb`: 32×66 mm, 2× SFH4725AS i serie över/under kameran, Carclo-ben, **M12-linshållar-
+mount (2× M2 @18 mm)** — kameran (Mira220-board + M12-lins) bultas på framsidan, RPi-CSI-FFC → carrier.
+0 oanslutna / 0 clearance. Leverans (gerbers+STEP+BOM+centroid) i `leverans/optik-head/`.
+⚠️ M12-hållarens 18 mm-pitch: bekräfta mot vald hållare (NPTH, triv. justering).
+
+## 11. Carrier — FLOORPLAN + byggväg (schema klart, layout kräver CM5-referens)
+
+`weapon-carrier.net` (90 komp, 0 errors) är **schema-komplett**. Att routa kortet kräver **Raspberry Pis
+officiella CM5-carrier-KiCad-referens** (DF40-footprints + rekommenderad MIPI/kraft-routning) som grund —
+CM5:s 2× DF40C-100DS-kontakter ska INTE handritas. Byggväg:
+
+1. Hämta **RPi CM5 carrier-referensdesign** (KiCad) → ärv DF40-footprints + 5 V/kraft + MIPI-stackup.
+2. Importera `weapon-carrier.net`-blocken (`kinet2pcb`) ovanpå referensen.
+3. Routa **inkrementellt** (ej freerouting): MIPI först (90 Ω diff, kort, längdmatchad, FFC↔CM5 CSI),
+   sen kraft (VBAT/5 V-plan), sen CC-sänka + IMU + FC-IO.
+
+**Floorplan (≈60×45 mm, 4-lager — MIPI + kraftplan):**
+```
+        ┌──────────────────── 60 × 45 mm, 4-lager ────────────────────┐
+   kant │ [XT30] [PTC][rev-FET]    ┌─────── CM5 (DF40×2) ───────┐  [FC- │ ← grepp-kablar
+   kraft│ [buck 2S→5V][bulk]       │  55×40 modul ovanpå        │   IO: │   (trig/rack/
+        │ [ADC+batt-sense]         │                            │  trig │    mag/recoil/
+        │                          └────────────────────────────┘  rack │    NFC/MODE)
+        │ [CC-sänka: OPA171+DPAK    [IMU]  (nära CM5 SPI)         mag  │
+        │  +sense+delare] → [JST→huvud]   [CAM-FFC 22p] ← KORT MIPI →CM5│
+        └──────────────────────────────────────────────────────────────┘
+```
+- **CAM-FFC** placeras intill CM5:s CSI-stift → kortast möjliga MIPI-route (kritiskt).
+- **CC-sänka** vid emitter-JST-kanten → emitter-kabeln ut rent, pulsad ström kort.
+- **Kraft** (XT30→buck) i ett hörn; VBAT-plan matar emitter-rail + buck.
+- **FC-IO-kontakter** längs en kant → kablar till greppet.
+
+**Footprints som saknas i miljön (sourcas vid layout):** CM5 DF40 (RPi-referens), 2S→5 V-buck (modul/IC),
+XT30. Övriga (FFC, OPA171, DPAK, ICM-456xx, JST, R/C) finns.
+
+## 12. Nästa steg
+
+1. **Bänk:** CM5 Nano Base + Mira220 → validera libcamera + CV + range.
+2. **Carrier-layout:** hämta RPi CM5-referens → importera `weapon-carrier.net` → inkrementell routning.
+3. Bekräfta M12-hållarens mått + MIRA220MINI-mekanik (ams-support) vid mekanik-integration.
