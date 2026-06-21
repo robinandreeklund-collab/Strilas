@@ -136,7 +136,26 @@ mount (2× M2 @18 mm)** — kameran (Mira220-board + M12-lins) bultas på framsi
 0 oanslutna / 0 clearance. Leverans (gerbers+STEP+BOM+centroid) i `leverans/optik-head/`.
 ⚠️ M12-hållarens 18 mm-pitch: bekräfta mot vald hållare (NPTH, triv. justering).
 
-## 11. Carrier — FLOORPLAN + byggväg (schema klart, layout kräver CM5-referens)
+## 11. PRIMÄR VÄG: HAT på färdigt CM5-carrier-kort (`weapon_hat_netlist.py`)
+
+Enklaste och snabbaste vägen till fungerande vapen: **en HAT som pluggar på ett FÄRDIGT CM5-carrier-korts
+40-pin GPIO-header** (t.ex. CM5 Nano Base). Carrier-kortet sköter CM5↔DF40 + kamerans 22-pin MIPI-CSI;
+HAT:en bär CC-sänka + IMU + buck + FC-IO + emitter-JST. **Ingen DF40, ingen MIPI på vårt kort → bara
+stock-footprints → placeras/routas direkt.**
+
+```
+Optik-huvud ──FFC──► [CM5 Nano Base: CM5 + 22-pin CSI + 40-pin header + USB-C]
+                                            │ 40-pin header
+                         [VÅR HAT] ─────────┘  (CC-sänka, IMU, buck, FC-IO, emitter-JST)
+```
+- 40-pin headern bär allt HAT:en behöver: **SPI (IMU), I²C (ADC/NFC), PWM GPIO18 (IR_MOD), GPIO (FC), 5V, 3V3, GND.**
+  **3V3 från headern matar IMU:ns VDDIO** (löser den öppna punkten).
+- **Kraft:** 2S → buck → **5V matas IN i headerns 5V-stift (back-power)**. Emitter-strömmen (puls) på HAT:en, ej headern.
+- `weapon-hat.net`: ~85 komp, 0 errors, CC-sänka verifierad. RPi-40-pin-mappning i netlistan.
+- **Avvägning:** 3 kort i stacken (CM5+carrier+HAT) → högre + carriern bär oanvänt I/O. Bra för snabb bringup;
+  det integrerade DF40-kortet (§12) är produkt-optimalt senare.
+
+## 12. PRODUKT-OPTIMAL (senare): integrerat DF40-carrier — floorplan + byggväg
 
 `weapon-carrier.net` (90 komp, 0 errors) är **schema-komplett**. Att routa kortet kräver **Raspberry Pis
 officiella CM5-carrier-KiCad-referens** (DF40-footprints + rekommenderad MIPI/kraft-routning) som grund —
