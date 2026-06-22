@@ -57,10 +57,13 @@ OPAMP = mk("OPA171", "U", [(1, "OUT"), (2, "V-"), (3, "IN+"), (4, "IN-"), (5, "V
            "Package_TO_SOT_SMD:SOT-23-5", "OPA171")
 BUCK = mk("Buck_5V_3A", "U", [(1, "VIN"), (2, "EN"), (3, "GND"), (4, "VOUT")],
           "Package_TO_SOT_SMD:TO-263-7_TabPin8", "2S→5V @≥3A (modul/IC)")
-ADC = mk("ADS1115", "U", [(1, "VDD"), (2, "GND"), (3, "SCL"), (4, "SDA"), (5, "AIN0")],
-         "Package_SO:TSSOP-10_3x3mm_P0.5mm", "I²C-ADC (batteri-sense)")
-IMU = mk("ICM-42688-P", "U", [(1,"SDO"),(4,"INT1"),(5,"VDDIO"),(6,"GND"),(8,"VDD"),(12,"CS"),(13,"SCLK"),(14,"SDI")],
+ADC = mk("ADS1115", "U", [(1,"ADDR"),(2,"ALERT"),(3,"GND"),(4,"AIN0"),(8,"VDD"),(9,"SDA"),(10,"SCL")],
+         "Package_SO:TSSOP-10_3x3mm_P0.5mm", "ADS1115 I²C-ADC 0x48 (batteri-sense)")
+# ADS1115 VSSOP-10 (DGS) stift VERIFIERADE mot TI SBAS444: 1=ADDR 2=ALERT 3=GND 4=AIN0 8=VDD 9=SDA 10=SCL.
+IMU = mk("ICM-42688-P", "U", [(1,"SDO"),(4,"INT1"),(5,"VDDIO"),(6,"GND"),(7,"RESV7"),(8,"VDD"),(12,"CS"),(13,"SCLK"),(14,"SDI")],
          "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-42688-P")
+# ICM-42688-P stift (DS-000347): 1=SDO/AD0 2,3,10,11=RESV(NC) 4=INT1 5=VDDIO 6=GND 7=RESV→GND
+#   8=VDD 9=INT2/FSYNC(NC) 12=CS 13=SCLK 14=SDI. Ingen REGOUT-pinne → VDD/VDDIO-caps räcker.
 # 2 EXTRA IMU på I²C — TDK IIM-42653 (LGA-14, samma paket). Numeriska stift per DS-000529:
 #   8=VDD 5=VDDIO 6=GND 7=RESV(→GND) 13=SCL 14=SDA 1=SDO/AD0(adress) 12=CS(→VDDIO=I²C) 4=INT1
 #   → 3 IMU totalt på HAT/FC. I²C 0x68/0x69 via AD0 (krockar ej med ADS1115 0x48 el. PN532).
@@ -120,7 +123,7 @@ Lbi[1] += VBAT; Lbi[2] += GND; Lbo[1] += V5; Lbo[2] += GND
 Je["VBAT"] += VBAT; Je["IR_MOD"] += IR_MOD; Je["GND"] += GND
 
 # ---------- IMU (SPI; VDD/VDDIO = 3V3 från headern) ----------
-U_imu["VDD"] += V3; U_imu["VDDIO"] += V3; U_imu["GND"] += GND
+U_imu["VDD"] += V3; U_imu["VDDIO"] += V3; U_imu["GND"] += GND; U_imu["RESV7"] += GND   # pin7 RESV→GND per DS
 U_imu["SCLK"] += SCK; U_imu["SDI"] += MOSI; U_imu["SDO"] += MISO; U_imu["CS"] += nCS; U_imu["INT1"] += IMU_INT
 Ci1[1] += V3; Ci1[2] += GND; Ci2[1] += V3; Ci2[2] += GND
 # 2 extra IMU på I²C: U_imu2 = 0x69 (AD0=hög), U_imu3 = 0x68 (AD0=låg); CS→3V3 = I²C-läge
@@ -133,7 +136,8 @@ Ci5[1] += V3; Ci5[2] += GND; Ci6[1] += V3; Ci6[2] += GND
 
 # ---------- batteri-sense → I²C-ADC ----------
 Rsa[1] += VBAT; Rsa[2] += VBAT_SENSE; Rsb[1] += VBAT_SENSE; Rsb[2] += GND; Csns[1] += VBAT_SENSE; Csns[2] += GND
-U_adc["VDD"] += V3; U_adc["GND"] += GND; U_adc["SCL"] += I2C_SCL; U_adc["SDA"] += I2C_SDA; U_adc["AIN0"] += VBAT_SENSE
+U_adc["VDD"] += V3; U_adc["GND"] += GND; U_adc["SCL"] += I2C_SCL; U_adc["SDA"] += I2C_SDA
+U_adc["AIN0"] += VBAT_SENSE; U_adc["ADDR"] += GND      # ADDR→GND = 0x48 (ALERT lämnas NC)
 Cadc[1] += V3; Cadc[2] += GND
 
 # ---------- fire-control ----------
