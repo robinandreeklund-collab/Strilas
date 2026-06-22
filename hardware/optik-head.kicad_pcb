@@ -88,7 +88,7 @@
 
   (footprint "MountingHole_2.2mm_M2" (layer "F.Cu")
     (tstamp 09a3f754-6895-4d05-91c9-298ef739986b)
-    (at 162 95)
+    (at 160 97)
     (descr "Mounting Hole 2.2mm, no annular, M2")
     (tags "mounting hole 2.2mm no annular m2")
     (attr exclude_from_pos_files exclude_from_bom)
@@ -480,7 +480,7 @@
 
   (footprint "MountingHole_2.2mm_M2" (layer "F.Cu")
     (tstamp 6823932d-b872-4b92-8e59-f07c5a520597)
-    (at 138 119)
+    (at 140 117)
     (descr "Mounting Hole 2.2mm, no annular, M2")
     (tags "mounting hole 2.2mm no annular m2")
     (attr exclude_from_pos_files exclude_from_bom)
@@ -773,7 +773,7 @@
 
   (footprint "MountingHole_2.2mm_M2" (layer "F.Cu")
     (tstamp 9e6e5b22-892a-4f3f-8a34-639ee01e0fc6)
-    (at 138 95)
+    (at 140 97)
     (descr "Mounting Hole 2.2mm, no annular, M2")
     (tags "mounting hole 2.2mm no annular m2")
     (attr exclude_from_pos_files exclude_from_bom)
@@ -965,7 +965,7 @@
 
   (footprint "MountingHole_2.2mm_M2" (layer "F.Cu")
     (tstamp e307aaec-7417-4b2e-b528-3c4197e982e2)
-    (at 162 119)
+    (at 160 117)
     (descr "Mounting Hole 2.2mm, no annular, M2")
     (tags "mounting hole 2.2mm no annular m2")
     (attr exclude_from_pos_files exclude_from_bom)

@@ -18,8 +18,10 @@
 >
 > **Compute bekräftad (`compute_budget_cm5.py`):** CM5 kör CV-pipelinen på <2 % av EN A76-kärna även i
 > värsta dagsljus; MIPI-CSI 4-lane → ingen USB-flaskhals. **Orkar driva allt med stor marginal** (båda
-> P4-riskerna borta). Sim/test-svit grön. **Öppet (HIL):** AR0234M:s exakta 29×29-mått (VEYE-DXF → CAM_PITCH),
-> IEC 60825-1-ommätning, bänk-bringup. Avsnitten nedan beskriver tidigare designiterationer.
+> P4-riskerna borta). Sim/test-svit grön. **AR0234M-hålbild verifierad** mot VEYE-måttritning: modul 29×29 mm,
+> 4×Ø2 hörnhål = **20×20-kvadrat** (CAM_PITCH=20) centrerad på optiska axeln → optik-PCB:ns kamera-hål flyttade
+> till ±10 mm (in-place, routning bevarad). **Öppet (HIL):** IEC 60825-1-ommätning, bänk-bringup. Avsnitten
+> nedan beskriver tidigare designiterationer.
 
 > **Status:** designförslag (2026-06). Vapen-noden = **Raspberry Pi Compute Module 5** (Linux).
 > Väst/hjälm = oförändrat ESP32-P4. Mesh:en (firmware/run_mesh.py) är transport-agnostisk → blandade noder OK.

@@ -15,7 +15,7 @@ FPD = "/usr/share/kicad/footprints"; LOC = "/home/user/Strilas/hardware/strilas.
 
 BW, BH = 20.5, 28.0       # 41×56 mm porträtt (max i 56×41-envelopen)
 LENS_C = (0.0, 13.0); LENS_R = 7.5          # kamera-cutout topp (Ø15)
-CAM_PITCH = 24.0          # AR0234M 29×29 mont (±12) — verifiera VEYE-DXF
+CAM_PITCH = 20.0          # VEYE AR0234M 29×29: 4×Ø2 hörnhål = 20×20-kvadrat (verifierat mot VEYE-måttritning)
 EMIT_Y = -18.5; EMIT_DX = 10.5              # emittrar botten, sida-vid-sida
 LEG_DX, LEG_DY = 4.5, 7.8
 
