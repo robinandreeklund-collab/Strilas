@@ -71,6 +71,10 @@ IMU_I2C = mk("IIM-42653", "U", [(i, str(i)) for i in range(1, 15)],
              "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "IIM-42653")
 PTC = mk("PTC", "F", [(1, "~"), (2, "~")], "Fuse:Fuse_1812_4532Metric", "PTC_3A")
 TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
+TVS5 = mk("SMAJ5.0A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMA", "SMAJ5.0A")   # 5V-rail transientskydd
+EEPROM = mk("AT24C32", "U", [(1,"A0"),(2,"A1"),(3,"A2"),(4,"GND"),(5,"SDA"),(6,"SCL"),(7,"WP"),(8,"VCC")],
+            "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm", "AT24C32 HAT-ID EEPROM 0x50")
+# AT24C32 standard 24Cxx-pinout: 1-3=A0/A1/A2(→GND=0x50) 4=GND 5=SDA 6=SCL 7=WP(→GND, skrivbar) 8=VCC
 
 # ---------- nät ----------
 VBAT_IN, VBAT_F, VBAT, V5, V3, GND = (Net(n) for n in ("VBAT_IN","VBAT_F","VBAT","+5V","+3V3","GND"))
@@ -78,6 +82,7 @@ IR_MOD = Net("IR_MOD")
 SCK, MOSI, MISO, nCS, IMU_INT = (Net(n) for n in ("SCK","MOSI","MISO","nCS","IMU_INT"))
 IMU2_INT, IMU3_INT = Net("IMU2_INT"), Net("IMU3_INT")
 I2C_SCL, I2C_SDA = Net("I2C_SCL"), Net("I2C_SDA")
+ID_SD, ID_SC = Net("ID_SD"), Net("ID_SC")              # HAT-ID-EEPROM-buss (GPIO0/1, separat I²C)
 VBAT_SENSE = Net("VBAT_SENSE")
 TRIG,RACK,MAGREL,MAGWELL,RPWM,RFAULT,MODE0,MODE1,PTT = (Net(n) for n in
     ("TRIG","RACK","MAGREL","MAGWELL","RECOIL_PWM","RECOIL_FAULT","MODE0","MODE1","PTT"))
@@ -99,6 +104,9 @@ Jrec = RECOIL(); Jnfc = NFC()
 Rmode0 = RES("10k"); Rmode1 = RES("10k")
 Rt = RES("10k"); Rr = RES("10k"); Rm = RES("10k"); Rw = RES("10k")
 Ri1 = RES("4k7"); Ri2 = RES("4k7")
+Dt5 = TVS5(); Cbulk5 = CAP("100uF","Capacitor_SMD:C_1210_3225Metric")   # 5V transientskydd + CM5-bulk
+U_eep = EEPROM(); Ceep = CAP("100nF","Capacitor_SMD:C_0402_1005Metric")
+Rid1 = RES("3k9"); Rid2 = RES("3k9")                   # ID_SD/ID_SC pull-ups (RPi HAT-spec)
 
 # ---------- 40-pin header: kraft + signaler (RPi-pinout) ----------
 H[2] += V5; H[4] += V5                                  # 5V BACK-FEED in i carriern
@@ -110,6 +118,7 @@ H[12] += IR_MOD                                         # GPIO18 (HW-PWM) → 56
 H[3] += I2C_SDA; H[5] += I2C_SCL                        # I²C (ADC + NFC)
 H[13] += TRIG; H[15] += RACK; H[16] += MAGREL; H[18] += MAGWELL
 H[32] += RPWM; H[36] += RFAULT; H[37] += MODE0; H[38] += MODE1; H[40] += PTT
+H[27] += ID_SD; H[28] += ID_SC                         # GPIO0/1 = HAT-ID-EEPROM-buss (ID_SD/ID_SC)
 
 # ---------- kraft: 2S → skydd → buck → 5V (back-feed) ; VBAT → emitter-rail ----------
 J2["VBAT"] += VBAT_IN; J2["GND"] += GND
@@ -118,6 +127,8 @@ Qrp["D"] += VBAT_F; Qrp["S"] += VBAT; Qrp["G"] += Rg[1]; Rg[2] += GND
 Dt["K"] += VBAT; Dt["A"] += GND; Cin[1] += VBAT; Cin[2] += GND; Cbulk[1] += VBAT; Cbulk[2] += GND
 Ub["VIN"] += VBAT; Ub["EN"] += VBAT; Ub["GND"] += GND; Ub["VOUT"] += V5
 Lbi[1] += VBAT; Lbi[2] += GND; Lbo[1] += V5; Lbo[2] += GND
+Cbulk5[1] += V5; Cbulk5[2] += GND                      # CM5-transient-bulk på 5V
+Dt5["K"] += V5; Dt5["A"] += GND                        # 5V-rail transientskydd (back-feed-skydd)
 
 # ---------- emitter-kontakt → optik (VBAT + IR_MOD + GND; CC-sänkan sitter på optik-PCB:n) ----------
 Je["VBAT"] += VBAT; Je["IR_MOD"] += IR_MOD; Je["GND"] += GND
@@ -145,9 +156,15 @@ Jt["TRIG"] += TRIG; Jt["GND"] += GND; Jr["RACK"] += RACK; Jr["GND"] += GND
 Jm["MAGREL"] += MAGREL; Jm["GND"] += GND; Jw["MAGWELL"] += MAGWELL; Jw["GND"] += GND
 Rt[1] += V3; Rt[2] += TRIG; Rr[1] += V3; Rr[2] += RACK; Rm[1] += V3; Rm[2] += MAGREL; Rw[1] += V3; Rw[2] += MAGWELL
 Jrec["VBAT"] += VBAT; Jrec["PWM"] += RPWM; Jrec["FAULT"] += RFAULT; Jrec["GND"] += GND
-Jnfc["VCC"] += V3; Jnfc["GND"] += GND; Jnfc["SDA"] += I2C_SDA; Jnfc["SCL"] += I2C_SCL
+Jnfc["VCC"] += V5; Jnfc["GND"] += GND; Jnfc["SDA"] += I2C_SDA; Jnfc["SCL"] += I2C_SCL   # NFC matas från 5V (egen LDO på modulen) → isolerar RF-burst från 3V3
 Rmode0[1] += MODE0; Rmode0[2] += GND; Rmode1[1] += MODE1; Rmode1[2] += GND
 Ri1[1] += V3; Ri1[2] += I2C_SCL; Ri2[1] += V3; Ri2[2] += I2C_SDA
+
+# ---------- HAT-ID-EEPROM (AT24C32 @0x50 på ID_SD/ID_SC = GPIO0/1) ----------
+U_eep["VCC"] += V3; U_eep["GND"] += GND; U_eep["A0"] += GND; U_eep["A1"] += GND; U_eep["A2"] += GND
+U_eep["SDA"] += ID_SD; U_eep["SCL"] += ID_SC; U_eep["WP"] += GND      # WP→GND = skrivbar
+Ceep[1] += V3; Ceep[2] += GND
+Rid1[1] += V3; Rid1[2] += ID_SD; Rid2[1] += V3; Rid2[2] += ID_SC      # ID-buss pull-ups
 
 generate_netlist(file_="hardware/weapon-hat.net")
 print("wrote hardware/weapon-hat.net")

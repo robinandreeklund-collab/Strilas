@@ -44,7 +44,9 @@ DESC = {  # värde → (MPN, tillv, beskrivning)
  "ADS1115": ("ADS1115IDGSR", "TI", "16-bit I²C-ADC (batteri-sense)"),
  "OPA171": ("OPA171", "TI", "op-amp"),
  "AO3401": ("AO3401A", "AOS", "P-FET (omvänd-polaritetsskydd)"),
- "SMBJ12A": ("SMBJ12A", "Littelfuse", "TVS 12 V"),
+ "SMBJ12A": ("SMBJ12A", "Littelfuse", "TVS 12 V (VBAT)"),
+ "SMAJ5.0A": ("SMAJ5.0A", "Littelfuse", "TVS 5 V (5V-rail/back-feed-skydd)"),
+ "AT24C32 HAT-ID EEPROM 0x50": ("AT24C32D-SSHM-T", "Microchip", "HAT-ID EEPROM 32 kbit I²C @0x50"),
  "PTC_3A": ("MF-MSMF...", "Bourns", "PTC-säkring ~3 A (1812)"),
 }
 grp = {}

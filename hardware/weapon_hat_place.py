@@ -34,10 +34,12 @@ FCN  = {"TRIG","RACK","MAGREL","MAGWELL","RECOIL_PWM","RECOIL_FAULT","MODE0","MO
 ref_nets = defaultdict(set)
 for (r, p), n in padnet.items(): ref_nets[r].add(n)
 IMU2N = {"IMU2_INT","IMU3_INT"}                # de 2 nya I²C-IMU:erna
+IDN  = {"ID_SD","ID_SC"}                       # HAT-ID-EEPROM-buss
 def cluster(ref):
     if ref == "J1": return "HDR"
     if (comps[ref][0] or "").startswith(("Connector_JST","Connector_PinHeader")): return "CONN"
     nets = ref_nets[ref]
+    if nets & IDN: return "EEPROM"
     if nets & CC:  return "CC"
     if nets & IMU2N: return "IMU2"
     if nets & FCN: return "FC"
@@ -49,7 +51,7 @@ def cluster(ref):
 # ---- cellstorlek per footprint-typ (mm, utan silk-text) ----
 SIZES = [("TO-263",16,10),("TO-252",7.5,7),("SOT-23-5",4,4),("SOT-23",3.6,3.4),
          ("S4B-PH",11,7),("S2B-PH",8,6.5),("S2B-XH",9,7),("TSSOP",4.5,4),("LGA-14",4,4),
-         ("R_2512",7,4),("C_1210",4,3.6),("C_1206",4,2.6),("D_SMB",5.5,4.2),("Fuse_1812",6,4.5),
+         ("SOIC-8",5.2,4.0),("R_2512",7,4),("C_1210",4,3.6),("C_1206",4,2.6),("D_SMB",5.5,4.2),("D_SMA",4.3,2.8),("Fuse_1812",6,4.5),
          ("R_0805",2.8,2),("C_0805",2.8,2),("C_0402",1.8,1.5)]
 def cell(fp):
     for k, w, h in SIZES:
@@ -64,8 +66,9 @@ TOPCL = {"PWR", "IMU", "CC"}                # dessa SMT-kluster → toppbandet; 
 # ---- regioner (radpacka vänster→höger, nedåt): xL, xR, yTop ----
 # SMT i icke-överlappande x-banor (höger om bucken upptill; ovanför kant-kontakterna nedtill).
 # BOTTEN-bandet rymmer nu även de 2 nya I²C-IMU:erna (IMU2) + deras avkopplingscaps (MISC).
-REG = {"PWR":(-5,14,11), "IMU":(14,27,11), "CC":(-26,-20,11),                  # TOPP-band
-       "ADC":(-27,-14,-6), "IMU2":(-14,-2,-6), "FC":(-2,15,-6), "MISC":(15,27,-6)}  # BOTTEN-band
+REG = {"PWR":(-4,16,11), "IMU":(16,27,11), "CC":(-26,-20,11),                  # TOPP-band
+       "ADC":(-27,-17,-6), "IMU2":(-17,-9,-6), "FC":(-9,3,-6),                  # BOTTEN-band
+       "EEPROM":(3,11,-6), "MISC":(11,27,-6)}                                   # MISC = avkopplingscaps, bred lane
 # fasta kontakt-lägen — ALLA på topp/botten-kant (kabel ut ur kant), klara av mittremsan
 def fixedpos(ref):
     fp, v = comps[ref]; v = v or ""

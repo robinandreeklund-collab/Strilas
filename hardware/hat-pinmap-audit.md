@@ -76,8 +76,26 @@ ADS1115 **0x48** (ADDR→GND) · PN532 **0x24** · IIM-42653 **0x68/0x69** (AD0 
   matchas mot den faktiskt valda modulen/IC:n innan tillverkning.
 
 ## Åtgärdat i denna granskning
-1. ADS1115-pinout rättad (kritiskt). 2. SPI-IMU pin 7 → GND. HAT omroutad 4-lager 0/0.
+1. **ADS1115-pinout rättad** (kritiskt).
+2. **SPI-IMU pin 7 → GND**.
+3. **NFC matas nu från +5V** (pin 2/4-rail) i st.f. carrierns 3V3 → RF-burst (~100 mA) belastar/brusar
+   inte den känsliga 3V3-rail:en som IMU/ADC delar. (PN532-moduler har egen 3,3 V-LDO, tål 5 V.)
+4. **5V-rail-skydd:** TVS **SMAJ5.0A** (D) på +5V → GND (transient/back-feed-clamp) + **100 µF bulk**
+   (Cbulk5) för CM5-transienter. (Buckens egen strömgräns ger överströmsskydd; ingen seriesäkring →
+   undviker 5 A-förlust. USB-C ska EJ sam-anslutas i fält.)
+5. **HAT-ID-EEPROM:** AT24C32 (SOIC-8) @**0x50** på ID_SD/ID_SC (GPIO0/1, pin 27/28), egna 3,9 k
+   pull-ups, 100 nF, A0/A1/A2→GND, WP→GND (skrivbar). Ger device-tree-auto-ID enligt RPi HAT-spec.
 
-## Kvar att besluta (ej blockerande för routning)
-Buck-modul/IC-val + ev. 5 A-marginal · NFC-matning (isolera RF-burst) · 5V-back-feed-skydd ·
-ev. HAT-ID-EEPROM på GPIO0/1.
+HAT omroutad 4-lager **0 clearance / 0 oanslutna** (569 spår, 23 vias, 50 footprints).
+
+## Buck — beslut & rekommendation
+- **Laststudie:** CM5 + MIPI-kamera + WiFi för CV, UTAN tunga USB-kringutrustningar → ~2–2,5 A typ,
+  topp ~3 A (boot-inrush täcks av bulk). RPi:s "5 A" gäller fullastade USB-portar (har vi ej).
+  → **3 A räcker med marginal; 100 µF-bulken hanterar transienter.**
+- **Topologi:** på detta auto-routade kort ger en **integrerad modul** (optimerad intern switch-loop)
+  bättre EMI/stabilitet än en diskret SMPS som auto-routas. **Rekommenderad konkret modul:
+  MPS MPM3650 (6A, integrerad induktor, 2,75–17 V in)** — el-design verifierad mot datablad:
+  FB-delare R1=20 k / R2=2,74 k / CF=39 pF (→5,0 V), EN→VIN, VCC-cap 1 µF, Cin 10 µF,
+  Cout 22 µF×2 + 100 µF, SW-stift floatande, AGND/PGND→GND.
+  *Footprinten (QFN-24 4×6) byggs/verifieras mot MPS land-pattern innan tillverkning — görs ej blint.*
+  Nuvarande symbol/footprint är en modul-placeholder (VIN/EN/GND/VOUT + Cin/Cout) tills modulen låses.
