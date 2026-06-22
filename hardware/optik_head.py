@@ -16,11 +16,12 @@ FPD = "/usr/share/kicad/footprints"; LOC = "/home/user/Strilas/hardware/strilas.
 BW, BH = 20.5, 28.0       # 41×56 mm porträtt (max i 56×41-envelopen)
 LENS_C = (0.0, 13.0); LENS_R = 7.5          # kamera-cutout topp (Ø15)
 CAM_PITCH = 25.0          # VEYE AR0234 29×29 mm: 4 hörnhål 2,00 mm in från kant → c/c 25×25 mm (veye.cc-måttritning)
-EMIT_Y = -18.5; EMIT_DX = 12.0             # emittrar botten, sida-vid-sida
-# Carclo 10734 (ritn. 60575): Ø22,1 fläns, 4-bens hålbild 9,0×15,60 mm (= 2·LEG_DX × 2·LEG_DY).
-# c/c 24 mm ≥ 22,1 → de två RUNDA flänsarna krockar EJ med varann; benen (alla 8) ligger på kortet;
-# själva flänsen skjuter ut ~2,6 mm utanför vänster/höger kant (OK enl. Robin).
-LEG_DX, LEG_DY = 4.5, 7.8
+EMIT_Y = -18.5; EMIT_DX = 11.25            # emittrar botten, sida-vid-sida (balans: fläns-gap 0,4 / ben-kant 0,4 mm)
+# Carclo 10734 (ritn. 60575): Ø22,1 fläns, 4-bens hålbild 9,0×15,60 mm.
+# Hållaren ROTERAD 90° → benspann 15,60 mm i X, 9,0 mm i Y. Då hamnar de nedre benen på y=-14/-23
+# (klarar hörn-M2.5-hålen vid y=-25,5) istället för y=-26,3 (krockade förut). c/c 22,6 ≥ 22,1 →
+# runda flänsarna krockar ej; alla ben på kortet; fläns sticker ut över L/H-kant (OK enl. Robin).
+LEG_DX, LEG_DY = 4.5, 7.8                   # halva hålbilden: 9,0 × 15,60 mm
 HOLDER_OD = 22.1                            # Carclo 10734 ytterdiameter (dokumenteras på Cmts.User)
 
 def main():
@@ -52,7 +53,7 @@ def main():
     for p,n in (("1","DRV_GATE"),("2","LED_CATH"),("3","IDRV_SENSE")): setnet(Qd,p,n)
     Rs = fp("Resistor_SMD","R_2512_6332Metric","R1","0R2",10,-3,0); setnet(Rs,"1","IDRV_SENSE"); setnet(Rs,"2","GND")
     Ro = fp("Resistor_SMD","R_0805_2012Metric","R2","0R1 DNP=3A",10,-7,0); setnet(Ro,"1","GND"); setnet(Ro,"2","IDRV_SENSE")
-    Rda= fp("Resistor_SMD","R_0805_2012Metric","R3","15k",-1,-13,0); setnet(Rda,"1","IR_MOD"); setnet(Rda,"2","IDRV_REF")
+    Rda= fp("Resistor_SMD","R_0805_2012Metric","R3","15k",3,-10.2,0); setnet(Rda,"1","IR_MOD"); setnet(Rda,"2","IDRV_REF")  # flyttad: klar av roterat benhål (CL1)
     Rdb= fp("Resistor_SMD","R_0805_2012Metric","R4","1k",3,-12,0); setnet(Rdb,"1","IDRV_REF"); setnet(Rdb,"2","GND")
     Rg = fp("Resistor_SMD","R_0805_2012Metric","R5","100R",3,-8,0); setnet(Rg,"1","OPA_OUT"); setnet(Rg,"2","DRV_GATE")
     Cop= fp("Resistor_SMD","R_0805_2012Metric","C1","100nF",12,-9,0); setnet(Cop,"1","VBAT"); setnet(Cop,"2","GND")
@@ -69,7 +70,8 @@ def main():
     for i,(sx,sy) in enumerate([(1,1),(1,-1),(-1,1),(-1,-1)]): hole(f"CAM{i+1}","MountingHole_2.2mm_M2",lx+sx*CAM_PITCH/2,ly+sy*CAM_PITCH/2)
     n=1
     for ex in (-EMIT_DX,+EMIT_DX):
-        for sx,sy in [(1,1),(1,-1),(-1,1),(-1,-1)]: hole(f"CL{n}","MountingHole_2.1mm",ex+sx*LEG_DX,EMIT_Y+sy*LEG_DY); n+=1
+        # hållaren ROTERAD 90°: benspann 15,60 i X (LEG_DY), 9,0 i Y (LEG_DX) → båda monteras "åt andra hållet"
+        for sx,sy in [(1,1),(1,-1),(-1,1),(-1,-1)]: hole(f"CL{n}","MountingHole_2.1mm",ex+sx*LEG_DY,EMIT_Y+sy*LEG_DX); n+=1
     for i,(sx,sy) in enumerate([(1,1),(1,-1),(-1,1),(-1,-1)]): hole(f"MH{i+1}","MountingHole_2.5mm",sx*(BW-2.5),sy*(BH-2.5))
 
     # lins-cutout + outline + silk
