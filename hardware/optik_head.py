@@ -15,7 +15,7 @@ FPD = "/usr/share/kicad/footprints"; LOC = "/home/user/Strilas/hardware/strilas.
 
 BW, BH = 20.5, 28.0       # 41×56 mm porträtt (max i 56×41-envelopen)
 LENS_C = (0.0, 13.0); LENS_R = 7.5          # kamera-cutout topp (Ø15)
-CAM_PITCH = 20.0          # VEYE AR0234M 29×29: 4×Ø2 hörnhål = 20×20-kvadrat (verifierat mot VEYE-måttritning)
+CAM_PITCH = 25.0          # VEYE AR0234 29×29 mm: 4 hörnhål 2,00 mm in från kant → c/c 25×25 mm (veye.cc-måttritning)
 EMIT_Y = -18.5; EMIT_DX = 12.0             # emittrar botten, sida-vid-sida
 # Carclo 10734 (ritn. 60575): Ø22,1 fläns, 4-bens hålbild 9,0×15,60 mm (= 2·LEG_DX × 2·LEG_DY).
 # c/c 24 mm ≥ 22,1 → de två RUNDA flänsarna krockar EJ med varann; benen (alla 8) ligger på kortet;
