@@ -52,7 +52,8 @@ def main():
     Qd = fp("Package_TO_SOT_SMD","TO-252-2","Q1","AOD4184A",-9,-6,0)
     for p,n in (("1","DRV_GATE"),("2","LED_CATH"),("3","IDRV_SENSE")): setnet(Qd,p,n)
     Rs = fp("Resistor_SMD","R_2512_6332Metric","R1","0R2",10,-3,0); setnet(Rs,"1","IDRV_SENSE"); setnet(Rs,"2","GND")
-    Ro = fp("Resistor_SMD","R_0805_2012Metric","R2","0R1 DNP=3A",10,-7,0); setnet(Ro,"1","GND"); setnet(Ro,"2","IDRV_SENSE")
+    Ro = fp("Resistor_SMD","R_2010_5025Metric","R2","0R1 DNP=3A",7.8,0.6,0); setnet(Ro,"1","GND"); setnet(Ro,"2","IDRV_SENSE")  # 2010/0,5W: 3A-läget ~0,4W, intill R1 (parallell-sense)
+    Cvb= fp("Capacitor_SMD","C_1206_3216Metric","C3","47uF",4.0,-3.0,0); setnet(Cvb,"1","VBAT"); setnet(Cvb,"2","GND")  # VBAT-bulk för 3A-pulsens flanker
     Rda= fp("Resistor_SMD","R_0805_2012Metric","R3","15k",0,-9.8,0); setnet(Rda,"1","IR_MOD"); setnet(Rda,"2","IDRV_REF")  # flyttad: klar av uppflyttat benhål
     Rdb= fp("Resistor_SMD","R_0805_2012Metric","R4","1k",0,-11.5,0); setnet(Rdb,"1","IDRV_REF"); setnet(Rdb,"2","GND")  # flyttad: ut ur benets Ø3,5-frizon
     Rg = fp("Resistor_SMD","R_0805_2012Metric","R5","100R",3,-8,0); setnet(Rg,"1","OPA_OUT"); setnet(Rg,"2","DRV_GATE")
@@ -94,8 +95,9 @@ def main():
     COLS=["Designator*","Quantity*","Manufacturer Part Number*","Manufacturer","Package/Footprint","Description","Procurement Type","Customer Note"]
     rows=[("D1,D2","2","SFH4725AS","ams OSRAM","strilas:SFH4725S","IR-emitter 940 nm (serie; Carclo 10734/10003 smal beam)","",""),
           ("U1","1","OPA171","TI","SOT-23-5","CC-sänka op-amp","",""),("Q1","1","AOD4184A","AOS","TO-252","pass-FET","",""),
-          ("R1","1","WSL2512R2000","Vishay","R_2512","0R2 sense (1A)","",""),("R2","1","-","-","R_0805","0R1 DNP (3A-override)","","DNP"),
+          ("R1","1","WSL2512R2000","Vishay","R_2512","0R2 sense (1A)","",""),("R2","1","-","-","R_2010","0R1 DNP (3A-override, ~0,4W)","","DNP"),
           ("R3,R4,R5","3","-","-","R_0805","15k/1k-delare + 100R gate","",""),("C1,C2","2","-","-","R_0805-pkg","100nF/100pF","",""),
+          ("C3","1","-","-","C_1206","47µF VBAT-bulk (3A-puls)","",""),
           ("(lins)","2+2","10734/10003","Carclo","Carclo","Linshållare + smal-beam-lins/emitter","","mekanisk"),
           ("J1","1","B3B-PH-K","JST","JST_PH_1x03","→HAT (VBAT·IR_MOD·GND) — VERTIKAL BAKSIDA","","THT handlödd")]
     for od in ("hardware/nextpcb","leverans/optik-head"):
@@ -106,7 +108,7 @@ def main():
         wb.save(f"{od}/optik-head-bom.xls")
         with open(f"{od}/optik-head-centroid.csv","w",newline="") as f:
             w=csv.writer(f); w.writerow(["Designator","Mid X","Mid Y","Layer","Rotation"])
-            for ref in ("D1","D2","U1","Q1","R1","R2","R3","R4","R5","C1","C2"):
+            for ref in ("D1","D2","U1","Q1","R1","R3","R4","R5","C1","C2","C3"):   # R2=DNP (3A-läge) → ej i centroid
                 ff=b.FindFootprintByReference(ref); p=ff.GetPosition()
                 w.writerow([ref,f"{p.x/1e6-OX:.3f}",f"{OY-p.y/1e6:.3f}","top",ff.GetOrientationDegrees()])
     print("  BOM + centroid (allt SMT på framsidan; JST THT bak)")

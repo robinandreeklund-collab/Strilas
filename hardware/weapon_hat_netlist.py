@@ -51,12 +51,15 @@ RES_T = mk("R", "R", [(1, "~"), (2, "~")], "Resistor_SMD:R_0805_2012Metric")
 CAP_T = mk("C", "C", [(1, "~"), (2, "~")], "Capacitor_SMD:C_0805_2012Metric")
 RES = lambda v, fp="Resistor_SMD:R_0805_2012Metric": RES_T(value=v, footprint=fp)
 CAP = lambda v, fp="Capacitor_SMD:C_0805_2012Metric": CAP_T(value=v, footprint=fp)
-PFET = mk("AO3401", "Q", [(1, "G"), (2, "S"), (3, "D")], "Package_TO_SOT_SMD:SOT-23", "AO3401")
+PFET = mk("AOD4185", "Q", [(1, "G"), (2, "D"), (3, "S")], "Package_TO_SOT_SMD:TO-252-2", "AOD4185")  # P-ch 40V/40A 15mΩ (delad VBAT-väg ~7A topp)
 DFET = mk("AOD4184A", "Q", [(1, "G"), (2, "D"), (3, "S")], "Package_TO_SOT_SMD:TO-252-2", "AOD4184A")
 OPAMP = mk("OPA171", "U", [(1, "OUT"), (2, "V-"), (3, "IN+"), (4, "IN-"), (5, "V+")],
            "Package_TO_SOT_SMD:SOT-23-5", "OPA171")
-BUCK = mk("Buck_5V_3A", "U", [(1, "VIN"), (2, "EN"), (3, "GND"), (4, "VOUT")],
-          "Package_TO_SOT_SMD:TO-263-7_TabPin8", "2S→5V @≥3A (modul/IC)")
+# 2S→5V buck: AP63203WU (Diodes, 3A synkron, 3,8–32V in, integrerade FET). Stift VERIFIERADE mot
+# KiCad-symbolbiblioteket: 1=FB 2=EN 3=IN 4=GND 5=SW 6=BST. → induktor + FB-delare + BST-cap externt.
+BUCK = mk("AP63203WU", "U", [(1,"FB"),(2,"EN"),(3,"IN"),(4,"GND"),(5,"SW"),(6,"BST")],
+          "Package_TO_SOT_SMD:TSOT-23-6", "AP63203WU 2S→5V 3A")
+IND = mk("L_3u3", "L", [(1, "1"), (2, "2")], "Inductor_SMD:L_Taiyo-Yuden_MD-5050", "3.3uH/4A")
 ADC = mk("ADS1115", "U", [(1,"ADDR"),(2,"ALERT"),(3,"GND"),(4,"AIN0"),(8,"VDD"),(9,"SDA"),(10,"SCL")],
          "Package_SO:TSSOP-10_3x3mm_P0.5mm", "ADS1115 I²C-ADC 0x48 (batteri-sense)")
 # ADS1115 VSSOP-10 (DGS) stift VERIFIERADE mot TI SBAS444: 1=ADDR 2=ALERT 3=GND 4=AIN0 8=VDD 9=SDA 10=SCL.
@@ -69,7 +72,7 @@ IMU = mk("ICM-42688-P", "U", [(1,"SDO"),(4,"INT1"),(5,"VDDIO"),(6,"GND"),(7,"RES
 #   → 3 IMU totalt på HAT/FC. I²C 0x68/0x69 via AD0 (krockar ej med ADS1115 0x48 el. PN532).
 IMU_I2C = mk("IIM-42653", "U", [(i, str(i)) for i in range(1, 15)],
              "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "IIM-42653")
-PTC = mk("PTC", "F", [(1, "~"), (2, "~")], "Fuse:Fuse_1812_4532Metric", "PTC_3A")
+PTC = mk("PTC", "F", [(1, "~"), (2, "~")], "Fuse:Fuse_1812_4532Metric", "PTC_4A")   # håller buck+emitter+recoil utan nuisance-trip
 TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
 TVS5 = mk("SMAJ5.0A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMA", "SMAJ5.0A")   # 5V-rail transientskydd
 EEPROM = mk("AT24C32", "U", [(1,"A0"),(2,"A1"),(3,"A2"),(4,"GND"),(5,"SDA"),(6,"SCL"),(7,"WP"),(8,"VCC")],
@@ -79,6 +82,7 @@ EEPROM = mk("AT24C32", "U", [(1,"A0"),(2,"A1"),(3,"A2"),(4,"GND"),(5,"SDA"),(6,"
 # ---------- nät ----------
 VBAT_IN, VBAT_F, VBAT, V5, V3, GND = (Net(n) for n in ("VBAT_IN","VBAT_F","VBAT","+5V","+3V3","GND"))
 IR_MOD = Net("IR_MOD")
+SW_n, BST_n, FB_n = Net("SW_n"), Net("BST_n"), Net("FB_n")   # buck switch/bootstrap/feedback
 SCK, MOSI, MISO, nCS, IMU_INT = (Net(n) for n in ("SCK","MOSI","MISO","nCS","IMU_INT"))
 IMU2_INT, IMU3_INT = Net("IMU2_INT"), Net("IMU3_INT")
 I2C_SCL, I2C_SDA = Net("I2C_SCL"), Net("I2C_SDA")
@@ -92,6 +96,8 @@ H = HDR(); J2 = BATT(); Je = EMIT()
 F1 = PTC(); Qrp = PFET(); Rg = RES("100k"); Dt = TVS()
 Cin = CAP("10uF","Capacitor_SMD:C_1206_3216Metric"); Cbulk = CAP("100uF","Capacitor_SMD:C_1210_3225Metric")
 Ub = BUCK(); Lbi = CAP("22uF","Capacitor_SMD:C_1210_3225Metric"); Lbo = CAP("22uF","Capacitor_SMD:C_1210_3225Metric")
+L1 = IND(); Rfb1 = RES("52k3"); Rfb2 = RES("10k")     # buck-induktor + FB-delare (→5,0V)
+Cff = CAP("22pF","Capacitor_SMD:C_0402_1005Metric"); Cbst = CAP("100nF","Capacitor_SMD:C_0402_1005Metric")
 # CC-sänkan (OPA171+DPAK+sense+delare) FLYTTAD till optik-PCB:n (kortare puls-loop, frigör HAT-yta).
 U_imu = IMU(); Ci1 = CAP("100nF","Capacitor_SMD:C_0402_1005Metric"); Ci2 = CAP("1uF")
 U_imu2 = IMU_I2C(); U_imu3 = IMU_I2C()                 # 2 extra IMU (I²C) → 3 totalt
@@ -125,10 +131,15 @@ J2["VBAT"] += VBAT_IN; J2["GND"] += GND
 F1[1] += VBAT_IN; F1[2] += VBAT_F
 Qrp["D"] += VBAT_F; Qrp["S"] += VBAT; Qrp["G"] += Rg[1]; Rg[2] += GND
 Dt["K"] += VBAT; Dt["A"] += GND; Cin[1] += VBAT; Cin[2] += GND; Cbulk[1] += VBAT; Cbulk[2] += GND
-Ub["VIN"] += VBAT; Ub["EN"] += VBAT; Ub["GND"] += GND; Ub["VOUT"] += V5
-Lbi[1] += VBAT; Lbi[2] += GND; Lbo[1] += V5; Lbo[2] += GND
-Cbulk5[1] += V5; Cbulk5[2] += GND                      # CM5-transient-bulk på 5V
-Dt5["K"] += V5; Dt5["A"] += GND                        # 5V-rail transientskydd (back-feed-skydd)
+Ub["IN"] += VBAT; Ub["EN"] += VBAT; Ub["GND"] += GND   # EN→VBAT = alltid på när batteri finns
+Ub["SW"] += SW_n; Ub["BST"] += BST_n; Ub["FB"] += FB_n
+L1[1] += SW_n; L1[2] += V5                             # SW → induktor → 5V
+Cbst[1] += BST_n; Cbst[2] += SW_n                      # bootstrap-cap
+Rfb1[1] += V5; Rfb1[2] += FB_n; Rfb2[1] += FB_n; Rfb2[2] += GND   # FB-delare 52k3/10k → 5,0V (Vref 0,8V)
+Cff[1] += V5; Cff[2] += FB_n                           # feedforward-cap (loop-stabilitet)
+Lbi[1] += VBAT; Lbi[2] += GND; Lbo[1] += V5; Lbo[2] += GND        # 22µF in/ut
+Cbulk5[1] += V5; Cbulk5[2] += GND                      # 100µF output-bulk (CM5-transient)
+Dt5["K"] += V5; Dt5["A"] += GND                        # 5V-rail TVS (transient/back-feed-clamp)
 
 # ---------- emitter-kontakt → optik (VBAT + IR_MOD + GND; CC-sänkan sitter på optik-PCB:n) ----------
 Je["VBAT"] += VBAT; Je["IR_MOD"] += IR_MOD; Je["GND"] += GND

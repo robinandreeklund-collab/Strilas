@@ -8,8 +8,8 @@ import re, sys
 
 # Effekt-/LED-nät (vapen + väst/hjälm). LED_A* = väst/hjälm konstellations-grenar.
 POWER = {"VBAT", "VBAT_F", "VBAT_IN", "VBAT_RAW", "VBAT_PROT", "N$2", "LED_MID", "LED_CATH", "IDRV_SENSE",
-         "SW", "LED_A1", "LED_A2", "LED_A3", "LED_A4",
-         "LED_M1", "LED_M2", "LED_M3"}   # FIX: LED-mid-noder bär samma ~0,5A som grenarna (var 0,2mm)
+         "SW", "SW_n", "+5V", "LED_A1", "LED_A2", "LED_A3", "LED_A4",
+         "LED_M1", "LED_M2", "LED_M3"}   # +5V = CM5-matning ~2A; SW_n = buck-switch; LED-mid ~0,5A
 
 
 def main(dsn):
@@ -32,11 +32,11 @@ def main(dsn):
     circuit = f'\n      (circuit\n        (use_via {vm.group(1)})\n      )' if vm else ''
     pclass = (
         '\n    (class power "" ' + " ".join(pwr) + circuit + '\n'
-        '      (rule\n        (width 500)\n        (clearance 200.1)\n      )\n    )'
+        '      (rule\n        (width 800)\n        (clearance 200.1)\n      )\n    )'
     )
     t = t[:kc.end()] + pclass + t[kc.end():]
     open(dsn, "w").write(t)
-    print(f"  flyttade {len(pwr)} nät till klass 'power' (width 500): {pwr}")
+    print(f"  flyttade {len(pwr)} nät till klass 'power' (width 800): {pwr}")
 
 
 if __name__ == "__main__":

@@ -88,7 +88,27 @@ ADS1115 **0x48** (ADDR→GND) · PN532 **0x24** · IIM-42653 **0x68/0x69** (AD0 
 
 HAT omroutad 4-lager **0 clearance / 0 oanslutna** (569 spår, 23 vias, 50 footprints).
 
-## Buck — beslut & rekommendation
+## Effekt-/VBAT-väg dimensionerad för emitter-puls (1A / valbart 3A)
+De 2 IR-emittrarna (serie) drivs av CC-sänkan på optiken via emitter-JST:n → emitter-pulsen
+(1A default / **3A** med 0R1-override) går genom HAT:ens **delade VBAT-väg** (batteri→säkring→
+P-FET→VBAT-nod→buck+emitter+recoil), topp ~7A. Åtgärdat:
+- **Omvänd-skydds-P-FET:** AO3401 (SOT-23, ~4A) → **AOD4185** (DPAK, 40V/**40A**/15mΩ) — klarar topp.
+- **Säkring:** PTC 3A → **PTC 4A** (håller buck+emitter+recoil utan nuisance-trip).
+- **VBAT/+5V/SW power-klass:** spårbredd 0,5 → **0,8 mm**; +5V (CM5 ~2A) och SW_n tillagda i klassen.
+- **Optik:** **47µF VBAT-bulk** (C3) tillagd nära emittrarna för 3A-pulsens flanker; **0R1-sense (R2)
+  → 2010** (0805 klarade ej ~0,4W i 3A-läget), placerad intill R1 (parallell-sense).
+- **Emitter-JST (JST-PH):** 3A är PULSAD topp (56kHz, duty<100% → RMS<2,5A) → inom PH-max. 1A kont. OK.
+- **Batteri-JST-XH (3A):** kontinuerligt ~2-2,5A OK; korta shot-toppar inom transient.
+
+## Buck — LÅST (inga frågetecken)
+**AP63203WU** (Diodes, 3A synkron, 3,8–32V in, integrerade FET, TSOT-23-6). Stift VERIFIERADE
+mot KiCad:s kurerade symbolbibliotek: 1=FB 2=EN 3=IN 4=GND 5=SW 6=BST. Stödkrets: induktor
+**3,3µH (Taiyo-Yuden MD-5050)**, FB-delare **52k3/10k → 5,0V** (Vref 0,8V) + 22pF feedforward,
+BST-cap 100nF, Cin 10µF + 100µF, Cout 22µF + 100µF, EN→VIN. IC + induktor placerade intill
+varandra → kort SW-nod. Laststudie: CM5 + kamera-CV utan tunga USB ~2–2,5A → 3A med marginal.
+Alla footprints är KiCad-standard (ingen blint byggd kraft-footprint). HAT routad 4-lager 0/0.
+
+## (historik) Buck — tidigare rekommendation
 - **Laststudie:** CM5 + MIPI-kamera + WiFi för CV, UTAN tunga USB-kringutrustningar → ~2–2,5 A typ,
   topp ~3 A (boot-inrush täcks av bulk). RPi:s "5 A" gäller fullastade USB-portar (har vi ej).
   → **3 A räcker med marginal; 100 µF-bulken hanterar transienter.**

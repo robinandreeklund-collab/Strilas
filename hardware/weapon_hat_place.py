@@ -35,10 +35,12 @@ ref_nets = defaultdict(set)
 for (r, p), n in padnet.items(): ref_nets[r].add(n)
 IMU2N = {"IMU2_INT","IMU3_INT"}                # de 2 nya I²C-IMU:erna
 IDN  = {"ID_SD","ID_SC"}                       # HAT-ID-EEPROM-buss
+BUCKN = {"SW_n","BST_n","FB_n"}                # buck-switchstegets noder
 def cluster(ref):
     if ref == "J1": return "HDR"
     if (comps[ref][0] or "").startswith(("Connector_JST","Connector_PinHeader")): return "CONN"
     nets = ref_nets[ref]
+    if nets & BUCKN: return "BUCK"
     if nets & IDN: return "EEPROM"
     if nets & CC:  return "CC"
     if nets & IMU2N: return "IMU2"
@@ -62,18 +64,19 @@ def cell(fp):
 # |y|<CTR krävs på FRAMSIDAN (genompläterade hål). ALLA kontakter ligger på TOPP-/BOTTEN-KANTEN
 # (rot 0 → låga i y, kabel ut ur kanten); SMT packas i de två banden mellan header och kant.
 CTR = 3.6                                   # halv mittremsa (header-pad ±2,1 + marginal)
-TOPCL = {"PWR", "IMU", "CC"}                # dessa SMT-kluster → toppbandet; övriga → bottenbandet
+TOPCL = {"PWR", "IMU", "CC", "BUCK"}        # dessa SMT-kluster → toppbandet; övriga → bottenbandet
 # ---- regioner (radpacka vänster→höger, nedåt): xL, xR, yTop ----
 # SMT i icke-överlappande x-banor (höger om bucken upptill; ovanför kant-kontakterna nedtill).
 # BOTTEN-bandet rymmer nu även de 2 nya I²C-IMU:erna (IMU2) + deras avkopplingscaps (MISC).
-REG = {"PWR":(-4,16,11), "IMU":(16,27,11), "CC":(-26,-20,11),                  # TOPP-band
+REG = {"BUCK":(-27,-12,13), "PWR":(-12,18,13), "IMU":(18,27,13), "CC":(-26,-20,13),   # TOPP-band
        "ADC":(-27,-17,-6), "IMU2":(-17,-9,-6), "FC":(-9,3,-6),                  # BOTTEN-band
        "EEPROM":(3,11,-6), "MISC":(11,27,-6)}                                   # MISC = avkopplingscaps, bred lane
 # fasta kontakt-lägen — ALLA på topp/botten-kant (kabel ut ur kant), klara av mittremsan
 def fixedpos(ref):
     fp, v = comps[ref]; v = v or ""
     if ref == "J1": return (0, 0, 90)         # 40-pin HONA centrum (flippas till baksidan nedan)
-    if "TO-263" in (fp or ""): return (-13, 13, 0)   # buck (stor) topp-vänster (vänster pad klar av MH3)
+    if "AP63203" in v: return (-23, 11, 0)    # buck-IC topp-vänster
+    if "MD-5050" in (fp or ""): return (-17.5, 11, 0)  # buck-induktor intill IC → kort SW-nod
     if "optik" in v: return (6, 18, 180)      # emitter-JST (→optik) topp-kant (pad-rad klar av NFC)
     if "NFC" in v: return (15, 18, 180)       # NFC topp-kant höger (klar av standoff-hål)
     if "2S batteri" in v: return (-20, -18, 0)       # batteri JST-XH botten-vänster kant (klar av standoff-hål)
