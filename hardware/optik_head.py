@@ -72,7 +72,7 @@ def main():
     for ex in (-EMIT_DX,+EMIT_DX):
         # hållaren ROTERAD 90°: benspann 15,60 i X (LEG_DY), 9,0 i Y (LEG_DX) → båda monteras "åt andra hållet"
         for sx,sy in [(1,1),(1,-1),(-1,1),(-1,-1)]: hole(f"CL{n}","MountingHole_2.1mm",ex+sx*LEG_DY,EMIT_Y+sy*LEG_DX); n+=1
-    for i,(sx,sy) in enumerate([(1,1),(1,-1),(-1,1),(-1,-1)]): hole(f"MH{i+1}","MountingHole_2.5mm",sx*(BW-2.5),sy*(BH-2.5))
+    for i,(sx,sy) in enumerate([(1,1),(1,-1),(-1,1),(-1,-1)]): hole(f"MH{i+1}","MountingHole_2.7mm_M2.5",sx*(BW-2.5),sy*(BH-2.5))
 
     # lins-cutout + outline + silk
     cir = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_CIRCLE); cir.SetCenter(V(*LENS_C)); cir.SetEnd(V(LENS_C[0]+LENS_R,LENS_C[1]))
