@@ -9,7 +9,7 @@
 > | **OPTIK-PCB** (`optik_head.py`) | ✅ **ROUTAD 0/0**, leverans klar | 41×56 porträtt; **lins-cutout** topp (AR0234M bakom @10 mm standoff); **2 emittrar + Carclo 10734/10003 SIDA-VID-SIDA** botten; **CC-sänka (OPA171+DPAK+0R2/0R1+15k/1k+gate) på FRAMSIDAN** (enkelsidig SMT = billigare); JST 3-pin (VBAT·IR_MOD·GND) THT bak. |
 > | **HAT/FC** (`weapon_hat_netlist.py`) | ✅ **ROUTAD 0/0**, 4-lager, leverans klar | 56×41 på carrier-headern; 40-pin RPi-header; 2S-batteri **JST-XH** + skydd (PTC/rev-FET/TVS); 2S→5V buck (back-feed); IMU (SPI); batteri-sense (I²C-ADC); FC-IO (trigger/rack/mag/magwell/recoil/NFC/MODE/PTT). |
 > | **AR0234M** (VEYE) | köps | 29×29, V4L2-driver på CM5, M12-lins + 860 nm bandpass, FFC→carrier-CSI. |
-> | **CM5 + carrier** | köps | bänk: CM5 Nano Base. |
+> | **CM5 + carrier** | köps | **CM5 Lite** (microSD-boot via carrierns SD-slot, inget eMMC) — välj *wireless*-SKU (mesh kräver WiFi5/BT5); bänk: CM5 Nano Base. |
 >
 > **Nyckeländringar mot tidigare iterationer i denna doc:** (a) carrier-elektroniken blev en **HAT på
 > carrier-headern** (ej eget DF40-kort) → bara stock-footprints, routbart. (b) emittrarna **sida-vid-sida**
@@ -53,8 +53,8 @@
                                         ▼
                         ┌─────────── RASPBERRY PI CM5 ───────────┐
                         │ BCM2712 quad A76 @2,4 GHz · VideoCore  │
-                        │ VII · ≤8/16 GB · eMMC · WiFi5/BT5 ·    │
-                        │ 2× MIPI 4-lane · 55×40 mm modul        │
+                        │ VII · ≤8/16 GB · **Lite (microSD-boot)**│
+                        │ · WiFi5/BT5 · 2× MIPI 4-lane · 55×40 mm │
                         └───────────────────────────────────────┘
 ```
 
@@ -68,8 +68,8 @@ DF40), och emitter-strömmen i **separat** kabel (pulsad 1–3 A borta från MIP
 | CPU | quad Cortex-A76 @2,4 GHz | kör Python+OpenCV+`solvePnP` direkt; CV-pipelinen med stor marginal |
 | GPU/video | VideoCore VII + HW-ISP + H.265 | ISP avlastar tröskling/debayer; HW-enkoder för vapen-cam |
 | RAM | ≤8/16 GB LPDDR4X | rikligt |
-| Lagring | eMMC ombord (eller Lite + microSD) | robustare än SD i vapen |
-| Radio | **WiFi5 + BT5** (wireless-variant) | mesh-trafiken är lätt → gott om marginal |
+| Lagring | **CM5 Lite → microSD-boot** (carrierns SD-slot) | inget eMMC ombord; använd A1/A2-kort + read-only rootfs mot SD-slitage i vapen |
+| Radio | **WiFi5 + BT5** (Lite *wireless*-variant) | mesh kräver WiFi → välj Lite-WiFi-SKU, ej den trådlösa-fria; mesh-trafiken är lätt → gott om marginal |
 | Kamera | **2× MIPI-CSI 4-lane** (via DF40) | full-frame GS @120 fps möjligt (4-lane) |
 | Anslutning | 2× 100-pin Hirose DF40 | **carrier-native** — vår carrier bär kontakterna |
 | Mått | 55×40 mm modul | carrier ~55–65×40 |
