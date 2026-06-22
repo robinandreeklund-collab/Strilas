@@ -14,7 +14,7 @@ def V(x, y): return pcbnew.VECTOR2I(MM(OX + x), MM(OY - y))
 FPD = "/usr/share/kicad/footprints"; LOC = "/home/user/Strilas/hardware/strilas.pretty"
 
 BW, BH = 20.5, 28.0       # 41×56 mm porträtt (max i 56×41-envelopen)
-LENS_C = (0.0, 13.0); LENS_R = 7.5          # kamera-cutout topp (Ø15)
+LENS_C = (0.0, 13.0); LENS_R = 9.0          # kamera-cutout topp (Ø18 — M12-linshållare; var Ø15, för tight)
 CAM_PITCH = 25.0          # VEYE AR0234 29×29 mm: 4 hörnhål 2,00 mm in från kant → c/c 25×25 mm (veye.cc-måttritning)
 EMIT_Y = -18.5; EMIT_DX = 11.25            # emittrar botten, sida-vid-sida (balans: fläns-gap 0,4 / ben-kant 0,4 mm)
 # Carclo 10734 (ritn. 60575): Ø22,1 fläns, 4-bens hålbild 9,0×15,60 mm.
@@ -54,7 +54,7 @@ def main():
     Rs = fp("Resistor_SMD","R_2512_6332Metric","R1","0R2",10,-3,0); setnet(Rs,"1","IDRV_SENSE"); setnet(Rs,"2","GND")
     Ro = fp("Resistor_SMD","R_0805_2012Metric","R2","0R1 DNP=3A",10,-7,0); setnet(Ro,"1","GND"); setnet(Ro,"2","IDRV_SENSE")
     Rda= fp("Resistor_SMD","R_0805_2012Metric","R3","15k",3,-10.2,0); setnet(Rda,"1","IR_MOD"); setnet(Rda,"2","IDRV_REF")  # flyttad: klar av roterat benhål (CL1)
-    Rdb= fp("Resistor_SMD","R_0805_2012Metric","R4","1k",3,-12,0); setnet(Rdb,"1","IDRV_REF"); setnet(Rdb,"2","GND")
+    Rdb= fp("Resistor_SMD","R_0805_2012Metric","R4","1k",0,-11.5,0); setnet(Rdb,"1","IDRV_REF"); setnet(Rdb,"2","GND")  # flyttad: ut ur benets Ø3,5-frizon
     Rg = fp("Resistor_SMD","R_0805_2012Metric","R5","100R",3,-8,0); setnet(Rg,"1","OPA_OUT"); setnet(Rg,"2","DRV_GATE")
     Cop= fp("Resistor_SMD","R_0805_2012Metric","C1","100nF",12,-9,0); setnet(Cop,"1","VBAT"); setnet(Cop,"2","GND")
     Cc = fp("Resistor_SMD","R_0805_2012Metric","C2","100pF",-0.9,-6.3,0); setnet(Cc,"1","OPA_OUT"); setnet(Cc,"2","IDRV_SENSE")  # flyttad: klar av D1:s benhål + utanför fläns, nära OPA-utg
