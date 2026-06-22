@@ -7,7 +7,7 @@
 > | Kort | Status | Innehåll |
 > |---|---|---|
 > | **OPTIK-PCB** (`optik_head.py`) | ✅ **ROUTAD 0/0**, leverans klar | 41×56 porträtt; **lins-cutout** topp (AR0234M bakom @10 mm standoff); **2 emittrar + Carclo 10734/10003 SIDA-VID-SIDA** botten; **CC-sänka (OPA171+DPAK+0R2/0R1+15k/1k+gate) på FRAMSIDAN** (enkelsidig SMT = billigare); JST 3-pin (VBAT·IR_MOD·GND) THT bak. |
-> | **HAT/FC** (`weapon_hat_netlist.py`) | ✅ **ROUTAD 0/0**, 4-lager, leverans klar | 56×41; **40-pin HONA-sockel i kortets CENTRUM på BAKSIDAN** (trycks rakt ner på carrierns mittstiftlist — *verifierat mot CM5-NANO-B 3D-modell: header dead-center, offset <0,02 mm*); ALL SMT på FRAMSIDAN; kontakter på topp/botten-kant. 2S-batteri **JST-XH** + skydd (PTC/rev-FET/TVS); 2S→5V buck (back-feed); IMU (SPI); batteri-sense (I²C-ADC); FC-IO (trigger/rack/mag/magwell/recoil/NFC/MODE/PTT). |
+> | **HAT/FC** (`weapon_hat_netlist.py`) | ✅ **ROUTAD 0/0**, 4-lager, leverans klar | 56×41; **40-pin HONA-sockel i kortets CENTRUM på BAKSIDAN** (trycks rakt ner på carrierns mittstiftlist — *verifierat mot CM5-NANO-B 3D-modell: header dead-center, offset <0,02 mm*); ALL SMT på FRAMSIDAN; kontakter på topp/botten-kant. 2S-batteri **JST-XH** + skydd (PTC/rev-FET/TVS); 2S→5V buck (back-feed); **3 IMU** (1× ICM-42688-P SPI + 2× IIM-42653 I²C @0x68/0x69, INT på GPIO5/6); batteri-sense (I²C-ADC); FC-IO (trigger/rack/mag/magwell/recoil/NFC/MODE/PTT); **4 M2.5 standoff-hål i hörnen (±25,5/±18) → 20 mm-standoffs upp till optiken**. |
 > | **AR0234M** (VEYE) | köps | 29×29, V4L2-driver på CM5, M12-lins + 860 nm bandpass, FFC→carrier-CSI. |
 > | **CM5 + carrier** | köps | **CM5 Lite** (microSD-boot via carrierns SD-slot, inget eMMC) — välj *wireless*-SKU (mesh kräver WiFi5/BT5); bänk: CM5 Nano Base. |
 >

@@ -61,6 +61,11 @@ ADC = mk("ADS1115", "U", [(1, "VDD"), (2, "GND"), (3, "SCL"), (4, "SDA"), (5, "A
          "Package_SO:TSSOP-10_3x3mm_P0.5mm", "I²C-ADC (batteri-sense)")
 IMU = mk("ICM-42688-P", "U", [(1,"SDO"),(4,"INT1"),(5,"VDDIO"),(6,"GND"),(8,"VDD"),(12,"CS"),(13,"SCLK"),(14,"SDI")],
          "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-42688-P")
+# 2 EXTRA IMU på I²C — TDK IIM-42653 (LGA-14, samma paket). Numeriska stift per DS-000529:
+#   8=VDD 5=VDDIO 6=GND 7=RESV(→GND) 13=SCL 14=SDA 1=SDO/AD0(adress) 12=CS(→VDDIO=I²C) 4=INT1
+#   → 3 IMU totalt på HAT/FC. I²C 0x68/0x69 via AD0 (krockar ej med ADS1115 0x48 el. PN532).
+IMU_I2C = mk("IIM-42653", "U", [(i, str(i)) for i in range(1, 15)],
+             "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "IIM-42653")
 PTC = mk("PTC", "F", [(1, "~"), (2, "~")], "Fuse:Fuse_1812_4532Metric", "PTC_3A")
 TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
 
@@ -68,6 +73,7 @@ TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
 VBAT_IN, VBAT_F, VBAT, V5, V3, GND = (Net(n) for n in ("VBAT_IN","VBAT_F","VBAT","+5V","+3V3","GND"))
 IR_MOD = Net("IR_MOD")
 SCK, MOSI, MISO, nCS, IMU_INT = (Net(n) for n in ("SCK","MOSI","MISO","nCS","IMU_INT"))
+IMU2_INT, IMU3_INT = Net("IMU2_INT"), Net("IMU3_INT")
 I2C_SCL, I2C_SDA = Net("I2C_SCL"), Net("I2C_SDA")
 VBAT_SENSE = Net("VBAT_SENSE")
 TRIG,RACK,MAGREL,MAGWELL,RPWM,RFAULT,MODE0,MODE1,PTT = (Net(n) for n in
@@ -80,6 +86,9 @@ Cin = CAP("10uF","Capacitor_SMD:C_1206_3216Metric"); Cbulk = CAP("100uF","Capaci
 Ub = BUCK(); Lbi = CAP("22uF","Capacitor_SMD:C_1210_3225Metric"); Lbo = CAP("22uF","Capacitor_SMD:C_1210_3225Metric")
 # CC-sänkan (OPA171+DPAK+sense+delare) FLYTTAD till optik-PCB:n (kortare puls-loop, frigör HAT-yta).
 U_imu = IMU(); Ci1 = CAP("100nF","Capacitor_SMD:C_0402_1005Metric"); Ci2 = CAP("1uF")
+U_imu2 = IMU_I2C(); U_imu3 = IMU_I2C()                 # 2 extra IMU (I²C) → 3 totalt
+Ci3 = CAP("100nF","Capacitor_SMD:C_0402_1005Metric"); Ci4 = CAP("100nF","Capacitor_SMD:C_0402_1005Metric")
+Ci5 = CAP("100nF","Capacitor_SMD:C_0402_1005Metric"); Ci6 = CAP("100nF","Capacitor_SMD:C_0402_1005Metric")
 U_adc = ADC(); Rsa = RES("100k"); Rsb = RES("47k"); Csns = CAP("100nF"); Cadc = CAP("100nF")
 Jt = SW("TRIGGER","TRIG","GND")(); Jr = SW("RACK","RACK","GND")()
 Jm = SW("MAGREL","MAGREL","GND")(); Jw = SW("MAGWELL","MAGWELL","GND")()
@@ -92,7 +101,8 @@ Ri1 = RES("4k7"); Ri2 = RES("4k7")
 H[2] += V5; H[4] += V5                                  # 5V BACK-FEED in i carriern
 for p in (6,9,14,20,25,30,34,39): H[p] += GND
 H[1] += V3; H[17] += V3                                 # 3V3 från carriern (IMU VDDIO)
-H[19] += MOSI; H[21] += MISO; H[23] += SCK; H[24] += nCS; H[22] += IMU_INT   # SPI + INT
+H[19] += MOSI; H[21] += MISO; H[23] += SCK; H[24] += nCS; H[22] += IMU_INT   # SPI + INT (IMU1)
+H[29] += IMU2_INT; H[31] += IMU3_INT                   # GPIO5/GPIO6 → INT för de 2 I²C-IMU:erna
 H[12] += IR_MOD                                         # GPIO18 (HW-PWM) → 56 kHz
 H[3] += I2C_SDA; H[5] += I2C_SCL                        # I²C (ADC + NFC)
 H[13] += TRIG; H[15] += RACK; H[16] += MAGREL; H[18] += MAGWELL
@@ -113,6 +123,13 @@ Je["VBAT"] += VBAT; Je["IR_MOD"] += IR_MOD; Je["GND"] += GND
 U_imu["VDD"] += V3; U_imu["VDDIO"] += V3; U_imu["GND"] += GND
 U_imu["SCLK"] += SCK; U_imu["SDI"] += MOSI; U_imu["SDO"] += MISO; U_imu["CS"] += nCS; U_imu["INT1"] += IMU_INT
 Ci1[1] += V3; Ci1[2] += GND; Ci2[1] += V3; Ci2[2] += GND
+# 2 extra IMU på I²C: U_imu2 = 0x69 (AD0=hög), U_imu3 = 0x68 (AD0=låg); CS→3V3 = I²C-läge
+U_imu2[8] += V3; U_imu2[5] += V3; U_imu2[6] += GND; U_imu2[7] += GND; U_imu2[12] += V3
+U_imu2[1] += V3;  U_imu2[13] += I2C_SCL; U_imu2[14] += I2C_SDA; U_imu2[4] += IMU2_INT
+U_imu3[8] += V3; U_imu3[5] += V3; U_imu3[6] += GND; U_imu3[7] += GND; U_imu3[12] += V3
+U_imu3[1] += GND; U_imu3[13] += I2C_SCL; U_imu3[14] += I2C_SDA; U_imu3[4] += IMU3_INT
+Ci3[1] += V3; Ci3[2] += GND; Ci4[1] += V3; Ci4[2] += GND
+Ci5[1] += V3; Ci5[2] += GND; Ci6[1] += V3; Ci6[2] += GND
 
 # ---------- batteri-sense → I²C-ADC ----------
 Rsa[1] += VBAT; Rsa[2] += VBAT_SENSE; Rsb[1] += VBAT_SENSE; Rsb[2] += GND; Csns[1] += VBAT_SENSE; Csns[2] += GND

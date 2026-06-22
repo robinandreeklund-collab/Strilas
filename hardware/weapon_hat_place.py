@@ -33,11 +33,13 @@ IMUN = {"SCK","MOSI","MISO","nCS","IMU_INT"}
 FCN  = {"TRIG","RACK","MAGREL","MAGWELL","RECOIL_PWM","RECOIL_FAULT","MODE0","MODE1","PTT"}
 ref_nets = defaultdict(set)
 for (r, p), n in padnet.items(): ref_nets[r].add(n)
+IMU2N = {"IMU2_INT","IMU3_INT"}                # de 2 nya I²C-IMU:erna
 def cluster(ref):
     if ref == "J1": return "HDR"
     if (comps[ref][0] or "").startswith(("Connector_JST","Connector_PinHeader")): return "CONN"
     nets = ref_nets[ref]
     if nets & CC:  return "CC"
+    if nets & IMU2N: return "IMU2"
     if nets & FCN: return "FC"
     if nets & IMUN: return "IMU"
     if "VBAT_SENSE" in nets: return "ADC"
@@ -60,17 +62,18 @@ def cell(fp):
 CTR = 3.6                                   # halv mittremsa (header-pad ±2,1 + marginal)
 TOPCL = {"PWR", "IMU", "CC"}                # dessa SMT-kluster → toppbandet; övriga → bottenbandet
 # ---- regioner (radpacka vänster→höger, nedåt): xL, xR, yTop ----
-# SMT i icke-överlappande x-banor (höger om bucken upptill; ovanför kant-kontakterna nedtill)
-REG = {"PWR":(-8,12,11), "IMU":(12,27,11), "CC":(-26,-20,11),      # TOPP-band (x>-9, klar av buck)
-       "ADC":(-26,-8,-6), "FC":(-8,12,-6), "MISC":(12,27,-6)}      # BOTTEN-band (ovanför kant-JST)
+# SMT i icke-överlappande x-banor (höger om bucken upptill; ovanför kant-kontakterna nedtill).
+# BOTTEN-bandet rymmer nu även de 2 nya I²C-IMU:erna (IMU2) + deras avkopplingscaps (MISC).
+REG = {"PWR":(-5,14,11), "IMU":(14,27,11), "CC":(-26,-20,11),                  # TOPP-band
+       "ADC":(-27,-14,-6), "IMU2":(-14,-2,-6), "FC":(-2,15,-6), "MISC":(15,27,-6)}  # BOTTEN-band
 # fasta kontakt-lägen — ALLA på topp/botten-kant (kabel ut ur kant), klara av mittremsan
 def fixedpos(ref):
     fp, v = comps[ref]; v = v or ""
     if ref == "J1": return (0, 0, 90)         # 40-pin HONA centrum (flippas till baksidan nedan)
-    if "TO-263" in (fp or ""): return (-17, 13, 0)   # buck (stor) topp-vänster
-    if "optik" in v: return (8, 18, 180)      # emitter-JST (→optik) topp-kant, kabel ut uppåt (→ optik i stacken)
-    if "NFC" in v: return (18, 18, 180)       # NFC topp-kant höger, kabel ut uppåt
-    if "2S batteri" in v: return (-22, -18, 0)       # batteri JST-XH botten-vänster kant
+    if "TO-263" in (fp or ""): return (-13, 13, 0)   # buck (stor) topp-vänster (vänster pad klar av MH3)
+    if "optik" in v: return (6, 18, 180)      # emitter-JST (→optik) topp-kant (pad-rad klar av NFC)
+    if "NFC" in v: return (15, 18, 180)       # NFC topp-kant höger (klar av standoff-hål)
+    if "2S batteri" in v: return (-20, -18, 0)       # batteri JST-XH botten-vänster kant (klar av standoff-hål)
     if "TRIGGER" in v: return (-13, -18, 0)
     if "RACK" in v: return (-6.5, -18, 0)
     if "MAGREL" in v: return (0, -18, 0)
@@ -133,8 +136,8 @@ def hits(ra, rb):
                for pa in fps[ra].Pads() for pb in fps[rb].Pads())
 XMIN, XMAX = int((OX-25)*1e6), int((OX+25)*1e6)
 INNER = CTR + 2.2                                        # håll del-CENTRUM så att även pads klarar remsan
-YTOP_LO, YTOP_HI = int((OY-11.5)*1e6), int((OY-INNER)*1e6) # toppband (mellan header och topp-kontakter)
-YBOT_LO, YBOT_HI = int((OY+INNER)*1e6), int((OY+11.5)*1e6) # bottenband (mellan header och kant-JST)
+YTOP_LO, YTOP_HI = int((OY-14.5)*1e6), int((OY-INNER)*1e6) # toppband (mellan header och topp-kontakter)
+YBOT_LO, YBOT_HI = int((OY+INNER)*1e6), int((OY+14.5)*1e6) # bottenband (mellan header och kant-JST)
 def clampy(r, y):
     return (min(YTOP_HI, max(YTOP_LO, y)) if band[r] > 0 else min(YBOT_HI, max(YBOT_LO, y)))
 # hård FÖR-klamp: tvinga ALLA rörliga in i sitt band + på kortet (packaren kan spilla över kant);
@@ -163,6 +166,12 @@ for i in range(4):
     s.SetStart(V(*pts[i])); s.SetEnd(V(*pts[(i+1)%4])); s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(MM(0.15)); b.Add(s)
 tt = pcbnew.PCB_TEXT(b); tt.SetText("STRILAS VAPEN-HAT (CM5)"); tt.SetPosition(V(0, 16)); tt.SetLayer(pcbnew.F_SilkS)
 tt.SetTextSize(pcbnew.VECTOR2I(MM(1.2),MM(1.2))); tt.SetTextThickness(MM(0.2)); tt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER); b.Add(tt)
+
+# 4 standoff-monteringshål (M2.5) i hörnen → 20 mm-standoffs upp till optik-PCB:n.
+# Lägen matchar optikens hörnhål (±18,±25,5) när optiken sitter 90°-vriden på stacken.
+for i,(hx,hy) in enumerate([(25.5,18),(25.5,-18),(-25.5,18),(-25.5,-18)]):
+    mh = pcbnew.FootprintLoad(f"{F}/MountingHole.pretty", "MountingHole_2.7mm_M2.5")
+    mh.SetReference(f"MH{i+1}"); mh.SetPosition(V(hx,hy)); b.Add(mh)
 
 pcbnew.SaveBoard("hardware/weapon-hat.kicad_pcb", b)
 print(f"placerade {len(fps)} komponenter → hardware/weapon-hat.kicad_pcb (70×58 mm, 2-lager)")

@@ -18,13 +18,14 @@ for m in re.finditer(r'\(comp\s+\(ref "([^"]+)"\)\s+\(value "([^"]*)"\)(.*?)(?=\
 
 b = pcbnew.LoadBoard(PCB)
 THT = lambda fp: fp.startswith(("Connector_JST", "Connector_PinSocket", "Connector_PinHeader"))
+SKIP = lambda ref, fp: ref.startswith("MH") or "MountingHole" in fp   # monteringshål → ej i centroid/BOM
 
 # ---- centroid: SMT-delar på framsidan (THT-kontakter exkluderas, handlödda) ----
 os.makedirs("leverans/weapon-hat", exist_ok=True)
 rows = []
 for f in b.GetFootprints():
     ref = f.GetReference(); fp = comps.get(ref, ("", ""))[1]
-    if THT(fp): continue
+    if THT(fp) or SKIP(ref, f.GetFPID().GetUniStringLibId()): continue
     p = f.GetPosition()
     rows.append((ref, p.x/1e6-OX, OY-p.y/1e6, "bottom" if f.IsFlipped() else "top", f.GetOrientationDegrees()))
 rows.sort(key=lambda r: (r[0][0], int(re.sub(r"\D", "", r[0]) or 0)))
@@ -39,6 +40,7 @@ COLS = ["Designator*", "Quantity*", "Manufacturer Part Number*", "Manufacturer",
         "Package/Footprint", "Description", "Procurement Type", "Customer Note"]
 DESC = {  # värde → (MPN, tillv, beskrivning)
  "ICM-42688-P": ("ICM-42688-P", "TDK InvenSense", "6-axlig IMU (SPI)"),
+ "IIM-42653": ("IIM-42653", "TDK InvenSense", "6-axlig industri-IMU (I²C, 0x68/0x69)"),
  "ADS1115": ("ADS1115IDGSR", "TI", "16-bit I²C-ADC (batteri-sense)"),
  "OPA171": ("OPA171", "TI", "op-amp"),
  "AO3401": ("AO3401A", "AOS", "P-FET (omvänd-polaritetsskydd)"),
