@@ -54,21 +54,28 @@ def cell(fp):
         if k in (fp or ""): return w, h
     return 3.5, 3.5
 
-# ---- regioner (radpacka vänster→höger, nedåt): xL, xR, yTop — TIGHT för 56×41 ----
-REG = {"CC":(-27,-15,11), "IMU":(-14,-5,11), "ADC":(-3,7,11),
-       "PWR":(-26,-2,-2), "FC":(-1,22,-2), "MISC":(8,22,11)}
-# fasta kontakt-lägen — mappas via VÄRDE-sträng (robust mot SKiDL-ref-numrering J3..J9)
+# 40-pin honan sitter i CENTRUM på BAKSIDAN (pad-rektangel x±25, y±2,1). En fri mittremsa
+# |y|<CTR krävs på FRAMSIDAN (genompläterade hål). ALLA kontakter ligger på TOPP-/BOTTEN-KANTEN
+# (rot 0 → låga i y, kabel ut ur kanten); SMT packas i de två banden mellan header och kant.
+CTR = 3.6                                   # halv mittremsa (header-pad ±2,1 + marginal)
+TOPCL = {"PWR", "IMU", "CC"}                # dessa SMT-kluster → toppbandet; övriga → bottenbandet
+# ---- regioner (radpacka vänster→höger, nedåt): xL, xR, yTop ----
+# SMT i icke-överlappande x-banor (höger om bucken upptill; ovanför kant-kontakterna nedtill)
+REG = {"PWR":(-8,12,11), "IMU":(12,27,11), "CC":(-26,-20,11),      # TOPP-band (x>-9, klar av buck)
+       "ADC":(-26,-8,-6), "FC":(-8,12,-6), "MISC":(12,27,-6)}      # BOTTEN-band (ovanför kant-JST)
+# fasta kontakt-lägen — ALLA på topp/botten-kant (kabel ut ur kant), klara av mittremsan
 def fixedpos(ref):
     fp, v = comps[ref]; v = v or ""
-    if ref == "J1": return (0, 16, 90)       # 40-pin header topp (48 mm i 56-bredden)
-    if "TO-263" in (fp or ""): return (-21, 2, 90)   # buck (stor, roterad) vänster, klar av kant
-    if "optik" in v: return (24, 6, 90)       # emitter-JST (→optik) höger kant
-    if "TRIGGER" in v: return (-11, -17.5, 0)
-    if "RACK" in v: return (-4, -17.5, 0)
-    if "MAGREL" in v: return (3, -17.5, 0)
-    if "MAGWELL" in v: return (10, -17.5, 0)
-    if "recoil" in v: return (24, -14, 90)
-    if "NFC" in v: return (24, -6, 90)
+    if ref == "J1": return (0, 0, 90)         # 40-pin HONA centrum (flippas till baksidan nedan)
+    if "TO-263" in (fp or ""): return (-17, 13, 0)   # buck (stor) topp-vänster
+    if "optik" in v: return (8, 18, 180)      # emitter-JST (→optik) topp-kant, kabel ut uppåt (→ optik i stacken)
+    if "NFC" in v: return (18, 18, 180)       # NFC topp-kant höger, kabel ut uppåt
+    if "2S batteri" in v: return (-22, -18, 0)       # batteri JST-XH botten-vänster kant
+    if "TRIGGER" in v: return (-13, -18, 0)
+    if "RACK" in v: return (-6.5, -18, 0)
+    if "MAGREL" in v: return (0, -18, 0)
+    if "MAGWELL" in v: return (6.5, -18, 0)
+    if "recoil" in v: return (16, -18, 0)     # recoil botten-kant höger
     return None
 
 b = pcbnew.CreateEmptyBoard(); b.SetCopperLayerCount(2)
@@ -107,18 +114,35 @@ for cl, refs in groups.items():
         fps[ref].SetOrientationDegrees(0); fps[ref].SetPosition(V(cx + w/2, cy - h/2))
         cx += w + MARG; rowh = max(rowh, h)
 
-# centrera 40-pin headern via bbox (origo = pin1)
-j1 = fps["J1"]; bb = j1.GetBoundingBox()
-j1.Move(pcbnew.VECTOR2I(int(OX*1e6) - (bb.GetLeft()+bb.GetRight())//2, int((OY-16.5)*1e6) - (bb.GetTop()+bb.GetBottom())//2))
+# 40-pin honan: FLIPPA till baksidan FÖRST (Flip speglar runt pin1-origo), centrera SEDAN
+# kortets geometriska CENTRUM via PAD-centroid (ej bbox; silk/ref snedvrider).
+j1 = fps["J1"]
+j1.Flip(j1.GetPosition(), False)            # → BAKSIDAN (trycks ner på carrierns centrum-stiftlist)
+px = [p.GetPosition().x for p in j1.Pads()]; py = [p.GetPosition().y for p in j1.Pads()]
+cxp = (min(px)+max(px))//2; cyp = (min(py)+max(py))//2
+j1.Move(pcbnew.VECTOR2I(int(OX*1e6) - cxp, int(OY*1e6) - cyp))
 
 # --- relaxering: nudga ev. överlappande (icke-fasta) footprints isär tills 0 clearance ---
+# BAND-MEDVETEN: varje rörlig del klampas i SITT band (topp y≥+CTR / botten y≤-CTR) så att
+# mittremsan för centrum-honan ALLTID hålls fri på framsidan.
 import math
 movable = [r for r in fps if fixedpos(r) is None]
+band = {r: (1 if cluster(r) in TOPCL else -1) for r in movable}   # +1 topp, -1 botten
 def hits(ra, rb):
     return any(pa.GetEffectiveShape().Collide(pb.GetEffectiveShape(), int(0.2e6))
                for pa in fps[ra].Pads() for pb in fps[rb].Pads())
-XMIN, XMAX = int((OX-24)*1e6), int((OX+24)*1e6); YMIN, YMAX = int((OY-18)*1e6), int((OY+18)*1e6)
-for _ in range(80):
+XMIN, XMAX = int((OX-25)*1e6), int((OX+25)*1e6)
+INNER = CTR + 2.2                                        # håll del-CENTRUM så att även pads klarar remsan
+YTOP_LO, YTOP_HI = int((OY-11.5)*1e6), int((OY-INNER)*1e6) # toppband (mellan header och topp-kontakter)
+YBOT_LO, YBOT_HI = int((OY+INNER)*1e6), int((OY+11.5)*1e6) # bottenband (mellan header och kant-JST)
+def clampy(r, y):
+    return (min(YTOP_HI, max(YTOP_LO, y)) if band[r] > 0 else min(YBOT_HI, max(YBOT_LO, y)))
+# hård FÖR-klamp: tvinga ALLA rörliga in i sitt band + på kortet (packaren kan spilla över kant);
+# liten unik x-spridning bryter exakt-staplade lägen så relaxeringen säkert konvergerar
+for i, r in enumerate(sorted(movable)):
+    p = fps[r].GetPosition()
+    fps[r].SetPosition(pcbnew.VECTOR2I(min(XMAX, max(XMIN, p.x + (i % 7 - 3) * 200000)), clampy(r, p.y)))
+for _ in range(250):
     moved = False
     for ra in movable:
         for rb in fps:
@@ -127,7 +151,7 @@ for _ in range(80):
             dx, dy = pa.x - pb.x, pa.y - pb.y
             if dx == 0 and dy == 0: dy = 1
             L = math.hypot(dx, dy) or 1; st = 0.8e6
-            nx = min(XMAX, max(XMIN, pa.x + int(dx/L*st))); ny = min(YMAX, max(YMIN, pa.y + int(dy/L*st)))
+            nx = min(XMAX, max(XMIN, pa.x + int(dx/L*st))); ny = clampy(ra, pa.y + int(dy/L*st))
             fps[ra].SetPosition(pcbnew.VECTOR2I(nx, ny)); moved = True
     if not moved: break
 

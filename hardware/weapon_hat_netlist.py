@@ -26,6 +26,8 @@ def mk(name, ref, pins, fp, value=""):
     return p
 
 # ---------- 40-pin RPi-header (HAT ↔ CM5-carrier) — standard RPi-pinout ----------
+# HONA-sockel på HAT:ens BAKSIDA i kortets CENTRUM → trycks rakt ner på carrierns
+# centrerade 40-pin stiftlist (CM5-NANO-B). Alla övriga komponenter på FRAMSIDAN.
 HDR_PINS = [(1,"3V3"),(2,"5V"),(3,"GPIO2_SDA"),(4,"5V"),(5,"GPIO3_SCL"),(6,"GND"),(7,"GPIO4"),
             (8,"GPIO14"),(9,"GND"),(10,"GPIO15"),(11,"GPIO17"),(12,"GPIO18"),(13,"GPIO27"),(14,"GND"),
             (15,"GPIO22"),(16,"GPIO23"),(17,"3V3"),(18,"GPIO24"),(19,"GPIO10_MOSI"),(20,"GND"),
@@ -33,7 +35,7 @@ HDR_PINS = [(1,"3V3"),(2,"5V"),(3,"GPIO2_SDA"),(4,"5V"),(5,"GPIO3_SCL"),(6,"GND"
             (27,"GPIO0"),(28,"GPIO1"),(29,"GPIO5"),(30,"GND"),(31,"GPIO6"),(32,"GPIO12"),(33,"GPIO13"),
             (34,"GND"),(35,"GPIO19"),(36,"GPIO16"),(37,"GPIO26"),(38,"GPIO20"),(39,"GND"),(40,"GPIO21")]
 HDR = mk("RPi_40pin", "J", HDR_PINS,
-         "Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical", "40-pin → CM5-carrier")
+         "Connector_PinSocket_2.54mm:PinSocket_2x20_P2.54mm_Vertical", "40-pin HONA → CM5-carrier (baksida, centrum)")
 
 BATT = mk("BATT_2S", "J", [(1, "VBAT"), (2, "GND")], "Connector_JST:JST_XH_S2B-XH-A_1x02_P2.50mm_Horizontal", "2S batteri (JST-XH)")
 EMIT = mk("EmitConn", "J", [(1, "VBAT"), (2, "IR_MOD"), (3, "GND")],
