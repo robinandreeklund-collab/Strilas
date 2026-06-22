@@ -16,8 +16,12 @@ FPD = "/usr/share/kicad/footprints"; LOC = "/home/user/Strilas/hardware/strilas.
 BW, BH = 20.5, 28.0       # 41×56 mm porträtt (max i 56×41-envelopen)
 LENS_C = (0.0, 13.0); LENS_R = 7.5          # kamera-cutout topp (Ø15)
 CAM_PITCH = 20.0          # VEYE AR0234M 29×29: 4×Ø2 hörnhål = 20×20-kvadrat (verifierat mot VEYE-måttritning)
-EMIT_Y = -18.5; EMIT_DX = 10.5              # emittrar botten, sida-vid-sida
+EMIT_Y = -18.5; EMIT_DX = 12.0             # emittrar botten, sida-vid-sida
+# Carclo 10734 (ritn. 60575): Ø22,1 fläns, 4-bens hålbild 9,0×15,60 mm (= 2·LEG_DX × 2·LEG_DY).
+# c/c 24 mm ≥ 22,1 → de två RUNDA flänsarna krockar EJ med varann; benen (alla 8) ligger på kortet;
+# själva flänsen skjuter ut ~2,6 mm utanför vänster/höger kant (OK enl. Robin).
 LEG_DX, LEG_DY = 4.5, 7.8
+HOLDER_OD = 22.1                            # Carclo 10734 ytterdiameter (dokumenteras på Cmts.User)
 
 def main():
     b = pcbnew.CreateEmptyBoard(); b.SetCopperLayerCount(2)
@@ -52,7 +56,7 @@ def main():
     Rdb= fp("Resistor_SMD","R_0805_2012Metric","R4","1k",3,-12,0); setnet(Rdb,"1","IDRV_REF"); setnet(Rdb,"2","GND")
     Rg = fp("Resistor_SMD","R_0805_2012Metric","R5","100R",3,-8,0); setnet(Rg,"1","OPA_OUT"); setnet(Rg,"2","DRV_GATE")
     Cop= fp("Resistor_SMD","R_0805_2012Metric","C1","100nF",12,-9,0); setnet(Cop,"1","VBAT"); setnet(Cop,"2","GND")
-    Cc = fp("Resistor_SMD","R_0805_2012Metric","C2","100pF",-9,-11,0); setnet(Cc,"1","OPA_OUT"); setnet(Cc,"2","IDRV_SENSE")
+    Cc = fp("Resistor_SMD","R_0805_2012Metric","C2","100pF",-0.9,-6.3,0); setnet(Cc,"1","OPA_OUT"); setnet(Cc,"2","IDRV_SENSE")  # flyttad: klar av D1:s benhål + utanför fläns, nära OPA-utg
 
     # JST 3-pin (VBAT·IR_MOD·GND) på BAKSIDAN, THT
     J = fp("Connector_JST","JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical","J1","→HAT (VBAT·IR_MOD·GND)",16,-3,90,back=True)
@@ -71,6 +75,10 @@ def main():
     # lins-cutout + outline + silk
     cir = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_CIRCLE); cir.SetCenter(V(*LENS_C)); cir.SetEnd(V(LENS_C[0]+LENS_R,LENS_C[1]))
     cir.SetLayer(pcbnew.Edge_Cuts); cir.SetWidth(MM(0.15)); b.Add(cir)
+    # Carclo 10734 fläns-envelopp (Ø22,1) på Cmts.User — dokumenterar att flänsen sticker ut över kanten
+    for ex in (-EMIT_DX, +EMIT_DX):
+        hc = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_CIRCLE); hc.SetCenter(V(ex,EMIT_Y)); hc.SetEnd(V(ex+HOLDER_OD/2,EMIT_Y))
+        hc.SetLayer(pcbnew.Cmts_User); hc.SetWidth(MM(0.12)); b.Add(hc)
     box = [(-BW,-BH),(BW,-BH),(BW,BH),(-BW,BH)]
     for i in range(4):
         s=pcbnew.PCB_SHAPE(b,pcbnew.SHAPE_T_SEGMENT); s.SetStart(V(*box[i])); s.SetEnd(V(*box[(i+1)%4]))
