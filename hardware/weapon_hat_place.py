@@ -75,17 +75,20 @@ REG = {"BUCK":(-27,-12,13), "PWR":(-12,18,13), "IMU":(18,27,13), "CC":(-26,-20,1
 def fixedpos(ref):
     fp, v = comps[ref]; v = v or ""
     if ref == "J1": return (0, 0, 90)         # 40-pin HONA centrum (flippas till baksidan nedan)
-    if "ESP-brygga" in v: return (-8, 18, 180) # 4-pol JST → extern ESP-modul (kabel ut topp-kant); fritt läge (sockel borta)
-    if "AP63203" in v: return (-23, 11, 0)    # buck-IC topp-vänster
-    if "MD-5050" in (fp or ""): return (-17.5, 11, 0)  # buck-induktor intill IC → kort SW-nod
-    if "optik" in v: return (6, 18, 180)      # emitter-JST (→optik) topp-kant
+    # KONTAKTER courtyard-balanserade: 6 djupa på botten fick EJ plats (46,9>46mm). Batteri-JST (XH,
+    # 12,5mm DJUP) stannar botten; en GRUND PH (magwell) flyttas till TOPP-kant → båda får ~1mm gap.
+    # Kant-kontakter hålls innanför ±22 (standoff-courtyard ~Ø7 vid ±25,5).
+    if "MAGWELL" in v: return (-18, 18, 180)  # magwell-JST → TOPP-kant vänster (grund PH, klarar nedsänkt buck)
+    if "ESP-brygga" in v: return (-7.5, 18, 180) # ESP-JST → extern modul
+    if "optik" in v: return (4, 18, 180)      # emitter-JST (→optik)
     if "NFC" in v: return (15, 18, 180)       # NFC topp-kant höger
-    if "2S batteri" in v: return (-20, -18, 0)       # batteri JST-XH botten-vänster kant (klar av standoff-hål)
-    if "TRIGGER" in v: return (-13, -18, 0)
-    if "RACK" in v: return (-6.5, -18, 0)
-    if "MAGREL" in v: return (0, -18, 0)
-    if "MAGWELL" in v: return (6.5, -18, 0)
-    if "recoil" in v: return (16, -18, 0)     # recoil botten-kant höger
+    if "AP63203" in v: return (-22.5, 10, 0)  # buck-IC (nedsänkt 1mm → topp-kontakter klarar kroppen)
+    if "MD-5050" in (fp or ""): return (-16.5, 10, 0)  # buck-induktor intill IC
+    if "2S batteri" in v: return (-17.5, -18, 0)  # batteri-JST botten-vänster
+    if "TRIGGER" in v: return (-10, -18, 0)   # botten-kant: 5 kontakter, ~1mm gap
+    if "RACK" in v: return (-3, -18, 0)
+    if "MAGREL" in v: return (4, -18, 0)
+    if "recoil" in v: return (14.5, -18, 0)   # recoil botten-kant höger
     return None
 
 b = pcbnew.CreateEmptyBoard(); b.SetCopperLayerCount(2)
@@ -133,15 +136,51 @@ cxp = (min(px)+max(px))//2; cyp = (min(py)+max(py))//2
 j1.Move(pcbnew.VECTOR2I(int(OX*1e6) - cxp, int(OY*1e6) - cyp))
 # ESP32-C6-sockeln ligger på FRAMSIDAN (i gapet mot optiken, USB-C nedåt) — ingen flip.
 
+# --- EDGE-KONTAKT-SPRIDNING (courtyard-baserad, 1D): lägg kant-JST:er sida-vid-sida UTAN överlapp,
+#     innanför ±22 (standoff-courtyard ~Ø6 vid ±25,5). Görs FÖRE SMT-relaxeringen → SMT packas runt
+#     slutliga kontaktlägen. fixedpos-x sätter ORDNINGEN; här finjusteras x via uppmätta courtyards. ---
+def _cyedge(ref):
+    f = fps[ref]
+    for L in (pcbnew.F_CrtYd, pcbnew.B_CrtYd):
+        cy = f.GetCourtyard(L)
+        if cy and cy.OutlineCount() > 0:
+            bb = cy.BBox(); return bb.GetLeft()/1e6 - OX, bb.GetRight()/1e6 - OX
+    bb = f.GetBoundingBox(False, False); return bb.GetLeft()/1e6 - OX, bb.GetRight()/1e6 - OX
+for _ey in (1, -1):
+    _conns = [r for r in fps if r != "J1" and (comps[r][0] or "").startswith("Connector_JST")
+              and (OY - fps[r].GetPosition().y/1e6) * _ey > 8]
+    _conns.sort(key=lambda r: fps[r].GetPosition().x)
+    _cur = -22.0
+    for r in _conns:
+        l, rt = _cyedge(r); c = fps[r].GetPosition().x/1e6 - OX
+        yy = OY - fps[r].GetPosition().y/1e6
+        fps[r].SetPosition(V(_cur - (l - c), yy))      # skift så vänster-courtyardkant = _cur
+        _cur += (rt - l) + 0.8                          # nästa vänsterkant = denna högerkant + 0,8mm
+
 # --- relaxering: nudga ev. överlappande (icke-fasta) footprints isär tills 0 clearance ---
 # BAND-MEDVETEN: varje rörlig del klampas i SITT band (topp y≥+CTR / botten y≤-CTR) så att
 # mittremsan för centrum-honan ALLTID hålls fri på framsidan.
 import math
 movable = [r for r in fps if fixedpos(r) is None]
 band = {r: (1 if cluster(r) in TOPCL else -1) for r in movable}   # +1 topp, -1 botten
+# COURTYARD-medveten kollision: använd komponentens KROPP (courtyard-bbox), ej bara pads → inga
+# kroppar ovanpå varandra. Cacha half-extent + centrum-offset (translations-invariant i relaxeringen).
+def cyinfo(f):
+    bb = None
+    for L in (pcbnew.F_CrtYd, pcbnew.B_CrtYd):
+        cy = f.GetCourtyard(L)
+        if cy and cy.OutlineCount() > 0: bb = cy.BBox(); break
+    if bb is None: bb = f.GetBoundingBox(False, False)
+    p = f.GetPosition(); c = bb.GetCenter()
+    return (bb.GetWidth()//2, bb.GetHeight()//2, c.x - p.x, c.y - p.y)
+CY = {r: cyinfo(fps[r]) for r in fps}
+GAP = int(0.15e6)
+def cxy(ref):
+    p = fps[ref].GetPosition(); hw, hh, ox, oy = CY[ref]
+    return p.x + ox, p.y + oy, hw, hh
 def hits(ra, rb):
-    return any(pa.GetEffectiveShape().Collide(pb.GetEffectiveShape(), int(0.2e6))
-               for pa in fps[ra].Pads() for pb in fps[rb].Pads())
+    xa, ya, hwa, hha = cxy(ra); xb, yb, hwb, hhb = cxy(rb)
+    return abs(xa - xb) < hwa + hwb + GAP and abs(ya - yb) < hha + hhb + GAP
 XMIN, XMAX = int((OX-25)*1e6), int((OX+25)*1e6)
 INNER = CTR + 2.2                                        # håll del-CENTRUM så att även pads klarar remsan
 YTOP_LO, YTOP_HI = int((OY-14.5)*1e6), int((OY-INNER)*1e6) # toppband (mellan header och topp-kontakter)
@@ -176,8 +215,12 @@ def padpos(ref, net):
     q = fps[ref].GetPosition(); return (q.x, q.y)
 def collide(ref, x, y):
     fps[ref].SetPosition(pcbnew.VECTOR2I(int(x), int(y)))
-    return any(pa.GetEffectiveShape().Collide(pb.GetEffectiveShape(), int(0.25e6))
-               for o in fps if o != ref for pa in fps[ref].Pads() for pb in fps[o].Pads())
+    hw, hh, ox, oy = CY[ref]; cx, cyy = int(x) + ox, int(y) + oy
+    for o in fps:
+        if o == ref: continue
+        xo, yo, hwo, hho = cxy(o)
+        if abs(cx - xo) < hw + hwo + GAP and abs(cyy - yo) < hh + hho + GAP: return True
+    return False
 buck = next((r for r in fps if "AP63203" in (comps[r][1] or "")), None)
 ind  = next((r for r in fps if "MD-5050" in (comps[r][0] or "")), None)
 adc  = next((r for r in fps if "ADS1115" in (comps[r][1] or "")), None)
