@@ -78,11 +78,12 @@ TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
 TVS5 = mk("SMAJ5.0A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMA", "SMAJ5.0A")   # 5V-rail transientskydd
 EEPROM = mk("AT24C32", "U", [(1,"A0"),(2,"A1"),(3,"A2"),(4,"GND"),(5,"SDA"),(6,"SCL"),(7,"WP"),(8,"VCC")],
             "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm", "AT24C32 HAT-ID EEPROM 0x50")
-# ESP32-C6 ESP-NOW-brygga: hona-SOCKEL på BAKSIDAN → Seeed XIAO ESP32-C6 daughterboard trycks dit
-# (eget LDO + U.FL-antenn + USB-C för flash). Bara 4 nät behövs: +5V, GND, UART (TX/RX) ↔ CM5.
+# ESP32-C6 ESP-NOW-brygga: hona-SOCKEL på FRAMSIDAN (mot optik, 20mm gap) → Seeed XIAO ESP32-C6
+# trycks dit (eget LDO + U.FL-antenn + USB-C för flash). Front-montage = ingen krock med 40-pin-headern
+# (på baksidan). Bara 4 nät: +5V, GND, UART (TX/RX) ↔ CM5.
 # Pad-numrering (footprint XIAO_ESP32C6_Socket): 1–7 vä = D0..D6/TX, 8–14 hö = 5V,GND,3V3,D10,D9,D8,D7/RX.
 XIAO = mk("XIAO_ESP32C6", "J", [(i, str(i)) for i in range(1, 15)],
-          "strilas:XIAO_ESP32C6_Socket", "XIAO ESP32-C6 (ESP-NOW-brygga, baksida)")
+          "strilas:XIAO_ESP32C6_Socket", "XIAO ESP32-C6 (ESP-NOW-brygga, framsida)")
 # AT24C32 standard 24Cxx-pinout: 1-3=A0/A1/A2(→GND=0x50) 4=GND 5=SDA 6=SCL 7=WP(→GND, skrivbar) 8=VCC
 
 # ---------- nät ----------
@@ -188,7 +189,7 @@ U_eep["SDA"] += ID_SD; U_eep["SCL"] += ID_SC; U_eep["WP"] += GND      # WP→GND
 Ceep[1] += V3; Ceep[2] += GND
 Rid1[1] += V3; Rid1[2] += ID_SD; Rid2[1] += V3; Rid2[2] += ID_SC      # ID-buss pull-ups
 
-# ---------- ESP32-C6-brygga (XIAO-sockel, baksida; matas +5V → eget LDO) ----------
+# ---------- ESP32-C6-brygga (XIAO-sockel, framsida; matas +5V → eget LDO) ----------
 Jc6[8] += V5; Jc6[9] += GND                            # XIAO 5V + GND
 Jc6[14] += ESP_TX                                      # D7/RX (GPIO17) ← CM5 TX (GPIO14)
 Jc6[7] += ESP_RX                                       # D6/TX (GPIO16) → CM5 RX (GPIO15)

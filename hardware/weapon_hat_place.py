@@ -75,9 +75,9 @@ REG = {"BUCK":(-27,-12,13), "PWR":(-12,18,13), "IMU":(18,27,13), "CC":(-26,-20,1
 def fixedpos(ref):
     fp, v = comps[ref]; v = v or ""
     if ref == "J1": return (0, 0, 90)         # 40-pin HONA centrum (flippas till baksidan nedan)
-    if "XIAO" in v: return (13.0, 14.2, 90)   # ESP32-C6-sockel BAKSIDA, toppband HÖGER (flippas nedan);
-    #   höjt + kortet förlängt +2,5mm upptill → XIAO-kroppen klarar 40-pin-headern (~2,7mm luft).
-    #   14 hål verifierat rena mot fram-SMT + 40-pin-pads; kroppen klarar standoff-hålet (25,5;18)
+    if "XIAO" in v: return (-12.5, 11.0, 90)  # ESP32-C6-sockel FRAMSIDA (mot optik, 20mm gap) — INTE flippad.
+    #   Front-montage löser 40-pin-krocken (XIAO-kropp på optik-sidan, 40-pin-kropp på carrier-sidan).
+    #   14 hål i rent läge (samma som routade 0/0); kroppen svävar 8,5mm över fram-SMT (raised socket)
     if "AP63203" in v: return (-23, 11, 0)    # buck-IC topp-vänster
     if "MD-5050" in (fp or ""): return (-17.5, 11, 0)  # buck-induktor intill IC → kort SW-nod
     if "optik" in v: return (6, 18, 180)      # emitter-JST (→optik) topp-kant (pad-rad klar av NFC)
@@ -133,9 +133,7 @@ j1.Flip(j1.GetPosition(), False)            # → BAKSIDAN (trycks ner på carri
 px = [p.GetPosition().x for p in j1.Pads()]; py = [p.GetPosition().y for p in j1.Pads()]
 cxp = (min(px)+max(px))//2; cyp = (min(py)+max(py))//2
 j1.Move(pcbnew.VECTOR2I(int(OX*1e6) - cxp, int(OY*1e6) - cyp))
-# ESP32-C6-sockeln flippas till BAKSIDAN på plats (XIAO trycks dit i gapet mot carriern)
-xiao = next((r for r in fps if "XIAO" in (comps[r][1] or "")), None)
-if xiao: fps[xiao].Flip(fps[xiao].GetPosition(), False)
+# ESP32-C6-sockeln ligger kvar på FRAMSIDAN (XIAO trycks dit mot optik-sidan, 20mm gap) — ingen flip.
 
 # --- relaxering: nudga ev. överlappande (icke-fasta) footprints isär tills 0 clearance ---
 # BAND-MEDVETEN: varje rörlig del klampas i SITT band (topp y≥+CTR / botten y≤-CTR) så att
@@ -214,9 +212,9 @@ for c in sorted(tgt, key=cval):
         if done: break
     if not done: fps[c].SetPosition(orig)                            # ingen plats → behåll relaxat läge (ej krock)
 
-# outline 56×43,5 mm (asymmetrisk: övre kant +2,5mm för C6-sockel-clearance mot 40-pin-headern)
-W, HB, HT = 28.0, 20.5, 23.0
-pts = [(-W,-HB),(W,-HB),(W,HT),(-W,HT)]
+# outline 56×41 mm (alla kort samma storlek — C6-sockeln på framsidan kräver ingen tillväxt)
+W, H = 28.0, 20.5
+pts = [(-W,-H),(W,-H),(W,H),(-W,H)]
 for i in range(4):
     s = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_SEGMENT)
     s.SetStart(V(*pts[i])); s.SetEnd(V(*pts[(i+1)%4])); s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(MM(0.15)); b.Add(s)
