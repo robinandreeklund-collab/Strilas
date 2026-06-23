@@ -15,7 +15,7 @@ def finish(path):
     b=pcbnew.LoadBoard(path); g=b.FindNet("GND").GetNetCode()
     for z in list(b.Zones()): b.Remove(z)
     for L in CU:
-        z=pcbnew.ZONE(b); z.SetLayer(L); z.SetNetCode(g); z.SetLocalClearance(MM(0.25)); z.SetMinThickness(MM(0.2))
+        z=pcbnew.ZONE(b); z.SetLayer(L); z.SetNetCode(g); z.SetLocalClearance(MM(0.3)); z.SetMinThickness(MM(0.2))
         ch=pcbnew.SHAPE_LINE_CHAIN()
         for x,y in [(-20.2,-27.7),(20.2,-27.7),(20.2,27.7),(-20.2,27.7)]: ch.Append(V(x,y))
         ch.SetClosed(True); z.AddPolygon(ch); b.Add(z)
@@ -50,7 +50,7 @@ shutil.copy("/tmp/_oh_best.kicad_pcb",PCB); finish(PCB)
 v,un=verify(PCB); print(f"FINAL clearance@0.2={v} oanslutna={un}",flush=True)
 if v==0 and un==0:
     os.system("rm -rf /tmp/gboh && mkdir -p /tmp/gboh")
-    subprocess.run(["kicad-cli","pcb","export","gerbers","-o","/tmp/gboh/",PCB],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    subprocess.run(["kicad-cli","pcb","export","gerbers","--subtract-soldermask","-o","/tmp/gboh/",PCB],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     subprocess.run(["kicad-cli","pcb","export","drill","-o","/tmp/gboh/",PCB],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     os.makedirs("leverans/optik-head",exist_ok=True)
     subprocess.run(["bash","-c","cd /tmp/gboh && zip -q -r - . > /home/user/Strilas/leverans/optik-head/optik-head-gerbers.zip"])
