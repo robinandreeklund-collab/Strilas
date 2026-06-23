@@ -122,7 +122,7 @@ MPN = {
     "recoil-driver": ("B4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol 2.0mm THT — recoil-driver (VBAT·PWM·FAULT·GND)", "", "TH"),
     "→ optik (VBAT·IR_MOD·GND·EMIT_HI; CC-sänka på optik)": ("S4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol 2.0mm THT — emitter→optik (VBAT·IR_MOD·GND·EMIT_HI)", "", "TH"),
     "40-pin HONA → CM5-carrier (baksida, centrum)": ("PPTC202LFBN-RC", "Sullins", "Stiftsockel 2x20 2.54mm THT (hona) — → CM5-carrierns GPIO-stiftlist", "", "TH; handlöds på baksidan"),
-    "XIAO ESP32-C6 (ESP-NOW-brygga, framsida)": ("DS1023-1X7SF11", "Ckmtw", "2x 1x07 2.54mm hona-sockel (15.24mm radavst.) — Seeed XIAO ESP32-C6 trycks dit (framsida)", "", "TH; handlöds på baksidan. 2 st 1x7-socklar (framsida). XIAO ESP32-C6-kortet KÖPS SEPARAT (Seeed)"),
+    "XIAO ESP32-C6 (ESP-NOW-brygga)": ("DS1023-1X7SF11", "Ckmtw", "2x 1x07 2.54mm hona-sockel (15.24mm radavst.) — Seeed XIAO ESP32-C6 trycks dit (baksida, carrier-fri zon)", "", "TH; handlöds på baksidan. 2 st 1x7-socklar (baksida). XIAO ESP32-C6-kortet KÖPS SEPARAT (Seeed)"),
     # --- OPTIK-HEAD (v2) ---
     "SFH4725AS_940nm": ("SFH 4725AS", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD (aktiv drop-in f. utgångna 4725S; samma paket/footprint)", "", "NextPCB sourcar + SMT-placerar UNDER LINSEN"),
     "→HAT (VBAT·IR_MOD·GND·EMIT_HI)": ("B4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol 2.0mm VERTIKAL THT (baksida) — →HAT (VBAT·IR_MOD·GND·EMIT_HI)", "", "TH"),
@@ -275,7 +275,7 @@ if __name__ == "__main__":
     HAT_EXTRA = [  # köps separat, ej PCB-monterad (trycks i sockeln)
         ("XIAO1", 1, "XIAO ESP32C6", "Seeed Studio", "XIAO 21x17.8mm",
          "ESP32-C6 daughterboard (ESP-NOW-brygga CM5↔väst/hjälm); eget LDO + U.FL-antenn + USB-C",
-         "KÖPS SEPARAT (Seeed). Trycks i fram-sockeln (J10), mot optik-sidan. Antenn via U.FL ut ur huset"),
+         "KÖPS SEPARAT (Seeed). Trycks i bak-sockeln (J10), carrier-fria zonen top-höger. Antenn via U.FL ut ur huset"),
     ]
     print("VAPEN-HAT/FC (3× ICM-42688-P, AP63203-buck):")
     build("weapon-hat.kicad_pcb", "weapon-hat.net", "nextpcb/weapon-hat-bom.xls", mount_refs=WHAT_MOUNT, extra=HAT_EXTRA)

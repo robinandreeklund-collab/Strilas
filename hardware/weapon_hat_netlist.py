@@ -78,12 +78,11 @@ TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
 TVS5 = mk("SMAJ5.0A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMA", "SMAJ5.0A")   # 5V-rail transientskydd
 EEPROM = mk("AT24C32", "U", [(1,"A0"),(2,"A1"),(3,"A2"),(4,"GND"),(5,"SDA"),(6,"SCL"),(7,"WP"),(8,"VCC")],
             "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm", "AT24C32 HAT-ID EEPROM 0x50")
-# ESP32-C6 ESP-NOW-brygga: hona-SOCKEL på FRAMSIDAN (mot optik, 20mm gap) → Seeed XIAO ESP32-C6
-# trycks dit (eget LDO + U.FL-antenn + USB-C för flash). Front-montage = ingen krock med 40-pin-headern
-# (på baksidan). Bara 4 nät: +5V, GND, UART (TX/RX) ↔ CM5.
+# ESP32-C6 ESP-NOW-brygga: hona-SOCKEL på BAKSIDAN (front = kamera-PCB, upptagen) → Seeed XIAO ESP32-C6
+# trycks dit i carrier-fria zonen (top-höger). Eget LDO + U.FL-antenn + USB-C. Bara 4 nät: +5V, GND, UART.
 # Pad-numrering (footprint XIAO_ESP32C6_Socket): 1–7 vä = D0..D6/TX, 8–14 hö = 5V,GND,3V3,D10,D9,D8,D7/RX.
 XIAO = mk("XIAO_ESP32C6", "J", [(i, str(i)) for i in range(1, 15)],
-          "strilas:XIAO_ESP32C6_Socket", "XIAO ESP32-C6 (ESP-NOW-brygga, framsida)")
+          "strilas:XIAO_ESP32C6_Socket", "XIAO ESP32-C6 (ESP-NOW-brygga)")
 # AT24C32 standard 24Cxx-pinout: 1-3=A0/A1/A2(→GND=0x50) 4=GND 5=SDA 6=SCL 7=WP(→GND, skrivbar) 8=VCC
 
 # ---------- nät ----------

@@ -306,7 +306,7 @@ Vapnet adjudikerar; väst/hjälm rapporterar DATA-träffar + RTK-position; allt 
 
 **Vapnet kör nu CM5** (Broadcom-radio) i stället för P4. CM5:an kan **inte tala ESP-NOW** direkt, så
 vapnet bär en **ESP32-C6 som UART-brygga**: en **Seeed XIAO ESP32-C6** trycks i en hona-sockel på
-**HAT:ens framsida** (J10, mot optik-sidan — fri från 40-pin-headern på baksidan), matas +5V (eget LDO) och pratar med CM5 över UART (CM5 GPIO14/15 = header
+**HAT:ens baksida** (J10, top-höger i den carrier-fria zonen; front = kamera-PCB), matas +5V (eget LDO) och pratar med CM5 över UART (CM5 GPIO14/15 = header
 pin 8/10). XIAO:ns U.FL-antenn dras ut ur vapenhuset. C6:an talar samma ESP-NOW som väst/hjälm →
 ingen protokoll-glapp; CM5 adjudikerar och skickar spel-state via C6-bryggan in i meshen. IR-skottet
 (940 nm → TSOP) är en separat länk, oberoende av radion. Lager-koll på modulen: `leverans/esp-c6-sampler/`.
