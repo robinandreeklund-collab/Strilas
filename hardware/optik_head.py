@@ -46,25 +46,30 @@ def main():
     D2 = fp("strilas","IR_Emitter_OSRAM_OSLON_Black_SFH4725S","D2","SFH4725AS_940nm",+EMIT_DX,EMIT_Y,90)
     setnet(D1,"1","VBAT"); setnet(D1,"2","LED_MID"); setnet(D2,"1","LED_MID"); setnet(D2,"2","LED_CATH")
 
-    # CC-sänka (front, mittband y≈-1..-12)
-    Uop = fp("Package_TO_SOT_SMD","SOT-23-5","U1","OPA171",-1,-4,0)
+    # CC-sänka (front, mittband). POSITIONER COURTYARD-RENSADE (0 komponent-överlapp): R_0805-
+    # courtyarden är 3,36×1,9 mm (bredare än kroppen) → parterna måste stå ≥3,4 mm isär. Tidigare
+    # hand-läggning klustrade dem så KROPPARNA överlappade (C2/U1, C3/U1, R3/R4, R5/R3) och R1 låg
+    # över kamerahålet CAM2; verifierat via GetCourtyard→BooleanIntersection. Kvarvarande courtyard-
+    # touch är BARA mekanik (MH/CL-hål + bak-JST), där bibliotekets courtyards är översällt stora —
+    # hålen ligger >2 mm isär och pad/hål-clearance är 0 (ingen DRC).
+    Uop = fp("Package_TO_SOT_SMD","SOT-23-5","U1","OPA171",-1.44,-3.75,0)
     for p,n in (("1","OPA_OUT"),("2","GND"),("3","IDRV_REF"),("4","IDRV_SENSE"),("5","VBAT")): setnet(Uop,p,n)
     Qd = fp("Package_TO_SOT_SMD","TO-252-2","Q1","AOD4184A",-9,-6,0)
     for p,n in (("1","DRV_GATE"),("2","LED_CATH"),("3","IDRV_SENSE")): setnet(Qd,p,n)
     # FAST 3A-områdes-sense (0R068 2512, 1W): max-ström = Vref_max/Rs = 0,206/0,068 ≈ 3,0A vid full PWM-duty.
-    Rs = fp("Resistor_SMD","R_2512_6332Metric","R1","0R068",10,-3,0); setnet(Rs,"1","IDRV_SENSE"); setnet(Rs,"2","GND")
+    Rs = fp("Resistor_SMD","R_2512_6332Metric","R1","0R068",8,-4,0); setnet(Rs,"1","IDRV_SENSE"); setnet(Rs,"2","GND")  # flyttad ner/in: klar av CAM2-hålet + bak-JST-courtyarden
     # KONTINUERLIG STRÖM-SET (firmware): EMIT_SET = PWM (CM5 GPIO13/PWM1) → RC-filter (R7/C4) → V_SET (DC).
     # V_SET → R3/R4-delare → IDRV_REF = V_SET/16. Duty 0–100% → ström 0–3A. Boot: GPIO13 låg → 0A (av).
-    R7 = fp("Resistor_SMD","R_0805_2012Metric","R7","10k",7.8,0.6,0); setnet(R7,"1","EMIT_SET"); setnet(R7,"2","V_SET")
-    C4 = fp("Capacitor_SMD","C_0805_2012Metric","C4","1uF",3.5,2.0,90); setnet(C4,"1","V_SET"); setnet(C4,"2","GND")  # RC τ≈10ms → ren DC-ref
+    R7 = fp("Resistor_SMD","R_0805_2012Metric","R7","10k",7.76,0.0,0); setnet(R7,"1","EMIT_SET"); setnet(R7,"2","V_SET")
+    C4 = fp("Capacitor_SMD","C_0805_2012Metric","C4","1uF",3.84,1.86,90); setnet(C4,"1","V_SET"); setnet(C4,"2","GND")  # RC τ≈10ms → ren DC-ref
     # 56kHz-GRIND: IR_MOD → Q3-grind kortar IDRV_REF→GND. IR_MOD hög = LED AV, låg = LED PÅ (firmware inverterar).
-    Q3 = fp("Package_TO_SOT_SMD","SOT-23","Q3","AO3400",7.8,3.8,0); setnet(Q3,"1","IR_MOD"); setnet(Q3,"2","GND"); setnet(Q3,"3","IDRV_REF")  # G/S/D
-    Cvb= fp("Capacitor_SMD","C_1206_3216Metric","C3","22uF",0.0,-1.2,0); setnet(Cvb,"1","VBAT"); setnet(Cvb,"2","GND")  # VBAT-bulk 22µF/25V (in-stock) för 3A-pulsens flanker
-    Rda= fp("Resistor_SMD","R_0805_2012Metric","R3","15k",0,-9.8,0); setnet(Rda,"1","V_SET"); setnet(Rda,"2","IDRV_REF")  # ref-delare övre (V_SET→IDRV_REF)
-    Rdb= fp("Resistor_SMD","R_0805_2012Metric","R4","1k",0,-11.5,0); setnet(Rdb,"1","IDRV_REF"); setnet(Rdb,"2","GND")  # flyttad: ut ur benets Ø3,5-frizon
-    Rg = fp("Resistor_SMD","R_0805_2012Metric","R5","100R",3,-8,0); setnet(Rg,"1","OPA_OUT"); setnet(Rg,"2","DRV_GATE")
-    Cop= fp("Resistor_SMD","R_0805_2012Metric","C1","100nF",12,-9,0); setnet(Cop,"1","VBAT"); setnet(Cop,"2","GND")
-    Cc = fp("Resistor_SMD","R_0805_2012Metric","C2","100pF",-0.9,-6.3,0); setnet(Cc,"1","OPA_OUT"); setnet(Cc,"2","IDRV_SENSE")  # flyttad: klar av D1:s benhål + utanför fläns, nära OPA-utg
+    Q3 = fp("Package_TO_SOT_SMD","SOT-23","Q3","AO3400",7.97,3.0,0); setnet(Q3,"1","IR_MOD"); setnet(Q3,"2","GND"); setnet(Q3,"3","IDRV_REF")  # G/S/D
+    Cvb= fp("Capacitor_SMD","C_1206_3216Metric","C3","22uF",0.27,-0.66,0); setnet(Cvb,"1","VBAT"); setnet(Cvb,"2","GND")  # VBAT-bulk 22µF/25V (in-stock) för 3A-pulsens flanker
+    Rda= fp("Resistor_SMD","R_0805_2012Metric","R3","15k",7.5,-12.5,0); setnet(Rda,"1","V_SET"); setnet(Rda,"2","IDRV_REF")  # ref-delare övre (V_SET→IDRV_REF)
+    Rdb= fp("Resistor_SMD","R_0805_2012Metric","R4","1k",11.3,-12.5,0); setnet(Rdb,"1","IDRV_REF"); setnet(Rdb,"2","GND")  # 3,8 mm från R3 (0805-courtyard 3,36) + klar av benhål CL7
+    Rg = fp("Resistor_SMD","R_0805_2012Metric","R5","100R",3.53,-7.73,0); setnet(Rg,"1","OPA_OUT"); setnet(Rg,"2","DRV_GATE")
+    Cop= fp("Resistor_SMD","R_0805_2012Metric","C1","100nF",11.0,-9.11,0); setnet(Cop,"1","VBAT"); setnet(Cop,"2","GND")
+    Cc = fp("Resistor_SMD","R_0805_2012Metric","C2","100pF",-0.84,-6.69,0); setnet(Cc,"1","OPA_OUT"); setnet(Cc,"2","IDRV_SENSE")  # under U1, courtyard-rensad, nära OPA-utg
 
     # JST 3-pin (VBAT·IR_MOD·GND) på BAKSIDAN, THT
     J = fp("Connector_JST","JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical","J1","→HAT (VBAT·IR_MOD·GND·EMIT_SET)",16,-3,90,back=True)
