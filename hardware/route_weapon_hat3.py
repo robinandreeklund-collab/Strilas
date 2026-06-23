@@ -44,7 +44,7 @@ def leftover_nets(path):
 def finish(path):
     b=pcbnew.LoadBoard(path);g=b.FindNet("GND").GetNetCode()
     for z in list(b.Zones()):b.Remove(z)
-    for L in (pcbnew.F_Cu,pcbnew.B_Cu):
+    for L in (pcbnew.F_Cu,pcbnew.In1_Cu,pcbnew.In2_Cu,pcbnew.B_Cu):   # GND-plan på ALLA 4 lager (retur/EMI)
         z=pcbnew.ZONE(b);z.SetLayer(L);z.SetNetCode(g);z.SetLocalClearance(MM(0.3));z.SetMinThickness(MM(0.2))
         ch=pcbnew.SHAPE_LINE_CHAIN()
         for x,y in [(-27.7,-20.2),(27.7,-20.2),(27.7,20.2),(-27.7,20.2)]:ch.Append(V(x,y))

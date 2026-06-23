@@ -164,6 +164,50 @@ for _ in range(250):
             fps[ra].SetPosition(pcbnew.VECTOR2I(nx, ny)); moved = True
     if not moved: break
 
+# --- AVKOPPLING: snäpp 2-poliga caps INTILL rätt IC/pin (kort loop → bra PI/EMI) ---
+# Auto-placeringen klustrar caps på nät → de hamnar långt från sina IC. Här flyttas varje
+# avkopplingscap till närmaste lediga läge runt sitt mål: buck-in/ut/BST vid bucken,
+# +3V3-caps fördelas till närmaste 3V3-IC, sense-cap vid ADC.
+def padpos(ref, net):
+    for p in fps[ref].Pads():
+        if padnet.get((ref, p.GetName())) == net: q = p.GetPosition(); return (q.x, q.y)
+    q = fps[ref].GetPosition(); return (q.x, q.y)
+def collide(ref, x, y):
+    fps[ref].SetPosition(pcbnew.VECTOR2I(int(x), int(y)))
+    return any(pa.GetEffectiveShape().Collide(pb.GetEffectiveShape(), int(0.25e6))
+               for o in fps if o != ref for pa in fps[ref].Pads() for pb in fps[o].Pads())
+buck = next((r for r in fps if "AP63203" in (comps[r][1] or "")), None)
+ind  = next((r for r in fps if "MD-5050" in (comps[r][0] or "")), None)
+adc  = next((r for r in fps if "ADS1115" in (comps[r][1] or "")), None)
+ics3 = [r for r in fps if r[0] == "U" and "+3V3" in ref_nets[r]]
+deco = [r for r in fps if r[0] == "C" and fixedpos(r) is None]
+tgt = {}
+rr = 0
+for c in deco:
+    n = ref_nets[c]
+    if "BST_n" in n and buck: tgt[c] = padpos(buck, "BST_n")
+    elif "VBAT" in n and buck: tgt[c] = padpos(buck, "VBAT")          # buck-input-caps
+    elif "+5V" in n and ind:  tgt[c] = padpos(ind, "+5V")            # buck-output-caps
+    elif "VBAT_SENSE" in n and adc: tgt[c] = padpos(adc, "VBAT_SENSE")
+    elif "+3V3" in n and ics3:
+        ic = ics3[rr % len(ics3)]; rr += 1; q = fps[ic].GetPosition(); tgt[c] = (q.x, q.y)
+MH_POS = [(25.5,18),(25.5,-18),(-25.5,18),(-25.5,-18)]               # standoff-hål (skapas senare)
+def cval(c):  # HF/små först (närmast IC), bulk sist
+    v = (comps[c][1] or "")
+    return {"100nF":0,"1uF":1,"22pF":0,"10uF":2,"22uF":3,"100uF":4}.get(v, 1)
+for c in sorted(tgt, key=cval):
+    tx, ty = tgt[c]; orig = fps[c].GetPosition(); done = False
+    for rad in (1.5, 2.0, 2.5, 3.0, 3.6, 4.3, 5.2, 6.2):
+        for a in range(0, 360, 20):
+            x = min(XMAX, max(XMIN, tx + rad*1e6*math.cos(math.radians(a))))
+            y = ty + rad*1e6*math.sin(math.radians(a))
+            xb, yb = x/1e6 - OX, OY - y/1e6
+            if abs(yb) < CTR + 1 or abs(yb) > 19: continue          # ut ur mittremsa + på kort
+            if any(math.hypot(xb-mx, yb-my) < 2.8 for mx, my in MH_POS): continue  # klar av standoff-hål
+            if not collide(c, x, y): done = True; break
+        if done: break
+    if not done: fps[c].SetPosition(orig)                            # ingen plats → behåll relaxat läge (ej krock)
+
 # outline 70×58 mm
 W, H = 28.0, 20.5
 pts = [(-W,-H),(W,-H),(W,H),(-W,H)]
