@@ -305,9 +305,7 @@ Väst/hjälm-noderna = ESP32-P4-WIFI6 (P4 + C6) → **WiFi6/ESP-NOW-mesh**, geme
 Vapnet adjudikerar; väst/hjälm rapporterar DATA-träffar + RTK-position; allt loggas för live-spårning + AAR.
 
 **Vapnet kör nu CM5** (Broadcom-radio) i stället för P4. CM5:an kan **inte tala ESP-NOW** direkt, så
-vapnet bär en **ESP32-C6 som UART-brygga**: en **Seeed XIAO ESP32-C6** trycks i en hona-sockel på
-**HAT:ens framsida** (J10, i gapet mot optiken, vriden 90° så USB-C når vänster kortkant), matas +5V (eget LDO) och pratar med CM5 över UART (CM5 GPIO14/15 = header
-pin 8/10). XIAO:ns U.FL-antenn dras ut ur vapenhuset. C6:an talar samma ESP-NOW som väst/hjälm →
+vapnet bär en **ESP32-C6 som UART-brygga**: en **Seeed XIAO ESP32-C6** ansluts via en **4-pol JST (J10) på HAT:en** med kabel; ESP-modulen (t.ex. Seeed XIAO ESP32-C6, egen LDO + U.FL-antenn + USB-C) monteras separat i huset. XIAO:ns U.FL-antenn dras ut ur vapenhuset. C6:an talar samma ESP-NOW som väst/hjälm →
 ingen protokoll-glapp; CM5 adjudikerar och skickar spel-state via C6-bryggan in i meshen. IR-skottet
 (940 nm → TSOP) är en separat länk, oberoende av radion. Lager-koll på modulen: `leverans/esp-c6-sampler/`.
 

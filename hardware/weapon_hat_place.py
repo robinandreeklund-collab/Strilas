@@ -75,9 +75,7 @@ REG = {"BUCK":(-27,-12,13), "PWR":(-12,18,13), "IMU":(18,27,13), "CC":(-26,-20,1
 def fixedpos(ref):
     fp, v = comps[ref]; v = v or ""
     if ref == "J1": return (0, 0, 90)         # 40-pin HONA centrum (flippas till baksidan nedan)
-    if "XIAO" in v: return (-12.5, 11.0, 90)  # FRAMSIDA, vrid 90 -> USB-C mot VÄNSTER kortkant (åtkomlig). Proven 0/0-läge.
-    #   rot180 → USB-C pekar NEDÅT/ut (per CAD). cy=11 → hålrader y[3.38,18.62] klarar 40-pin-pads (back).
-    #   Ej flippad (front) → pads matchar XIAO direkt. Kameran sitter lägre-vänster → fritt här.
+    if "ESP-brygga" in v: return (-8, 18, 180) # 4-pol JST → extern ESP-modul (kabel ut topp-kant); fritt läge (sockel borta)
     if "AP63203" in v: return (-23, 11, 0)    # buck-IC topp-vänster
     if "MD-5050" in (fp or ""): return (-17.5, 11, 0)  # buck-induktor intill IC → kort SW-nod
     if "optik" in v: return (6, 18, 180)      # emitter-JST (→optik) topp-kant

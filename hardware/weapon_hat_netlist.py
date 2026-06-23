@@ -78,12 +78,10 @@ TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
 TVS5 = mk("SMAJ5.0A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMA", "SMAJ5.0A")   # 5V-rail transientskydd
 EEPROM = mk("AT24C32", "U", [(1,"A0"),(2,"A1"),(3,"A2"),(4,"GND"),(5,"SDA"),(6,"SCL"),(7,"WP"),(8,"VCC")],
             "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm", "AT24C32 HAT-ID EEPROM 0x50")
-# ESP32-C6 ESP-NOW-brygga: hona-SOCKEL på FRAMSIDAN (i gapet mot optiken, USB-C mot vänster kant) → Seeed
-# XIAO ESP32-C6 trycks dit. Front-montage (ej flippad) → pads matchar XIAO-pinnarna direkt; placeras
-# rot90 så USB-C pekar ut mot VÄNSTER kortkant (åtkomlig). Pads funktions-namngivna. 4 nät: +5V, GND, UART.
-XIAO = mk("XIAO_ESP32C6", "J",
-          [(n, n) for n in ("D0","D1","D2","D3","D4","D5","D6","5V","GND","3V3","D10","D9","D8","D7")],
-          "strilas:XIAO_ESP32C6_Socket", "XIAO ESP32-C6 (ESP-NOW-brygga)")
+# ESP32-C6 ESP-NOW-brygga: 4-pol JST på HAT:en → kabel till EXTERN ESP-modul (monteras separat i huset).
+# Bara 4 nät: +5V, GND, UART TX/RX. Extern modul (t.ex. XIAO ESP32-C6) har egen LDO + USB för flash.
+ESPJST = mk("EspConn", "J", [(1, "5V"), (2, "ESPTX"), (3, "ESPRX"), (4, "GND")],
+            "Connector_JST:JST_PH_S4B-PH-K_1x04_P2.00mm_Horizontal", "ESP-brygga (extern, 5V·TX·RX·GND)")
 # AT24C32 standard 24Cxx-pinout: 1-3=A0/A1/A2(→GND=0x50) 4=GND 5=SDA 6=SCL 7=WP(→GND, skrivbar) 8=VCC
 
 # ---------- nät ----------
@@ -122,7 +120,7 @@ Ri1 = RES("4k7"); Ri2 = RES("4k7")
 Dt5 = TVS5(); Cbulk5 = CAP("100uF","Capacitor_SMD:C_1210_3225Metric")   # 5V transientskydd + CM5-bulk
 U_eep = EEPROM(); Ceep = CAP("100nF","Capacitor_SMD:C_0402_1005Metric")
 Rid1 = RES("3k9"); Rid2 = RES("3k9")                   # ID_SD/ID_SC pull-ups (RPi HAT-spec)
-Jc6 = XIAO()                                           # ESP32-C6-brygga-sockel (baksida)
+Jesp = ESPJST()                                        # ESP-brygga 4-pol JST → extern ESP-modul
 
 # ---------- 40-pin header: kraft + signaler (RPi-pinout) ----------
 H[2] += V5; H[4] += V5                                  # 5V BACK-FEED in i carriern
@@ -190,9 +188,9 @@ Ceep[1] += V3; Ceep[2] += GND
 Rid1[1] += V3; Rid1[2] += ID_SD; Rid2[1] += V3; Rid2[2] += ID_SC      # ID-buss pull-ups
 
 # ---------- ESP32-C6-brygga (XIAO-sockel, framsida; matas +5V → eget LDO) ----------
-Jc6["5V"] += V5; Jc6["GND"] += GND                     # XIAO 5V + GND
-Jc6["D7"] += ESP_TX                                    # D7/RX (GPIO17) ← CM5 TX (GPIO14, header pin 8)
-Jc6["D6"] += ESP_RX                                    # D6/TX (GPIO16) → CM5 RX (GPIO15, header pin 10)
+Jesp["5V"] += V5; Jesp["GND"] += GND                   # +5V + GND till extern modul
+Jesp["ESPTX"] += ESP_TX                                # CM5 TX (GPIO14, header pin 8) → extern C6 RX
+Jesp["ESPRX"] += ESP_RX                                # extern C6 TX → CM5 RX (GPIO15, header pin 10)
 
 generate_netlist(file_="hardware/weapon-hat.net")
 print("wrote hardware/weapon-hat.net")

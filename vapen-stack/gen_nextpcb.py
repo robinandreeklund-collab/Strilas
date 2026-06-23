@@ -122,7 +122,7 @@ MPN = {
     "recoil-driver": ("B4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol 2.0mm THT — recoil-driver (VBAT·PWM·FAULT·GND)", "", "TH"),
     "→ optik (VBAT·IR_MOD·GND·EMIT_HI; CC-sänka på optik)": ("S4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol 2.0mm THT — emitter→optik (VBAT·IR_MOD·GND·EMIT_HI)", "", "TH"),
     "40-pin HONA → CM5-carrier (baksida, centrum)": ("PPTC202LFBN-RC", "Sullins", "Stiftsockel 2x20 2.54mm THT (hona) — → CM5-carrierns GPIO-stiftlist", "", "TH; handlöds på baksidan"),
-    "XIAO ESP32-C6 (ESP-NOW-brygga)": ("DS1023-1X7SF11", "Ckmtw", "2x 1x07 2.54mm hona-sockel (15.24mm radavst.) — Seeed XIAO ESP32-C6 trycks dit (baksida, carrier-fri zon)", "", "TH; handlöds på baksidan. 2 st 1x7-socklar (baksida). XIAO ESP32-C6-kortet KÖPS SEPARAT (Seeed)"),
+    "ESP-brygga (extern, 5V·TX·RX·GND)": ("S4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol 2.0mm side-entry — ESP-brygga (+5V·TX·RX·GND) → kabel till extern ESP32-C6-modul", "", "TH (kontakt-sampler: maskin-monteras). Extern ESP + kabel KÖPS SEPARAT"),
     # --- OPTIK-HEAD (v2) ---
     "SFH4725AS_940nm": ("SFH 4725AS", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD (aktiv drop-in f. utgångna 4725S; samma paket/footprint)", "", "NextPCB sourcar + SMT-placerar UNDER LINSEN"),
     "→HAT (VBAT·IR_MOD·GND·EMIT_HI)": ("B4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol 2.0mm VERTIKAL THT (baksida) — →HAT (VBAT·IR_MOD·GND·EMIT_HI)", "", "TH"),
@@ -272,10 +272,10 @@ if __name__ == "__main__":
     # VAPEN-HAT/FC (v2): 40-pin HONA (J1, baksida, THT) handlöds (PinSocket → is_conn/single-sided);
     # JST-PH/XH-kontakter (J2-J9) maskin-monteras; 3× ICM-42688-P + AP63203-buck + ADS1115 + AT24C32 SMT.
     WHAT_MOUNT = mount_set("weapon-hat.kicad_pcb", "weapon-hat.net")
-    HAT_EXTRA = [  # köps separat, ej PCB-monterad (trycks i sockeln)
-        ("XIAO1", 1, "XIAO ESP32C6", "Seeed Studio", "XIAO 21x17.8mm",
-         "ESP32-C6 daughterboard (ESP-NOW-brygga CM5↔väst/hjälm); eget LDO + U.FL-antenn + USB-C",
-         "KÖPS SEPARAT (Seeed). Trycks i bak-sockeln (J10), carrier-fria zonen top-höger. Antenn via U.FL ut ur huset"),
+    HAT_EXTRA = [  # köps separat, ansluts via JST (J10) med kabel
+        ("XIAO1", 1, "XIAO ESP32C6", "Seeed Studio", "XIAO 21x17.8mm (extern)",
+         "ESP32-C6 ESP-NOW-brygga CM5↔väst/hjälm; eget LDO + U.FL-antenn + USB-C. Ansluts via J10 (JST) + kabel",
+         "KÖPS SEPARAT (Seeed). Monteras valfritt i huset; 4-tråds kabel till J10. Antenn via U.FL ut ur huset"),
     ]
     print("VAPEN-HAT/FC (3× ICM-42688-P, AP63203-buck):")
     build("weapon-hat.kicad_pcb", "weapon-hat.net", "nextpcb/weapon-hat-bom.xls", mount_refs=WHAT_MOUNT, extra=HAT_EXTRA)
