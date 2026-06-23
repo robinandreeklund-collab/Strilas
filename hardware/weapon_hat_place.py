@@ -75,8 +75,9 @@ REG = {"BUCK":(-27,-12,13), "PWR":(-12,18,13), "IMU":(18,27,13), "CC":(-26,-20,1
 def fixedpos(ref):
     fp, v = comps[ref]; v = v or ""
     if ref == "J1": return (0, 0, 90)         # 40-pin HONA centrum (flippas till baksidan nedan)
-    if "XIAO" in v: return (-12.5, 11.0, 90)  # ESP32-C6-sockel BAKSIDA, toppband vä-centrum (flippas nedan);
-    #   14 hål trådas mellan fram-SMT (verifierat rent), grenslar buck-induktorn (fram → ingen krock)
+    if "XIAO" in v: return (13.0, 14.2, 90)   # ESP32-C6-sockel BAKSIDA, toppband HÖGER (flippas nedan);
+    #   höjt + kortet förlängt +2,5mm upptill → XIAO-kroppen klarar 40-pin-headern (~2,7mm luft).
+    #   14 hål verifierat rena mot fram-SMT + 40-pin-pads; kroppen klarar standoff-hålet (25,5;18)
     if "AP63203" in v: return (-23, 11, 0)    # buck-IC topp-vänster
     if "MD-5050" in (fp or ""): return (-17.5, 11, 0)  # buck-induktor intill IC → kort SW-nod
     if "optik" in v: return (6, 18, 180)      # emitter-JST (→optik) topp-kant (pad-rad klar av NFC)
@@ -213,9 +214,9 @@ for c in sorted(tgt, key=cval):
         if done: break
     if not done: fps[c].SetPosition(orig)                            # ingen plats → behåll relaxat läge (ej krock)
 
-# outline 70×58 mm
-W, H = 28.0, 20.5
-pts = [(-W,-H),(W,-H),(W,H),(-W,H)]
+# outline 56×43,5 mm (asymmetrisk: övre kant +2,5mm för C6-sockel-clearance mot 40-pin-headern)
+W, HB, HT = 28.0, 20.5, 23.0
+pts = [(-W,-HB),(W,-HB),(W,HT),(-W,HT)]
 for i in range(4):
     s = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_SEGMENT)
     s.SetStart(V(*pts[i])); s.SetEnd(V(*pts[(i+1)%4])); s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(MM(0.15)); b.Add(s)

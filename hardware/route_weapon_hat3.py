@@ -47,7 +47,7 @@ def finish(path):
     for L in (pcbnew.F_Cu,pcbnew.In1_Cu,pcbnew.In2_Cu,pcbnew.B_Cu):   # GND-plan på ALLA 4 lager (retur/EMI)
         z=pcbnew.ZONE(b);z.SetLayer(L);z.SetNetCode(g);z.SetLocalClearance(MM(0.3));z.SetMinThickness(MM(0.2))
         ch=pcbnew.SHAPE_LINE_CHAIN()
-        for x,y in [(-27.7,-20.2),(27.7,-20.2),(27.7,20.2),(-27.7,20.2)]:ch.Append(V(x,y))
+        for x,y in [(-27.7,-20.2),(27.7,-20.2),(27.7,22.7),(-27.7,22.7)]:ch.Append(V(x,y))
         ch.SetClosed(True);z.AddPolygon(ch);b.Add(z)
     pcbnew.ZONE_FILLER(b).Fill(b.Zones());pcbnew.SaveBoard(path,b)
 def verify(path):
