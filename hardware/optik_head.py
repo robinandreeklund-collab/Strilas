@@ -126,12 +126,12 @@ def main():
         for r,row in enumerate(rows,1):
             for c,v in enumerate(row): ws.write(r,c,v)
         wb.save(f"{od}/optik-head-bom.xls")
-        with open(f"{od}/optik-head-centroid.csv","w",newline="") as f:
-            w=csv.writer(f); w.writerow(["Designator","Mid X","Mid Y","Layer","Rotation"])
-            for ref in ("D1","D2","U1","Q1","Q2","R1","R2","R3","R4","R5","R6","C1","C2","C3"):
-                ff=b.FindFootprintByReference(ref); p=ff.GetPosition()
-                w.writerow([ref,f"{p.x/1e6-OX:.3f}",f"{OY-p.y/1e6:.3f}","top",ff.GetOrientationDegrees()])
-    print("  BOM + centroid (allt SMT på framsidan; JST THT bak)")
+    # CENTROID via SAMMA delade funktion som HAT (gen_nextpcb.centroid) → identiskt NextPCB-format
+    # (Mid X(mm)/Mid Y(mm), Top/Bottom, ABSOLUTA koord = matchar gerbers). Läser sparat kort.
+    from gen_nextpcb import centroid as _centroid
+    for od in ("hardware/nextpcb","leverans/optik-head"):
+        _centroid("hardware/optik-head.kicad_pcb", f"{od}/optik-head-centroid.csv")
+    print("  BOM + centroid (allt SMT på framsidan; JST THT bak; centroid = HAT-format)")
 
 if __name__ == "__main__":
     main()
