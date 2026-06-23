@@ -95,7 +95,10 @@ ID_SD, ID_SC = Net("ID_SD"), Net("ID_SC")              # HAT-ID-EEPROM-buss (GPI
 VBAT_SENSE = Net("VBAT_SENSE")
 TRIG,RACK,MAGREL,MAGWELL,RPWM,RFAULT,MODE0,MODE1,PTT = (Net(n) for n in
     ("TRIG","RACK","MAGREL","MAGWELL","RECOIL_PWM","RECOIL_FAULT","MODE0","MODE1","PTT"))
-EMIT_HI = Net("EMIT_HI")          # GPIO13 → optik: hög = 3A-läge (kopplar in parallell-0R1), låg/flytande = 1A
+# GPIO13 (PWM1) = ström-set-PWM till optik (kallas EMIT_SET på optik-sidan). Optik filtrerar PWM → DC-ref
+# → KONTINUERLIG emitter-ström 0–3A (firmware-duty). Boot: GPIO13 låg → 0A. (Nät-namnet EMIT_HI behållet =
+# HAT-kortet/koppar oförändrat; kabel HAT-pin4 ↔ optik-pin4. Eye-safety: HW-tak 3A, mät om IEC per inställning.)
+EMIT_HI = Net("EMIT_HI")          # = optikens EMIT_SET (GPIO13/PWM1, ström-set)
 ESP_TX, ESP_RX = Net("ESP_TX"), Net("ESP_RX")   # CM5 UART0 ↔ ESP32-C6-brygga (GPIO14/15)
 
 # ---------- instansiera ----------
@@ -133,7 +136,7 @@ H[3] += I2C_SDA; H[5] += I2C_SCL                        # I²C (ADC + NFC)
 H[13] += TRIG; H[15] += RACK; H[16] += MAGREL; H[18] += MAGWELL
 H[32] += RPWM; H[36] += RFAULT; H[37] += MODE0; H[38] += MODE1; H[40] += PTT
 H[27] += ID_SD; H[28] += ID_SC                         # GPIO0/1 = HAT-ID-EEPROM-buss (ID_SD/ID_SC)
-H[33] += EMIT_HI                                       # GPIO13 → optikens 3A-väljare (firmware-styrd)
+H[33] += EMIT_HI                                       # GPIO13/PWM1 → optikens EMIT_SET (ström-set-PWM, kont. 0–3A)
 H[8] += ESP_TX; H[10] += ESP_RX                        # GPIO14/15 (UART0 TXD/RXD) → ESP32-C6-brygga
 
 # ---------- kraft: 2S → skydd → buck → 5V (back-feed) ; VBAT → emitter-rail ----------

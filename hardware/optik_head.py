@@ -30,7 +30,7 @@ def main():
     def N(n):
         if n not in nets: ni = pcbnew.NETINFO_ITEM(b, n); b.Add(ni); nets[n] = ni
         return nets[n]
-    for n in ("VBAT","IR_MOD","GND","LED_MID","LED_CATH","IDRV_SENSE","DRV_GATE","IDRV_REF","OPA_OUT","EMIT_HI","R2_D"): N(n)
+    for n in ("VBAT","IR_MOD","GND","LED_MID","LED_CATH","IDRV_SENSE","DRV_GATE","IDRV_REF","OPA_OUT","EMIT_SET","V_SET"): N(n)
 
     def fp(lib, mod, ref, val, x, y, rot=0, back=False):
         f = pcbnew.FootprintLoad(LOC if lib == "strilas" else f"{FPD}/{lib}.pretty", mod)
@@ -51,22 +51,24 @@ def main():
     for p,n in (("1","OPA_OUT"),("2","GND"),("3","IDRV_REF"),("4","IDRV_SENSE"),("5","VBAT")): setnet(Uop,p,n)
     Qd = fp("Package_TO_SOT_SMD","TO-252-2","Q1","AOD4184A",-9,-6,0)
     for p,n in (("1","DRV_GATE"),("2","LED_CATH"),("3","IDRV_SENSE")): setnet(Qd,p,n)
-    Rs = fp("Resistor_SMD","R_2512_6332Metric","R1","0R2",10,-3,0); setnet(Rs,"1","IDRV_SENSE"); setnet(Rs,"2","GND")
-    # 3A-väljare: R2(0R068) i serie med N-FET Qsel → IDRV_SENSE. EMIT_HI hög = FET på = 3A; låg/flytande = 1A.
-    # R2=0R068 vald så R2+Rds(AO3400 ~35mΩ@3V3) ≈ 0R1 → parallellt med R1(0R2) ≈ 0,067Ω → 3A. (2010/0,5W: ~0,4W.)
-    Ro = fp("Resistor_SMD","R_2010_5025Metric","R2","0R068",7.8,0.6,0); setnet(Ro,"1","R2_D"); setnet(Ro,"2","IDRV_SENSE")
-    Qsel = fp("Package_TO_SOT_SMD","SOT-23","Q2","AO3400",7.8,3.8,0); setnet(Qsel,"1","EMIT_HI"); setnet(Qsel,"2","GND"); setnet(Qsel,"3","R2_D")  # G/S/D
-    Rgs = fp("Resistor_SMD","R_0805_2012Metric","R6","100k",3.5,2.0,90); setnet(Rgs,"1","EMIT_HI"); setnet(Rgs,"2","GND")  # gate-pulldown → default 1A
+    # FAST 3A-områdes-sense (0R068 2512, 1W): max-ström = Vref_max/Rs = 0,206/0,068 ≈ 3,0A vid full PWM-duty.
+    Rs = fp("Resistor_SMD","R_2512_6332Metric","R1","0R068",10,-3,0); setnet(Rs,"1","IDRV_SENSE"); setnet(Rs,"2","GND")
+    # KONTINUERLIG STRÖM-SET (firmware): EMIT_SET = PWM (CM5 GPIO13/PWM1) → RC-filter (R7/C4) → V_SET (DC).
+    # V_SET → R3/R4-delare → IDRV_REF = V_SET/16. Duty 0–100% → ström 0–3A. Boot: GPIO13 låg → 0A (av).
+    R7 = fp("Resistor_SMD","R_0805_2012Metric","R7","10k",7.8,0.6,0); setnet(R7,"1","EMIT_SET"); setnet(R7,"2","V_SET")
+    C4 = fp("Capacitor_SMD","C_0805_2012Metric","C4","1uF",3.5,2.0,90); setnet(C4,"1","V_SET"); setnet(C4,"2","GND")  # RC τ≈10ms → ren DC-ref
+    # 56kHz-GRIND: IR_MOD → Q3-grind kortar IDRV_REF→GND. IR_MOD hög = LED AV, låg = LED PÅ (firmware inverterar).
+    Q3 = fp("Package_TO_SOT_SMD","SOT-23","Q3","AO3400",7.8,3.8,0); setnet(Q3,"1","IR_MOD"); setnet(Q3,"2","GND"); setnet(Q3,"3","IDRV_REF")  # G/S/D
     Cvb= fp("Capacitor_SMD","C_1206_3216Metric","C3","22uF",0.0,-1.2,0); setnet(Cvb,"1","VBAT"); setnet(Cvb,"2","GND")  # VBAT-bulk 22µF/25V (in-stock) för 3A-pulsens flanker
-    Rda= fp("Resistor_SMD","R_0805_2012Metric","R3","15k",0,-9.8,0); setnet(Rda,"1","IR_MOD"); setnet(Rda,"2","IDRV_REF")  # flyttad: klar av uppflyttat benhål
+    Rda= fp("Resistor_SMD","R_0805_2012Metric","R3","15k",0,-9.8,0); setnet(Rda,"1","V_SET"); setnet(Rda,"2","IDRV_REF")  # ref-delare övre (V_SET→IDRV_REF)
     Rdb= fp("Resistor_SMD","R_0805_2012Metric","R4","1k",0,-11.5,0); setnet(Rdb,"1","IDRV_REF"); setnet(Rdb,"2","GND")  # flyttad: ut ur benets Ø3,5-frizon
     Rg = fp("Resistor_SMD","R_0805_2012Metric","R5","100R",3,-8,0); setnet(Rg,"1","OPA_OUT"); setnet(Rg,"2","DRV_GATE")
     Cop= fp("Resistor_SMD","R_0805_2012Metric","C1","100nF",12,-9,0); setnet(Cop,"1","VBAT"); setnet(Cop,"2","GND")
     Cc = fp("Resistor_SMD","R_0805_2012Metric","C2","100pF",-0.9,-6.3,0); setnet(Cc,"1","OPA_OUT"); setnet(Cc,"2","IDRV_SENSE")  # flyttad: klar av D1:s benhål + utanför fläns, nära OPA-utg
 
     # JST 3-pin (VBAT·IR_MOD·GND) på BAKSIDAN, THT
-    J = fp("Connector_JST","JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical","J1","→HAT (VBAT·IR_MOD·GND·EMIT_HI)",16,-3,90,back=True)
-    setnet(J,"1","VBAT"); setnet(J,"2","IR_MOD"); setnet(J,"3","GND"); setnet(J,"4","EMIT_HI")
+    J = fp("Connector_JST","JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical","J1","→HAT (VBAT·IR_MOD·GND·EMIT_SET)",16,-3,90,back=True)
+    setnet(J,"1","VBAT"); setnet(J,"2","IR_MOD"); setnet(J,"3","GND"); setnet(J,"4","EMIT_SET")
 
     # mekaniska hål
     def hole(ref, mod, x, y):

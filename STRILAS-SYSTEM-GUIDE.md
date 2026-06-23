@@ -56,7 +56,7 @@ och driver haptik/ljud lokalt. Detaljer: [`ritningar/system-struktur.md`](vapen-
 ```
 1. AVTRYCK → fire-control (edge A) signalerar P4. NFC-ammo > 0 + laddhandtag racked (make-ready).
 2. EMITTER fyrar: 2× 940 nm OSLON i serie, aktiv konstantströms-sänka (OPA171+pass-FET+0R2 sense),
-   ~1 A HW-tak (eye-safety), 56 kHz-gatad burst som bär skott-paket (skytte-ID, vapenprofil, dmg).
+   firmware-styrd ström 0–3 A (PWM-ref, HW-tak 3 A), 56 kHz-gatad burst som bär skott-paket (skytte-ID, vapenprofil, dmg).
 3. SKOTTLINJE LÅSES i världsram vid avtryck (riktning pipan pekar + ballistiskt fall). IMU håller
    linjen världsfast medan vapnet rör sig (recoil/svaj).
 4. KAMERAN (860 nm-pass, global shutter, 120 fps) ser målets aktiva 860 nm-KONSTELLATION → frame-
@@ -289,10 +289,15 @@ LED-duty på bänk; ladd-dock balanserar alla pack.)*
 
 ## 15. Eye-safety (säkerhet före allt)
 
-- 940 nm är **osynligt** → farligast nära mynningen. **Strömtaket sätts i HÅRDVARA** (CC-sänka:
-  I = Vref/Rsense ≈ 1 A, op-amp + sense-resistor), inte bara firmware. Skalning till högre ström kräver
-  avsiktligt Rsense-byte **+ IEC 60825-1-ommätning**. Mål: **Klass 1 (eye-safe)**; vid tvekan, använd
-  divergerad IR-LED (det vi gör — OSLON-emitter, ej kollimerad laserdiod).
+- 940 nm är **osynligt** → farligast nära mynningen. CC-sänka (OPA171 + pass-FET + sense-resistor):
+  **I = Vref/Rsense**, där Vref nu kommer från en **firmware-PWM (CM5 GPIO13/PWM1 → RC-filter på optik →
+  DC-ref)** → **kontinuerlig ström 0–3 A, styrd i mjukvara**. Sense-resistorn (0R068) sätter ett
+  **HW-tak på ~3 A** (kan ej överskridas oavsett duty); **boot-default = 0 A** (GPIO13 låg). 56 kHz-
+  gatningen sköts av IR_MOD via grind-FET (separat från nivån). **Eye-safety:** taket är 3 A i HW, men
+  driftströmmen bestäms av firmware → **varje vald ström måste IEC 60825-1-mätas med linsen**, och
+  firmware ska klampa till uppmätt Klass-1-värde. (Tidigare: HW-låst 1 A default; nu byggt för
+  mjukvarustyrning per begäran — ⚠️ eye-safety mer firmware-beroende, boot-säkert 0 A.) Vid tvekan:
+  divergerad IR-LED (OSLON-emitter, ej kollimerad laserdiod).
 - **LiPo-laddning** (dock) = projektets största brandrisk: per-cell-balansering, riktig BMS, termik, brandsäker plats.
 - **Recoil-skena** ~20 A: kontakter >25 A, gör/bryt **kallt** (skenan av vid mag-byte, make-ready-statemaskin).
 - Skyddsglasögon för alla; definierade spelgränser; "weapons safe"-procedur. (Se root-`README.md`.)

@@ -114,6 +114,7 @@ MPN = {
     "AP63203WU 2S→5V 3A": ("AP63203WU-7", "Diodes Inc", "Synk-buck 3,8-32Vin 3A TSOT23-6 — 2S→5,0V (FB 52k3/10k)", "", ""),
     "2.2uH": ("SWPA5040S2R2MT", "Sunlord", "Effektinduktor 2,2µH 5×5mm Isat 4,5A — buck (AP63203, topp ~3,5A) — samma SWPA-familj i lager", "", "verifiera SWPA5040-land mot MD-5050-footprint"),
     "0R068": ("WSL2010R0680FEA", "Vishay", "Res 0,068R 1% 0,5W 2010 Kelvin-sense (lågt TCR) — optik 3A-gren (parallell m 0R2; +FET-Rds ≈0R1)", "", ""),
+    "0R068@2512": ("WSL2512R0680FEA", "Vishay", "Res 0,068R 1% 1W 2512 Kelvin-sense (lågt TCR) — optik CC-sense (fast 3A-område); P=3²×0,068≈0,61W < 1W", "", ""),
     # HAT-kontakter (JST-PH/XH; värden = exakta netlist-strängar)
     "RACK":    ("B2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol 2.0mm THT — RACK-brytare", "", "TH"),
     "MAGREL":  ("B2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol 2.0mm THT — mag-release", "", "TH"),
