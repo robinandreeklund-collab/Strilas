@@ -301,8 +301,15 @@ LED-duty på bänk; ladd-dock balanserar alla pack.)*
 
 ## 16. Comms / mesh
 
-Alla noder = ESP32-P4-WIFI6 (P4 + C6) → **WiFi6/ESP-NOW-mesh**, gemensam tidsstämpling. Vapnets P4
-adjudikerar; väst/hjälm rapporterar DATA-träffar + RTK-position; allt loggas för live-spårning + AAR.
+Väst/hjälm-noderna = ESP32-P4-WIFI6 (P4 + C6) → **WiFi6/ESP-NOW-mesh**, gemensam tidsstämpling.
+Vapnet adjudikerar; väst/hjälm rapporterar DATA-träffar + RTK-position; allt loggas för live-spårning + AAR.
+
+**Vapnet kör nu CM5** (Broadcom-radio) i stället för P4. CM5:an kan **inte tala ESP-NOW** direkt, så
+vapnet bär en **ESP32-C6 som UART-brygga**: en **Seeed XIAO ESP32-C6** trycks i en hona-sockel på
+**HAT:ens baksida** (J10), matas +5V (eget LDO) och pratar med CM5 över UART (CM5 GPIO14/15 = header
+pin 8/10). XIAO:ns U.FL-antenn dras ut ur vapenhuset. C6:an talar samma ESP-NOW som väst/hjälm →
+ingen protokoll-glapp; CM5 adjudikerar och skickar spel-state via C6-bryggan in i meshen. IR-skottet
+(940 nm → TSOP) är en separat länk, oberoende av radion. Lager-koll på modulen: `leverans/esp-c6-sampler/`.
 
 ---
 

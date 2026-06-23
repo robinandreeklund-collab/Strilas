@@ -122,6 +122,7 @@ MPN = {
     "recoil-driver": ("B4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol 2.0mm THT — recoil-driver (VBAT·PWM·FAULT·GND)", "", "TH"),
     "→ optik (VBAT·IR_MOD·GND·EMIT_HI; CC-sänka på optik)": ("S4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol 2.0mm THT — emitter→optik (VBAT·IR_MOD·GND·EMIT_HI)", "", "TH"),
     "40-pin HONA → CM5-carrier (baksida, centrum)": ("PPTC202LFBN-RC", "Sullins", "Stiftsockel 2x20 2.54mm THT (hona) — → CM5-carrierns GPIO-stiftlist", "", "TH; handlöds på baksidan"),
+    "XIAO ESP32-C6 (ESP-NOW-brygga, baksida)": ("DS1023-1X7SF11", "Ckmtw", "2x 1x07 2.54mm hona-sockel (15.24mm radavst.) — Seeed XIAO ESP32-C6 trycks dit (baksida)", "", "TH; handlöds på baksidan. 2 st 1x7-socklar. XIAO ESP32-C6-kortet KÖPS SEPARAT (Seeed)"),
     # --- OPTIK-HEAD (v2) ---
     "SFH4725AS_940nm": ("SFH 4725AS", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD (aktiv drop-in f. utgångna 4725S; samma paket/footprint)", "", "NextPCB sourcar + SMT-placerar UNDER LINSEN"),
     "→HAT (VBAT·IR_MOD·GND·EMIT_HI)": ("B4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol 2.0mm VERTIKAL THT (baksida) — →HAT (VBAT·IR_MOD·GND·EMIT_HI)", "", "TH"),
@@ -150,7 +151,7 @@ def refkey(r):
 
 def is_conn(pkg):   # THT-stiftlistar/socklar/JST-PH/XH = kund handlöder (DNP, ej i centroid).
     # OBS: JST-GH (1.25 mm SMD, finpitch) är EJ handlödbar → NextPCB SMT-placerar (ej DNP, med i centroid).
-    return any(s in pkg for s in ("PinHeader", "PinSocket", "JST_PH", "JST_XH", "JST_EH"))
+    return any(s in pkg for s in ("PinHeader", "PinSocket", "JST_PH", "JST_XH", "JST_EH", "XIAO"))
 
 # Kontakt-monteringskoll (kontakt-sampler): NextPCB sourcar + genomplåts-monterar alla JST-PH/XH +
 # XT30 till rimligt pris → maskin-monteras (ej handlödd). PinSocket/PinHeader (2.54 P4-socklar/
@@ -271,8 +272,13 @@ if __name__ == "__main__":
     # VAPEN-HAT/FC (v2): 40-pin HONA (J1, baksida, THT) handlöds (PinSocket → is_conn/single-sided);
     # JST-PH/XH-kontakter (J2-J9) maskin-monteras; 3× ICM-42688-P + AP63203-buck + ADS1115 + AT24C32 SMT.
     WHAT_MOUNT = mount_set("weapon-hat.kicad_pcb", "weapon-hat.net")
+    HAT_EXTRA = [  # köps separat, ej PCB-monterad (trycks i sockeln)
+        ("XIAO1", 1, "XIAO ESP32C6", "Seeed Studio", "XIAO 21x17.8mm",
+         "ESP32-C6 daughterboard (ESP-NOW-brygga CM5↔väst/hjälm); eget LDO + U.FL-antenn + USB-C",
+         "KÖPS SEPARAT (Seeed). Trycks i baksides-sockeln (J10). Antenn via U.FL ut ur huset"),
+    ]
     print("VAPEN-HAT/FC (3× ICM-42688-P, AP63203-buck):")
-    build("weapon-hat.kicad_pcb", "weapon-hat.net", "nextpcb/weapon-hat-bom.xls", mount_refs=WHAT_MOUNT)
+    build("weapon-hat.kicad_pcb", "weapon-hat.net", "nextpcb/weapon-hat-bom.xls", mount_refs=WHAT_MOUNT, extra=HAT_EXTRA)
     centroid("weapon-hat.kicad_pcb", "nextpcb/weapon-hat-centroid.csv", mount_refs=WHAT_MOUNT)
     # KONTAKT-MONTERING AKTIV: alla JST-PH/XH + XT30 maskin-monteras av NextPCB (pris bekräftat
     # rimligt via vest-mb-test). conn_refs() plockar dem per kort. PinSocket/PinHeader (2.54) +

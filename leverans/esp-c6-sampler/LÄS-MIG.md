@@ -45,7 +45,14 @@ Därför är **U.FL-varianterna (-1U) primärval** med extern antenn ut ur huset
 3. Då drar jag in den modulen i `weapon_hat_netlist.py` (UART GPIO14/15 + EN/IO9 + lokal 3V3-LDO från +5V),
    placerar om och routar HAT:en på nytt + regenererar `leverans/weapon-hat/`.
 
-## HAT-integration (när MPN är vald)
+## BESLUT (juni 2026): socklad XIAO-daughterboard i stället för naken modul
+Den nakna C6-modulen fick **inte plats** på 56×41-HAT:en (40-pin-headern äter mitten; inget 13×17-hål
+ledigt). Vald lösning: **hona-sockel på HAT:ens BAKSIDA (J10) + en Seeed XIAO ESP32-C6** som trycks dit
+(eget LDO + U.FL-antenn + USB-C). 14 hål trådas mellan fram-SMT:n, DRC 0/0, ingen kort-förstoring, ingen
+carrier-krock (baksidan sticker ut i fri luft där). Denna sampler står kvar som lager-koll om man ändå
+vill SMT-placera en naken modul senare. Footprint: `strilas:XIAO_ESP32C6_Socket`.
+
+## HAT-integration (genomförd)
 - **UART-brygga:** CM5 GPIO14 (pin 8, TXD0)→C6 RXD, GPIO15 (pin 10, RXD0)→C6 TXD. Konsol flyttas till USB.
 - **Flash/reset:** CM5 GPIO4 (pin 7)→C6 EN, GPIO17 (pin 11)→C6 IO9 (CM5 kan flasha C6 över UART).
 - **Kraft:** egen 3V3-LDO (t.ex. AP2112K-3.3, 600 mA) från HAT:ens +5V + bulk (22µF/100µF) för WiFi-TX-

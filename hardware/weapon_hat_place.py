@@ -75,6 +75,8 @@ REG = {"BUCK":(-27,-12,13), "PWR":(-12,18,13), "IMU":(18,27,13), "CC":(-26,-20,1
 def fixedpos(ref):
     fp, v = comps[ref]; v = v or ""
     if ref == "J1": return (0, 0, 90)         # 40-pin HONA centrum (flippas till baksidan nedan)
+    if "XIAO" in v: return (-12.5, 11.0, 90)  # ESP32-C6-sockel BAKSIDA, toppband vä-centrum (flippas nedan);
+    #   14 hål trådas mellan fram-SMT (verifierat rent), grenslar buck-induktorn (fram → ingen krock)
     if "AP63203" in v: return (-23, 11, 0)    # buck-IC topp-vänster
     if "MD-5050" in (fp or ""): return (-17.5, 11, 0)  # buck-induktor intill IC → kort SW-nod
     if "optik" in v: return (6, 18, 180)      # emitter-JST (→optik) topp-kant (pad-rad klar av NFC)
@@ -130,6 +132,9 @@ j1.Flip(j1.GetPosition(), False)            # → BAKSIDAN (trycks ner på carri
 px = [p.GetPosition().x for p in j1.Pads()]; py = [p.GetPosition().y for p in j1.Pads()]
 cxp = (min(px)+max(px))//2; cyp = (min(py)+max(py))//2
 j1.Move(pcbnew.VECTOR2I(int(OX*1e6) - cxp, int(OY*1e6) - cyp))
+# ESP32-C6-sockeln flippas till BAKSIDAN på plats (XIAO trycks dit i gapet mot carriern)
+xiao = next((r for r in fps if "XIAO" in (comps[r][1] or "")), None)
+if xiao: fps[xiao].Flip(fps[xiao].GetPosition(), False)
 
 # --- relaxering: nudga ev. överlappande (icke-fasta) footprints isär tills 0 clearance ---
 # BAND-MEDVETEN: varje rörlig del klampas i SITT band (topp y≥+CTR / botten y≤-CTR) så att

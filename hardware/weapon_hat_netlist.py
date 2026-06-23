@@ -78,6 +78,11 @@ TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
 TVS5 = mk("SMAJ5.0A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMA", "SMAJ5.0A")   # 5V-rail transientskydd
 EEPROM = mk("AT24C32", "U", [(1,"A0"),(2,"A1"),(3,"A2"),(4,"GND"),(5,"SDA"),(6,"SCL"),(7,"WP"),(8,"VCC")],
             "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm", "AT24C32 HAT-ID EEPROM 0x50")
+# ESP32-C6 ESP-NOW-brygga: hona-SOCKEL på BAKSIDAN → Seeed XIAO ESP32-C6 daughterboard trycks dit
+# (eget LDO + U.FL-antenn + USB-C för flash). Bara 4 nät behövs: +5V, GND, UART (TX/RX) ↔ CM5.
+# Pad-numrering (footprint XIAO_ESP32C6_Socket): 1–7 vä = D0..D6/TX, 8–14 hö = 5V,GND,3V3,D10,D9,D8,D7/RX.
+XIAO = mk("XIAO_ESP32C6", "J", [(i, str(i)) for i in range(1, 15)],
+          "strilas:XIAO_ESP32C6_Socket", "XIAO ESP32-C6 (ESP-NOW-brygga, baksida)")
 # AT24C32 standard 24Cxx-pinout: 1-3=A0/A1/A2(→GND=0x50) 4=GND 5=SDA 6=SCL 7=WP(→GND, skrivbar) 8=VCC
 
 # ---------- nät ----------
@@ -92,6 +97,7 @@ VBAT_SENSE = Net("VBAT_SENSE")
 TRIG,RACK,MAGREL,MAGWELL,RPWM,RFAULT,MODE0,MODE1,PTT = (Net(n) for n in
     ("TRIG","RACK","MAGREL","MAGWELL","RECOIL_PWM","RECOIL_FAULT","MODE0","MODE1","PTT"))
 EMIT_HI = Net("EMIT_HI")          # GPIO13 → optik: hög = 3A-läge (kopplar in parallell-0R1), låg/flytande = 1A
+ESP_TX, ESP_RX = Net("ESP_TX"), Net("ESP_RX")   # CM5 UART0 ↔ ESP32-C6-brygga (GPIO14/15)
 
 # ---------- instansiera ----------
 H = HDR(); J2 = BATT(); Je = EMIT()
@@ -115,6 +121,7 @@ Ri1 = RES("4k7"); Ri2 = RES("4k7")
 Dt5 = TVS5(); Cbulk5 = CAP("100uF","Capacitor_SMD:C_1210_3225Metric")   # 5V transientskydd + CM5-bulk
 U_eep = EEPROM(); Ceep = CAP("100nF","Capacitor_SMD:C_0402_1005Metric")
 Rid1 = RES("3k9"); Rid2 = RES("3k9")                   # ID_SD/ID_SC pull-ups (RPi HAT-spec)
+Jc6 = XIAO()                                           # ESP32-C6-brygga-sockel (baksida)
 
 # ---------- 40-pin header: kraft + signaler (RPi-pinout) ----------
 H[2] += V5; H[4] += V5                                  # 5V BACK-FEED in i carriern
@@ -128,6 +135,7 @@ H[13] += TRIG; H[15] += RACK; H[16] += MAGREL; H[18] += MAGWELL
 H[32] += RPWM; H[36] += RFAULT; H[37] += MODE0; H[38] += MODE1; H[40] += PTT
 H[27] += ID_SD; H[28] += ID_SC                         # GPIO0/1 = HAT-ID-EEPROM-buss (ID_SD/ID_SC)
 H[33] += EMIT_HI                                       # GPIO13 → optikens 3A-väljare (firmware-styrd)
+H[8] += ESP_TX; H[10] += ESP_RX                        # GPIO14/15 (UART0 TXD/RXD) → ESP32-C6-brygga
 
 # ---------- kraft: 2S → skydd → buck → 5V (back-feed) ; VBAT → emitter-rail ----------
 J2["VBAT"] += VBAT_IN; J2["GND"] += GND
@@ -179,6 +187,11 @@ U_eep["VCC"] += V3; U_eep["GND"] += GND; U_eep["A0"] += GND; U_eep["A1"] += GND;
 U_eep["SDA"] += ID_SD; U_eep["SCL"] += ID_SC; U_eep["WP"] += GND      # WP→GND = skrivbar
 Ceep[1] += V3; Ceep[2] += GND
 Rid1[1] += V3; Rid1[2] += ID_SD; Rid2[1] += V3; Rid2[2] += ID_SC      # ID-buss pull-ups
+
+# ---------- ESP32-C6-brygga (XIAO-sockel, baksida; matas +5V → eget LDO) ----------
+Jc6[8] += V5; Jc6[9] += GND                            # XIAO 5V + GND
+Jc6[14] += ESP_TX                                      # D7/RX (GPIO17) ← CM5 TX (GPIO14)
+Jc6[7] += ESP_RX                                       # D6/TX (GPIO16) → CM5 RX (GPIO15)
 
 generate_netlist(file_="hardware/weapon-hat.net")
 print("wrote hardware/weapon-hat.net")
