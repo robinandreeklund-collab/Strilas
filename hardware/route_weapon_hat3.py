@@ -65,7 +65,7 @@ for z in list(b.Zones()):b.Remove(z)
 pcbnew.SaveBoard(PCB,b);pcbnew.ExportSpecctraDSN(b,DSN)
 subprocess.run(["python3","hardware/dsn_power_class.py",DSN])
 shutil.copy(PCB,"/tmp/_hat3_placed.kicad_pcb");best=None
-for seed in range(1,7):
+for seed in range(1,5):
     if os.path.exists(SES):os.remove(SES)
     subprocess.run(["timeout","-k","5","360","xvfb-run","-a","java","-jar","/opt/freerouting.jar","-de",DSN,"-do",SES,"-mp","100"],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     subprocess.run(["bash","-c","pkill -9 -f freerouting.jar 2>/dev/null;pkill -9 Xvfb 2>/dev/null;true"])
@@ -76,8 +76,11 @@ for seed in range(1,7):
     if best is None or u<best[0]:best=(u,seed);shutil.copy(PCB,"/tmp/_hat3_best.kicad_pcb")
     if u==0:break
 shutil.copy("/tmp/_hat3_best.kicad_pcb",PCB)
+# STEG 3: deterministisk stängning (incr_route, 4-lager, inner tomma före pour) — ej freeroute-roulette.
 if unrouted(PCB):
-    left=leftover_nets(PCB);print(f"maze-router för kvarvarande: {left}",flush=True)
+    subprocess.run(["python3","hardware/weapon_hat_close.py",PCB])
+if unrouted(PCB):   # ev. rest → F/B-maze som sista utväg
+    left=leftover_nets(PCB);print(f"maze-router (rest): {left}",flush=True)
     if left:subprocess.run(["python3","hardware/maze_route.py",PCB]+left)
 finish(PCB)
 v,un=verify(PCB);print(f"FINAL clearance@0.2={v} oanslutna={un}",flush=True)

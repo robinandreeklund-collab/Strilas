@@ -47,7 +47,7 @@ Därför är **U.FL-varianterna (-1U) primärval** med extern antenn ut ur huset
 
 ## BESLUT (juni 2026): socklad XIAO-daughterboard i stället för naken modul
 Den nakna C6-modulen fick **inte plats** på 56×41-HAT:en (40-pin-headern äter mitten; inget 13×17-hål
-ledigt). Vald lösning: **hona-sockel på HAT:ens BAKSIDA (J10, top-höger, carrier-fri zon) + en Seeed XIAO ESP32-C6** som
+ledigt). Vald lösning: **hona-sockel på HAT:ens FRAMSIDA (J10, i optik-gapet, vriden 90° → USB-C mot vänster kant) + en Seeed XIAO ESP32-C6** som
 trycks dit (eget LDO + U.FL-antenn + USB-C). Front = kamera-PCB (upptagen) → bak. Emitter/NFC-JST flyttade till top-vänster för att frigöra
 zonen; XIAO-kropp klarar 40-pin-courtyard ~0,25mm (tight men giltigt). DRC 0/0, **kort 56×41 oförändrat**. Denna
 sampler står kvar som lager-koll om man ändå vill SMT-placera en naken modul senare. Footprint:
@@ -59,4 +59,4 @@ sampler står kvar som lager-koll om man ändå vill SMT-placera en naken modul 
 - **Kraft:** egen 3V3-LDO (t.ex. AP2112K-3.3, 600 mA) från HAT:ens +5V + bulk (22µF/100µF) för WiFi-TX-
   toppar (~470 mA). Häng INTE C6 på headerns strömbegränsade 3V3.
 - **Antenn:** U.FL → extern antenn monterad utanför metallhuset.
-- **Montering:** sockel på BAKSIDAN top-höger (carrier-fri zon); emitter/NFC-JST flyttade till top-vänster. Kort 56×41 oförändrat.
+- **Montering:** sockel på FRAMSIDAN (optik-gapet, rot90 → USB-C mot vänster kortkant); pads funktions-namngivna → korrekt pinmap. Kort 56×41 oförändrat, routar 0/0.

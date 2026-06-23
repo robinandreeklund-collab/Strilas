@@ -75,13 +75,13 @@ REG = {"BUCK":(-27,-12,13), "PWR":(-12,18,13), "IMU":(18,27,13), "CC":(-26,-20,1
 def fixedpos(ref):
     fp, v = comps[ref]; v = v or ""
     if ref == "J1": return (0, 0, 90)         # 40-pin HONA centrum (flippas till baksidan nedan)
-    if "XIAO" in v: return (13.0, 11.8, 90)   # ESP32-C6-sockel BAKSIDA top-höger (carrier-fri zon) — flippas nedan.
-    #   Front = kamera-PCB (upptagen) → bak. cy=11,8: XIAO-kropp (y≥2,9) klarar 40-pin-courtyard (y≤2,65)
-    #   med ~0,25mm; yttre hål 0,25mm från kortkant. Tight men giltigt @56×41 (ingen tillväxt)
+    if "XIAO" in v: return (-12.5, 11.0, 90)  # FRAMSIDA, vrid 90 -> USB-C mot VÄNSTER kortkant (åtkomlig). Proven 0/0-läge.
+    #   rot180 → USB-C pekar NEDÅT/ut (per CAD). cy=11 → hålrader y[3.38,18.62] klarar 40-pin-pads (back).
+    #   Ej flippad (front) → pads matchar XIAO direkt. Kameran sitter lägre-vänster → fritt här.
     if "AP63203" in v: return (-23, 11, 0)    # buck-IC topp-vänster
     if "MD-5050" in (fp or ""): return (-17.5, 11, 0)  # buck-induktor intill IC → kort SW-nod
-    if "optik" in v: return (-6, 18, 180)     # emitter-JST (→optik) topp-kant VÄNSTER (flyttad → frigör top-höger för C6-sockel)
-    if "NFC" in v: return (-14, 18, 180)      # NFC topp-kant vänster (flyttad → frigör top-höger för C6-sockel)
+    if "optik" in v: return (6, 18, 180)      # emitter-JST (→optik) topp-kant
+    if "NFC" in v: return (15, 18, 180)       # NFC topp-kant höger
     if "2S batteri" in v: return (-20, -18, 0)       # batteri JST-XH botten-vänster kant (klar av standoff-hål)
     if "TRIGGER" in v: return (-13, -18, 0)
     if "RACK" in v: return (-6.5, -18, 0)
@@ -133,9 +133,7 @@ j1.Flip(j1.GetPosition(), False)            # → BAKSIDAN (trycks ner på carri
 px = [p.GetPosition().x for p in j1.Pads()]; py = [p.GetPosition().y for p in j1.Pads()]
 cxp = (min(px)+max(px))//2; cyp = (min(py)+max(py))//2
 j1.Move(pcbnew.VECTOR2I(int(OX*1e6) - cxp, int(OY*1e6) - cyp))
-# ESP32-C6-sockeln flippas till BAKSIDAN (front = kamera-PCB; XIAO trycks dit i carrier-fria zonen)
-xiao = next((r for r in fps if "XIAO" in (comps[r][1] or "")), None)
-if xiao: fps[xiao].Flip(fps[xiao].GetPosition(), False)
+# ESP32-C6-sockeln ligger på FRAMSIDAN (i gapet mot optiken, USB-C nedåt) — ingen flip.
 
 # --- relaxering: nudga ev. överlappande (icke-fasta) footprints isär tills 0 clearance ---
 # BAND-MEDVETEN: varje rörlig del klampas i SITT band (topp y≥+CTR / botten y≤-CTR) så att

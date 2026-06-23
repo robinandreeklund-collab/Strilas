@@ -78,10 +78,11 @@ TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
 TVS5 = mk("SMAJ5.0A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMA", "SMAJ5.0A")   # 5V-rail transientskydd
 EEPROM = mk("AT24C32", "U", [(1,"A0"),(2,"A1"),(3,"A2"),(4,"GND"),(5,"SDA"),(6,"SCL"),(7,"WP"),(8,"VCC")],
             "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm", "AT24C32 HAT-ID EEPROM 0x50")
-# ESP32-C6 ESP-NOW-brygga: hona-SOCKEL på BAKSIDAN (front = kamera-PCB, upptagen) → Seeed XIAO ESP32-C6
-# trycks dit i carrier-fria zonen (top-höger). Eget LDO + U.FL-antenn + USB-C. Bara 4 nät: +5V, GND, UART.
-# Pad-numrering (footprint XIAO_ESP32C6_Socket): 1–7 vä = D0..D6/TX, 8–14 hö = 5V,GND,3V3,D10,D9,D8,D7/RX.
-XIAO = mk("XIAO_ESP32C6", "J", [(i, str(i)) for i in range(1, 15)],
+# ESP32-C6 ESP-NOW-brygga: hona-SOCKEL på FRAMSIDAN (i gapet mot optiken, USB-C mot vänster kant) → Seeed
+# XIAO ESP32-C6 trycks dit. Front-montage (ej flippad) → pads matchar XIAO-pinnarna direkt; placeras
+# rot90 så USB-C pekar ut mot VÄNSTER kortkant (åtkomlig). Pads funktions-namngivna. 4 nät: +5V, GND, UART.
+XIAO = mk("XIAO_ESP32C6", "J",
+          [(n, n) for n in ("D0","D1","D2","D3","D4","D5","D6","5V","GND","3V3","D10","D9","D8","D7")],
           "strilas:XIAO_ESP32C6_Socket", "XIAO ESP32-C6 (ESP-NOW-brygga)")
 # AT24C32 standard 24Cxx-pinout: 1-3=A0/A1/A2(→GND=0x50) 4=GND 5=SDA 6=SCL 7=WP(→GND, skrivbar) 8=VCC
 
@@ -189,9 +190,9 @@ Ceep[1] += V3; Ceep[2] += GND
 Rid1[1] += V3; Rid1[2] += ID_SD; Rid2[1] += V3; Rid2[2] += ID_SC      # ID-buss pull-ups
 
 # ---------- ESP32-C6-brygga (XIAO-sockel, framsida; matas +5V → eget LDO) ----------
-Jc6[8] += V5; Jc6[9] += GND                            # XIAO 5V + GND
-Jc6[14] += ESP_TX                                      # D7/RX (GPIO17) ← CM5 TX (GPIO14)
-Jc6[7] += ESP_RX                                       # D6/TX (GPIO16) → CM5 RX (GPIO15)
+Jc6["5V"] += V5; Jc6["GND"] += GND                     # XIAO 5V + GND
+Jc6["D7"] += ESP_TX                                    # D7/RX (GPIO17) ← CM5 TX (GPIO14, header pin 8)
+Jc6["D6"] += ESP_RX                                    # D6/TX (GPIO16) → CM5 RX (GPIO15, header pin 10)
 
 generate_netlist(file_="hardware/weapon-hat.net")
 print("wrote hardware/weapon-hat.net")
