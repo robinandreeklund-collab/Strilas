@@ -103,6 +103,28 @@ MPN = {
     "P4-WIFI6 edge A": ("DS1023-1X20SF11", "Ckmtw", "Stiftsockel 1x20 2.54mm THT (hona) — P4-WIFI6 edge A (signaler)", "", "socket-sampler: 4-7 d. ESP32-P4-WIFI6 köps separat (Waveshare)"),
     "SFH4725S_940nm": ("SFH 4725S", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD (980mW@1A)", "", "UTGÅENDE/EOL men lagerförs ännu (last-time-buy); NextPCB sourcar + SMT-placerar (precision UNDER LINSEN). Verifiera lager/ersättare SFH4725AS bin13 inför produktion"),
     "SFH4725AS_940nm_bin13": ("SFH 4725AS", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD, bin 13 (aktiv drop-in för utgångna 4725S; samma paket C63062-A4141/footprint/optik)", "", "NextPCB sourcar + SMT-placerar (precision UNDER LINSEN)"),
+    # --- VAPEN-HAT (v2): nya värden/delar ---
+    "3k9":   ("RC0805FR-073K9L", "Yageo", "Res 3.9k 1% 0805 — HAT-ID-buss pull-up (ID_SD/ID_SC)", "", ""),
+    "52k3":  ("RC0805FR-0752K3L", "Yageo", "Res 52.3k 1% 0805 — buck FB övre (→5,0V, Vref 0,8V)", "", ""),
+    "22pF@0402": ("CL05C220JB5NNNC", "Samsung", "MLCC 22pF 50V C0G 0402 — buck FB feedforward", "", ""),
+    "AOD4185":   ("AOD4185", "Alpha & Omega", "P-MOSFET -40V/40A 15mΩ DPAK (TO-252) — omvändpol-skydd, delad VBAT-väg ~7A topp", "", "IN STOCK (NextPCB)"),
+    "SMAJ5.0A":  ("SMAJ5.0A", "Littelfuse", "TVS unidir 5V SMA — 5V-rail/back-feed-clamp", "", "IN STOCK"),
+    "ADS1115 I²C-ADC 0x48 (batteri-sense)": ("ADS1115IDGSR", "Texas Instruments", "16-bit I²C-ADC VSSOP-10 — batteri-sense @0x48", "", ""),
+    "AT24C32 HAT-ID EEPROM 0x50": ("AT24C32D-SSHM-T", "Microchip", "I²C EEPROM 32kbit SOIC-8 — RPi HAT-ID @0x50", "", "IN STOCK"),
+    "AP63203WU 2S→5V 3A": ("AP63203WU-7", "Diodes Inc", "Synk-buck 3,8-32Vin 3A TSOT23-6 — 2S→5,0V (FB 52k3/10k)", "", ""),
+    "2.2uH": ("SWPA5040S2R2MT", "Sunlord", "Effektinduktor 2,2µH 5×5mm Isat 4,5A — buck (AP63203, topp ~3,5A) — samma SWPA-familj i lager", "", "verifiera SWPA5040-land mot MD-5050-footprint"),
+    "0R068": ("WSL2010R0680FEA", "Vishay", "Res 0,068R 1% 0,5W 2010 Kelvin-sense (lågt TCR) — optik 3A-gren (parallell m 0R2; +FET-Rds ≈0R1)", "", ""),
+    # HAT-kontakter (JST-PH/XH; värden = exakta netlist-strängar)
+    "RACK":    ("B2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol 2.0mm THT — RACK-brytare", "", "TH"),
+    "MAGREL":  ("B2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol 2.0mm THT — mag-release", "", "TH"),
+    "MAGWELL": ("B2B-PH-K-S(LF)(SN)", "JST", "JST-PH 2-pol 2.0mm THT — magwell", "", "TH"),
+    "NFC (I²C)": ("B4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol 2.0mm THT — NFC PN532 (I²C)", "", "TH"),
+    "recoil-driver": ("B4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol 2.0mm THT — recoil-driver (VBAT·PWM·FAULT·GND)", "", "TH"),
+    "→ optik (VBAT·IR_MOD·GND·EMIT_HI; CC-sänka på optik)": ("S4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol 2.0mm THT — emitter→optik (VBAT·IR_MOD·GND·EMIT_HI)", "", "TH"),
+    "40-pin HONA → CM5-carrier (baksida, centrum)": ("PPTC202LFBN-RC", "Sullins", "Stiftsockel 2x20 2.54mm THT (hona) — → CM5-carrierns GPIO-stiftlist", "", "TH; handlöds på baksidan"),
+    # --- OPTIK-HEAD (v2) ---
+    "SFH4725AS_940nm": ("SFH 4725AS", "ams OSRAM", "IR-emitter 940nm OSLON Black SMD (aktiv drop-in f. utgångna 4725S; samma paket/footprint)", "", "NextPCB sourcar + SMT-placerar UNDER LINSEN"),
+    "→HAT (VBAT·IR_MOD·GND·EMIT_HI)": ("B4B-PH-K-S(LF)(SN)", "JST", "JST-PH 4-pol 2.0mm VERTIKAL THT (baksida) — →HAT (VBAT·IR_MOD·GND·EMIT_HI)", "", "TH"),
 }
 
 # Inköpta optik-delar UTAN PCB-footprint (köps separat, monteras manuellt över emittrarna).
@@ -246,6 +268,12 @@ def centroid(board_pcb, out_csv, exclude=frozenset(), mount_refs=frozenset()):
 
 if __name__ == "__main__":
     import os; os.makedirs("nextpcb", exist_ok=True)
+    # VAPEN-HAT/FC (v2): 40-pin HONA (J1, baksida, THT) handlöds (PinSocket → is_conn/single-sided);
+    # JST-PH/XH-kontakter (J2-J9) maskin-monteras; 3× ICM-42688-P + AP63203-buck + ADS1115 + AT24C32 SMT.
+    WHAT_MOUNT = mount_set("weapon-hat.kicad_pcb", "weapon-hat.net")
+    print("VAPEN-HAT/FC (3× ICM-42688-P, AP63203-buck):")
+    build("weapon-hat.kicad_pcb", "weapon-hat.net", "nextpcb/weapon-hat-bom.xls", mount_refs=WHAT_MOUNT)
+    centroid("weapon-hat.kicad_pcb", "nextpcb/weapon-hat-centroid.csv", mount_refs=WHAT_MOUNT)
     # KONTAKT-MONTERING AKTIV: alla JST-PH/XH + XT30 maskin-monteras av NextPCB (pris bekräftat
     # rimligt via vest-mb-test). conn_refs() plockar dem per kort. PinSocket/PinHeader (2.54) +
     # JST-GH undantas (handlödd resp. redan SMD).

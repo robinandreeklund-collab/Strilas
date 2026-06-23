@@ -59,7 +59,7 @@ OPAMP = mk("OPA171", "U", [(1, "OUT"), (2, "V-"), (3, "IN+"), (4, "IN-"), (5, "V
 # KiCad-symbolbiblioteket: 1=FB 2=EN 3=IN 4=GND 5=SW 6=BST. → induktor + FB-delare + BST-cap externt.
 BUCK = mk("AP63203WU", "U", [(1,"FB"),(2,"EN"),(3,"IN"),(4,"GND"),(5,"SW"),(6,"BST")],
           "Package_TO_SOT_SMD:TSOT-23-6", "AP63203WU 2S→5V 3A")
-IND = mk("L_3u3", "L", [(1, "1"), (2, "2")], "Inductor_SMD:L_Taiyo-Yuden_MD-5050", "3.3uH/4A")
+IND = mk("L_buck", "L", [(1, "1"), (2, "2")], "Inductor_SMD:L_Taiyo-Yuden_MD-5050", "2.2uH")  # Sunlord SWPA5040S2R2MT, Isat 4,5A > 3A-buck-topp
 ADC = mk("ADS1115", "U", [(1,"ADDR"),(2,"ALERT"),(3,"GND"),(4,"AIN0"),(8,"VDD"),(9,"SDA"),(10,"SCL")],
          "Package_SO:TSSOP-10_3x3mm_P0.5mm", "ADS1115 I²C-ADC 0x48 (batteri-sense)")
 # ADS1115 VSSOP-10 (DGS) stift VERIFIERADE mot TI SBAS444: 1=ADDR 2=ALERT 3=GND 4=AIN0 8=VDD 9=SDA 10=SCL.
@@ -67,12 +67,13 @@ IMU = mk("ICM-42688-P", "U", [(1,"SDO"),(4,"INT1"),(5,"VDDIO"),(6,"GND"),(7,"RES
          "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-42688-P")
 # ICM-42688-P stift (DS-000347): 1=SDO/AD0 2,3,10,11=RESV(NC) 4=INT1 5=VDDIO 6=GND 7=RESV→GND
 #   8=VDD 9=INT2/FSYNC(NC) 12=CS 13=SCLK 14=SDI. Ingen REGOUT-pinne → VDD/VDDIO-caps räcker.
-# 2 EXTRA IMU på I²C — TDK IIM-42653 (LGA-14, samma paket). Numeriska stift per DS-000529:
+# 2 EXTRA IMU på I²C — SAMMA ICM-42688-P som IMU1 (i lager hos NextPCB; IIM-42653 hade ~400 d ledtid).
+# ICM-42688-P kör I²C lika bra (CS→VDDIO, AD0-adress). Numeriska stift per DS-000347 (samma LGA-14):
 #   8=VDD 5=VDDIO 6=GND 7=RESV(→GND) 13=SCL 14=SDA 1=SDO/AD0(adress) 12=CS(→VDDIO=I²C) 4=INT1
 #   → 3 IMU totalt på HAT/FC. I²C 0x68/0x69 via AD0 (krockar ej med ADS1115 0x48 el. PN532).
-IMU_I2C = mk("IIM-42653", "U", [(i, str(i)) for i in range(1, 15)],
-             "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "IIM-42653")
-PTC = mk("PTC", "F", [(1, "~"), (2, "~")], "Fuse:Fuse_1812_4532Metric", "PTC_4A")   # håller buck+emitter+recoil utan nuisance-trip
+IMU_I2C = mk("ICM-42688-P", "U", [(i, str(i)) for i in range(1, 15)],
+             "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx", "ICM-42688-P")
+PTC = mk("PTC", "F", [(1, "~"), (2, "~")], "Fuse:Fuse_1812_4532Metric", "PTC_3A")   # 3A-hold 16V (sampled), slö → ser ~2,5A snitt
 TVS = mk("SMBJ12A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMB", "SMBJ12A")
 TVS5 = mk("SMAJ5.0A", "D", [(1, "K"), (2, "A")], "Diode_SMD:D_SMA", "SMAJ5.0A")   # 5V-rail transientskydd
 EEPROM = mk("AT24C32", "U", [(1,"A0"),(2,"A1"),(3,"A2"),(4,"GND"),(5,"SDA"),(6,"SCL"),(7,"WP"),(8,"VCC")],

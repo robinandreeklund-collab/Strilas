@@ -57,7 +57,7 @@ def main():
     Ro = fp("Resistor_SMD","R_2010_5025Metric","R2","0R068",7.8,0.6,0); setnet(Ro,"1","R2_D"); setnet(Ro,"2","IDRV_SENSE")
     Qsel = fp("Package_TO_SOT_SMD","SOT-23","Q2","AO3400",7.8,3.8,0); setnet(Qsel,"1","EMIT_HI"); setnet(Qsel,"2","GND"); setnet(Qsel,"3","R2_D")  # G/S/D
     Rgs = fp("Resistor_SMD","R_0805_2012Metric","R6","100k",3.5,2.0,90); setnet(Rgs,"1","EMIT_HI"); setnet(Rgs,"2","GND")  # gate-pulldown → default 1A
-    Cvb= fp("Capacitor_SMD","C_1206_3216Metric","C3","47uF",0.0,-1.2,0); setnet(Cvb,"1","VBAT"); setnet(Cvb,"2","GND")  # VBAT-bulk för 3A-pulsens flanker
+    Cvb= fp("Capacitor_SMD","C_1206_3216Metric","C3","22uF",0.0,-1.2,0); setnet(Cvb,"1","VBAT"); setnet(Cvb,"2","GND")  # VBAT-bulk 22µF/25V (in-stock) för 3A-pulsens flanker
     Rda= fp("Resistor_SMD","R_0805_2012Metric","R3","15k",0,-9.8,0); setnet(Rda,"1","IR_MOD"); setnet(Rda,"2","IDRV_REF")  # flyttad: klar av uppflyttat benhål
     Rdb= fp("Resistor_SMD","R_0805_2012Metric","R4","1k",0,-11.5,0); setnet(Rdb,"1","IDRV_REF"); setnet(Rdb,"2","GND")  # flyttad: ut ur benets Ø3,5-frizon
     Rg = fp("Resistor_SMD","R_0805_2012Metric","R5","100R",3,-8,0); setnet(Rg,"1","OPA_OUT"); setnet(Rg,"2","DRV_GATE")
@@ -96,17 +96,30 @@ def main():
     pcbnew.SaveBoard("hardware/optik-head.kicad_pcb", b)
     print("placerade optik-PCB (41×56): kamera topp + CC-sänka mitt (front) + 2 emitter botten + JST bak")
 
+    # BOM ur den GEMENSAMMA MPN-databasen (vapen-stack/gen_nextpcb.py) — samma beprövade, sourcade
+    # delar som övriga kort → matchar på NextPCB. Grupperar per (värde, footprint); kontakter (JST/
+    # PinSocket) = handlödda (DNP). Lins+hållare köps separat (DNP-rader).
+    import sys as _sys, re as _re
+    _sys.path.insert(0, "vapen-stack"); from gen_nextpcb import MPN as _MPN, is_conn as _is_conn
+    from collections import defaultdict as _dd
     COLS=["Designator*","Quantity*","Manufacturer Part Number*","Manufacturer","Package/Footprint","Description","Procurement Type","Customer Note"]
-    rows=[("D1,D2","2","SFH4725AS","ams OSRAM","strilas:SFH4725S","IR-emitter 940 nm (serie; Carclo 10734/10003 smal beam)","",""),
-          ("U1","1","OPA171","TI","SOT-23-5","CC-sänka op-amp","",""),("Q1","1","AOD4184A","AOS","TO-252","pass-FET","",""),
-          ("R1","1","WSL2512R2000","Vishay","R_2512","0R2 sense (1A-gren)","",""),
-          ("R2","1","-","-","R_2010","0R068 sense (3A-gren, FET-switchad, ~0,4W)","",""),
-          ("Q2","1","AO3400","AOS","SOT-23","N-FET: EMIT_HI(GPIO13) hög = 3A, låg = 1A","",""),
-          ("R6","1","-","-","R_0805","100k gate-pulldown → default 1A (säkert)","",""),
-          ("R3,R4,R5","3","-","-","R_0805","15k/1k-delare + 100R gate","",""),("C1,C2","2","-","-","R_0805-pkg","100nF/100pF","",""),
-          ("C3","1","-","-","C_1206","47µF VBAT-bulk (3A-puls)","",""),
-          ("(lins)","2+2","10734/10003","Carclo","Carclo","Linshållare + smal-beam-lins/emitter","","mekanisk"),
-          ("J1","1","B3B-PH-K","JST","JST_PH_1x03","→HAT (VBAT·IR_MOD·GND) — VERTIKAL BAKSIDA","","THT handlödd")]
+    grp=_dd(list)
+    for f in b.GetFootprints():
+        fpn=str(f.GetFPID().GetLibItemName())
+        if any(k in fpn for k in ("MountingHole","Fiducial","TestPoint")): continue
+        if f.Pads() and all(p.GetAttribute()==pcbnew.PAD_ATTRIB_NPTH for p in f.Pads()): continue
+        grp[(f.GetValue(), fpn)].append(f.GetReference())
+    def _rk(r): m=_re.match(r'([A-Za-z]+)(\d+)',r); return (m.group(1),int(m.group(2))) if m else (r,0)
+    rows=[]
+    for (val,pkg) in sorted(grp):
+        refs=sorted(grp[(val,pkg)],key=_rk)
+        m=_re.search(r'_(\d{4})_',pkg); key=f"{val}@{m.group(1)}" if m and f"{val}@{m.group(1)}" in _MPN else val
+        mpn,mfr,desc,proc,note=_MPN.get(key,("","",val,"","SAKNAR MPN — fyll i"))
+        if _is_conn(pkg): proc="DNP"; note="Kund handlöder (THT) — DNP, ej i centroid. BOM = beställningsreferens."
+        rows.append((",".join(refs),str(len(refs)),mpn,mfr,pkg,desc,proc,note))
+    # inköpta optik-delar utan footprint (köps separat, monteras manuellt) — DNP
+    rows.append(("LENS1,LENS2","2","10195","Carclo","Ø20 TIR-kollimator","IR-kollimatorlins (smal beam) över varje emitter","DNP","Köps separat, monteras manuellt"))
+    rows.append(("LHOLD1,LHOLD2","2","10734","Carclo","20mm 4-bens-hållare (ritn.60575)","Lins-hållare över emittern","DNP","Köps separat, monteras manuellt"))
     for od in ("hardware/nextpcb","leverans/optik-head"):
         os.makedirs(od,exist_ok=True); wb=xlwt.Workbook(); ws=wb.add_sheet("BOM")
         for c,h in enumerate(COLS): ws.write(0,c,h)
