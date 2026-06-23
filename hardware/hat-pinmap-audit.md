@@ -39,7 +39,7 @@ inkl. kraft, signaler och komponent-pinouts. Datum: 2026-06-22.
 | 30 | GND       | GND      | — | ✅ |
 | 31 | GPIO6     | IMU3_INT | in | ✅ |
 | 32 | GPIO12 (PWM0) | RECOIL_PWM | ut | ✅ HW-PWM |
-| 33 | GPIO13    | —        | (ledig) | ✅ |
+| 33 | GPIO13    | EMIT_HI  | ut | ✅ → optik 1A/3A-väljare |
 | 34 | GND       | GND      | — | ✅ |
 | 35 | GPIO19    | —        | (ledig) | ✅ |
 | 36 | GPIO16    | RECOIL_FAULT | in | ✅ |
@@ -99,6 +99,14 @@ P-FET→VBAT-nod→buck+emitter+recoil), topp ~7A. Åtgärdat:
   → 2010** (0805 klarade ej ~0,4W i 3A-läget), placerad intill R1 (parallell-sense).
 - **Emitter-JST (JST-PH):** 3A är PULSAD topp (56kHz, duty<100% → RMS<2,5A) → inom PH-max. 1A kont. OK.
 - **Batteri-JST-XH (3A):** kontinuerligt ~2-2,5A OK; korta shot-toppar inom transient.
+
+## 1A/3A emitter-val — FIRMWARE-STYRT (ingen bygel/lödning)
+Istället för löd-DNP: en logik-N-FET **Q2 (AO3400)** på optiken kopplar in/ur parallell-sense-
+grenen **R2 (0R068)**, styrd av **EMIT_HI** (HAT GPIO13, pin 33) via emitter-kontaktens 4:e stift
+(JST-PH 3→4-pin på båda korten). EMIT_HI **hög = 3A**, **låg/flytande = 1A** (gate-pulldown R6 100k
+→ säkert default vid boot). R2=0R068 vald så R2+Rds(FET ~35mΩ) ≈ 0R1 → 0R2‖0R1 ≈ 0,067Ω → ~3A.
+FET:en (Rds~35mΩ, 5A) sitter i 3A-grenens lågsida; sense-felet från Rds är kompenserat i R2 och
+≤~6% (emitter-ström, ej precisionskritisk; lägre ström = säkrare). Inget i den heta huvud-sense-vägen.
 
 ## Buck — LÅST (inga frågetecken)
 **AP63203WU** (Diodes, 3A synkron, 3,8–32V in, integrerade FET, TSOT-23-6). Stift VERIFIERADE

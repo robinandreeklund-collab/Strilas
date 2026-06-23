@@ -38,8 +38,8 @@ HDR = mk("RPi_40pin", "J", HDR_PINS,
          "Connector_PinSocket_2.54mm:PinSocket_2x20_P2.54mm_Vertical", "40-pin HONA → CM5-carrier (baksida, centrum)")
 
 BATT = mk("BATT_2S", "J", [(1, "VBAT"), (2, "GND")], "Connector_JST:JST_XH_S2B-XH-A_1x02_P2.50mm_Horizontal", "2S batteri (JST-XH)")
-EMIT = mk("EmitConn", "J", [(1, "VBAT"), (2, "IR_MOD"), (3, "GND")],
-          "Connector_JST:JST_PH_S3B-PH-K_1x03_P2.00mm_Horizontal", "→ optik (VBAT·IR_MOD·GND; CC-sänka på optik)")
+EMIT = mk("EmitConn", "J", [(1, "VBAT"), (2, "IR_MOD"), (3, "GND"), (4, "EMIT_HI")],
+          "Connector_JST:JST_PH_S4B-PH-K_1x04_P2.00mm_Horizontal", "→ optik (VBAT·IR_MOD·GND·EMIT_HI; CC-sänka på optik)")
 SW = lambda n, a, b: mk(f"SW_{n}", "J", [(1, a), (2, b)],
                         "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal", n)
 RECOIL = mk("RecoilConn", "J", [(1, "VBAT"), (2, "PWM"), (3, "FAULT"), (4, "GND")],
@@ -90,6 +90,7 @@ ID_SD, ID_SC = Net("ID_SD"), Net("ID_SC")              # HAT-ID-EEPROM-buss (GPI
 VBAT_SENSE = Net("VBAT_SENSE")
 TRIG,RACK,MAGREL,MAGWELL,RPWM,RFAULT,MODE0,MODE1,PTT = (Net(n) for n in
     ("TRIG","RACK","MAGREL","MAGWELL","RECOIL_PWM","RECOIL_FAULT","MODE0","MODE1","PTT"))
+EMIT_HI = Net("EMIT_HI")          # GPIO13 → optik: hög = 3A-läge (kopplar in parallell-0R1), låg/flytande = 1A
 
 # ---------- instansiera ----------
 H = HDR(); J2 = BATT(); Je = EMIT()
@@ -125,6 +126,7 @@ H[3] += I2C_SDA; H[5] += I2C_SCL                        # I²C (ADC + NFC)
 H[13] += TRIG; H[15] += RACK; H[16] += MAGREL; H[18] += MAGWELL
 H[32] += RPWM; H[36] += RFAULT; H[37] += MODE0; H[38] += MODE1; H[40] += PTT
 H[27] += ID_SD; H[28] += ID_SC                         # GPIO0/1 = HAT-ID-EEPROM-buss (ID_SD/ID_SC)
+H[33] += EMIT_HI                                       # GPIO13 → optikens 3A-väljare (firmware-styrd)
 
 # ---------- kraft: 2S → skydd → buck → 5V (back-feed) ; VBAT → emitter-rail ----------
 J2["VBAT"] += VBAT_IN; J2["GND"] += GND
@@ -142,7 +144,7 @@ Cbulk5[1] += V5; Cbulk5[2] += GND                      # 100µF output-bulk (CM5
 Dt5["K"] += V5; Dt5["A"] += GND                        # 5V-rail TVS (transient/back-feed-clamp)
 
 # ---------- emitter-kontakt → optik (VBAT + IR_MOD + GND; CC-sänkan sitter på optik-PCB:n) ----------
-Je["VBAT"] += VBAT; Je["IR_MOD"] += IR_MOD; Je["GND"] += GND
+Je["VBAT"] += VBAT; Je["IR_MOD"] += IR_MOD; Je["GND"] += GND; Je["EMIT_HI"] += EMIT_HI
 
 # ---------- IMU (SPI; VDD/VDDIO = 3V3 från headern) ----------
 U_imu["VDD"] += V3; U_imu["VDDIO"] += V3; U_imu["GND"] += GND; U_imu["RESV7"] += GND   # pin7 RESV→GND per DS
