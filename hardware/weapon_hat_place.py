@@ -254,11 +254,12 @@ for c in sorted(tgt, key=cval):
     if not done: fps[c].SetPosition(orig)                            # ingen plats → behåll relaxat läge (ej krock)
 
 # outline 56×41 mm (alla kort samma storlek — C6-sockeln på framsidan kräver ingen tillväxt)
-W, H = 28.0, 20.5
-pts = [(-W,-H),(W,-H),(W,H),(-W,H)]
-for i in range(4):
+W, H, CH = 28.0, 20.5, 2.0
+# TOPP-VÄNSTRA hörnet FASAT (2 mm, 45°) = orienterings-nyckel → kortet kan ej monteras 180°-fel.
+pts = [(-W,-H),(W,-H),(W,H),(-W+CH,H),(-W,H-CH)]
+for i in range(len(pts)):
     s = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_SEGMENT)
-    s.SetStart(V(*pts[i])); s.SetEnd(V(*pts[(i+1)%4])); s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(MM(0.15)); b.Add(s)
+    s.SetStart(V(*pts[i])); s.SetEnd(V(*pts[(i+1)%len(pts)])); s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(MM(0.15)); b.Add(s)
 tt = pcbnew.PCB_TEXT(b); tt.SetText("STRILAS VAPEN-HAT (CM5)"); tt.SetPosition(V(0, 16)); tt.SetLayer(pcbnew.F_SilkS)
 tt.SetTextSize(pcbnew.VECTOR2I(MM(1.2),MM(1.2))); tt.SetTextThickness(MM(0.2)); tt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER); b.Add(tt)
 

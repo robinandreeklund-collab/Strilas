@@ -93,9 +93,10 @@ def main():
     for ex in (-EMIT_DX, +EMIT_DX):
         hc = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_CIRCLE); hc.SetCenter(V(ex,EMIT_Y)); hc.SetEnd(V(ex+HOLDER_OD/2,EMIT_Y))
         hc.SetLayer(pcbnew.Cmts_User); hc.SetWidth(MM(0.12)); b.Add(hc)
-    box = [(-BW,-BH),(BW,-BH),(BW,BH),(-BW,BH)]
-    for i in range(4):
-        s=pcbnew.PCB_SHAPE(b,pcbnew.SHAPE_T_SEGMENT); s.SetStart(V(*box[i])); s.SetEnd(V(*box[(i+1)%4]))
+    CH = 2.0  # TOPP-VÄNSTRA hörnet FASAT (2 mm, 45°) = orienterings-nyckel → kortet kan ej monteras 180°-fel
+    box = [(-BW,-BH),(BW,-BH),(BW,BH),(-BW+CH,BH),(-BW,BH-CH)]
+    for i in range(len(box)):
+        s=pcbnew.PCB_SHAPE(b,pcbnew.SHAPE_T_SEGMENT); s.SetStart(V(*box[i])); s.SetEnd(V(*box[(i+1)%len(box)]))
         s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(MM(0.15)); b.Add(s)
     t=pcbnew.PCB_TEXT(b); t.SetText("STRILAS OPTIK"); t.SetPosition(V(0,24)); t.SetLayer(pcbnew.F_SilkS)
     t.SetTextSize(pcbnew.VECTOR2I(MM(1.0),MM(1.0))); t.SetTextThickness(MM(0.15)); t.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER); b.Add(t)
