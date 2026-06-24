@@ -93,8 +93,8 @@ def main():
     for ex in (-EMIT_DX, +EMIT_DX):
         hc = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_CIRCLE); hc.SetCenter(V(ex,EMIT_Y)); hc.SetEnd(V(ex+HOLDER_OD/2,EMIT_Y))
         hc.SetLayer(pcbnew.Cmts_User); hc.SetWidth(MM(0.12)); b.Add(hc)
-    CH = 2.0  # TOPP-VÄNSTRA hörnet FASAT (2 mm, 45°) = orienterings-nyckel → kortet kan ej monteras 180°-fel
-    box = [(-BW,-BH),(BW,-BH),(BW,BH),(-BW+CH,BH),(-BW,BH-CH)]
+    CH = 2.0  # TOPP-HÖGER hörnet FASAT (2 mm, 45°) = orienterings-nyckel; sammanfaller m HAT-fasen när optiken sitter 90°-vriden
+    box = [(-BW,-BH),(BW,-BH),(BW,BH-CH),(BW-CH,BH),(-BW,BH)]   # fas i TOPP-HÖGER (kamera+JST-hörnet) = sammanfaller m HAT:ens fas i 90°-vriden stack
     for i in range(len(box)):
         s=pcbnew.PCB_SHAPE(b,pcbnew.SHAPE_T_SEGMENT); s.SetStart(V(*box[i])); s.SetEnd(V(*box[(i+1)%len(box)]))
         s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(MM(0.15)); b.Add(s)
