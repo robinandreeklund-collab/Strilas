@@ -1,0 +1,114 @@
+;Proteus Design Interchange Format
+(PDIF
+ (vendor "SamacSys Limited")
+ (version 1 0)
+ (library
+  (part "L1I0-0850090200000"
+   (description "Infrared Emitters - High Power Infrared, 850nm LUXEON IR")
+   (family "DIO")
+   (package "L1I00850090200000")
+   (attribute "Datasheet Link" "https://lumileds.com/wp-content/uploads/files/DS191-luxeon-ir-domed-line-datasheet-1.pdf")
+   (attribute "Geometry.Height" "2.87mm")
+   (attribute "Mouser Part Number" "997-L1I0085009020")
+   (attribute "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/Lumileds/L1I0-0850090200000?qs=GedFDFLaBXE%2FbLTZOv4ZXg%3D%3D")
+   (attribute "Manufacturer_Name" "Lumileds")
+   (attribute "Manufacturer_Part_Number" "L1I0-0850090200000")
+   (gate
+    (symbol "L1I0-0850090200000")
+    (pin "K" 1 PS)
+    (pin "A_1" 2 PS)
+    (pin "A_2" 3 PS)
+   )
+  )
+  (symbol "L1I0-0850090200000"
+   (units THOU)
+   (origin (pt 0 0))
+   (graphic
+    (stroke 10)
+    (path (pt 200 100) (pt 700 100) (pt 700 -300) (pt 200 -300) (pt 200 100) (closed))
+   )
+   (terminal
+    (body (symbol "PIN") (pt 0 0) (rot 0) (mir 0) (visible true))
+    (name (pt 230 0) (rot 0) (just MIDDLE LEFT) (visible true))
+    (number (pt 140 20) (rot 0) (just BOTTOM RIGHT) (visible true)))
+   (terminal
+    (body (symbol "PIN") (pt 0 -200) (rot 0) (mir 0) (visible true))
+    (name (pt 230 0) (rot 0) (just MIDDLE LEFT) (visible true))
+    (number (pt 140 20) (rot 0) (just BOTTOM RIGHT) (visible true)))
+   (terminal
+    (body (symbol "PIN") (pt 0 -100) (rot 0) (mir 0) (visible true))
+    (name (pt 230 0) (rot 0) (just MIDDLE LEFT) (visible true))
+    (number (pt 140 20) (rot 0) (just BOTTOM RIGHT) (visible true)))
+  )
+  (symbol "PIN"
+   (units THOU)
+   (origin (pt 0 0))
+   (graphic
+    (stroke 10)
+    (path (pt 0 0) (pt 200 0))))
+  (symbol "PINSHORT"
+   (units THOU)
+   (origin (pt 0 0))
+   (graphic
+    (stroke 10)
+    (path (pt 0 0) (pt 100 0))))
+  (package "L1I00850090200000"
+   (units MM)
+   (layer TASM
+    (graphic
+     (stroke 0.1)
+     (path
+      (closed true)
+      (pt -1.85 1.85)
+      (pt 1.85 1.85)
+      (pt 1.85 -1.85)
+      (pt -1.85 -1.85)
+      (pt -1.85 1.85))))
+   (layer TSLK
+    (graphic
+     (stroke 0.2)
+     (path
+      (closed true)
+      (pt -1.85 1.85)
+      (pt 1.85 1.85)
+      (pt 1.85 -1.85)
+      (pt -1.85 -1.85)
+      (pt -1.85 1.85))))
+   (layer OCCA
+    (graphic
+     (stroke 0.1)
+     (path
+      (closed true)
+      (pt -2.85 2.85)
+      (pt 2.85 2.85)
+      (pt 2.85 -2.85)
+      (pt -2.85 -2.85)
+      (pt -2.85 2.85))))
+   (layer TSLK
+    (graphic
+     (stroke 0.1)
+     (path
+      (closed true)
+      (pt -2.4 0)
+      (arc (pt -2.400 0.000) (pt -2.500 -0.050) (pt -2.400 0.050) (start 180.0) (sweep .0))
+      (pt -2.5 0)
+      (arc (pt -2.500 0.000) (pt -2.500 -0.050) (pt -2.400 0.050) (start 180.0) (sweep 180.0))
+      (pt -2.4 0))))
+   (leg 1 (pt -1.100 0.000) (padstack 0))
+   (leg 2 (pt 1.100 0.000) (padstack 0))
+   (leg 3 (pt 0.000 0.000) (padstack 3))
+   (padstack 0
+    (plated false)
+    (pad (layer TCOP) (rectf 0.500 2.700 0 0 90.000))
+   )
+   (padstack 3
+    (plated false)
+    (pad (layer TCOP) (rectf 1.000 2.700 0 0 90.000))
+   )
+   (model "L1I0-0850090200000.stp"
+    (euler 0 0 0)
+    (offset 0 0 0)
+   )
+  )
+ )
+)

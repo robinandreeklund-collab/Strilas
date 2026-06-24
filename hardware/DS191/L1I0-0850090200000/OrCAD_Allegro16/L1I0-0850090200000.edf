@@ -1,0 +1,105 @@
+
+(EDIF
+  (rename &L1I0_0850090200000 "L1I0_0850090200000")
+  (EDIFVersion 2 0 0)
+  (EDIFLevel 0)
+  (keywordMap (keywordLevel 0))
+  (status
+    (written
+      (timestamp 2026 06 21 15 47 07)
+      (dataOrigin "12674801/1000614/2.50/3/3/LED")
+      (program "SamacSys ECAD Model L1I0_0850090200000"
+        (version "2.4"))))
+  (library
+  (rename &L1I0_0850090200000 "L1I0_0850090200000")
+    (EDIFLevel 0)
+    (technology
+      (numberDefinition (scale 1 (e 254 -6) (unit DISTANCE)))
+      (userData GRIDRESOLUTION (integer 50 50))
+      (figureGroup DEFAULT (pathWidth 10) (textHeight 100))
+      (figureGroup PROPERTY (pathWidth 10) (textHeight 90))
+      (figureGroup PINNUMBER (pathWidth 10) (textHeight 90))
+      (figureGroup PINNAME (pathWidth 10) (textHeight 90))
+      (figureGroup COMMENT (pathWidth 10) (textHeight 90))
+      (figureGroup PIN (pathWidth 10) (textHeight 90))
+      (figureGroup GRAPHIC (pathWidth 10) (textHeight 100))
+    )
+    (cell
+      (rename &L1I0_0850090200000 "L1I0_0850090200000")
+      (cellType GENERIC)
+      (view
+        (rename NORMAL "Normal")
+        (viewType SCHEMATIC)
+        (interface
+          (designator "LED")
+          (property (rename PACKAGENAME "PackageName") (string "L1I0_0850090200000"))
+          (property (rename ISHETEROGENEOUS "IsHeterogeneous") (string "False"))
+          (property (rename DEVICESINVIEW "DevicesInView") (string "1"))
+          (property (rename DEVICESINPACKAGE "DevicesInPackage") (string "1"))
+          (property (rename DEVICEDESIGNATOR "DeviceDesignator") (string "A"))
+          (property (rename DEVICENUMBERING "DeviceNumbering") (string "Alpha"))
+          (property (rename PCB_32_FOOTPRINT "PCB Footprint") (string "L1I00850090200000"))
+          (property (rename &Mouser_Part_Number "Mouser Part Number") (string "997-L1I0085009020"))
+          (property (rename &Mouser_Price_Stock "Mouser Price/Stock") (string "https://www.mouser.co.uk/ProductDetail/Lumileds/L1I0-0850090200000?qs=GedFDFLaBXE%2FbLTZOv4ZXg%3D%3D"))
+          (property (rename &Manufacturer_Name "Manufacturer_Name") (string "Lumileds"))
+          (property (rename &Manufacturer_Part_Number "Manufacturer_Part_Number") (string "L1I0-0850090200000"))
+          (property (rename &Description "Description") (string "Infrared Emitters - High Power Infrared, 850nm LUXEON IR"))
+          (property (rename &Datasheet_Link "Datasheet Link") (string "https://lumileds.com/wp-content/uploads/files/DS191-luxeon-ir-domed-line-datasheet-1.pdf"))
+          (property (rename &Height "Height") (string "2.87 mm"))
+          (property (rename &_60__32_VALUE_32__62_ "Value") (string "L1I0_0850090200000"))
+          (property (rename VALUE "Value") (string "Value"))
+          (port
+            (rename &K "K")
+            (designator "1")
+            (property (rename ORDER "Order") (string "0") (owner "OrCAD"))
+          )
+          (port
+            (rename &A_1 "A_1")
+            (designator "2")
+            (property (rename ORDER "Order") (string "1") (owner "OrCAD"))
+          )
+          (port
+            (rename &A_2 "A_2")
+            (designator "3")
+            (property (rename ORDER "Order") (string "2") (owner "OrCAD"))
+          )
+          (symbol
+            (portImplementation
+              (name &K (display PINNAME))
+              (keywordDisplay DESIGNATOR (display PINNUMBER))
+              (figure PIN (path (pointList (pt -200 -100) (pt 0 -100))))
+              (connectLocation (figure GRAPHIC (dot (pt -200 -100))))
+            )
+            (portImplementation
+              (name &A_1 (display PINNAME))
+              (keywordDisplay DESIGNATOR (display PINNUMBER))
+              (figure PIN (path (pointList (pt -200 -300) (pt 0 -300))))
+              (connectLocation (figure GRAPHIC (dot (pt -200 -300))))
+            )
+            (portImplementation
+              (name &A_2 (display PINNAME))
+              (keywordDisplay DESIGNATOR (display PINNUMBER))
+              (figure PIN (path (pointList (pt -200 -200) (pt 0 -200))))
+              (connectLocation (figure GRAPHIC (dot (pt -200 -200))))
+            )
+            (figure GRAPHIC
+              (figureGroupOverride GRAPHIC
+                (pathWidth 10))
+              (path
+                (pointList
+                  (pt 0 0)
+                  (pt 500 0)
+                  (pt 500 -400)
+                  (pt 0 -400)
+                  (pt 0 0)
+                )
+              )
+            )
+            (keywordDisplay DESIGNATOR (display PROPERTY (justify LOWERLEFT) (orientation R0) (origin (pt 550 130))))
+            (propertyDisplay &_60__32_VALUE_32__62_ (display PROPERTY (justify LOWERLEFT) (orientation R0) (origin (pt 550 30))))
+          )
+        )
+      )
+    )
+  )
+)

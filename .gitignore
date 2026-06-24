@@ -1,0 +1,18 @@
+
+# SKiDL build-artefakter
+*.erc
+*.log
+*_sklib.py
+__pycache__/
+*.pyc
+
+# KiCad/freerouting-intermediärer (regenererbara)
+*.dsn
+*.ses
+hardware/gerbers/
+fr-*.log
+hardware/gb_*/
+
+# transienta KiCad-projektfiler
+hardware/*.kicad_pro
+hardware/*.kicad_prl

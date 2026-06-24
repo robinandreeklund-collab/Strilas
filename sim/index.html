@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STRILAS — 3D hårdvarusimulator</title>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "./vendor/three.module.js",
+  "three/addons/": "./vendor/addons/"
+}}
+</script>
+</head>
+<body>
+<div id="app"></div>
+<div id="reticle"></div>
+<div id="killbanner">☠ TARGET DOWN</div>
+
+<!-- HUD (vapen) -->
+<div id="hud" class="panel">
+  <h2>Weapon HUD</h2>
+  <div class="row"><span>AMMO</span><span class="v big" id="hud-ammo">30</span></div>
+  <div class="row"><span>STATE</span><span class="v"><span id="hud-state" class="state s-NO_MAG">NO_MAG</span></span></div>
+  <div class="row"><span>RANGE</span><span class="v" id="hud-range">– m</span></div>
+  <div class="row"><span>TOF</span><span class="v" id="hud-tof">– ms</span></div>
+  <div class="row"><span>IR-RÄCKVIDD</span><span class="v" id="hud-irrange">– m</span></div>
+  <div class="row"><span>HITS</span><span class="v" id="hud-hits">0</span></div>
+  <div style="margin-top:10px;color:#8b949e;font-size:11px">MÅL HÄLSA</div>
+  <div class="bar"><div id="hp-bar" style="width:100%;background:#39d98a"></div></div>
+  <div style="margin-top:8px;color:#8b949e;font-size:11px">TRÄFFLOGG</div>
+  <div id="hitlog" style="font-size:11px;line-height:1.5;min-height:60px"></div>
+</div>
+
+<!-- Kontroller -->
+<div id="controls" class="panel">
+  <h2>Hårdvara &amp; scenario</h2>
+  <label>Vapenprofil</label>
+  <select id="profile"></select>
+
+  <div class="hr"></div>
+  <h2>IR-emitter (SFH 4715AS)</h2>
+  <label>Miljö (sol påverkar räckvidd) <span class="val" id="v-env"></span></label>
+  <select id="env"></select>
+  <label>Pulsström <span class="val" id="v-cur">3.0 A</span></label>
+  <input type="range" id="cur" min="1" max="3" step="0.1" value="3">
+  <label>Strålvinkel (halv) <span class="val" id="v-beam">1.0°</span></label>
+  <input type="range" id="beam" min="0.4" max="15" step="0.1" value="1.0">
+  <label>Antal LED <span class="val" id="v-nled">2</span></label>
+  <input type="range" id="nled" min="1" max="4" step="1" value="2">
+  <label class="toggle"><input type="checkbox" id="filter"> 860 nm bandpassfilter på TSOP</label>
+
+  <div class="hr"></div>
+  <h2>Pose-stack (fuserad)</h2>
+  <label class="toggle"><input type="checkbox" id="gnss" checked> GNSS-heading-ankare (~0,1° yaw, binder IMU-drift)</label>
+  <label class="toggle"><input type="checkbox" id="cam"> Kamera + AI-pose (samboresiktad emitter-ring)</label>
+
+  <div class="hr"></div>
+  <h2>Adjudikation &amp; mål</h2>
+  <label class="toggle"><input type="checkbox" id="fas2" checked> Fas 2: server-adjudikation (flygtid + zon)</label>
+  <label>Skytt-skicklighet (siktfel σ) <span class="val" id="v-sigma">0.5°</span></label>
+  <input type="range" id="sigma" min="0" max="3" step="0.1" value="0.5">
+  <label>Målets fart <span class="val" id="v-tspd">3.0 m/s</span></label>
+  <input type="range" id="tspd" min="0" max="6" step="0.2" value="3">
+  <label>Sidvind <span class="val" id="v-wind">0 m/s</span></label>
+  <input type="range" id="wind" min="-8" max="8" step="0.5" value="0">
+  <label class="toggle"><input type="checkbox" id="autofire" checked> Auto-eld (demonstration)</label>
+
+  <div class="hr"></div>
+  <div class="grid2">
+    <button id="btn-mag">Sätt i magasin</button>
+    <button id="btn-rack">Rack (chamber)</button>
+    <button id="btn-fire">Avfyra</button>
+    <button id="btn-reload">Ladda om</button>
+  </div>
+  <button id="btn-fps" style="margin-top:8px">🎯 Skytt-vy (FPS) — klicka</button>
+  <button id="btn-reset" style="margin-top:6px">↻ Återställ mål</button>
+</div>
+
+<!-- Telemetri -->
+<div id="telemetry" class="panel">
+  <h2>Live-telemetri</h2>
+  <div class="row"><span>MCU</span><span class="v">ESP32-P4 + C6</span></div>
+  <div class="row"><span>IMU pitch</span><span class="v" id="t-imu">0.0°</span></div>
+  <div class="row"><span>Rekyl-klättring</span><span class="v" id="t-climb">0.0°</span></div>
+  <div class="row"><span>Pose-källa</span><span class="v" id="t-pose">IMU+IR</span></div>
+  <div class="row"><span>Sikte σ_eff</span><span class="v" id="t-sigma">–</span></div>
+  <div class="row"><span>Kamera-lås</span><span class="v" id="t-camlock">av</span></div>
+  <div class="row"><span>Emitter Ie</span><span class="v" id="t-ie">– W/sr</span></div>
+  <div class="row"><span>MilesTag-paket</span></div>
+  <div id="packet">––</div>
+</div>
+
+<div id="adjud" class="panel">
+  <h2>Server-adjudikation (nivå 3)</h2>
+  <div class="row"><span>① Sikte (IMU+IR-ankare)</span><span class="v" id="a-aim">–</span></div>
+  <div class="row"><span>② Ballistik-bana</span><span class="v" id="a-traj">–</span></div>
+  <div class="row"><span>&nbsp;&nbsp;flygtid / drop</span><span class="v" id="a-tof">–</span></div>
+  <div class="row"><span>&nbsp;&nbsp;anslagsfart</span><span class="v" id="a-vimp">–</span></div>
+  <div class="row"><span>③ Geometri (kapsel-skär)</span><span class="v" id="a-geo">–</span></div>
+  <div class="row"><span>④ IR LOS + zon</span><span class="v" id="a-ir">–</span></div>
+  <div class="row" style="margin-top:6px;border-top:1px solid #30363d;padding-top:6px">
+    <span><b>FUSION</b></span><span class="v" id="a-final" style="font-size:15px">–</span></div>
+</div>
+
+<div id="help" class="panel">
+  Auto-eld visar systemet live. <span class="kbd">FPS</span>: klicka "Skytt-vy", sikta med mus, <span class="kbd">vänsterklick</span> = eld, <span class="kbd">Esc</span> = tillbaka. Orbit: dra för att rotera, scrolla för zoom.
+</div>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>

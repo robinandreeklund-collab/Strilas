@@ -1,0 +1,16 @@
+.L1I0-0850090200000 :1 ;Infrared Emitters - High Power Infrared, 850nm LUXEON IR
+L1I00850090200000
+*STM LED
+*NGS
+*PLB 1="K" 2="A_1" 3="A_2"
+*MXP 3
+*DFN L1I0-0850090200000
+~!Mouser Part Number (997-L1I0085009020)
+~!Link Mouser Price/Stock (https://www.mouser.co.uk/ProductDetail/Lumileds/L1I0-0850090200000?qs=GedFDFLaBXE%2FbLTZOv4ZXg%3D%3D)
+~!Manufacturer_Name (Lumileds)
+~!Manufacturer_Part_Number (L1I0-0850090200000)
+~!Link Datasheet (https://lumileds.com/wp-content/uploads/files/DS191-luxeon-ir-domed-line-datasheet-1.pdf)
+~!Height (2.87mm)
+~!3D_Model (L1I0-0850090200000)
+L1I0-0850090200000
+1.1!U 2.1!U 3.1!U 

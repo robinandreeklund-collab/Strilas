@@ -1,0 +1,13 @@
+{
+  "max_passes": 100,
+  "num_threads": 1,
+  "board_update_strategy": "GREEDY",
+  "hybrid_ratio": "1:1",
+  "item_selection_strategy": "PRIORITIZED",
+  "save_intermediate_stages": false,
+  "optimization_improvement_threshold": 1.0E-5,
+  "disable_logging": false,
+  "disable_analytics": true,
+  "dialog_confirmation_timeout": 1,
+  "host": "N/A"
+}

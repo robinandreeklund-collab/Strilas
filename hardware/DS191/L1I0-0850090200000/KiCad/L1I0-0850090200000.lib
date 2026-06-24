@@ -1,0 +1,24 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#SamacSys ECAD Model L1I0-0850090200000
+#/12674801/1000614/2.50/3/3/LED
+DEF L1I0-0850090200000 LED 0 30 Y Y 1 F N
+F0 "LED" 750 300 50 H V L CNN
+F1 "L1I0-0850090200000" 750 200 50 H V L CNN
+F2 "L1I00850090200000" 750 100 50 H I L CNN
+F3 "https://lumileds.com/wp-content/uploads/files/DS191-luxeon-ir-domed-line-datasheet-1.pdf" 750 0 50 H I L CNN
+F4 "Infrared Emitters - High Power Infrared, 850nm LUXEON IR" 750 -100 50 H I L CNN "Description"
+F5 "2.87" 750 -200 50 H I L CNN "Height"
+F6 "997-L1I0085009020" 750 -300 50 H I L CNN "Mouser Part Number"
+F7 "https://www.mouser.co.uk/ProductDetail/Lumileds/L1I0-0850090200000?qs=GedFDFLaBXE%2FbLTZOv4ZXg%3D%3D" 750 -400 50 H I L CNN "Mouser Price/Stock"
+F8 "Lumileds" 750 -500 50 H I L CNN "Manufacturer_Name"
+F9 "L1I0-0850090200000" 750 -600 50 H I L CNN "Manufacturer_Part_Number"
+DRAW
+X K 1 0 0 200 R 50 50 0 0 P
+X A_1 2 0 -200 200 R 50 50 0 0 P
+X A_2 3 0 -100 200 R 50 50 0 0 P
+P 5 0 1 6 200 100 700 100 700 -300 200 -300 200 100 N
+ENDDRAW
+ENDDEF
+#
+#End Library

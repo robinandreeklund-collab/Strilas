@@ -1,0 +1,2081 @@
+(export 
+  (version "D")
+  (design
+    (source "helmet_mb_netlist.py")
+    (date "06/17/2026 10:23 AM")
+    (tool "SKiDL (2.2.3)")
+    (sheet
+      (number 1)
+      (name "/")
+      (tstamps "/")
+      (title_block
+        (title)
+        (company)
+        (rev)
+        (date)
+        (source "../helmet_mb_netlist.py")
+        (comment
+          (number "1")
+          (value ""))
+        (comment
+          (number "2")
+          (value ""))
+        (comment
+          (number "3")
+          (value ""))
+        (comment
+          (number "4")
+          (value ""))
+        (comment
+          (number "5")
+          (value ""))
+        (comment
+          (number "6")
+          (value ""))
+        (comment
+          (number "7")
+          (value ""))
+        (comment
+          (number "8")
+          (value ""))
+        (comment
+          (number "9")
+          (value "")))))
+  (components
+    (comp
+      (ref "C1")
+      (value "100nF")
+      (description "")
+      (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "1TVNGZngRP")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:58"))
+      (libsource
+        (lib "NO_LIB")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "23907026-5fc3-5035-9fc4-885d6c91100e"))
+    (comp
+      (ref "C2")
+      (value "10uF")
+      (description "")
+      (footprint "Capacitor_SMD:C_1206_3216Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Capacitor_SMD:C_1206_3216Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "a42QMXRXTc")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:58"))
+      (libsource
+        (lib "NO_LIB")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "fa3bba21-b150-56bb-992a-0021f1fff322"))
+    (comp
+      (ref "C3")
+      (value "22uF")
+      (description "")
+      (footprint "Capacitor_SMD:C_1206_3216Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Capacitor_SMD:C_1206_3216Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "YgUM_n3TBq")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:58"))
+      (libsource
+        (lib "NO_LIB")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "33a38d59-ddba-5a32-ac1d-7c923ba7d20f"))
+    (comp
+      (ref "C4")
+      (value "100nF")
+      (description "")
+      (footprint "Capacitor_SMD:C_0402_1005Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "CwQl76jh1D")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:58"))
+      (libsource
+        (lib "NO_LIB")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "50a545aa-3119-5c39-be76-553bc6ebe8e8"))
+    (comp
+      (ref "C5")
+      (value "100nF")
+      (description "")
+      (footprint "Capacitor_SMD:C_0402_1005Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "ZCIZMmQGyS")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:58"))
+      (libsource
+        (lib "NO_LIB")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "82b250b3-e0b2-5d24-8af5-6293bbbecbd4"))
+    (comp
+      (ref "C6")
+      (value "100nF")
+      (description "")
+      (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "QKiQMUV2Ns")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:58"))
+      (libsource
+        (lib "NO_LIB")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "cebf3035-449c-51b3-b03e-81f444c3dd26"))
+    (comp
+      (ref "C7")
+      (value "100nF")
+      (description "")
+      (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "7igYP4F21O")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:58"))
+      (libsource
+        (lib "NO_LIB")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "cddbf223-1f55-59ed-8830-196b76e2c921"))
+    (comp
+      (ref "C8")
+      (value "100nF")
+      (description "")
+      (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "a7ImrPy5rN")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:58"))
+      (libsource
+        (lib "NO_LIB")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "f5bc5e84-d299-5610-b367-464a7753404c"))
+    (comp
+      (ref "C9")
+      (value "100nF")
+      (description "")
+      (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "tDbOU5sStd")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:58"))
+      (libsource
+        (lib "NO_LIB")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "1ec67695-8b62-58d2-950f-c58d56a1ecec"))
+    (comp
+      (ref "D1")
+      (value "BAT54")
+      (description "")
+      (footprint "Diode_SMD:D_SOD-123")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Diode_SMD:D_SOD-123")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "7xbTxOOleH")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:91"))
+      (libsource
+        (lib "NO_LIB")
+        (part "ORdiode"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "29e283dc-8768-5bd6-9c91-3718729b721c"))
+    (comp
+      (ref "D10")
+      (value "LED-tab (OSLON på micro-PCB med ben → böjs/vinklas; ledad)")
+      (description "")
+      (footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "nd_quuPgbr")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:104"))
+      (libsource
+        (lib "NO_LIB")
+        (part "LED_TAB"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "8061e7ba-7651-5e37-8b57-d12a1de24849"))
+    (comp
+      (ref "D2")
+      (value "BAT54")
+      (description "")
+      (footprint "Diode_SMD:D_SOD-123")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Diode_SMD:D_SOD-123")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "cHvg3gIJ7o")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:91"))
+      (libsource
+        (lib "NO_LIB")
+        (part "ORdiode"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "35fec802-5cb7-53f8-8ba9-bd1a720b6998"))
+    (comp
+      (ref "D3")
+      (value "BAT54")
+      (description "")
+      (footprint "Diode_SMD:D_SOD-123")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Diode_SMD:D_SOD-123")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "NN4xNgrg3K")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:91"))
+      (libsource
+        (lib "NO_LIB")
+        (part "ORdiode"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "ad6b2a9b-fe83-521a-a3d9-e8c74150a7ba"))
+    (comp
+      (ref "D4")
+      (value "BAT54")
+      (description "")
+      (footprint "Diode_SMD:D_SOD-123")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Diode_SMD:D_SOD-123")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "SpZA0Ms59l")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:91"))
+      (libsource
+        (lib "NO_LIB")
+        (part "ORdiode"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "e9ef8d57-641b-5852-9b66-e593ff32c2b2"))
+    (comp
+      (ref "D5")
+      (value "LED-tab (OSLON på micro-PCB med ben → böjs/vinklas; ledad)")
+      (description "")
+      (footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "mxRZ3VNaQb")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:103"))
+      (libsource
+        (lib "NO_LIB")
+        (part "LED_TAB"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "0b0d0ed0-0d7d-5fa6-be68-038e48327a90"))
+    (comp
+      (ref "D6")
+      (value "LED-tab (OSLON på micro-PCB med ben → böjs/vinklas; ledad)")
+      (description "")
+      (footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "KTEUAEb_r2")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:104"))
+      (libsource
+        (lib "NO_LIB")
+        (part "LED_TAB"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "fb5e564b-3488-5654-8fd4-1bbf72b5f208"))
+    (comp
+      (ref "D7")
+      (value "LED-tab (OSLON på micro-PCB med ben → böjs/vinklas; ledad)")
+      (description "")
+      (footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "wXvgOngT_E")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:103"))
+      (libsource
+        (lib "NO_LIB")
+        (part "LED_TAB"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "476cd92b-9e52-59dd-973c-2f2ba97ebf1b"))
+    (comp
+      (ref "D8")
+      (value "LED-tab (OSLON på micro-PCB med ben → böjs/vinklas; ledad)")
+      (description "")
+      (footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "C_ZuhYtXH_")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:104"))
+      (libsource
+        (lib "NO_LIB")
+        (part "LED_TAB"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "24df6353-369a-53a8-88f9-c77bc067aff9"))
+    (comp
+      (ref "D9")
+      (value "LED-tab (OSLON på micro-PCB med ben → böjs/vinklas; ledad)")
+      (description "")
+      (footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "eUksWH6yVX")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:103"))
+      (libsource
+        (lib "NO_LIB")
+        (part "LED_TAB"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "cb694409-bdf9-511b-9fa6-abf07804f359"))
+    (comp
+      (ref "H1")
+      (value "M2.5")
+      (description "")
+      (footprint "MountingHole:MountingHole_2.5mm")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "MountingHole:MountingHole_2.5mm")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "TXyPfZNKEJ")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:138"))
+      (libsource
+        (lib "NO_LIB")
+        (part "MH"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "4b9ad658-9026-5bf2-a14e-4ae6bfcc86e2"))
+    (comp
+      (ref "H2")
+      (value "M2.5")
+      (description "")
+      (footprint "MountingHole:MountingHole_2.5mm")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "MountingHole:MountingHole_2.5mm")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "weorQtrVvy")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:138"))
+      (libsource
+        (lib "NO_LIB")
+        (part "MH"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "f520fe30-d2fc-5f04-aa13-d160491e88d7"))
+    (comp
+      (ref "H3")
+      (value "M2.5")
+      (description "")
+      (footprint "MountingHole:MountingHole_2.5mm")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "MountingHole:MountingHole_2.5mm")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "sWFlFAqSgl")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:138"))
+      (libsource
+        (lib "NO_LIB")
+        (part "MH"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "c52a6e42-a279-505c-81e6-4e9493e75fb5"))
+    (comp
+      (ref "H4")
+      (value "M2.5")
+      (description "")
+      (footprint "MountingHole:MountingHole_2.5mm")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "MountingHole:MountingHole_2.5mm")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "VUHQM2WIwA")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:138"))
+      (libsource
+        (lib "NO_LIB")
+        (part "MH"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "f27a1ac1-f317-5207-a6da-0e503fbea074"))
+    (comp
+      (ref "H5")
+      (value "M2.5")
+      (description "")
+      (footprint "MountingHole:MountingHole_2.5mm")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "MountingHole:MountingHole_2.5mm")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "90z9Ec5dl6")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:138"))
+      (libsource
+        (lib "NO_LIB")
+        (part "MH"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "6d3b1aa5-8832-56af-bd44-2c634d7e505b"))
+    (comp
+      (ref "H6")
+      (value "M2.5")
+      (description "")
+      (footprint "MountingHole:MountingHole_2.5mm")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "MountingHole:MountingHole_2.5mm")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "hNCc3xVATF")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:138"))
+      (libsource
+        (lib "NO_LIB")
+        (part "MH"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "6607b7c8-660d-5f27-b205-1920e23cba9f"))
+    (comp
+      (ref "H7")
+      (value "M2.5")
+      (description "")
+      (footprint "MountingHole:MountingHole_2.5mm")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "MountingHole:MountingHole_2.5mm")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "nb3j5q9PAB")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:138"))
+      (libsource
+        (lib "NO_LIB")
+        (part "MH"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "e6a44e6f-f3a2-5f39-8bdd-4e99495f43d3"))
+    (comp
+      (ref "H8")
+      (value "M2.5")
+      (description "")
+      (footprint "MountingHole:MountingHole_2.5mm")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "MountingHole:MountingHole_2.5mm")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "qKTnSPtfnO")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:138"))
+      (libsource
+        (lib "NO_LIB")
+        (part "MH"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "b9a13883-94b3-531a-af24-9ceca08f33ce"))
+    (comp
+      (ref "J1")
+      (value "ZED-F9P RTK (UART+I²C)")
+      (description "")
+      (footprint "Connector_JST:JST_GH_SM08B-GHS-TB_1x08-1MP_P1.25mm_Horizontal")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_JST:JST_GH_SM08B-GHS-TB_1x08-1MP_P1.25mm_Horizontal")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "Fxhrds3c6s")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:107"))
+      (libsource
+        (lib "NO_LIB")
+        (part "ZED-F9P"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "df7f281a-9f0c-550f-8be2-6707e8a89c65"))
+    (comp
+      (ref "J10")
+      (value "2S batteri")
+      (description "")
+      (footprint "Connector_JST:JST_XH_S2B-XH-A_1x02_P2.50mm_Horizontal")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_JST:JST_XH_S2B-XH-A_1x02_P2.50mm_Horizontal")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "s6_Ccg6Dab")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:134"))
+      (libsource
+        (lib "NO_LIB")
+        (part "BATT_2S"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "3f50f901-f17d-592a-b52d-8b220abd29c3"))
+    (comp
+      (ref "J2")
+      (value "Patch: VBAT·GND·DATA·LED_EN·3V3")
+      (description "")
+      (footprint "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "e5b9l1Dme5")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:111"))
+      (libsource
+        (lib "NO_LIB")
+        (part "PatchConn"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "0b1cfe78-ee94-5c10-b19d-6c7ddaeade94"))
+    (comp
+      (ref "J3")
+      (value "Patch: VBAT·GND·DATA·LED_EN·3V3")
+      (description "")
+      (footprint "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "8CBjzYN7dd")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:111"))
+      (libsource
+        (lib "NO_LIB")
+        (part "PatchConn"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "7b1b8592-136c-5130-a780-e3e22f97578b"))
+    (comp
+      (ref "J4")
+      (value "Patch: VBAT·GND·DATA·LED_EN·3V3")
+      (description "")
+      (footprint "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "YguE26pueo")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:111"))
+      (libsource
+        (lib "NO_LIB")
+        (part "PatchConn"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "6dc055da-23f0-56d6-baec-7c116bb428b1"))
+    (comp
+      (ref "J5")
+      (value "Patch: VBAT·GND·DATA·LED_EN·3V3")
+      (description "")
+      (footprint "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "lvjLVXRvGb")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:111"))
+      (libsource
+        (lib "NO_LIB")
+        (part "PatchConn"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "8d3bd48e-8a76-5d76-a189-6339fc935bd2"))
+    (comp
+      (ref "J6")
+      (value "AMP: 3V3·GND·SD·GAIN·DIN·BCLK·LRC")
+      (description "")
+      (footprint "Connector_PinHeader_2.54mm:PinHeader_1x07_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x07_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "oHuS9tcu3I")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:115"))
+      (libsource
+        (lib "NO_LIB")
+        (part "Conn_1x07"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "d716a47f-cc14-58be-9fd0-40dbb3defe59"))
+    (comp
+      (ref "J7")
+      (value "MIC: 3V3·GND·SD·WS·SCK·LR")
+      (description "")
+      (footprint "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "gHvI9z4pWu")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:117"))
+      (libsource
+        (lib "NO_LIB")
+        (part "Conn_1x06"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "f8473dd9-8c2c-5af0-9080-308d19473465"))
+    (comp
+      (ref "J8")
+      (value "P4-WIFI6 edge B")
+      (description "")
+      (footprint "Connector_PinSocket_2.54mm:PinSocket_1x20_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinSocket_2.54mm:PinSocket_1x20_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "OAY3y5E2rF")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:122"))
+      (libsource
+        (lib "NO_LIB")
+        (part "P4_EDGE_B"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "d0a5891b-9b21-5a81-984b-8e3568921d99"))
+    (comp
+      (ref "J9")
+      (value "P4-WIFI6 edge A")
+      (description "")
+      (footprint "Connector_PinSocket_2.54mm:PinSocket_1x20_P2.54mm_Vertical")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Connector_PinSocket_2.54mm:PinSocket_1x20_P2.54mm_Vertical")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "cMCFpzOqwQ")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:125"))
+      (libsource
+        (lib "NO_LIB")
+        (part "P4_EDGE_A"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "cd984ca1-5103-5533-9b73-c649ce55523d"))
+    (comp
+      (ref "L1")
+      (value "4.7uH")
+      (description "")
+      (footprint "Inductor_SMD:L_Changjiang_FNR5040S")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Inductor_SMD:L_Changjiang_FNR5040S")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "EBo2W2nzzS")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:73"))
+      (libsource
+        (lib "NO_LIB")
+        (part "L"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "383a7d85-98fa-5f28-b2f7-d250442cadd8"))
+    (comp
+      (ref "Q1")
+      (value "AO3400")
+      (description "")
+      (footprint "Package_TO_SOT_SMD:SOT-23")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Package_TO_SOT_SMD:SOT-23")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "f7PYWObMVr")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:98"))
+      (libsource
+        (lib "NO_LIB")
+        (part "AO3400"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "1ab0f0e5-6949-5434-9d25-eaff97c818f5"))
+    (comp
+      (ref "R1")
+      (value "31.6k")
+      (description "")
+      (footprint "Resistor_SMD:R_0805_2012Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "jRGypvk1i8")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:57"))
+      (libsource
+        (lib "NO_LIB")
+        (part "R"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "d86c40b6-8b47-5b82-8213-a0ca43e6eb6b"))
+    (comp
+      (ref "R2")
+      (value "10k")
+      (description "")
+      (footprint "Resistor_SMD:R_0805_2012Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "iQn3qMZCyU")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:57"))
+      (libsource
+        (lib "NO_LIB")
+        (part "R"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "7da254f2-8468-5776-90d1-3234e9fd8657"))
+    (comp
+      (ref "R3")
+      (value "10k")
+      (description "")
+      (footprint "Resistor_SMD:R_0805_2012Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "G0wv_SQxxF")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:57"))
+      (libsource
+        (lib "NO_LIB")
+        (part "R"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "e7f78ced-fd72-5aaf-b0b7-a0aeb2a1cabd"))
+    (comp
+      (ref "R4")
+      (value "220R")
+      (description "")
+      (footprint "Resistor_SMD:R_0805_2012Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "3nli7ODyr3")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:57"))
+      (libsource
+        (lib "NO_LIB")
+        (part "R"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "4e1842e5-ba44-5113-abfc-562ce2a6065e"))
+    (comp
+      (ref "R5")
+      (value "10R")
+      (description "")
+      (footprint "Resistor_SMD:R_2512_6332Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Resistor_SMD:R_2512_6332Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "r5BOwQ5yW0")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:57"))
+      (libsource
+        (lib "NO_LIB")
+        (part "R"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "7b893b01-c561-5435-8194-0d3630e00084"))
+    (comp
+      (ref "R6")
+      (value "10R")
+      (description "")
+      (footprint "Resistor_SMD:R_2512_6332Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Resistor_SMD:R_2512_6332Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "KHfv7Mdv2m")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:57"))
+      (libsource
+        (lib "NO_LIB")
+        (part "R"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "8412e86b-bd41-5692-8d0d-d9446977ac95"))
+    (comp
+      (ref "R7")
+      (value "10R")
+      (description "")
+      (footprint "Resistor_SMD:R_2512_6332Metric")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Resistor_SMD:R_2512_6332Metric")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "MUYEBOfd7L")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:57"))
+      (libsource
+        (lib "NO_LIB")
+        (part "R"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "11afb5b4-ca68-5c63-add7-a5434ea9d5c7"))
+    (comp
+      (ref "U1")
+      (value "AP63203")
+      (description "")
+      (footprint "Package_TO_SOT_SMD:TSOT-23-6")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "Package_TO_SOT_SMD:TSOT-23-6")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "LC_eO3n2Z6")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:71"))
+      (libsource
+        (lib "NO_LIB")
+        (part "AP63203"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "64e6b936-52d1-502d-b35c-3ec4738fc86b"))
+    (comp
+      (ref "U2")
+      (value "IIM-42653")
+      (description "")
+      (footprint "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "strilas:InvenSense_LGA-14_2.5x3mm_ICM-456xx")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "jW16myF3QA")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:80"))
+      (libsource
+        (lib "NO_LIB")
+        (part "IIM-42653"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "90f30408-6271-5dc2-944a-d1620b1a42ba"))
+    (comp
+      (ref "U3")
+      (value "TSOP4856")
+      (description "")
+      (footprint "OptoDevice:Vishay_MOLD-3Pin")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "OptoDevice:Vishay_MOLD-3Pin")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "u4Haf2cPsN")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:89"))
+      (libsource
+        (lib "NO_LIB")
+        (part "TSOP4856"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "88bb4f43-3576-50f9-90f8-ce7f339159ea"))
+    (comp
+      (ref "U4")
+      (value "TSOP4856")
+      (description "")
+      (footprint "OptoDevice:Vishay_MOLD-3Pin")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "OptoDevice:Vishay_MOLD-3Pin")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "p0w_uscAxn")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:89"))
+      (libsource
+        (lib "NO_LIB")
+        (part "TSOP4856"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "9e7df413-4ff9-51a3-bf75-9ebec03431e2"))
+    (comp
+      (ref "U5")
+      (value "TSOP4856")
+      (description "")
+      (footprint "OptoDevice:Vishay_MOLD-3Pin")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "OptoDevice:Vishay_MOLD-3Pin")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "e13_aswWCo")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:89"))
+      (libsource
+        (lib "NO_LIB")
+        (part "TSOP4856"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "7e07521f-87d6-53ab-b644-c9c88bd9aef5"))
+    (comp
+      (ref "U6")
+      (value "TSOP4856")
+      (description "")
+      (footprint "OptoDevice:Vishay_MOLD-3Pin")
+      (fields
+        (field
+          (name "Description"))
+        (field
+          (name "Footprint") "OptoDevice:Vishay_MOLD-3Pin")
+        (field
+          (name "Datasheet"))
+        (field
+          (name "SKiDL Tag") "l3aWADsJ9Z")
+        (field
+          (name "SKiDL Line") "helmet_mb_netlist.py:89"))
+      (libsource
+        (lib "NO_LIB")
+        (part "TSOP4856"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "8d412b65-a12f-5b8c-bda2-db7fda338c01")))
+  (nets
+    (net
+      (code 1)
+      (name "+3V3")
+      (class "Default")
+      (node
+        (ref "C3")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C4")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C5")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C6")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C7")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C8")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C9")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J2")
+        (pin "5")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J3")
+        (pin "5")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J4")
+        (pin "5")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J5")
+        (pin "5")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J6")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J7")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "L1")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R1")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R3")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U2")
+        (pin "12")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U2")
+        (pin "5")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U2")
+        (pin "8")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U3")
+        (pin "3")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U4")
+        (pin "3")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U5")
+        (pin "3")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U6")
+        (pin "3")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 2)
+      (name "AMP_GAIN")
+      (class "Default")
+      (node
+        (ref "J6")
+        (pin "4")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 3)
+      (name "AMP_SD")
+      (class "Default")
+      (node
+        (ref "J6")
+        (pin "3")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "20")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 4)
+      (name "BST")
+      (class "Default")
+      (node
+        (ref "C1")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U1")
+        (pin "6")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 5)
+      (name "DATA_OB")
+      (class "Default")
+      (node
+        (ref "D1")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "D2")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "D3")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "D4")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R3")
+        (pin "2")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 6)
+      (name "DATA_P1")
+      (class "Default")
+      (node
+        (ref "J2")
+        (pin "3")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "2")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 7)
+      (name "DATA_P2")
+      (class "Default")
+      (node
+        (ref "J3")
+        (pin "3")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "4")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 8)
+      (name "DATA_P3")
+      (class "Default")
+      (node
+        (ref "J4")
+        (pin "3")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "5")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 9)
+      (name "DATA_P4")
+      (class "Default")
+      (node
+        (ref "J5")
+        (pin "3")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "6")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 10)
+      (name "F9P_RSV")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "8")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 11)
+      (name "FB")
+      (class "Default")
+      (node
+        (ref "R1")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R2")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U1")
+        (pin "1")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 12)
+      (name "GND")
+      (class "Default")
+      (node
+        (ref "C2")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C3")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C4")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C5")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C6")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C7")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C8")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "C9")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "H1")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "H2")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "H3")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "H4")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "H5")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "H6")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "H7")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "H8")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J1")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J10")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J2")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J3")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J4")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J5")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J6")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J7")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J7")
+        (pin "6")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J8")
+        (pin "13")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J8")
+        (pin "18")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J8")
+        (pin "3")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J8")
+        (pin "8")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "13")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "18")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "3")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "8")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "Q1")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R2")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U1")
+        (pin "4")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U2")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U2")
+        (pin "6")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U2")
+        (pin "7")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U3")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U4")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U5")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U6")
+        (pin "2")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 13)
+      (name "GNSS_PPS")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "7")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 14)
+      (name "GNSS_RX")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "4")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "11")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 15)
+      (name "GNSS_TX")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "3")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "12")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 16)
+      (name "I2C_SCL")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "6")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "16")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U2")
+        (pin "13")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 17)
+      (name "I2C_SDA")
+      (class "Default")
+      (node
+        (ref "J1")
+        (pin "5")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "17")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U2")
+        (pin "14")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 18)
+      (name "I2S_BCLK")
+      (class "Default")
+      (node
+        (ref "J6")
+        (pin "6")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J7")
+        (pin "5")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "7")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 19)
+      (name "I2S_DIN")
+      (class "Default")
+      (node
+        (ref "J7")
+        (pin "3")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "19")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 20)
+      (name "I2S_DOUT")
+      (class "Default")
+      (node
+        (ref "J6")
+        (pin "5")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "10")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 21)
+      (name "I2S_LRCK")
+      (class "Default")
+      (node
+        (ref "J6")
+        (pin "7")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J7")
+        (pin "4")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "9")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 22)
+      (name "IMU_INT")
+      (class "Default")
+      (node
+        (ref "J9")
+        (pin "14")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U2")
+        (pin "4")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 23)
+      (name "LED_A1")
+      (class "Default")
+      (node
+        (ref "D5")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R5")
+        (pin "2")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 24)
+      (name "LED_A2")
+      (class "Default")
+      (node
+        (ref "D7")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R6")
+        (pin "2")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 25)
+      (name "LED_A3")
+      (class "Default")
+      (node
+        (ref "D9")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R7")
+        (pin "2")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 26)
+      (name "LED_CATH")
+      (class "Default")
+      (node
+        (ref "D10")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "D6")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "D8")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "Q1")
+        (pin "3")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 27)
+      (name "LED_EN")
+      (class "Default")
+      (node
+        (ref "J2")
+        (pin "4")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J3")
+        (pin "4")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J4")
+        (pin "4")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J5")
+        (pin "4")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J9")
+        (pin "15")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R4")
+        (pin "1")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 28)
+      (name "LED_M1")
+      (class "Default")
+      (node
+        (ref "D5")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "D6")
+        (pin "1")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 29)
+      (name "LED_M2")
+      (class "Default")
+      (node
+        (ref "D7")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "D8")
+        (pin "1")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 30)
+      (name "LED_M3")
+      (class "Default")
+      (node
+        (ref "D10")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "D9")
+        (pin "2")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 31)
+      (name "N$1")
+      (class "Default")
+      (node
+        (ref "Q1")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R4")
+        (pin "2")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 32)
+      (name "OB_OUT1")
+      (class "Default")
+      (node
+        (ref "D1")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U3")
+        (pin "1")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 33)
+      (name "OB_OUT2")
+      (class "Default")
+      (node
+        (ref "D2")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U4")
+        (pin "1")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 34)
+      (name "OB_OUT3")
+      (class "Default")
+      (node
+        (ref "D3")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U5")
+        (pin "1")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 35)
+      (name "OB_OUT4")
+      (class "Default")
+      (node
+        (ref "D4")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U6")
+        (pin "1")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 36)
+      (name "SW")
+      (class "Default")
+      (node
+        (ref "C1")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "L1")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U1")
+        (pin "5")
+        (pintype "UNSPECIFIED")))
+    (net
+      (code 37)
+      (name "VBAT")
+      (class "Default")
+      (node
+        (ref "C2")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J1")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J10")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J2")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J3")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J4")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J5")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "J8")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R5")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R6")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "R7")
+        (pin "1")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U1")
+        (pin "2")
+        (pintype "UNSPECIFIED"))
+      (node
+        (ref "U1")
+        (pin "3")
+        (pintype "UNSPECIFIED")))))
