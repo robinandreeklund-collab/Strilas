@@ -397,7 +397,7 @@ helmet_mb_pos = {
     "U9": (-6.0, 23.5, 0),                           # OPA171 CC-op-amp
     "R14": (-2.69, 24.21, 90),                       # sense 0R2 (Q1.S → GND)
     "R15": (-0.5, 25.12, 90),                        # 3A-override DNP 0R1 (parallellt R14)
-    "R16": (-10.5, 20.2, 90),                        # tak-delare 15k; pin1 (LED_EN) på In1-spårets via-punkt
+    "R16": (-10.0, 22.5, 90),                        # tak-delare 15k; UPPFLYTTAD ur M2.5-hålet H6:s skruv-clearance (0,53mm→2,83mm), kvar i CC-klustret
     "R17": (-13.15, 20.85, 0),                       # tak-delare 1k (Vref→GND)
     "C23": (-12.8, 23.0, 0),                         # RC-filter 100nF (PWM→Vref)
     "L1": (-3.5, -15.0, 0),

@@ -22,7 +22,7 @@ NEW = {   # kompakt kluster, clear av F_Cu-koppar (scannat) — korta länkar (�
     "U9":  ("Package_TO_SOT_SMD", "SOT-23-5", -6.0, 23.5, 0),
     "R14": ("Resistor_SMD", "R_1206_3216Metric", -2.69, 24.21, 90),
     "R15": ("Resistor_SMD", "R_0805_2012Metric", -0.5, 25.12, 90),
-    "R16": ("Resistor_SMD", "R_0805_2012Metric", -10.5, 20.2, 90),   # pin1 (LED_EN) på In1-spårets clear-punkt → direkt via
+    "R16": ("Resistor_SMD", "R_0805_2012Metric", -10.0, 22.5, 90),   # UPPFLYTTAD ur M2.5-hålet H6 (skruv-clearance); pin1 (LED_EN) → via In1
     "R17": ("Resistor_SMD", "R_0805_2012Metric", -13.15, 20.85, 0),
     "C23": ("Capacitor_SMD", "C_0805_2012Metric", -12.8, 23.0, 0),
 }
