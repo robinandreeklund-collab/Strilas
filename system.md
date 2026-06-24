@@ -20,7 +20,7 @@ i stället så här:
 - **Vapnet skjuter ett brett, ögonsäkert 940 nm IR-ljus** som bär ett datapaket (skytte-ID,
   vapenprofil, skada). Det är bara en **LOS-grind** ("nådde ljuset fram, utan vägg emellan?")
   — inte själva träffdomen.
-- **Kameran på vapnet är siktet.** Varje mål bär en **860 nm-konstellation** (kända LED-mönster).
+- **Kameran på vapnet är siktet.** Varje mål bär en **850 nm-konstellation** (kända LED-mönster).
   Kameran ser konstellationen, löser målets **pose** (avstånd, bäring, orientering) via PnP, och
   räknar **ballistik** (kulfall + flygtid) → en **deferred hit**: träff om den världsfasta,
   fall-korrigerade skottlinjen skär målets **verkliga** läge när "kulan" når fram.
@@ -32,9 +32,9 @@ Två våglängder, åtskilda med optiska filter (måste matcha — se §4):
 | Funktion | Våglängd | Källa | Mottagare |
 |---|---|---|---|
 | **Skott / LOS-grind** | **940 nm** | OSLON Black SFH 4725AS (vapnets emitter) | TSOP4856 på patcharna |
-| **Konstellation / pose** | **860 nm** | OSLON SFH 4715AS (LED på mål) | Vapnets kamera m. 860 nm-bandpass |
+| **Konstellation / pose** | **850 nm** | Lumileds L1I0-0850090200000 (LUXEON IR Domed, LED på mål) | Vapnets kamera m. 850 nm-bandpass |
 
-Kameran ser 860 nm och **avvisar** vapnets egna 940 nm → ingen självbländning.
+Kameran ser 850 nm och **avvisar** vapnets egna 940 nm → ingen självbländning.
 
 ---
 
@@ -65,7 +65,7 @@ loggas för live-spårning och efteranalys (AAR).
    56 kHz-gatad burst bär skott-paketet (skytte-ID, vapenprofil, skada).
 3. SKOTTLINJEN LÅSES i världsram vid avtryck (pipans riktning + ballistiskt fall). IMU håller
    linjen världsfast medan vapnet rör sig (recoil/svaj).
-4. KAMERAN (860 nm-pass, global shutter) ser målets 860 nm-KONSTELLATION → frame-differencing →
+4. KAMERAN (850 nm-pass, global shutter) ser målets 850 nm-KONSTELLATION → frame-differencing →
    rena blobbar → PnP (≥4 LED i känt 3D-mönster) → mål-pose: avstånd R + bäring + orientering.
 5. BALLISTIK: R → kulfall → hållpunkts-offset. Flygtid → kameran spårar målet under hela tiden.
 6. DEFERRED HIT: när "kulan" når R → träff OM den världsfasta, fall-korrigerade linjen skär
@@ -84,8 +84,10 @@ poäng och position.
 - **940 nm = skott.** Osynligt, brett (divergerad LED, **ej** kollimerad laser → ögonsäkerhets-marginal).
   Emittern sitter under en **Carclo TIR-kollimatorlins** (10003/10195-serien) för räckvidd; lins +
   hållare (Carclo 10734) köps separat och monteras manuellt över emittern.
-- **860 nm = konstellation.** Riktade OSLON-LED på målen; kameran har **860 nm-bandpassfilter** så att
-  den ser konstellationen men inte vapnets egen 940 nm-stråle.
+- **850 nm = konstellation.** Riktade **Lumileds LUXEON IR-LED (L1I0-0850090200000, 90° dome)** på målen;
+  kameran har **850 nm-bandpassfilter** så att den ser konstellationen men inte vapnets egen 940 nm-stråle.
+  *(Bytt från OSLON SFH 4715AS @860 nm → Lumileds @850 nm: starkare Ie (~750 mW/sr@1A ≈ 2× VSMY) → räckvidd
+  vid lägre ström + lager-verifierad.)*
 - Filter/emitter/LED **måste matcha** kamerans pass-band — annars ser kameran fel sak eller bländas.
 
 ---
@@ -133,7 +135,7 @@ bakom på MIPI-CSI till carriern (rör inte detta kort).
 - **Kamera-cutout** (Ø18 M12-linshållare) i toppen + 4 hörnhål för VEYE AR0234-modulen.
 - **JST 4-pol bak** (THT): VBAT·IR_MOD·GND·EMIT_SET → HAT:en.
 
-**Kamera** — VEYE **AR0234M** (global shutter, mono) med 860 nm-bandpass. Sitter på carrierns
+**Kamera** — VEYE **AR0234M** (global shutter, mono) med 850 nm-bandpass. Sitter på carrierns
 **22-pin MIPI-CSI** och **matas via CSI-bandets 3,3 V** (~657 mW = ~199 mA). Rör inte HAT/optik
 elektriskt — bara mekaniskt (standoffs).
 
@@ -172,7 +174,7 @@ kraften hålls som en separat ö i magasinet. *Ej ritat ännu — gränssnittet 
   PTT-knapp.
 
 **LED-tab (micro-PCB)** — `hardware/led_tab.py` → `leverans/led-tab/`
-*~6 × 11 mm, 2-lager. 6 st/hjälm.* En **OSLON SFH 4715AS (860 nm)** på en liten tab med 2-håls fot.
+*~6 × 11 mm, 2-lager. 6 st/hjälm.* En **Lumileds L1I0-0850090200000 (LUXEON IR Domed, 850 nm, 90°)** på en liten tab med 2-håls fot.
 Kund löder en **right-angle stiftlist** så tab:en står lodrätt mot hjälm-discen → LED:en strålar
 vågrätt radiellt ut mot horisonten (konstellations-täckning runt huvudet). Stiften går i hjälm-MB:ns
 tab-socklar.
@@ -182,7 +184,7 @@ tab-socklar.
 **Patch** — (väst-patch) → `leverans/vest-patch/`
 *Rund Ø45 mm, 2-lager.* Täcknings-nod som sitter ×10 på västen och ×4 på hjälmen.
 - 4× **TSOP4856** (940 nm-mottagare, ledade — ben böjs/sprids diagonalt) för LOS-grind/anti-fusk.
-- Konstellations-LED (860 nm) för pose.
+- Konstellations-LED (850 nm, Lumileds LUXEON IR) för pose.
 - **6-pol JST** (VBAT·GND·DATA·LED_EN·3V3·VIB) + **2-pol motor-JST**: en **ERM coin-motor** pluggas
   in + 3M-fästs i keepout-ring på baksidan (DNP/kundmonterad) → zon-haptik.
 
