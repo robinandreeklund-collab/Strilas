@@ -86,6 +86,7 @@ finish(PCB)
 v,un=verify(PCB);print(f"FINAL clearance@0.2={v} oanslutna={un}",flush=True)
 if v==0 and un==0:
     os.system("rm -rf /tmp/gbhat && mkdir -p /tmp/gbhat")
+    subprocess.run(["python3","hardware/strip_fab_silk.py",PCB])  # dölj ref-des/titel på silk (NextPCB monterar från centroid/BOM)
     subprocess.run(["kicad-cli","pcb","export","gerbers","--subtract-soldermask","-o","/tmp/gbhat/",PCB],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     subprocess.run(["kicad-cli","pcb","export","drill","-o","/tmp/gbhat/",PCB],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     os.makedirs("leverans/weapon-hat",exist_ok=True)

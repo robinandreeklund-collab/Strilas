@@ -97,7 +97,7 @@
     (descr "JST PH series connector, B3B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
     (tags "connector JST PH side entry")
     (attr through_hole)
-    (fp_text reference "J7" (at 2 -2.9) (layer "F.SilkS")
+    (fp_text reference "J7" (at 2 -2.9) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 00b4c62c-3bda-4cae-8914-388a494cd904)
     )
@@ -206,7 +206,7 @@
     (descr "Mounting Hole 1.7mm, no annular, P4 standoff pass-through")
     (tags "mounting hole 1.7mm no annular p4 standoff")
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "H1" (at 0 -3.2) (layer "F.SilkS")
+    (fp_text reference "H1" (at 0 -3.2) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp b5852c22-53d7-415b-9cdd-b9afee3f77d7)
     )
@@ -231,7 +231,7 @@
     (descr "Mounting Hole 1.7mm, no annular, P4 standoff pass-through")
     (tags "mounting hole 1.7mm no annular p4 standoff")
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "H3" (at 0 -3.2) (layer "F.SilkS")
+    (fp_text reference "H3" (at 0 -3.2) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp cdbecdeb-39a8-4982-b4ad-b9fcf79f748d)
     )
@@ -256,7 +256,7 @@
     (descr "JST PH series connector, B3B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
     (tags "connector JST PH side entry")
     (attr through_hole)
-    (fp_text reference "J10" (at 2 -2.9) (layer "F.SilkS")
+    (fp_text reference "J10" (at 2 -2.9) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp af1dd810-e296-4e24-924e-f0a2f1be225e)
     )
@@ -365,7 +365,7 @@
     (descr "Capacitor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
     (tags "capacitor")
     (attr smd)
-    (fp_text reference "C1" (at 0 -1.16) (layer "F.SilkS")
+    (fp_text reference "C1" (at 0 -1.16) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp cae1f62e-9f37-449f-8787-35b48c2c2db1)
     )
@@ -414,7 +414,7 @@
     (descr "Circular Fiducial, 1mm bare copper, 2mm soldermask opening (Level A)")
     (tags "fiducial")
     (attr smd)
-    (fp_text reference "FID1" (at 0 -2) (layer "F.SilkS")
+    (fp_text reference "FID1" (at 0 -2) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 29445b8b-17f4-4131-aea5-016eb1de1947)
     )
@@ -440,7 +440,7 @@
     (descr "Capacitor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
     (tags "capacitor")
     (attr smd)
-    (fp_text reference "C2" (at 0 -1.16) (layer "F.SilkS")
+    (fp_text reference "C2" (at 0 -1.16) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 1a937da7-d6e9-4713-b475-46cc7a493ee8)
     )
@@ -489,7 +489,7 @@
     (descr "Mounting Hole 1.7mm, no annular, P4 standoff pass-through")
     (tags "mounting hole 1.7mm no annular p4 standoff")
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "H4" (at 0 -3.2) (layer "F.SilkS")
+    (fp_text reference "H4" (at 0 -3.2) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp d16e8eb1-eadf-4b1d-9dce-c1d4796428d8)
     )
@@ -513,7 +513,7 @@
     (at 158 120.5)
     (descr "TDK ICM-45686/45605 6-axis IMU, 14-pin LGA 2.5x3.0mm, 0.5mm pitch")
     (attr smd)
-    (fp_text reference "U1" (at 0 -3.2) (layer "F.SilkS")
+    (fp_text reference "U1" (at 0 -3.2) (layer "F.SilkS") hide
         (effects (font (size 0.8 0.8) (thickness 0.12)))
       (tstamp bbaf1f54-9c4c-4c48-84b7-2f108df590b4)
     )
@@ -577,7 +577,7 @@
     (descr "JST PH series connector, B2B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
     (tags "connector JST PH side entry")
     (attr through_hole)
-    (fp_text reference "J4" (at 1 -2.9) (layer "F.SilkS")
+    (fp_text reference "J4" (at 1 -2.9) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 7ed91ce8-a08f-4e2a-a41b-5a06da07c762)
     )
@@ -676,7 +676,7 @@
     (descr "JST PH series connector, B4B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
     (tags "connector JST PH side entry")
     (attr through_hole)
-    (fp_text reference "J9" (at 3 -2.9) (layer "F.SilkS")
+    (fp_text reference "J9" (at 3 -2.9) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 0e8b0b2f-7926-4a02-9ebf-8a7323160c71)
     )
@@ -795,7 +795,7 @@
     (descr "Capacitor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
     (tags "capacitor")
     (attr smd)
-    (fp_text reference "C6" (at 0 -1.16) (layer "F.SilkS")
+    (fp_text reference "C6" (at 0 -1.16) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 3fd9a7dc-f0b0-4f7f-8445-2d114536439d)
     )
@@ -844,7 +844,7 @@
     (descr "Capacitor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
     (tags "capacitor")
     (attr smd)
-    (fp_text reference "C3" (at 0 -1.16) (layer "F.SilkS")
+    (fp_text reference "C3" (at 0 -1.16) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 8b6be7dc-db2d-4c67-b433-5ef03a095b04)
     )
@@ -893,7 +893,7 @@
     (descr "Mounting Hole 1.7mm, no annular, P4 standoff pass-through")
     (tags "mounting hole 1.7mm no annular p4 standoff")
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "H2" (at 0 -3.2) (layer "F.SilkS")
+    (fp_text reference "H2" (at 0 -3.2) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp c987090a-e863-41c0-80b8-e7ba2f6e3ef5)
     )
@@ -918,7 +918,7 @@
     (descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
     (tags "resistor")
     (attr smd)
-    (fp_text reference "R2" (at 0 -1.65) (layer "F.SilkS")
+    (fp_text reference "R2" (at 0 -1.65) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 258c1892-c6fe-430d-80e0-f584639354f7)
     )
@@ -967,7 +967,7 @@
     (descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
     (tags "resistor")
     (attr smd)
-    (fp_text reference "R1" (at 0 -1.65) (layer "F.SilkS")
+    (fp_text reference "R1" (at 0 -1.65) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp a6c50019-42e4-4d8e-9172-c68d1e49327f)
     )
@@ -1016,7 +1016,7 @@
     (descr "Circular Fiducial, 1mm bare copper, 2mm soldermask opening (Level A)")
     (tags "fiducial")
     (attr smd)
-    (fp_text reference "FID3" (at 0 -2) (layer "F.SilkS")
+    (fp_text reference "FID3" (at 0 -2) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 18833556-84e7-473b-bb82-5382caf5aba5)
     )
@@ -1042,7 +1042,7 @@
     (descr "Capacitor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
     (tags "capacitor")
     (attr smd)
-    (fp_text reference "C4" (at 0 -1.16) (layer "F.SilkS")
+    (fp_text reference "C4" (at 0 -1.16) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp bcad8132-2c52-44ff-90ec-1e6ccc17753c)
     )
@@ -1091,7 +1091,7 @@
     (descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
     (tags "resistor")
     (attr smd)
-    (fp_text reference "R3" (at 0 -1.65) (layer "F.SilkS")
+    (fp_text reference "R3" (at 0 -1.65) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp bb9dd8c7-0fe8-4173-ae87-1ca59b63176f)
     )
@@ -1140,7 +1140,7 @@
     (descr "JST PH series connector, B2B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
     (tags "connector JST PH side entry")
     (attr through_hole)
-    (fp_text reference "J3" (at 1 -2.9) (layer "F.SilkS")
+    (fp_text reference "J3" (at 1 -2.9) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 53d9c319-4ceb-4900-8c1d-33f8ade92fd6)
     )
@@ -1239,7 +1239,7 @@
     (descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
     (tags "resistor")
     (attr smd)
-    (fp_text reference "R4" (at 0 -1.65) (layer "F.SilkS")
+    (fp_text reference "R4" (at 0 -1.65) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 8a5ac77b-0b47-4eae-b217-cf1cf1ddce6f)
     )
@@ -1288,7 +1288,7 @@
     (descr "JST PH series connector, B2B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
     (tags "connector JST PH side entry")
     (attr through_hole)
-    (fp_text reference "J6" (at 1 -2.9) (layer "F.SilkS")
+    (fp_text reference "J6" (at 1 -2.9) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 5eb6a338-b74b-43d5-82a7-6ac6103a2e39)
     )
@@ -1387,7 +1387,7 @@
     (descr "JST PH series connector, B2B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
     (tags "connector JST PH side entry")
     (attr through_hole)
-    (fp_text reference "J5" (at 1 -2.9) (layer "F.SilkS")
+    (fp_text reference "J5" (at 1 -2.9) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 31125c5d-a9a4-4f70-a0ab-b8f04c67a731)
     )
@@ -1486,7 +1486,7 @@
     (descr "JST PH series connector, B4B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
     (tags "connector JST PH side entry")
     (attr through_hole)
-    (fp_text reference "J8" (at 3 -2.9) (layer "F.SilkS")
+    (fp_text reference "J8" (at 3 -2.9) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 01df5f01-f5dc-4a83-85cb-a8ba2510e12c)
     )
@@ -1605,7 +1605,7 @@
     (descr "Capacitor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
     (tags "capacitor")
     (attr smd)
-    (fp_text reference "C5" (at 0 -1.16) (layer "F.SilkS")
+    (fp_text reference "C5" (at 0 -1.16) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp b6113b06-c842-46b1-88e1-66d9cbdacf11)
     )
@@ -1654,7 +1654,7 @@
     (descr "Circular Fiducial, 1mm bare copper, 2mm soldermask opening (Level A)")
     (tags "fiducial")
     (attr smd)
-    (fp_text reference "FID2" (at 0 -2) (layer "F.SilkS")
+    (fp_text reference "FID2" (at 0 -2) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp bcde4acf-1a05-4450-a78d-29443af0a6c1)
     )
@@ -1679,7 +1679,7 @@
     (at 171 120.5)
     (descr "TDK ICM-45686/45605 6-axis IMU, 14-pin LGA 2.5x3.0mm, 0.5mm pitch")
     (attr smd)
-    (fp_text reference "U2" (at 0 -3.2) (layer "F.SilkS")
+    (fp_text reference "U2" (at 0 -3.2) (layer "F.SilkS") hide
         (effects (font (size 0.8 0.8) (thickness 0.12)))
       (tstamp 50a4e5a2-f11f-4c70-8d5b-ef11e410604e)
     )
@@ -1743,7 +1743,7 @@
     (descr "Through hole straight socket strip, 1x15, 2.54mm pitch, single row (from Kicad 4.0.7), script generated")
     (tags "Through hole socket strip THT 1x15 2.54mm single row")
     (attr through_hole)
-    (fp_text reference "J1" (at 0 2.77 90) (layer "B.SilkS")
+    (fp_text reference "J1" (at 0 2.77 90) (layer "B.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 1ee55fa5-de3e-4a66-b52c-065f81c8becb)
     )
@@ -1828,7 +1828,7 @@
     (descr "Through hole straight socket strip, 1x03, 2.54mm pitch, single row (from Kicad 4.0.7), script generated")
     (tags "Through hole socket strip THT 1x03 2.54mm single row")
     (attr through_hole)
-    (fp_text reference "J2" (at 0 2.77 90) (layer "B.SilkS")
+    (fp_text reference "J2" (at 0 2.77 90) (layer "B.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp b2144041-e732-427d-bbae-b878ab53e174)
     )
@@ -1890,9 +1890,6 @@
     (stroke (width 0.15) (type default)) (layer "Edge.Cuts") (tstamp a90f5465-a42a-4a73-b1aa-e753da76f2d9))
   (gr_line (start 114.5 109.5) (end 114.5 130.5)
     (stroke (width 0.15) (type default)) (layer "Edge.Cuts") (tstamp abc58000-0cd3-4860-867c-346e511e8f31))
-  (gr_text "STRILAS" (at 150 128.6) (layer "F.SilkS") (tstamp 6c6e6982-54da-4b82-be74-eac6f028fb5d)
-    (effects (font (size 1 1) (thickness 0.15)))
-  )
 
   (segment (start 170.225 122.174999) (end 170.225 121.874999) (width 0.2) (layer "F.Cu") (net 1) (tstamp 1302bafa-7046-4c84-a3f0-26f73f59ca60))
   (segment (start 153.4448 123.4247) (end 153.52 123.5) (width 0.4) (layer "F.Cu") (net 1) (tstamp 13ba1368-0322-4ad5-a786-0cf61bef0a0d))

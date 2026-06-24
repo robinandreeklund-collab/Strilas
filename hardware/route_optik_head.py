@@ -50,6 +50,7 @@ shutil.copy("/tmp/_oh_best.kicad_pcb",PCB); finish(PCB)
 v,un=verify(PCB); print(f"FINAL clearance@0.2={v} oanslutna={un}",flush=True)
 if v==0 and un==0:
     os.system("rm -rf /tmp/gboh && mkdir -p /tmp/gboh")
+    subprocess.run(["python3","hardware/strip_fab_silk.py",PCB])  # dölj ref-des/titel på silk (NextPCB monterar från centroid/BOM)
     subprocess.run(["kicad-cli","pcb","export","gerbers","--subtract-soldermask","-o","/tmp/gboh/",PCB],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     subprocess.run(["kicad-cli","pcb","export","drill","-o","/tmp/gboh/",PCB],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     os.makedirs("leverans/optik-head",exist_ok=True)

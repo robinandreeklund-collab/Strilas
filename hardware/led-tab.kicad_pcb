@@ -85,7 +85,7 @@
     (descr "Lumileds LUXEON IR Domed L1I0-0850090200000 (850nm, 90deg, 200000=1.5A DC). Paket 3.70x3.70mm. EXAKT officiell SamacSys-land: 3 pads 2.70mm höga, K(pad2)@-1.10 0.5w, A(pad1)@0 1.0w + @+1.10 0.5w, 0.35mm gap. Pinout officiellt pad1=K → vår pad2=K (konsekvent m schema pin1=A/pin2=K). KATOD=vänster (K-mark).")
     (tags "ir emitter 850nm lumileds luxeon l1i0 domed constellation")
     (attr smd)
-    (fp_text reference "D1" (at 0 -2.6 180) (layer "F.SilkS")
+    (fp_text reference "D1" (at 0 -2.6 180) (layer "F.SilkS") hide
         (effects (font (size 0.8 0.8) (thickness 0.12)))
       (tstamp 180a4c43-97e7-46f0-8c83-bd4c4d3a8f66)
     )
@@ -93,7 +93,7 @@
         (effects (font (size 0.7 0.7) (thickness 0.1)))
       (tstamp 628984a5-b198-4859-b550-ec92fc5b06aa)
     )
-    (fp_text user "K" (at -2.5 0 180) (layer "F.SilkS")
+    (fp_text user "K" (at -2.5 0 180) (layer "F.SilkS") hide
         (effects (font (size 0.7 0.7) (thickness 0.12)))
       (tstamp c09cd4c4-84f6-4e36-8f3a-8035bbc5f2c2)
     )
@@ -140,7 +140,7 @@
     (descr "Through hole angled pin header, 1x02, 2.54mm pitch, 6mm pin length, single row")
     (tags "Through hole angled pin header THT 1x02 2.54mm single row")
     (attr through_hole)
-    (fp_text reference "J1" (at 4.385 -2.27 90) (layer "F.SilkS")
+    (fp_text reference "J1" (at 4.385 -2.27 90) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp f7a5369b-f824-4001-b9e4-52531cc8ede1)
     )
@@ -259,9 +259,6 @@
     (stroke (width 0.15) (type default)) (layer "Edge.Cuts") (tstamp 40f3c0d9-e044-419a-9d2c-985839b23293))
   (gr_line (start 153 114.5) (end 147 114.5)
     (stroke (width 0.15) (type default)) (layer "Edge.Cuts") (tstamp 6ac41e9c-46a0-4650-836a-2d06fed7c1e4))
-  (gr_text "STRILAS LED" (at 150 121) (layer "F.SilkS") (tstamp cfb99e8c-fc3e-47ae-971e-02c708aad3ae)
-    (effects (font (size 0.7 0.7) (thickness 0.12)))
-  )
 
   (segment (start 147.6 118.2) (end 147.6 123.5) (width 0.4) (layer "F.Cu") (net 1) (tstamp 1f8f231c-a022-4aab-9c2a-34e2ffdd2361))
   (segment (start 150 118.2) (end 148.9 118.2) (width 0.4) (layer "F.Cu") (net 1) (tstamp 4402557b-8ecd-4a6c-92e7-49ac09772765))

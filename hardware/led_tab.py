@@ -70,5 +70,13 @@ def main():
             d1 = next(f for f in b.GetFootprints() if f.GetReference() == "D1")
             p = d1.GetPosition(); w.writerow(["D1", f"{p.x/1e6-OX:.3f}", f"{OY-p.y/1e6:.3f}", "top", d1.GetOrientationDegrees()])  # endast D1 (J1=THT kund)
     print("  led-tab BOM + centroid (L1I0) → hardware/nextpcb + leverans/led-tab")
+    # silk-strip + gerber-export (NextPCB monterar från centroid/BOM → inga silk-texter över pads)
+    import subprocess
+    subprocess.run(["python3", "hardware/strip_fab_silk.py", "hardware/led-tab.kicad_pcb"])
+    os.system("rm -rf /tmp/gbled && mkdir -p /tmp/gbled")
+    subprocess.run(["kicad-cli", "pcb", "export", "gerbers", "-o", "/tmp/gbled/", "hardware/led-tab.kicad_pcb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run(["kicad-cli", "pcb", "export", "drill", "-o", "/tmp/gbled/", "hardware/led-tab.kicad_pcb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run(["bash", "-c", "cd /tmp/gbled && zip -q -r - . > /home/user/Strilas/leverans/led-tab/led-tab-gerbers.zip"])
+    print("  led-tab gerbers (silk-strippade) → leverans/led-tab")
 
 if __name__ == "__main__": main()

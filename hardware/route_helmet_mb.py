@@ -131,6 +131,7 @@ for seed in range(1, 13):
 if not clean: print("!! ingen ren routning (clearance/oanslutet kvar på alla seeds)"); sys.exit(1)
 print("REN board.")
 os.system("rm -rf /tmp/gbhmb && mkdir -p /tmp/gbhmb")
+subprocess.run(["python3", "hardware/strip_fab_silk.py", PCB])  # dölj ref-des/titel på silk (NextPCB monterar från centroid/BOM)
 subprocess.run(["kicad-cli", "pcb", "export", "gerbers", "-o", "/tmp/gbhmb/", PCB], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 subprocess.run(["kicad-cli", "pcb", "export", "drill", "-o", "/tmp/gbhmb/", PCB], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 subprocess.run(["bash", "-c", "cd /tmp/gbhmb && zip -q -r - . > /home/user/Strilas/hardware/helmet-mb-gerbers.zip"])

@@ -30,6 +30,7 @@ m.m.) i synk.
   → skriver `hardware/nextpcb/*`. Kopiera sedan rätt filer till `leverans/<kort>/`.
 - **Gerbers + STEP UTAN omroutning** (bevarar spåren):
   ```sh
+  python3 hardware/strip_fab_silk.py hardware/<kort>.kicad_pcb   # dölj ref-des/titel på silk (NextPCB monterar från centroid/BOM; texter hamnar annars över pads)
   kicad-cli pcb export gerbers -o /tmp/gb/ hardware/<kort>.kicad_pcb
   kicad-cli pcb export drill   -o /tmp/gb/ hardware/<kort>.kicad_pcb
   (cd /tmp/gb && zip -r - .) > leverans/<kort>/<kort>-gerbers.zip
