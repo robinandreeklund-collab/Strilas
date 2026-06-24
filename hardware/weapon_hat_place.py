@@ -269,5 +269,17 @@ for i,(hx,hy) in enumerate([(25.5,18),(25.5,-18),(-25.5,18),(-25.5,-18)]):
     mh = pcbnew.FootprintLoad(f"{F}/MountingHole.pretty", "MountingHole_2.7mm_M2.5")
     mh.SetReference(f"MH{i+1}"); mh.SetPosition(V(hx,hy)); b.Add(mh)
 
+# PIN1-MARKÖR: Ø1,2 mm NPTH-hål intill 40-pin-headerns pin1 (-24,1,-1,3) → SYNS I STEP-modellen
+# (silk syns ej i STEP). Läge (-22,6,-3,3) clear-skannat (≥0,9 mm koppar). + B.Silk-triangel mot pin1.
+_pf = pcbnew.FOOTPRINT(b); _pf.SetReference("PIN1"); _pf.SetValue("40-pin pin1"); _pf.SetPosition(V(-22.6,-3.3))
+_pp = pcbnew.PAD(_pf); _pp.SetAttribute(pcbnew.PAD_ATTRIB_NPTH); _pp.SetShape(pcbnew.PAD_SHAPE_CIRCLE)
+_pp.SetSize(pcbnew.VECTOR2I(MM(1.2),MM(1.2))); _pp.SetDrillSize(pcbnew.VECTOR2I(MM(1.2),MM(1.2)))
+_pp.SetLayerSet(_pp.UnplatedHoleMask()); _pp.SetPosition(V(-22.6,-3.3)); _pf.Add(_pp)
+_pf.Reference().SetVisible(False); _pf.Value().SetVisible(False); b.Add(_pf)
+_tri = pcbnew.PCB_SHAPE(b, pcbnew.SHAPE_T_POLY); _ch = pcbnew.SHAPE_LINE_CHAIN()
+for _p in [V(-23.5,-4.2),V(-21.7,-4.2),V(-22.6,-2.3)]: _ch.Append(_p)
+_ch.SetClosed(True); _ps = pcbnew.SHAPE_POLY_SET(); _ps.AddOutline(_ch); _tri.SetPolyShape(_ps)
+_tri.SetLayer(pcbnew.B_SilkS); _tri.SetFilled(True); _tri.SetWidth(MM(0.15)); b.Add(_tri)
+
 pcbnew.SaveBoard("hardware/weapon-hat.kicad_pcb", b)
 print(f"placerade {len(fps)} komponenter → hardware/weapon-hat.kicad_pcb (70×58 mm, 2-lager)")
